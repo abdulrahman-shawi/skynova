@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
-import { NavItem } from '@/types/navigation';
+import { NavItem } from '@/lib/type';
 import { MegaMenu } from '@/components/ui/MegaMenu';
 import { cn } from '@/lib/utils';
 
