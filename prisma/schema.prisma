@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+
+model User {
+  id           String   @id @default(uuid())
+  username     String
+  email        String   @unique
+  phone        String?
+  jobTitle     String?
+  accountType  AccountType @default(STAFF)
+  password     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  permissionId String?
+  permission   Permission? @relation(fields: [permissionId], references: [id])
+}
+
+enum  AccountType {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+
+model Permission {
+  id          String @id @default(uuid())
+  roleName    String
+
+  viewProducts   Boolean @default(false)
+  addProducts    Boolean @default(false)
+  editProducts   Boolean @default(false)
+  deleteProducts Boolean @default(false)
+
+  viewReports    Boolean @default(false)
+  addReports     Boolean @default(false)
+  editReports    Boolean @default(false)
+  deleteReports  Boolean @default(false)
+
+  viewOrders     Boolean @default(false)
+  addOrders      Boolean @default(false)
+  editOrders     Boolean @default(false)
+  deleteOrders   Boolean @default(false)
+
+  users User[]
+}
