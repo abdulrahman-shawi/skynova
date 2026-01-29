@@ -2,7 +2,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { NavItem } from '@/types/navigation';
+import { NavItem } from '@/lib/type';
 import { cn } from '@/lib/utils';
 import { NavList } from '@/components/shared/NavList'; // مكون فرعي للتعامل مع الحالة
 
