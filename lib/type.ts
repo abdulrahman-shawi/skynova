@@ -34,3 +34,23 @@ export interface User {
   permissionId?: string | null;
   permission?: Permission | null;
 }
+
+export interface NavLink {
+  title: string;
+  href: string;
+  description?: string;
+}
+
+export interface NavSection {
+  title: string;
+  icon?: React.ElementType;
+  href?: string;
+  links: NavLink[]; // الروابط التابعة لهذا القسم
+}
+
+export interface NavItem {
+  title: string;
+  href?: string;
+  isMega?: boolean;
+  sections?: NavSection[]; // الأقسام التي تظهر في المنيو الكبير
+}

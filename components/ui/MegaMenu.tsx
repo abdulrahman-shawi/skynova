@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { NavSection } from '@/types/navigation';
+import { NavSection } from '@/lib/type';
 
 interface MegaMenuProps {
   sections: NavSection[];
