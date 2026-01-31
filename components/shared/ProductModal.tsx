@@ -59,13 +59,7 @@ export function ProductModal({ isOpen, onClose, onSubmit, initialData, isLoading
 
               return (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-right" dir="rtl">
-                  <div className="md:col-span-2">
-                    <ImageUpload 
-                      label="صورة المنتج"
-                      value={methods.watch("imageUrl")}
-                      onChange={(url) => methods.setValue("imageUrl", url)}
-                    />
-                  </div>
+
 
                   <FormInput
                     label="اسم المنتج"
