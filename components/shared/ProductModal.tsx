@@ -5,7 +5,6 @@ import { z } from "zod";
 import { X } from "lucide-react";
 import { DynamicForm } from "@/components/shared/dynamic-form";
 import { FormInput } from "@/components/ui/form-input";
-import { ImageUpload } from "@/components/ui/ImageUpload";
 
 const productSchema = z.object({
   name: z.string().min(3, "اسم المنتج قصير جداً"),
