@@ -43,7 +43,7 @@ export function DataTable<T extends { id: string | number }>({
         <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
             <tr>
               {columns.map((col, idx) => (
-                <th key={idx} className={cn("p-4 font-semibold text-slate-700 dark:text-slate-300", col.className)}>
+                <th key={idx} className={cn("p-4 font-semibold text-slate-700 whitespace-nowrap dark:text-slate-300", col.className)}>
                   <div className="flex items-center gap-2">
                     {col.header}
                     {col.sortable && <ArrowUpDown className="w-3 h-3 cursor-pointer hover:text-primary" />}
@@ -58,7 +58,7 @@ export function DataTable<T extends { id: string | number }>({
             <tr key={item.id} className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/50">
               {/* ... (Columns mapping) */}
               {columns.map((col, idx) => (
-                  <td key={idx} className={cn("p-4 text-slate-600 dark:text-slate-400", col.className)}>
+                  <td key={idx} className={cn("p-4 text-slate-600 whitespace-nowrap dark:text-slate-400", col.className)}>
                     {typeof col.accessor === "function" 
                       ? col.accessor(item) 
                       : (item[col.accessor] as React.ReactNode)}

@@ -3,10 +3,14 @@
 import { decrypt, encrypt } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
-
+import bcrypt from "bcrypt"; //
 
 export async function getalluser() {
-  const user = await prisma.user.findMany({});
+  const user = await prisma.user.findMany({
+    include:{
+      permission:true
+    }
+  });
   return user;
 }   
 
@@ -29,31 +33,96 @@ export async function getMe() {
   }
 }
 
+export async function logout() {
+  cookies().set("skynova", "", { expires: new Date(0), httpOnly: true });
+  return { success: true };
+}
+
 export async function login(data: { name: string; password: string; }) {
-  // 1. التحقق من المستخدم
+  // 1. البحث عن المستخدم بالاسم فقط
   const user = await prisma.user.findFirst({
-    where: { username: data.name, password: data.password },
+    where: { username: data.name },
   });
 
-  if (!user) return { error: "خطأ في اسم المستخدم أو كلمة المرور" };
+  // 2. التحقق من وجود المستخدم ومطابقة كلمة المرور المشفرة
+  if (!user || !(await bcrypt.compare(data.password, user.password))) { //
+    return { error: "خطأ في اسم المستخدم أو كلمة المرور" };
+  }
 
-  // 2. إنشاء التوكن (JWT)
-  const expires = new Date(Date.now() + 30 * 60 * 60 * 1000); // ساعتان
+  // 3. إكمال إجراءات الجلسة (JWT & Cookies)
+  const expires = new Date(Date.now() + 30 * 60 * 60 * 1000);
   const session = await encrypt({ userId: user.id, username: user.username, email: user.email, expires });
-
-  // 3. حفظ التوكن في الكوكيز
   cookies().set("skynova", session, { expires, httpOnly: true });
 
   return { success: true };
 }
 
-export async function createuser(name: string, password: string) {
-  const user = await prisma.user.create({
-    data: {
-      username: name,
-      email: `${name}@gmail.com`,
-      password: password,
-    },
-  });
-  return user;
+export async function createuser(data: any) {
+  try {
+    // 1. تشفير كلمة المرور (Salt rounds = 10)
+    const hashedPassword = await bcrypt.hash(data.password, 10); //
+
+    // 2. إنشاء المستخدم في قاعدة البيانات
+    const user = await prisma.user.create({
+      data: {
+        username: data.username,
+        email: data.email,
+        password: hashedPassword, // حفظ الكلمة المشفرة
+        phone: data.phone || null,
+        jobTitle: data.jobTitle,
+        accountType: data.accountType,
+        // الربط مع جدول الصلاحيات باستخدام المعرف (ID)
+        permission: {
+          connect: { id: data.permissions } 
+        }
+      },
+    });
+
+    return { success: true, data: user };
+  } catch (error: any) {
+    console.error("Prisma Error:", error);
+    
+    // معالجة خطأ تكرار البريد الإلكتروني
+    if (error.code === 'P2002') {
+      return { success: false, error: "هذا البريد الإلكتروني مستخدم بالفعل" };
+    }
+    
+    return { success: false, error: "فشل في إنشاء المستخدم، يرجى التحقق من المدخلات" };
+  }
+}
+
+export async function updateuser(id: string, data: any) {
+  try {
+    const updateData: any = {
+      username: data.username,
+      email: data.email,
+      phone: data.phone || null,
+      jobTitle: data.jobTitle,
+      accountType: data.accountType,
+      permission: {
+        connect: { id: data.permissions }
+      }
+    };  
+    // تحديث كلمة المرور فقط إذا تم توفير واحدة جديدة
+    if (data.password) {
+      updateData.password = await bcrypt.hash(data.password, 10); //
+    } 
+    const user = await prisma.user.update({
+      where: { id: id },
+      data: updateData,
+    });
+    return { success: true, data: user };
+  } catch (error: any) {
+    console.error("Prisma Error:", error);
+    return { success: false, error: "فشل في تحديث بيانات المستخدم" };
+  }
+}
+
+export async function deleteuser(id: string) {
+  try {
+    await prisma.user.delete({ where: { id: id } });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "فشل في حذف المستخدم" };
+  } 
 }

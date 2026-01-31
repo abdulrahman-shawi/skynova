@@ -3,10 +3,14 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { u } from 'framer-motion/client';
 
 export async function GetRoles() {
     const roles = await prisma.permission.findMany({
-        orderBy: { roleName: 'asc' }
+        orderBy: { roleName: 'asc' },
+        include:{
+            users:true
+        }
     });
     return JSON.parse(JSON.stringify(roles));
 }

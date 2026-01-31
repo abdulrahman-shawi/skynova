@@ -7,6 +7,7 @@ import { getalluser, login } from '@/server/user';
 import { u } from 'framer-motion/client';
 
 import * as React from 'react';
+import toast from 'react-hot-toast';
 import z from 'zod';
 
 interface ILogInProps {
@@ -21,9 +22,11 @@ const handlwsubmit = async (data: z.infer<typeof logInSchema>) => {
   try {
     const user = await login(data);
     if (user) {
-      console.log("تم تسجيل الدخول بنجاح:", user);
+      toast.success("تم تسجيل الدخول بنجاح");
+      window.location.href = "/dashboard"; // توجيه المستخدم إلى لوحة التحكم بعد تسجيل الدخول
+
     } else {
-      console.log("فشل تسجيل الدخول: اسم المستخدم أو كلمة المرور غير صحيحة.");
+      toast.error("فشل تسجيل الدخول: اسم المستخدم أو كلمة المرور غير صحيحة.");
     }
   } catch (err) {
     console.log("error", err);

@@ -14,6 +14,18 @@
   }
 }
 
+@layer utilities {
+  /* إخفاء شريط التمرير لمتصفحات Chrome و Safari و Edge */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* إخفاء شريط التمرير لمتصفحات Firefox و IE */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
 body {
   color: var(--foreground);
   background: var(--background);

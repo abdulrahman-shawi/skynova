@@ -25,6 +25,7 @@ export default function PermissionsPage({ initialRoles = [] }: { initialRoles: a
         if (initialRoles.length > 0 && !selectedRole) {
             setSelectedRole(initialRoles[0]);
         }
+        console.log("Initial Roles:", initialRoles);
     }, [initialRoles]);
 
     const handleAddNewRole = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -115,6 +116,7 @@ export default function PermissionsPage({ initialRoles = [] }: { initialRoles: a
                                 }`}
                             >
                                 <h4 className={`font-black ${selectedRole?.id === role.id ? 'text-indigo-600' : ''}`}>{role.roleName}</h4>
+                                <h6 className="text-slate-500 dark:text-slate-400">{role.users.length} مستخدمين</h6>
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); handleDelete(role.id); }}
                                     className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"

@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "sqlite",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nmodel User {\n  id          String      @id @default(uuid())\n  username    String\n  email       String      @unique\n  phone       String?\n  jobTitle    String?\n  accountType AccountType @default(STAFF)\n  password    String\n  createdAt   DateTime    @default(now())\n  updatedAt   DateTime    @updatedAt\n\n  permissionId String?\n  permission   Permission? @relation(fields: [permissionId], references: [id])\n}\n\nenum AccountType {\n  ADMIN\n  MANAGER\n  STAFF\n}\n\nmodel Permission {\n  id       String @id @default(uuid())\n  roleName String\n\n  viewProducts   Boolean @default(false)\n  addProducts    Boolean @default(false)\n  editProducts   Boolean @default(false)\n  deleteProducts Boolean @default(false)\n\n  viewReports   Boolean @default(false)\n  addReports    Boolean @default(false)\n  editReports   Boolean @default(false)\n  deleteReports Boolean @default(false)\n\n  viewOrders   Boolean @default(false)\n  addOrders    Boolean @default(false)\n  editOrders   Boolean @default(false)\n  deleteOrders Boolean @default(false)\n\n  users User[]\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n}\n\nmodel User {\n  id          String      @id @default(uuid())\n  username    String\n  email       String      @unique\n  phone       String?\n  jobTitle    String?\n  accountType AccountType @default(STAFF)\n  password    String\n  createdAt   DateTime    @default(now())\n  updatedAt   DateTime    @updatedAt\n\n  permissionId String?\n  permission   Permission? @relation(fields: [permissionId], references: [id])\n}\n\nenum AccountType {\n  ADMIN\n  MANAGER\n  STAFF\n}\n\nmodel Permission {\n  id       String @id @default(uuid())\n  roleName String\n\n  viewProducts   Boolean @default(false)\n  addProducts    Boolean @default(false)\n  editProducts   Boolean @default(false)\n  deleteProducts Boolean @default(false)\n\n  viewReports   Boolean @default(false)\n  addReports    Boolean @default(false)\n  editReports   Boolean @default(false)\n  deleteReports Boolean @default(false)\n\n  viewOrders   Boolean @default(false)\n  addOrders    Boolean @default(false)\n  editOrders   Boolean @default(false)\n  deleteOrders Boolean @default(false)\n\n  users User[]\n}\n\nmodel Category {\n  id       Int       @id @default(autoincrement())\n  name     String    @unique\n  products Product[]\n}\n\n// جدول المنتجات (تأكد من مطابقة الأسماء للحقول الموجودة لديك)\nmodel Product {\n  id          Int     @id @default(autoincrement())\n  name        String\n  price       Float\n  discount    Float?  @default(0)\n  description String?\n\n  // لجعل الإضافة آمنة على البيانات القديمة، نجعل القسم اختياري مؤقتاً\n  categoryId Int?\n  category   Category? @relation(fields: [categoryId], references: [id])\n\n  images ProductImage[]\n\n  createdAt DateTime @default(now())\n}\n\n// جدول الصور المتعددة\nmodel ProductImage {\n  id        Int     @id @default(autoincrement())\n  url       String\n  type      String\n  productId Int\n  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"jobTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountType\",\"kind\":\"enum\",\"type\":\"AccountType\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"permissionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permission\",\"kind\":\"object\",\"type\":\"Permission\",\"relationName\":\"PermissionToUser\"}],\"dbName\":null},\"Permission\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roleName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"viewProducts\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"addProducts\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"editProducts\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"deleteProducts\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"viewReports\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"addReports\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"editReports\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"deleteReports\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"viewOrders\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"addOrders\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"editOrders\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"deleteOrders\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PermissionToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"jobTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accountType\",\"kind\":\"enum\",\"type\":\"AccountType\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"permissionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permission\",\"kind\":\"object\",\"type\":\"Permission\",\"relationName\":\"PermissionToUser\"}],\"dbName\":null},\"Permission\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roleName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"viewProducts\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"addProducts\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"editProducts\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"deleteProducts\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"viewReports\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"addReports\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"editReports\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"deleteReports\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"viewOrders\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"addOrders\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"editOrders\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"deleteOrders\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PermissionToUser\"}],\"dbName\":null},\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CategoryToProduct\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"discount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToProduct\"},{\"name\":\"images\",\"kind\":\"object\",\"type\":\"ProductImage\",\"relationName\":\"ProductToProductImage\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ProductImage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToProductImage\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -195,6 +195,36 @@ export interface PrismaClient<
     * ```
     */
   get permission(): Prisma.PermissionDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.category`: Exposes CRUD operations for the **Category** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Categories
+    * const categories = await prisma.category.findMany()
+    * ```
+    */
+  get category(): Prisma.CategoryDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.product`: Exposes CRUD operations for the **Product** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Products
+    * const products = await prisma.product.findMany()
+    * ```
+    */
+  get product(): Prisma.ProductDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.productImage`: Exposes CRUD operations for the **ProductImage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProductImages
+    * const productImages = await prisma.productImage.findMany()
+    * ```
+    */
+  get productImage(): Prisma.ProductImageDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

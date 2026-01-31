@@ -59,7 +59,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
     <aside className={`
         fixed md:sticky top-0 right-0 h-screen z-[70] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
         bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-l border-slate-200 dark:border-slate-800
-        flex flex-col shadow-2xl md:shadow-none
+        flex flex-col shadow-2xl md:shadow-none no-scrollbar
         ${isCollapsed 
           ? "w-[280px] translate-x-full md:translate-x-0 md:w-[88px]" 
           : "w-[280px] translate-x-0"}
@@ -80,14 +80,14 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
               <img src="/icons.jpg" alt="Logo" className="w-7 h-7 object-contain brightness-0 invert" />
             </div>
             <div className={`transition-all duration-300 ${isCollapsed ? "md:opacity-0 md:translate-x-4" : "opacity-100"}`}>
-              <h1 className="font-black text-lg tracking-tight text-slate-800 dark:text-white">نظامي الذكي</h1>
+              <h1 className="font-black text-lg tracking-tight text-slate-800 dark:text-white">Skynova</h1>
               <p className="text-[10px] text-blue-500 font-bold uppercase">إدارة متكاملة</p>
             </div>
           </div>
         </div>
 
         {/* القائمة - Navigation Content */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 space-y-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 space-y-8 custom-scrollbar no-scrollbar">
           {menuGroups.map((group, idx) => (
             <div key={idx} className="space-y-2">
               <p className={`px-4 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[2px] transition-opacity duration-300 ${isCollapsed ? "md:opacity-0" : "opacity-100"}`}>

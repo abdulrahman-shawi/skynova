@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from 'react-hot-toast';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -30,6 +31,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="p-4 md:p-8 bg-slate-50/50 dark:bg-slate-900/20 flex-1 transition-all duration-300">
           <div className="max-w-7xl mx-auto">
             {children}
+            <Toaster position="top-center" />
           </div>
         </main>
       </div>

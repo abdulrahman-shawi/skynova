@@ -32,8 +32,8 @@ export function DynamicForm<T extends z.ZodType<any>>({
     <form onSubmit={methods.handleSubmit(onSubmit as any)} className="space-y-4">
       {children(methods)}
 
-      <div className="pt-4 flex justify-end">
-        <Button type="submit" isLoading={isLoading}>
+      <div className="pt-4 flex w-full justify-end">
+        <Button type="submit" isLoading={isLoading} className="w-full">
           {submitLabel}
         </Button>
       </div>
