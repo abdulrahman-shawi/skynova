@@ -79,6 +79,11 @@ const ProductLayout = () => {
                 if (res.success) {
                     toast.success("تم تحديث المنتج بنجاح")
                     handleClose();
+                    getallcategory().then(setCategories).catch(console.error);
+                    getProduct().then((products) => {
+                        setProducts(products);
+                        console.log("Products loaded:", products);
+                    }).catch(console.error);
                 } else {
                     toast.error(`خطأ ${res.error}`)
                     alert("خطأ: " + res.error);
@@ -108,6 +113,11 @@ const ProductLayout = () => {
                 if (result.success) {
                     toast.success("تم الحفظ بنجاح")
                     handleClose();
+                    getallcategory().then(setCategories).catch(console.error);
+                    getProduct().then((products) => {
+                        setProducts(products);
+                        console.log("Products loaded:", products);
+                    }).catch(console.error);
                 } else {
                     toast.error("خطأ: " + result.error);
                 }
@@ -153,7 +163,7 @@ const ProductLayout = () => {
                     const loadingToast = toast.loading('جاري الحذف...');
                     try {
                         const res = await deleteProduct(data.id)
-                        if(res.success){
+                        if (res.success) {
                             toast.success("تم حذف المنتج بنجاح")
                         }
                     } catch (error) {
@@ -173,8 +183,8 @@ const ProductLayout = () => {
                 <Button onClick={() => setIsOpen(true)}>إضافة منتج جديد</Button>
             </div>
             <div className="flex gap-4 mb-4">
-                <div onClick={() => setTab("grid")} className="flex justify-center items-center w-[150px] h-16 bg-slate-200 dark:bg-slate-800 rounded-md cursor-pointer">grid</div>
-                <div onClick={() => setTab("table")} className="flex justify-center items-center w-[150px] h-16 bg-slate-200 dark:bg-slate-800 rounded-md cursor-pointer">table</div>
+                <Button onClick={() => setTab("grid")} >قائمة</Button>
+                <Button onClick={() => setTab("table")} >جدول</Button>
             </div>
             {tab === 'grid' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
