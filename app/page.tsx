@@ -51,13 +51,12 @@ const LogIn: React.FunctionComponent<ILogInProps> = (props) => {
           {({ register, formState: { errors } }) => (
           <div className="grid gap-4 py-4">
             <FormInput
-              label="اسم المستخدم"
+              label="البريد الإلكتروني"
               {...register("email")}
               error={typeof errors.email?.message === "string" ? errors.email.message : undefined}
             />
             <FormInput
               label="كلمة المرور"
-              placeholder="أكتب وصف القسم"
               {...register("password")}
               error={typeof errors.password?.message === "string" ? errors.password.message : undefined}
             />
