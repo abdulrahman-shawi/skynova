@@ -14,22 +14,30 @@ interface ILogInProps {
 }
 
 const logInSchema = z.object({
-  name: z.string().min(3, "الاسم يجب أن يكون 3 أحرف على الأقل"),
+  email: z.string().email("يجب أن يكون بريد إلكتروني صالح"),
   password: z.string().min(5, "كلمة المرور يجب أن تكون 5 أحرف على الأقل"),
 });
 
-const handlwsubmit = async (data: z.infer<typeof logInSchema>) => {
+const handleSubmit = async (data: z.infer<typeof logInSchema>) => {
   try {
-    const user = await login(data);
-    if (user) {
-      toast.success("تم تسجيل الدخول بنجاح");
-      window.location.href = "/dashboard"; // توجيه المستخدم إلى لوحة التحكم بعد تسجيل الدخول
+    const response = await fetch(`/api/users/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
 
+    const result = await response.json();
+
+    if (response.status === 200) {
+      toast.success("تم تسجيل الدخول بنجاح");
+      // يفضل استخدام router.push من next/navigation بدلاً من window.location
+      window.location.href = "/dashboard"; 
     } else {
-      toast.error("فشل تسجيل الدخول: اسم المستخدم أو كلمة المرور غير صحيحة.");
+      toast.error(result.error || "فشل تسجيل الدخول");
     }
   } catch (err) {
-    console.log("error", err);
+    console.error("Fetch error:", err);
+    toast.error("حدث خطأ في الاتصال بالسيرفر");
   }
 }
 
@@ -41,14 +49,14 @@ const LogIn: React.FunctionComponent<ILogInProps> = (props) => {
         <h1 className="text-2xl font-bold mb-4">Log In</h1>
         <DynamicForm
         schema={logInSchema}
-        onSubmit={handlwsubmit}
+        onSubmit={handleSubmit}
         >
           {({ register, formState: { errors } }) => (
           <div className="grid gap-4 py-4">
             <FormInput
               label="اسم المستخدم"
-              {...register("name")}
-              error={typeof errors.name?.message === "string" ? errors.name.message : undefined}
+              {...register("email")}
+              error={typeof errors.email?.message === "string" ? errors.email.message : undefined}
             />
             <FormInput
               label="كلمة المرور"
