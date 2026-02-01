@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import bcrypt from "bcrypt"; //
+import bcrypt from "bcryptjs"; //
 import { NextRequest } from 'next/server';
 export async function GET(req :NextRequest) {
     try {

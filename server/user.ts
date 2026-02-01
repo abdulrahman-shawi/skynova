@@ -3,7 +3,7 @@
 import { decrypt, encrypt } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
-import bcrypt from "bcrypt"; //
+import bcrypt from "bcryptjs"; //
 
 export async function getalluser() {
   const user = await prisma.user.findMany({
