@@ -1,16 +1,19 @@
 'use client';
 
+import { DataTable } from '@/components/shared/DataTable';
 import { DynamicForm } from '@/components/shared/dynamic-form';
 import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
 import { FormInput } from '@/components/ui/form-input';
 import { MultiFileUpload, FileItem } from '@/components/ui/ImageUpload';
 import { getallcategory } from '@/server/category';
-import { saveProductWithFiles } from '@/server/image';
+import { saveProductWithFiles, updateProductWithFiles } from '@/server/image';
 import { getProduct } from '@/server/product';
 import { image } from 'framer-motion/client';
+import { Mail, Plus } from 'lucide-react';
 import * as React from 'react';
 import { Controller } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import z from 'zod';
 import { ta } from 'zod/v4/locales';
 
@@ -23,13 +26,16 @@ const productschama = z.object({
     files: z.array(z.any()).optional().default([]), // استخدام any هنا لتسهيل التعامل مع File objects
 });
 
+
 const ProductLayout = () => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [editId, setEditId] = React.useState<string | number | null>(null);
     const [categories, setCategories] = React.useState<any[]>([]);
     const [products, setProducts] = React.useState<any[]>([]);
     const [tab, setTab] = React.useState<'table' | "grid">('grid');
-
+    const [selectedProduct, setSelectedProduct] = React.useState<any>(null);
+    const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+    const [forData , setFormData] = React.useState<any>(null);
     React.useEffect(() => {
         getallcategory().then(setCategories).catch(console.error);
         getProduct().then((products) => {
@@ -44,9 +50,38 @@ const ProductLayout = () => {
         setEditId(null);
     };
 
+    const handleShowDetails = (product: any) => {
+        setSelectedProduct(product);
+        setIsPreviewOpen(true);
+    };
+
     const onSubmit = async (data: z.infer<typeof productschama>) => {
         try {
-            const formData = new FormData();
+            if(editId){
+                const formData = new FormData();
+            formData.append('name', data.name);
+            formData.append('price', data.price.toString());
+            formData.append('categoryId', data.categoryId.toString());
+            formData.append('description', data.description || '');
+            formData.append('discount', (data.discount || 0).toString());
+
+            // معالجة الملفات - استخراج الملف الحقيقي rawFile
+            if (data.files && data.files.length > 0) {
+                data.files.forEach((fileItem: any) => {
+                    if (fileItem.rawFile instanceof File) {
+                        formData.append('files', fileItem.rawFile);
+                    }
+                });
+            }
+                const res = await updateProductWithFiles(Number(editId) , formData);
+                if(res.success){
+                    alert("تم التحديث بنجاح!");
+                    handleClose();
+                }else{
+                    alert("خطأ: " + res.error);
+                }
+            }else{
+                const formData = new FormData();
             formData.append('name', data.name);
             formData.append('price', data.price.toString());
             formData.append('categoryId', data.categoryId.toString());
@@ -73,10 +108,62 @@ const ProductLayout = () => {
             } else {
                 alert("خطأ: " + result.error);
             }
+            }
         } catch (error) {
             console.error("Submission Error:", error);
         }
     };
+
+    const handleEdit = (id: string | number) => {
+        setEditId(id);
+        setIsOpen(true);
+    }
+
+    const tableActions: any[] = [
+        {
+            label: "تعديل",
+            icon: <Mail size={14} />,
+            onClick: (data: any) => {
+                setEditId(data.id);
+                setFormData({
+                name: data.name,
+                price: data.price,
+                categoryId: data.categoryId,
+                description: data.description,
+                discount: data.discount,
+                // تمرير الصور الحالية إذا كان المكون يدعم عرضها كـ Preview
+                files: data.images || [] 
+            });
+                console.log("data", data);
+                setIsOpen(true);
+            }
+        },
+        {
+            label: "حذف",
+            icon: <Plus className="rotate-45" size={14} />,
+            variant: "danger",
+            onClick: async (data: any) => {
+                const confirm = window.confirm("هل أنت متأكد من حذف هذا المستخدم؟");
+                if (confirm) {
+                    const loadingToast = toast.loading('جاري الحذف...');
+                    try {
+                        // استدعاء دالة الحذف من السيرفر هنا
+                        // const res = await deleteuser(data.id);
+                        // if (res.success) {
+                        //   toast.success('تم حذف المستخدم بنجاح');
+                        //   getAlluser(); // تحديث قائمة المستخدمين بعد الحذف
+                        // } else {
+                        //   toast.error(res.error || 'فشل في حذف المستخدم');
+                        // }
+                    } catch (error) {
+                        toast.error('فشل في حذف المستخدم');
+                    } finally {
+                        toast.dismiss(loadingToast);
+                    }
+                }
+            }
+        },
+    ];
 
     return (
         <div className="p-4" dir="rtl">
@@ -89,32 +176,162 @@ const ProductLayout = () => {
                 <div onClick={() => setTab("table")} className="flex justify-center items-center w-[150px] h-16 bg-slate-200 dark:bg-slate-800 rounded-md cursor-pointer">table</div>
             </div>
             {tab === 'grid' && (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {products.map((product) => (
-                        <div key={product.id} className="rounded-sm shadow-md border border-slate-900/20 flex flex-col gap-3 rounded-tl-xl rounded-tr-xl">
-                            {product.images.length !== 0 ? (
-                                <div className="h-64">
-                                    {product.images.filter((e: any) => e.type === "image/jpeg").map((e: any) => (
-                                        <div className="w-full h-full">
-                                            <img src={`${e.url}`} alt="" className='w-full h-full rounded-tl-xl rounded-tr-xl' />
-                                        </div>
-                                    ))}
+                        <div
+                            key={product.id}
+                            className="group relative bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300 flex flex-col"
+                        >
+                            {/* Image Section */}
+                            <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                {product.images && product.images.length > 0 ? (
+                                    <img
+                                        src={product.images[0].url}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <img src="/uploads/icon.png" className="w-16 opacity-20" alt="no-image" />
+                                    </div>
+                                )}
+                                {product.discount > 0 && (
+                                    <span className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                        خصم {product.discount}%
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Content Section */}
+                            <div className="p-4 flex flex-col flex-grow">
+                                <div className="flex justify-between items-start mb-2">
+                                    <h2 className="font-bold text-lg line-clamp-1 text-slate-800 dark:text-slate-100">{product.name}</h2>
                                 </div>
-                            ) : (
-                                <div className="h-64">
-                                    <div className="w-full h-full">
-                                            <img src="/uploads/icon.png" alt="" className='w-full h-full rounded-tl-xl rounded-tr-xl' />
-                                        </div>
+
+                                <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 h-10">
+                                    {product.description || "لا يوجد وصف متوفر لهذا المنتج."}
+                                </p>
+
+                                <div className="mt-auto flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                                            {product.price} <span className="text-xs font-normal">ريال</span>
+                                        </p>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleShowDetails(product)}
+                                        className="rounded-full hover:bg-blue-600 hover:text-white transition-colors"
+                                    >
+                                        تفاصيل
+                                    </Button>
                                 </div>
-                            )}
-                            <h2 className="font-bold mb-2">{product.name}</h2>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">السعر: {product.price} ريال</p>
+                            </div>
                         </div>
                     ))}
                 </div>
             )}
+
+            {/* --- مودال عرض تفاصيل المنتج --- */}
+            <AppModal
+                title="تفاصيل المنتج"
+                isOpen={isPreviewOpen}
+                onClose={() => setIsPreviewOpen(false)}
+            >
+                {selectedProduct && (
+                    <div className="p-6 grid md:grid-cols-2 gap-8 text-right" dir="rtl">
+                        {/* Gallery Preview */}
+                        <div className="space-y-4">
+                            <div className="aspect-square rounded-xl overflow-hidden bg-slate-100 border dark:border-slate-800">
+                                <img
+                                    src={selectedProduct.images?.[0]?.url || "/uploads/icon.png"}
+                                    className="w-full h-full object-contain"
+                                    alt={selectedProduct.name}
+                                />
+                            </div>
+                            <div className="flex gap-2 overflow-x-auto pb-2">
+                                {selectedProduct.images?.map((img: any, idx: number) => (
+                                    <img key={idx} src={img.url} className="w-16 h-16 rounded-md object-cover border cursor-pointer hover:border-blue-500" />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Info Section */}
+                        <div className="flex flex-col gap-4">
+                            <div>
+                                <span className="text-xs text-blue-600 font-semibold bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">
+                                    {categories.find(c => c.id === selectedProduct.categoryId)?.name || "تصنيف عام"}
+                                </span>
+                                <h1 className="text-2xl font-bold mt-2 text-slate-900 dark:text-white">{selectedProduct.name}</h1>
+                            </div>
+
+                            <div className="text-3xl font-bold text-blue-600">
+                                {selectedProduct.price} ريال
+                                {selectedProduct.discount > 0 && (
+                                    <span className="text-sm text-slate-400 line-through mr-3 font-normal">
+                                        {Number(selectedProduct.price) + Number(selectedProduct.discount)} ريال
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className="border-t border-b py-4 dark:border-slate-800">
+                                <h3 className="font-semibold mb-2">الوصف:</h3>
+                                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    {selectedProduct.description || "لا يوجد وصف لهذا المنتج حالياً."}
+                                </p>
+                            </div>
+
+                            <div className="mt-auto pt-4 flex gap-2">
+                                <Button className="flex-1" onClick={() => {
+                                    setEditId(selectedProduct.id);
+                                    setIsOpen(true);
+                                    setIsPreviewOpen(false);
+                                }}>
+                                    تعديل البيانات
+                                </Button>
+                                <Button variant="outline" onClick={() => setIsPreviewOpen(false)}>إغلاق</Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </AppModal>
             {tab === 'table' && (
-                <div>عرض المنتجات على شكل جدول</div>
+                <DataTable
+                    data={products}
+                    actions={tableActions}
+                    columns={[
+                        {
+                            header: "المنتج",
+                            accessor: (row: any) => (
+                                <div className="flex items-center gap-2">
+                                    <img
+                                        src={row.images?.[0]?.url || "/uploads/icon.png"}
+                                        alt=""
+                                        className="w-8 h-8 rounded object-cover border"
+                                    />
+                                    <span>{row.name}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: "التصنيف",
+                            accessor: (row: any) => {
+                                const category = categories.find(c => c.id === row.categoryId);
+                                return category ? category.name : "غير محدد";
+                            }
+                        },
+                        {
+                            header: "السعر",
+                            accessor: (row: any) => `${row.price} ريال`
+                        },
+                        {
+                            header: "الخصم",
+                            accessor: (row: any) => row.discount > 0 ? `${row.discount}%` : "—"
+                        },
+                       
+                    ]}
+                />
             )}
 
             <AppModal title={editId ? "تعديل منتج" : "منتج جديد"} isOpen={isOpen} onClose={handleClose}>
@@ -122,8 +339,8 @@ const ProductLayout = () => {
                     <DynamicForm
                         schema={productschama}
                         onSubmit={onSubmit}
-                        defaultValues={{ files: [], name: '', price: 0, discount: 0 }}
-                        submitLabel="حفظ المنتج"
+                        defaultValues={forData}
+                        submitLabel={editId? "تعديل المنتج" : "حفظ المنتج"}
                     >
                         {({ register, control, formState: { errors } }) => (
                             <div className="grid gap-4 md:grid-cols-2">
@@ -141,9 +358,9 @@ const ProductLayout = () => {
                                     {errors.categoryId && <p className="text-xs text-red-500">{errors.categoryId.message as string}</p>}
                                 </div>
 
-                                <FormInput type="number" label="السعر" {...register("price")} error={errors.price?.message as string} />
-                                <FormInput type="number" label="الخصم" {...register("discount")} error={errors.discount?.message as string} />
-                                <textarea {...register("description")} placeholder='h' className='col-span-2 border border-slate-400/30 ' rows={5}></textarea>
+                                <FormInput className='text-slate-900 dark:text-slate-100' type="number" label="السعر" {...register("price")} error={errors.price?.message as string} />
+                                <FormInput className='text-slate-900 dark:text-slate-100' type="number" label="الخصم" {...register("discount")} error={errors.discount?.message as string} />
+                                <textarea {...register("description")} placeholder='الوصف' className='col-span-2 border border-slate-400/30 bg-transparent text-slate-900 dark:text-slate-100' rows={5}></textarea>
                                 <div className="md:col-span-2 border-t pt-4">
                                     <Controller
                                         name="files"

@@ -1415,6 +1415,7 @@ export type PermissionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many Permissions.
    */
   data: Prisma.PermissionCreateManyInput | Prisma.PermissionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1433,6 +1434,7 @@ export type PermissionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many Permissions.
    */
   data: Prisma.PermissionCreateManyInput | Prisma.PermissionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

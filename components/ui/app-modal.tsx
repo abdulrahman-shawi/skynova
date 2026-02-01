@@ -78,7 +78,7 @@ export const AppModal = ({
                 </div>
 
                 {/* المحتوى */}
-                <div className="py-4 overflow-y-auto max-h-[70vh] no-scrollbar custom-scrollbar">
+                <div className="py-4 overflow-y-auto max-h-[70vh]  custom-scrollbar">
                   {children}
                 </div>
 
