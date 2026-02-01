@@ -5,7 +5,7 @@ import { User } from '@/lib/type';
 import { getMe } from '@/server/user'; // استيراد الـ Server Action
 
 interface AuthContextType {
-  user: User | null;
+  user: any;
   loading: boolean;
   refreshUser: () => Promise<void>;
 }
@@ -13,7 +13,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<any>();
   const [loading, setLoading] = useState(true);
 
   const refreshUser = async () => {
