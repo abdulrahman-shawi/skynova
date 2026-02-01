@@ -2,9 +2,6 @@
 import { DynamicForm } from '@/components/shared/dynamic-form';
 import { FormInput } from '@/components/ui/form-input';
 import { useAuth } from '@/context/AuthContext';
-import { User } from '@/lib/type';
-import { getalluser, login } from '@/server/user';
-import { u } from 'framer-motion/client';
 
 import * as React from 'react';
 import toast from 'react-hot-toast';
