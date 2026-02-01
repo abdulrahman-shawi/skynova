@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { FormInput } from '@/components/ui/form-input';
 import { MultiFileUpload, FileItem } from '@/components/ui/ImageUpload';
 import { getallcategory } from '@/server/category';
-import { saveProductWithFiles, updateProductWithFiles } from '@/server/image';
+import { deleteProduct, saveProductWithFiles, updateProductWithFiles } from '@/server/image';
 import { getProduct } from '@/server/product';
 import { error } from 'console';
 import { image } from 'framer-motion/client';
@@ -148,18 +148,14 @@ const ProductLayout = () => {
             icon: <Plus className="rotate-45" size={14} />,
             variant: "danger",
             onClick: async (data: any) => {
-                const confirm = window.confirm("هل أنت متأكد من حذف هذا المستخدم؟");
+                const confirm = window.confirm("هل أنت متأكد من حذف هذا المنتج");
                 if (confirm) {
                     const loadingToast = toast.loading('جاري الحذف...');
                     try {
-                        // استدعاء دالة الحذف من السيرفر هنا
-                        // const res = await deleteuser(data.id);
-                        // if (res.success) {
-                        //   toast.success('تم حذف المستخدم بنجاح');
-                        //   getAlluser(); // تحديث قائمة المستخدمين بعد الحذف
-                        // } else {
-                        //   toast.error(res.error || 'فشل في حذف المستخدم');
-                        // }
+                        const res = await deleteProduct(data.id)
+                        if(res.success){
+                            toast.success("تم حذف المنتج بنجاح")
+                        }
                     } catch (error) {
                         toast.error('فشل في حذف المستخدم');
                     } finally {

@@ -162,3 +162,50 @@ export async function updateProductWithFiles(productId: number, formData: FormDa
         };
     }
 }
+
+export async function deleteProduct(productId: number) {
+    try {
+        // 1. جلب المنتج مع الصور أولاً لنتمكن من معرفة المسارات قبل حذف السجل
+        const product = await prisma.product.findUnique({
+            where: { id: productId },
+            include: { images: true }
+        });
+
+        if (!product) {
+            return { success: false, error: "المنتج غير موجود" };
+        }
+
+        // 2. حذف الملفات الفيزيائية من الهارد ديسك
+        if (product.images && product.images.length > 0) {
+            for (const img of product.images) {
+                try {
+                    // بناء المسار: لاحظ أن img.url يبدأ عادة بـ /uploads/
+                    // لذا نستخدم path.join بحذر لضمان المسار الصحيح
+                    const filePath = path.join(process.cwd(), 'public', img.url);
+                    await fs.unlink(filePath);
+                } catch (err) {
+                    console.error(`فشل حذف الملف: ${img.url}`, err);
+                    // نستمر في الحلقة حتى لو فشل حذف ملف واحد
+                }
+            }
+        }
+
+        // 3. حذف سجل المنتج من قاعدة البيانات
+        // ملاحظة: إذا كان لديك "OnDelete: Cascade" في الـ Schema، سيتم حذف الصور تلقائياً من DB
+        await prisma.product.delete({
+            where: { id: productId }
+        });
+
+        // 4. تحديث الكاش
+        revalidatePath('/dashboard/products');
+
+        return { success: true, message: "تم حذف المنتج وجميع ملفاته بنجاح" };
+
+    } catch (error: any) {
+        console.error("Error during product deletion:", error);
+        return { 
+            success: false, 
+            error: error.message || "حدث خطأ أثناء حذف المنتج" 
+        };
+    }
+}
