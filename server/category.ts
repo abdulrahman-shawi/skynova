@@ -17,7 +17,6 @@ export async function createcategory(data: any) {
     // 2. إنشاء المستخدم في قاعدة البيانات
     const category = await prisma.category.create({
       data: {
-        id:Number(Date.now()),
         name: data.name,
       
       },
