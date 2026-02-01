@@ -9,6 +9,7 @@ import { MultiFileUpload, FileItem } from '@/components/ui/ImageUpload';
 import { getallcategory } from '@/server/category';
 import { saveProductWithFiles, updateProductWithFiles } from '@/server/image';
 import { getProduct } from '@/server/product';
+import { error } from 'console';
 import { image } from 'framer-motion/client';
 import { Mail, Plus } from 'lucide-react';
 import * as React from 'react';
@@ -35,7 +36,7 @@ const ProductLayout = () => {
     const [tab, setTab] = React.useState<'table' | "grid">('grid');
     const [selectedProduct, setSelectedProduct] = React.useState<any>(null);
     const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
-    const [forData , setFormData] = React.useState<any>(null);
+    const [forData, setFormData] = React.useState<any>(null);
     React.useEffect(() => {
         getallcategory().then(setCategories).catch(console.error);
         getProduct().then((products) => {
@@ -56,61 +57,65 @@ const ProductLayout = () => {
     };
 
     const onSubmit = async (data: z.infer<typeof productschama>) => {
+        const loadingToast = toast.loading(editId ? 'جاري تحديث البيانات...' : 'جاري تعديل المنتج...');
         try {
-            if(editId){
+            if (editId) {
                 const formData = new FormData();
-            formData.append('name', data.name);
-            formData.append('price', data.price.toString());
-            formData.append('categoryId', data.categoryId.toString());
-            formData.append('description', data.description || '');
-            formData.append('discount', (data.discount || 0).toString());
+                formData.append('name', data.name);
+                formData.append('price', data.price.toString());
+                formData.append('categoryId', data.categoryId.toString());
+                formData.append('description', data.description || '');
+                formData.append('discount', (data.discount || 0).toString());
 
-            // معالجة الملفات - استخراج الملف الحقيقي rawFile
-            if (data.files && data.files.length > 0) {
-                data.files.forEach((fileItem: any) => {
-                    if (fileItem.rawFile instanceof File) {
-                        formData.append('files', fileItem.rawFile);
-                    }
-                });
-            }
-                const res = await updateProductWithFiles(Number(editId) , formData);
-                if(res.success){
-                    alert("تم التحديث بنجاح!");
+                // معالجة الملفات - استخراج الملف الحقيقي rawFile
+                if (data.files && data.files.length > 0) {
+                    data.files.forEach((fileItem: any) => {
+                        if (fileItem.rawFile instanceof File) {
+                            formData.append('files', fileItem.rawFile);
+                        }
+                    });
+                }
+                const res = await updateProductWithFiles(Number(editId), formData);
+                if (res.success) {
+                    toast.success("تم تحديث المنتج بنجاح")
                     handleClose();
-                }else{
+                } else {
+                    toast.error(`خطأ ${res.error}`)
                     alert("خطأ: " + res.error);
                 }
-            }else{
-                const formData = new FormData();
-            formData.append('name', data.name);
-            formData.append('price', data.price.toString());
-            formData.append('categoryId', data.categoryId.toString());
-            formData.append('description', data.description || '');
-            formData.append('discount', (data.discount || 0).toString());
-
-            // معالجة الملفات - استخراج الملف الحقيقي rawFile
-            if (data.files && data.files.length > 0) {
-                data.files.forEach((fileItem: any) => {
-                    if (fileItem.rawFile instanceof File) {
-                        formData.append('files', fileItem.rawFile);
-                    }
-                });
-            }
-
-            // طباعة للتأكد من المحتوى قبل الإرسال
-            console.log("Files to upload:", formData.getAll('files'));
-
-            const result = await saveProductWithFiles(formData);
-
-            if (result.success) {
-                alert("تم الحفظ بنجاح!");
-                handleClose();
             } else {
-                alert("خطأ: " + result.error);
-            }
+                const formData = new FormData();
+                formData.append('name', data.name);
+                formData.append('price', data.price.toString());
+                formData.append('categoryId', data.categoryId.toString());
+                formData.append('description', data.description || '');
+                formData.append('discount', (data.discount || 0).toString());
+
+                // معالجة الملفات - استخراج الملف الحقيقي rawFile
+                if (data.files && data.files.length > 0) {
+                    data.files.forEach((fileItem: any) => {
+                        if (fileItem.rawFile instanceof File) {
+                            formData.append('files', fileItem.rawFile);
+                        }
+                    });
+                }
+
+                // طباعة للتأكد من المحتوى قبل الإرسال
+                console.log("Files to upload:", formData.getAll('files'));
+
+                const result = await saveProductWithFiles(formData);
+
+                if (result.success) {
+                    toast.success("تم الحفظ بنجاح")
+                    handleClose();
+                } else {
+                    toast.error("خطأ: " + result.error);
+                }
             }
         } catch (error) {
-            console.error("Submission Error:", error);
+            toast.error(` خطأ ${error}`);
+        } finally {
+            toast.dismiss(loadingToast);
         }
     };
 
@@ -126,14 +131,14 @@ const ProductLayout = () => {
             onClick: (data: any) => {
                 setEditId(data.id);
                 setFormData({
-                name: data.name,
-                price: data.price,
-                categoryId: data.categoryId,
-                description: data.description,
-                discount: data.discount,
-                // تمرير الصور الحالية إذا كان المكون يدعم عرضها كـ Preview
-                files: data.images || [] 
-            });
+                    name: data.name,
+                    price: data.price,
+                    categoryId: data.categoryId,
+                    description: data.description,
+                    discount: data.discount,
+                    // تمرير الصور الحالية إذا كان المكون يدعم عرضها كـ Preview
+                    files: data.images || []
+                });
                 console.log("data", data);
                 setIsOpen(true);
             }
@@ -329,7 +334,7 @@ const ProductLayout = () => {
                             header: "الخصم",
                             accessor: (row: any) => row.discount > 0 ? `${row.discount}%` : "—"
                         },
-                       
+
                     ]}
                 />
             )}
@@ -340,7 +345,7 @@ const ProductLayout = () => {
                         schema={productschama}
                         onSubmit={onSubmit}
                         defaultValues={forData}
-                        submitLabel={editId? "تعديل المنتج" : "حفظ المنتج"}
+                        submitLabel={editId ? "تعديل المنتج" : "حفظ المنتج"}
                     >
                         {({ register, control, formState: { errors } }) => (
                             <div className="grid gap-4 md:grid-cols-2">
