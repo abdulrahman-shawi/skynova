@@ -12,11 +12,11 @@ export async function POST(req:NextRequest){
         if (!login) {
             return new Response(JSON.stringify({ success: false, error: "خطأ في اسم المستخدم أو كلمة المرور" }), { status: 401 });
         }
-        // const has = await bcrypt.compare(password, login.password)
-        // // تحقق من كلمة المرور هنا إذا كانت مشفرة
-        // if (!has) {
-        //     return new Response(JSON.stringify({ success: false, error: "خطأ في اسم المستخدم أو كلمة المرور" }), { status: 401 });
-        // }
+        const has = await bcrypt.compare(password, login.password)
+        // تحقق من كلمة المرور هنا إذا كانت مشفرة
+        if (!has) {
+            return new Response(JSON.stringify({ success: false, error: "خطأ في اسم المستخدم أو كلمة المرور" }), { status: 401 });
+        }
         const expires = new Date(Date.now() + 30 * 60 * 60 * 1000);
           const session = await encrypt({ userId: login.id, username: login.username, email: login.email, expires });
           cookies().set("skynova", session, { expires, httpOnly: true });
