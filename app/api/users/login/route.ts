@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt"; //
 import { cookies } from "next/headers";
 import { encrypt } from "@/lib/auth";
@@ -20,7 +20,7 @@ export async function POST(req:NextRequest){
         const expires = new Date(Date.now() + 30 * 60 * 60 * 1000);
           const session = await encrypt({ userId: login.id, username: login.username, email: login.email, expires });
           cookies().set("skynova", session, { expires, httpOnly: true });
-        return new Response(JSON.stringify({ success: true, user: login }), { status: 200 });
+        return NextResponse.json({ success: true, user: login }, { status: 200 });
     } catch (error) {
         console.error("Prisma Error:", error);
         return new Response(JSON.stringify({ success: false, error: "فشل في تسجيل الدخول" }), { status: 500 });
