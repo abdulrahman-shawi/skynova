@@ -18,8 +18,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const refreshUser = async () => {
     setLoading(true);
-    const userData = await getMe(); // استدعاء مباشر للسيرفر
-    setUser(userData as User | null);
+    const userData = await fetch("/api/users/get");
+    const data = await userData.json() // استدعاء مباشر للسيرفر
+    setUser(data.data as User | null);
+    console.log(data)
     setLoading(false);
   };
 

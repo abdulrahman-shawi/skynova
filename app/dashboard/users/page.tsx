@@ -9,7 +9,6 @@ import toast from 'react-hot-toast';
 import { createuser, deleteuser, getalluser, updateuser } from '@/server/user'; // تأكد من وجود updateuser
 import { Button } from '@/components/ui/button';
 import { AppModal } from '@/components/ui/app-modal';
-import { GetRoles } from '@/server/permissions';
 import { Mail, Plus } from 'lucide-react';
 import { DataTable } from '@/components/shared/DataTable';
 import { permission } from 'process';
@@ -33,20 +32,24 @@ const UserManagement: React.FunctionComponent = () => {
 
   const getAlluser = async () => {
     try {
-      const res = await getalluser();
-      setUsers(res);
+      const res = await fetch("/api/users")
+      const data = await res.json()
+      setUsers(data.data);
       console.log("Users:", res);
     } catch (error) {
 
     }
   }
   const getRoul = async () => {
-    try {
-      const res = await GetRoles();
-      setRoles(res);
-    } catch (error) {
-      console.error("Failed to fetch roles", error);
-    }
+     try {
+            const res = await fetch('/api/permissions');
+            const response = await res.json();
+            if (response.success && Array.isArray(response.data)) {
+                setRoles(response.data);
+            }
+        } catch (err) {
+            toast.error("خطأ في جلب البيانات");
+        }
   }
 
   React.useEffect(() => { getRoul(); getAlluser(); }, []);
@@ -58,33 +61,45 @@ const UserManagement: React.FunctionComponent = () => {
   };
 
   const onSubmit = async (data: z.infer<typeof userSchema>) => {
-    const loadingToast = toast.loading(editId ? 'جاري تحديث البيانات...' : 'جاري إنشاء الحساب...');
-    try {
-      let response;
-      if (editId) {
-        // response = await updateuser(editId, data); // دالة التعديل
-        const res = await updateuser(editId, data);
-        response = res;
-        if (response?.success)
-          toast.success('تم التحديث بنجاح (تجريبي)');
-        getAlluser()
+  const loadingToast = toast.loading(editId ? 'جاري تحديث البيانات...' : 'جاري إنشاء الحساب...');
+  try {
+    let response;
+    if (editId) {
+      // تحديث مستخدم موجود
+      const res = await updateuser(editId, data);
+      if (res?.success) {
+        toast.success('تم التحديث بنجاح');
+        getAlluser();
       } else {
-        response = await createuser(data);
-        if (response?.success) {
-          toast.success('تم إنشاء المستخدم بنجاح');
-          getAlluser(); // تحديث قائمة المستخدمين بعد الإنشاء
-        }else {
-          toast.error(response.error || 'فشل في إنشاء المستخدم ممكن تكرار البريد الإلكتروني');
-        }
+        toast.error(res?.error || 'فشل التحديث');
       }
-      handleClose();
-    } catch (error) {
-      toast.error('حدث خطأ غير متوقع');
-    } finally {
-      toast.dismiss(loadingToast);
-    }
-  };
+    } else {
+      // إنشاء مستخدم جديد عبر API
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // ضروري جداً ليتمكن السيرفر من قراءة البيانات
+        },
+        body: JSON.stringify(data), // تحويل الكائن إلى نص JSON
+      });
+      
+      const result = await res.json();
 
+      if (result.success) {
+        toast.success('تم إنشاء المستخدم بنجاح');
+        getAlluser();
+      } else {
+        toast.error(result.error || 'فشل في إنشاء المستخدم');
+      }
+    }
+    handleClose();
+  } catch (error) {
+    console.error(error);
+    toast.error('حدث خطأ غير متوقع');
+  } finally {
+    toast.dismiss(loadingToast);
+  }
+};
   const selectClasses = `w-full p-3 rounded-md border transition-all outline-none bg-white border-gray-300 text-gray-900 dark:bg-[#0f172a] dark:border-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/50`;
 
   // هذا الجزء يستخدم عادة داخل مكون الجدول (DataTable)
