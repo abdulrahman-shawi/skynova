@@ -166,7 +166,7 @@ const socialStatus = [
   { label: "متزوج/ة", value: "متزوج/ة" },
 ]
 
-export const skinTypeOptions = [
+ const skinTypeOptions = [
   { label: "دهنية", value: "دهنية" },
   { label: "جافة", value: "جافة" },
   { label: "مختلطة", value: "مختلطة" },
@@ -174,14 +174,14 @@ export const skinTypeOptions = [
   { label: "عادية", value: "عادية" },
 ];
 
-export const skinColorOptions = [
+ const skinColorOptions = [
   { label: "فاتحة", value: "فاتحة" },
   { label: "متوسطة", value: "متوسطة" },
   { label: "سمراء", value: "سمراء" },
   { label: "داكنة", value: "داكنة" },
 ];
 
-export const hairColorOptions = [
+ const hairColorOptions = [
   { label: "أشقر", value: "أشقر" },
   { label: "أبيض", value: "أبيض" },
   { label: "أسود", value: "أسود" },
@@ -219,7 +219,7 @@ const SKIN_PROBLEMS = [
 
 /* ===================== Schema (التحقق المرن) ===================== */
 // نصيحة خبير: استخدم .or(z.literal("")) لضمان أن الحقول الفارغة لا تكسر شرط الـ min
-export const customerSchema = z.object({
+ const customerSchema = z.object({
   name: z.string().min(3, "الاسم يجب أن يكون 3 حروف على الأقل"),
   phone: z.string().optional().or(z.literal("")),
   countryCode: z.string().optional().or(z.literal("")),
