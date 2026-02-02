@@ -28,7 +28,7 @@ const SOURCE_OPTIONS = [
   { label: "اخرى", value: "اخرى" },
 ];
 
-export const countryOptions = [
+const countryOptions = [
   { label: "أفغانستان (+93)", value: "+93" },
   { label: "ألبانيا (+355)", value: "+355" },
   { label: "الجزائر (+213)", value: "+213" },
@@ -278,17 +278,17 @@ const CustomrLayout: React.FC = () => {
         setCustomers(allCustomers);
       } else {
         // إذا كان موظف: نظهر فقط العملاء الذين يحتوي حقل users لديهم على id الموظف الحالي
-        const filtered = allCustomers.filter((customer: any) => 
+        const filtered = allCustomers.filter((customer: any) =>
           customer.users?.some((u: any) => u.id === user?.id)
         );
         setCustomers(filtered);
       }
     }
   };
-const { user } = useAuth()
+  const { user } = useAuth()
   React.useEffect(() => { getData() }, [user])
   const [isPending, setIsPending] = React.useState(false);
-  
+
 
   const onSubmit = async (data: CustomerFormValues) => {
     setIsPending(true);
@@ -318,7 +318,7 @@ const { user } = useAuth()
       onClick: (data: any) => {
         setFormdata({
           ...data,
-          skinProblems:data.skinProblems
+          skinProblems: data.skinProblems
         })
         console.log("data", data);
         setIsOpen(true);
