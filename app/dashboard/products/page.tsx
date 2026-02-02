@@ -23,6 +23,7 @@ const productschama = z.object({
     description: z.string().optional().nullable(),
     price: z.coerce.number().min(0, "السعر يجب أن يكون رقم موجب"),
     categoryId: z.coerce.number().min(1, "يرجى اختيار فئة"),
+    quantity: z.coerce.string().min(1, "يرجى اختيار كمية المنتج"),
     discount: z.coerce.number().min(0, "الخصم يجب أن يكون رقم موجب").optional().default(0),
     files: z.array(z.any()).optional().default([]), // استخدام any هنا لتسهيل التعامل مع File objects
 });
@@ -57,7 +58,7 @@ const ProductLayout = () => {
     };
 
     const onSubmit = async (data: z.infer<typeof productschama>) => {
-        const loadingToast = toast.loading(editId ? 'جاري تحديث البيانات...' : 'جاري تعديل المنتج...');
+        const loadingToast = toast.loading(editId ? 'جاري تحديث المنتج...' : 'جاري اضافة المنتج...');
         try {
             if (editId) {
                 const formData = new FormData();
@@ -66,6 +67,7 @@ const ProductLayout = () => {
                 formData.append('categoryId', data.categoryId.toString());
                 formData.append('description', data.description || '');
                 formData.append('discount', (data.discount || 0).toString());
+                formData.append('quantity', (data.quantity || 0).toString());
 
                 // معالجة الملفات - استخراج الملف الحقيقي rawFile
                 if (data.files && data.files.length > 0) {
@@ -95,6 +97,7 @@ const ProductLayout = () => {
                 formData.append('categoryId', data.categoryId.toString());
                 formData.append('description', data.description || '');
                 formData.append('discount', (data.discount || 0).toString());
+                formData.append('quantity', (data.quantity || 0).toString());
 
                 // معالجة الملفات - استخراج الملف الحقيقي rawFile
                 if (data.files && data.files.length > 0) {
@@ -146,6 +149,7 @@ const ProductLayout = () => {
                     categoryId: data.categoryId,
                     description: data.description,
                     discount: data.discount,
+                    quantity:data.quantity,
                     // تمرير الصور الحالية إذا كان المكون يدعم عرضها كـ Preview
                     files: data.images || []
                 });
@@ -334,11 +338,11 @@ const ProductLayout = () => {
                         },
                         {
                             header: "السعر",
-                            accessor: (row: any) => `${row.price} ريال`
+                            accessor: (row: any) => `${row.price} $`
                         },
                         {
                             header: "الخصم",
-                            accessor: (row: any) => row.discount > 0 ? `${row.discount}%` : "—"
+                            accessor: (row: any) => row.discount > 0 ? `${row.discount} $` : "—"
                         },
 
                     ]}
@@ -355,7 +359,7 @@ const ProductLayout = () => {
                     >
                         {({ register, control, formState: { errors } }) => (
                             <div className="grid gap-4 md:grid-cols-2">
-                                <FormInput className='text-slate-900 dark:text-slate-100' label="اسم المنتج" {...register("name")} error={errors.name?.message as string} />
+                                <FormInput className='col-span-2' label="اسم المنتج" {...register("name")} error={errors.name?.message as string} />
 
                                 <div className="flex flex-col gap-1.5">
                                     <label className="text-sm text-right font-medium text-slate-800 dark:text-slate-200">التصنيف</label>
@@ -371,6 +375,7 @@ const ProductLayout = () => {
 
                                 <FormInput className='text-slate-900 dark:text-slate-100' type="number" label="السعر" {...register("price")} error={errors.price?.message as string} />
                                 <FormInput className='text-slate-900 dark:text-slate-100' type="number" label="الخصم" {...register("discount")} error={errors.discount?.message as string} />
+                                <FormInput className='text-slate-900 dark:text-slate-100' type="number" label="الكمية" {...register("quantity")} error={errors.quantity?.message as string} />
                                 <textarea {...register("description")} placeholder='الوصف' className='col-span-2 border border-slate-400/30 bg-transparent text-slate-900 dark:text-slate-100' rows={5}></textarea>
                                 <div className="md:col-span-2 border-t pt-4">
                                     <Controller

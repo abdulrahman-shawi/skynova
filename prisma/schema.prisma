@@ -19,6 +19,8 @@ model User {
   updatedAt    DateTime    @updatedAt
   permissionId String?
   permission   Permission? @relation(fields: [permissionId], references: [id])
+  customers    Customer[]
+  
 }
 
 model Permission {
@@ -51,6 +53,7 @@ model Product {
   price       Float
   discount    Float?         @default(0)
   description String?
+  quantity    String?
   categoryId  Int?
   createdAt   DateTime       @default(now())
   category    Category?      @relation(fields: [categoryId], references: [id])
@@ -69,6 +72,65 @@ enum AccountType {
   ADMIN
   MANAGER
   STAFF
+}
+
+model Customer {
+  id              String      @id @default(uuid())
+  name            String      @unique
+  phone           String? 
+  countryCode     String?
+  country         String?
+  city            String?
+  
+  // الحقول الجديدة بناءً على الصور المرفقة
+  source          String?     // مصدر العميل (مثل: فيسبوك، انستجرام)
+  ageGroup        String?     // الفئة العمرية
+  socialStatus    String?     // الحالة الاجتماعية (عزباء، متزوجة، إلخ)
+  
+  // حقول تبويب البشرة (Skin Tab Fields)
+  skinType        String?  // نوع البشرة (دهنية، جافة، إلخ)
+  gender          String?  // جنس العميل
+  
+  // المشاكل التي تعاني منها (مصفوفة نصوص)
+  skinProblems    String[] // لتخزين: حب شباب، مسامات، كلف، إلخ
+
+  // حقول تبويب أجهزة الليزر (Laser Tab Fields)
+  skinColor       String?  // لون البشرة (كما في الصورة)
+  hairColor       String?  // لون الشعر (كما في الصورة)
+  genderlaser     String?  // جنس العميل (موجود في كل الأقسام)
+  laserPurpose    String?  // الغرض (إزالة شعر، نضارة، إلخ)
+  genderhair      String?
+// --- حقول قسم: برامج التنحيف (Slimming Tab) ---
+  bodyType        String?   // نوع الجسم
+  weight          Float?    // الوزن
+  height          Float?    // الطول
+  mainProblem     String?   @db.Text // ماهي المشكلة التي يرغب في حلها
+  genderfit          String?
+  
+  // الحالات الصحية والخيارات (Boolean)
+  isDiabetic      Boolean     @default(false) // مريضة سكر
+  isPregnant      Boolean     @default(false) // حامل
+  hasHypertension Boolean     @default(false) // ضغط
+  isBreastfeeding Boolean     @default(false) // مرضعة
+  hormonalTherapy Boolean     @default(false) // تخضع لعلاج هرموني
+  followsDiet     Boolean     @default(false) // تتبع حمية غذائية
+  regularExercise Boolean     @default(false) // تمارس الرياضة بانتظام
+  interestedInAds Boolean     @default(false) // مهتم بالعروض أو الاشتراكات
+  isTargetClient  Boolean     @default(false) // العميل هو المهتم
+  inquiresForElse Boolean     @default(false) // يستفسر لشخص آخر
+
+  // الاهتمامات (باستخدام العلاقة التي أنشأتها سابقاً)
+  interests       Interest[]  
+  users  User[]
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+enum Interest {
+  SKIN_PRODUCTS   // منتجات وأجهزة البشرة
+  LASER_DEVICES   // أجهزة الليزر
+  SLIMMING_PROG   // برامج التنحيف
 }
 
 

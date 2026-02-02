@@ -4,7 +4,7 @@ import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
 // تأكد من استيراد FormInput من المكان الصحيح في مكوناتك وليس من lucide-react
 import { FormInput } from '@/components/ui/form-input';
-import { createcategory, getallcategory, updatecategory } from '@/server/category';
+import { createcategory, deletecategory, getallcategory, updatecategory } from '@/server/category';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Edit, Trash2 } from 'lucide-react';
 import * as React from 'react';
@@ -35,6 +35,23 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = (props
             name:data.name
         });
         setIsOpen(true);    
+    }
+
+    const handledelete = async (data:any) => {
+        const loadingToast = toast.loading( 'جاري حذف الفئة...');
+        try {
+            const res = await deletecategory(data.id)
+            if(res.success){
+                toast.success("تم حذف الفئة بنجاح")
+            }else{
+                toast.error("حدث خطأ أثناء حذف المنتج")
+            }
+        } catch (error:any) {
+            toast.error("خطأ" , error)
+        }finally{
+            toast.dismiss(loadingToast)
+            getData()
+        }
     }
     const onSubmit = async (data: z.infer<typeof categorySchema>) => {
         const loadingToast = toast.loading(editId ? 'جاري تحديث البيانات...' : 'جاري إنشاء الحساب...');
@@ -117,7 +134,7 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = (props
                                         <Edit size={16} />
                                     </button>
                                     <button
-                                        onClick={() => { }}
+                                        onClick={() => handledelete(cat)}
                                         className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all"
                                     >
                                         <Trash2 size={16} />

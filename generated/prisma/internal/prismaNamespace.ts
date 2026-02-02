@@ -388,7 +388,8 @@ export const ModelName = {
   Permission: 'Permission',
   Category: 'Category',
   Product: 'Product',
-  ProductImage: 'ProductImage'
+  ProductImage: 'ProductImage',
+  Customer: 'Customer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "permission" | "category" | "product" | "productImage"
+    modelProps: "user" | "permission" | "category" | "product" | "productImage" | "customer"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +779,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Customer: {
+      payload: Prisma.$CustomerPayload<ExtArgs>
+      fields: Prisma.CustomerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CustomerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CustomerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>
+        }
+        findFirst: {
+          args: Prisma.CustomerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CustomerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>
+        }
+        findMany: {
+          args: Prisma.CustomerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>[]
+        }
+        create: {
+          args: Prisma.CustomerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>
+        }
+        createMany: {
+          args: Prisma.CustomerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CustomerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>[]
+        }
+        delete: {
+          args: Prisma.CustomerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>
+        }
+        update: {
+          args: Prisma.CustomerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>
+        }
+        deleteMany: {
+          args: Prisma.CustomerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CustomerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CustomerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>[]
+        }
+        upsert: {
+          args: Prisma.CustomerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CustomerPayload>
+        }
+        aggregate: {
+          args: Prisma.CustomerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCustomer>
+        }
+        groupBy: {
+          args: Prisma.CustomerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CustomerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CustomerCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -867,6 +942,7 @@ export const ProductScalarFieldEnum = {
   price: 'price',
   discount: 'discount',
   description: 'description',
+  quantity: 'quantity',
   categoryId: 'categoryId',
   createdAt: 'createdAt'
 } as const
@@ -882,6 +958,47 @@ export const ProductImageScalarFieldEnum = {
 } as const
 
 export type ProductImageScalarFieldEnum = (typeof ProductImageScalarFieldEnum)[keyof typeof ProductImageScalarFieldEnum]
+
+
+export const CustomerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phone: 'phone',
+  countryCode: 'countryCode',
+  country: 'country',
+  city: 'city',
+  source: 'source',
+  ageGroup: 'ageGroup',
+  socialStatus: 'socialStatus',
+  skinType: 'skinType',
+  gender: 'gender',
+  skinProblems: 'skinProblems',
+  skinColor: 'skinColor',
+  hairColor: 'hairColor',
+  genderlaser: 'genderlaser',
+  laserPurpose: 'laserPurpose',
+  genderhair: 'genderhair',
+  bodyType: 'bodyType',
+  weight: 'weight',
+  height: 'height',
+  mainProblem: 'mainProblem',
+  genderfit: 'genderfit',
+  isDiabetic: 'isDiabetic',
+  isPregnant: 'isPregnant',
+  hasHypertension: 'hasHypertension',
+  isBreastfeeding: 'isBreastfeeding',
+  hormonalTherapy: 'hormonalTherapy',
+  followsDiet: 'followsDiet',
+  regularExercise: 'regularExercise',
+  interestedInAds: 'interestedInAds',
+  isTargetClient: 'isTargetClient',
+  inquiresForElse: 'inquiresForElse',
+  interests: 'interests',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -990,6 +1107,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
+
+/**
+ * Reference to a field of type 'Interest[]'
+ */
+export type ListEnumInterestFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Interest[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Interest'
+ */
+export type EnumInterestFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Interest'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1090,6 +1221,7 @@ export type GlobalOmitConfig = {
   category?: Prisma.CategoryOmit
   product?: Prisma.ProductOmit
   productImage?: Prisma.ProductImageOmit
+  customer?: Prisma.CustomerOmit
 }
 
 /* Types for Logging */

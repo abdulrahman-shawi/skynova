@@ -55,7 +55,8 @@ export const ModelName = {
   Permission: 'Permission',
   Category: 'Category',
   Product: 'Product',
-  ProductImage: 'ProductImage'
+  ProductImage: 'ProductImage',
+  Customer: 'Customer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -124,6 +125,7 @@ export const ProductScalarFieldEnum = {
   price: 'price',
   discount: 'discount',
   description: 'description',
+  quantity: 'quantity',
   categoryId: 'categoryId',
   createdAt: 'createdAt'
 } as const
@@ -139,6 +141,47 @@ export const ProductImageScalarFieldEnum = {
 } as const
 
 export type ProductImageScalarFieldEnum = (typeof ProductImageScalarFieldEnum)[keyof typeof ProductImageScalarFieldEnum]
+
+
+export const CustomerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phone: 'phone',
+  countryCode: 'countryCode',
+  country: 'country',
+  city: 'city',
+  source: 'source',
+  ageGroup: 'ageGroup',
+  socialStatus: 'socialStatus',
+  skinType: 'skinType',
+  gender: 'gender',
+  skinProblems: 'skinProblems',
+  skinColor: 'skinColor',
+  hairColor: 'hairColor',
+  genderlaser: 'genderlaser',
+  laserPurpose: 'laserPurpose',
+  genderhair: 'genderhair',
+  bodyType: 'bodyType',
+  weight: 'weight',
+  height: 'height',
+  mainProblem: 'mainProblem',
+  genderfit: 'genderfit',
+  isDiabetic: 'isDiabetic',
+  isPregnant: 'isPregnant',
+  hasHypertension: 'hasHypertension',
+  isBreastfeeding: 'isBreastfeeding',
+  hormonalTherapy: 'hormonalTherapy',
+  followsDiet: 'followsDiet',
+  regularExercise: 'regularExercise',
+  interestedInAds: 'interestedInAds',
+  isTargetClient: 'isTargetClient',
+  inquiresForElse: 'inquiresForElse',
+  interests: 'interests',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
 
 
 export const SortOrder = {

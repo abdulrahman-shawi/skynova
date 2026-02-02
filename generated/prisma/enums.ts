@@ -16,3 +16,12 @@ export const AccountType = {
 } as const
 
 export type AccountType = (typeof AccountType)[keyof typeof AccountType]
+
+
+export const Interest = {
+  SKIN_PRODUCTS: 'SKIN_PRODUCTS',
+  LASER_DEVICES: 'LASER_DEVICES',
+  SLIMMING_PROG: 'SLIMMING_PROG'
+} as const
+
+export type Interest = (typeof Interest)[keyof typeof Interest]
