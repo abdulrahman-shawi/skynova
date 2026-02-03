@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -18,9 +18,9 @@ model User {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   permissionId String?
+  orders       Order[]
   permission   Permission? @relation(fields: [permissionId], references: [id])
-  customers    Customer[]
-  
+  customers    Customer[]  @relation("CustomerToUser")
 }
 
 model Permission {
@@ -56,6 +56,7 @@ model Product {
   quantity    String?
   categoryId  Int?
   createdAt   DateTime       @default(now())
+  orderItems  OrderItem[]
   category    Category?      @relation(fields: [categoryId], references: [id])
   images      ProductImage[]
 }
@@ -68,69 +69,94 @@ model ProductImage {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
+model Customer {
+  id              String     @id @default(uuid())
+  name            String     @unique
+  phone           String?
+  countryCode     String?
+  country         String?
+  city            String?
+  source          String?
+  ageGroup        String?
+  socialStatus    String?
+  skinType        String?
+  gender          String?
+  skinProblems    String[]
+  skinColor       String?
+  hairColor       String?
+  genderlaser     String?
+  laserPurpose    String?
+  bodyType        String?
+  weight          Float?
+  height          Float?
+  mainProblem     String?
+  isDiabetic      Boolean    @default(false)
+  isPregnant      Boolean    @default(false)
+  hasHypertension Boolean    @default(false)
+  isBreastfeeding Boolean    @default(false)
+  hormonalTherapy Boolean    @default(false)
+  followsDiet     Boolean    @default(false)
+  regularExercise Boolean    @default(false)
+  interestedInAds Boolean    @default(false)
+  isTargetClient  Boolean    @default(false)
+  inquiresForElse Boolean    @default(false)
+  interests       Interest[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  genderfit       String?
+  genderhair      String?
+  orders          Order[]
+  users           User[]     @relation("CustomerToUser")
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  orderNumber     String      @unique
+  totalAmount     Float
+  discount        Float       @default(0)
+  finalAmount     Float
+  paymentMethod   String
+  receiverName    String?
+  receiverPhone   String?
+  country         String?
+  city            String?
+  municipality    String?
+  fullAddress     String?
+  deliveryNotes   String?
+  googleMapsLink  String?
+  shippingCompany String?
+  trackingCode    String?
+  deliveryMethod  String?
+  additionalNotes String?
+  status          String      @default("PENDING")
+  customerId      String
+  userId          String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  customer        Customer    @relation(fields: [customerId], references: [id])
+  user            User?       @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int     @default(1)
+  price     Float
+  discount     Float
+  orderId   Int
+  productId Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
 enum AccountType {
   ADMIN
   MANAGER
   STAFF
 }
 
-model Customer {
-  id              String      @id @default(uuid())
-  name            String      @unique
-  phone           String? 
-  countryCode     String?
-  country         String?
-  city            String?
-  
-  // الحقول الجديدة بناءً على الصور المرفقة
-  source          String?     // مصدر العميل (مثل: فيسبوك، انستجرام)
-  ageGroup        String?     // الفئة العمرية
-  socialStatus    String?     // الحالة الاجتماعية (عزباء، متزوجة، إلخ)
-  
-  // حقول تبويب البشرة (Skin Tab Fields)
-  skinType        String?  // نوع البشرة (دهنية، جافة، إلخ)
-  gender          String?  // جنس العميل
-  
-  // المشاكل التي تعاني منها (مصفوفة نصوص)
-  skinProblems    String[] // لتخزين: حب شباب، مسامات، كلف، إلخ
-
-  // حقول تبويب أجهزة الليزر (Laser Tab Fields)
-  skinColor       String?  // لون البشرة (كما في الصورة)
-  hairColor       String?  // لون الشعر (كما في الصورة)
-  genderlaser     String?  // جنس العميل (موجود في كل الأقسام)
-  laserPurpose    String?  // الغرض (إزالة شعر، نضارة، إلخ)
-  genderhair      String?
-// --- حقول قسم: برامج التنحيف (Slimming Tab) ---
-  bodyType        String?   // نوع الجسم
-  weight          Float?    // الوزن
-  height          Float?    // الطول
-  mainProblem     String?   @db.Text // ماهي المشكلة التي يرغب في حلها
-  genderfit          String?
-  
-  // الحالات الصحية والخيارات (Boolean)
-  isDiabetic      Boolean     @default(false) // مريضة سكر
-  isPregnant      Boolean     @default(false) // حامل
-  hasHypertension Boolean     @default(false) // ضغط
-  isBreastfeeding Boolean     @default(false) // مرضعة
-  hormonalTherapy Boolean     @default(false) // تخضع لعلاج هرموني
-  followsDiet     Boolean     @default(false) // تتبع حمية غذائية
-  regularExercise Boolean     @default(false) // تمارس الرياضة بانتظام
-  interestedInAds Boolean     @default(false) // مهتم بالعروض أو الاشتراكات
-  isTargetClient  Boolean     @default(false) // العميل هو المهتم
-  inquiresForElse Boolean     @default(false) // يستفسر لشخص آخر
-
-  // الاهتمامات (باستخدام العلاقة التي أنشأتها سابقاً)
-  interests       Interest[]  
-  users  User[]
-
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-}
-
 enum Interest {
-  SKIN_PRODUCTS   // منتجات وأجهزة البشرة
-  LASER_DEVICES   // أجهزة الليزر
-  SLIMMING_PROG   // برامج التنحيف
+  SKIN_PRODUCTS
+  LASER_DEVICES
+  SLIMMING_PROG
 }
-
-

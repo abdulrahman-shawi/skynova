@@ -38,7 +38,7 @@ export function DataTable<T extends { id: string | number }>({
 }: DataTableProps<T>) {
   
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+    <div className="w-full overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
       <table className="w-full text-sm">
         <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
             <tr>

@@ -212,7 +212,7 @@ const ProductLayout = () => {
                                 )}
                                 {product.discount > 0 && (
                                     <span className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                                        خصم {product.discount}%
+                                        خصم {product.discount} $
                                     </span>
                                 )}
                             </div>
@@ -224,13 +224,13 @@ const ProductLayout = () => {
                                 </div>
 
                                 <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 h-10">
-                                    {product.description || "لا يوجد وصف متوفر لهذا المنتج."}
+                                    {product.description}
                                 </p>
 
                                 <div className="mt-auto flex items-center justify-between">
                                     <div>
                                         <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                                            {product.price} <span className="text-xs font-normal">ريال</span>
+                                            {product.price} <span className="text-xs font-normal">$</span>
                                         </p>
                                     </div>
                                     <Button

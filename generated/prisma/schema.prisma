@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String      @id @default(uuid())
+  username     String
+  email        String      @unique
+  phone        String?
+  jobTitle     String?
+  accountType  AccountType @default(STAFF)
+  password     String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  permissionId String?
+  orders       Order[]
+  permission   Permission? @relation(fields: [permissionId], references: [id])
+  customers    Customer[]  @relation("CustomerToUser")
+}
+
+model Permission {
+  id             String  @id @default(uuid())
+  roleName       String
+  viewProducts   Boolean @default(false)
+  addProducts    Boolean @default(false)
+  editProducts   Boolean @default(false)
+  deleteProducts Boolean @default(false)
+  viewReports    Boolean @default(false)
+  addReports     Boolean @default(false)
+  editReports    Boolean @default(false)
+  deleteReports  Boolean @default(false)
+  viewOrders     Boolean @default(false)
+  addOrders      Boolean @default(false)
+  editOrders     Boolean @default(false)
+  deleteOrders   Boolean @default(false)
+  users          User[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          Int            @id @default(autoincrement())
+  name        String
+  price       Float
+  discount    Float?         @default(0)
+  description String?
+  quantity    String?
+  categoryId  Int?
+  createdAt   DateTime       @default(now())
+  orderItems  OrderItem[]
+  category    Category?      @relation(fields: [categoryId], references: [id])
+  images      ProductImage[]
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  url       String
+  type      String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Customer {
+  id              String     @id @default(uuid())
+  name            String     @unique
+  phone           String?
+  countryCode     String?
+  country         String?
+  city            String?
+  source          String?
+  ageGroup        String?
+  socialStatus    String?
+  skinType        String?
+  gender          String?
+  skinProblems    String[]
+  skinColor       String?
+  hairColor       String?
+  genderlaser     String?
+  laserPurpose    String?
+  bodyType        String?
+  weight          Float?
+  height          Float?
+  mainProblem     String?
+  isDiabetic      Boolean    @default(false)
+  isPregnant      Boolean    @default(false)
+  hasHypertension Boolean    @default(false)
+  isBreastfeeding Boolean    @default(false)
+  hormonalTherapy Boolean    @default(false)
+  followsDiet     Boolean    @default(false)
+  regularExercise Boolean    @default(false)
+  interestedInAds Boolean    @default(false)
+  isTargetClient  Boolean    @default(false)
+  inquiresForElse Boolean    @default(false)
+  interests       Interest[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  genderfit       String?
+  genderhair      String?
+  orders          Order[]
+  users           User[]     @relation("CustomerToUser")
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  orderNumber     String      @unique
+  totalAmount     Float
+  discount        Float       @default(0)
+  finalAmount     Float
+  paymentMethod   String
+  receiverName    String?
+  receiverPhone   String?
+  country         String?
+  city            String?
+  municipality    String?
+  fullAddress     String?
+  deliveryNotes   String?
+  googleMapsLink  String?
+  shippingCompany String?
+  trackingCode    String?
+  deliveryMethod  String?
+  additionalNotes String?
+  status          String      @default("PENDING")
+  customerId      String
+  userId          String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  customer        Customer    @relation(fields: [customerId], references: [id])
+  user            User?       @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int     @default(1)
+  price     Float
+  discount  Float
+  orderId   Int
+  productId Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+enum AccountType {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+enum Interest {
+  SKIN_PRODUCTS
+  LASER_DEVICES
+  SLIMMING_PROG
+}

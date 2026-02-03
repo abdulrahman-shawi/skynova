@@ -49,14 +49,14 @@ export const AppModal = ({
             </Dialog.Overlay>
 
             {/* محتوى النافذة مع أنميشن */}
-            <Dialog.Content asChild forceMount>
+            <Dialog.Content asChild forceMount style={{ direction: 'rtl' }}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, x: "-50%", y: "-48%" }}
                 animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
                 exit={{ opacity: 0, scale: 0.95, x: "-50%", y: "-48%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 className={cn(
-                  "fixed left-[50%] top-[50%] z-50 grid w-full gap-4 border bg-white p-6 shadow-xl sm:rounded-xl dark:bg-slate-950 dark:border-slate-800 rtl:text-right outline-none",
+                  "fixed left-[50%] top-[50%] z-[70] grid w-full gap-4 border bg-white p-6 shadow-xl sm:rounded-xl dark:bg-slate-950 dark:border-slate-800 rtl:text-right outline-none",
                   sizeVariants[size]
                 )}
               >
