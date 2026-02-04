@@ -6,7 +6,11 @@ export async function getOrders() {
     const order = await prisma.order.findMany({
         orderBy:{id:"desc"},
         include:{
-            user:true,
+            user:{
+                include:{
+                    orders:true
+                }
+            },
             items:{
                 include:{
                     product:true
@@ -17,6 +21,21 @@ export async function getOrders() {
     })
 
     return {success:true , data:order}
+}
+
+export async function getOrdersByUser(userId: any) {
+    const orders = await prisma.order.findMany({
+        where: {
+            // هنا يكمن السر: تصفية النتائج حسب معرف المستخدم
+            customerId: userId 
+        },
+        orderBy: { createdAt: "desc" },
+        include: {
+            items: { include: { product: true } },
+            customer: true
+        }
+    })
+    return { success: true, data: orders }
 }
 
 export async function createOrder(data: any, items: any[], user: any) {
@@ -169,4 +188,63 @@ export async function updateOrder(data: any, id: any, items: any) {
         console.error("Critical Update Error:", error);
         return { success: false, error: "حدث خطأ في قاعدة البيانات، يرجى المحاولة مرة أخرى" };
     }
+}
+
+export async function deleteOrder(id: any) {
+    try {
+        // 1. جلب البيانات خارج الـ Transaction لتقليل وقت القفل
+        const oldOrder = await prisma.order.findUnique({
+            where: { id },
+            include: { items: true }
+        });
+
+        if (!oldOrder) return { success: false, error: "الطلب غير موجود" };
+
+        return await prisma.$transaction(async (tx) => {
+            // أ - إرجاع المخزون (التعامل مع الحقل النصي)
+            for (const item of oldOrder.items) {
+                const product = await tx.product.findUnique({ 
+                    where: { id: item.productId } 
+                });
+                
+                if (product) {
+                    const currentQty = parseInt(product.quantity || "0");
+                    const restoredQty = (currentQty + item.quantity).toString();
+                    
+                    await tx.product.update({
+                        where: { id: item.productId },
+                        data: { quantity: restoredQty }
+                    });
+                }
+            }
+
+            // ب - حذف الطلب
+            // ملاحظة: سيحذف العناصر المرتبطة تلقائياً إذا كان الـ Schema يدعم Cascade Delete
+            await tx.order.delete({
+                where: { id }
+            });
+
+            return { success: true };
+        }, {
+            maxWait: 5000,
+            timeout: 20000
+        });
+
+    } catch (error: any) {
+        console.error("Delete Order Error:", error);
+        return { 
+            success: false, 
+            error: error.message || "حدث خطأ أثناء محاولة حذف الطلب" 
+        };
+    }
+}
+
+export async function updateStaus(status:any , id:any){
+    const updatestutas = await prisma.order.update({
+        where:{id:id},
+        data:{
+            status:status
+        }
+    })
+    return {success :true , data:updatestutas}
 }

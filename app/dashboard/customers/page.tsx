@@ -25,7 +25,7 @@ const SOURCE_OPTIONS = [
   { label: "علاقة شخصية", value: "علاقة شخصية" },
   { label: "زيارة مباشرة", value: "زيارة مباشرة" },
   { label: "معرض", value: "معرض" },
-  { label: "اخرى", value: "اخرى" },
+  { label: "مختلطة", value: "مختلطة" },
 ];
 
 const countryOptions = [
@@ -152,7 +152,7 @@ const contry = [
   { label: "ليبيا", value: "ليبيا" },
   { label: "أوروبا", value: "أوروبا" },
   { label: "أميركا", value: "أميركا" },
-  { label: "أخرى", value: "أخرى" },
+  { label: "مختلطة", value: "مختلطة" },
 ];
 
 const gender = [
@@ -214,7 +214,7 @@ const SKIN_PROBLEMS = [
   { id: "علامات تمدد", label: "علامات تمدد" },
   { id: "تساقط شعر", label: "تساقط شعر" },
   { id: "خطوط دقيقة", label: "خطوط دقيقة" },
-  { id: "اخرى", label: "اخرى" },
+  { id: "مختلطة", label: "مختلطة" },
 ];
 
 /* ===================== Schema (التحقق المرن) ===================== */
