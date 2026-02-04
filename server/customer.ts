@@ -23,13 +23,15 @@ export async function createCustomerAction(data: any, activeTabs: string[], id: 
     const newCustomer = await prisma.customer.create({
       data: {
         name: data.name,
+        status:data.status,
+        phonestatus:data.statusphone,
         phone: data.phone,
         countryCode: data.countryCode,
         country: data.country,
         city: data.city,
         source: data.source,
         ageGroup: data.ageGroup,
-        socialStatus: data.socialStatus,
+        socialStatus: data.socialStatus,   
         users: {
           connect: { id: id }
         },

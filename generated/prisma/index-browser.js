@@ -183,6 +183,8 @@ exports.Prisma.CustomerScalarFieldEnum = {
   source: 'source',
   ageGroup: 'ageGroup',
   socialStatus: 'socialStatus',
+  status: 'status',
+  phonestatus: 'phonestatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
