@@ -321,11 +321,6 @@ const CustomrLayout: React.FC = () => {
       <div className="p-8 bg-slate-50 dark:bg-slate-950 min-h-screen dir-rtl" dir="rtl">
         <div className="max-w-5xl mx-auto">
 
-          <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-8 flex items-center gap-3">
-            <Users className="text-blue-600" />
-            متابعة أداء الفريق
-          </h2>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {customers.map((customer) => (
               <div
