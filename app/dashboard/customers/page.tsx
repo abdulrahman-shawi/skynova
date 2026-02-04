@@ -9,11 +9,13 @@ import { FormSelect } from "@/components/ui/select-form";
 import { FormTextArea } from "@/components/ui/textera-form";
 import { Button } from "@/components/ui/button";
 import { AppModal } from "@/components/ui/app-modal";
-import { createCustomerAction, deleteCustomer, getCustomer } from "@/server/customer";
+import { createCustomerAction, createmessage, deleteCustomer, getCustomer } from "@/server/customer";
 import { useAuth } from "@/context/AuthContext";
 import { DataTable } from "@/components/shared/DataTable";
 import toast from "react-hot-toast";
-import { Mail, Plus } from "lucide-react";
+import { CheckCircle, Mail, MapPin, Phone, PhoneCallIcon, PieChart, Plus, Send, Users, X } from "lucide-react";
+import useState from 'react';
+import { motion } from "framer-motion";
 
 /* ===================== Constants ===================== */
 const SOURCE_OPTIONS = [
@@ -179,7 +181,7 @@ const ageGroup = [
 
 /* ===================== Schema (التحقق المرن) ===================== */
 // نصيحة خبير: استخدم .or(z.literal("")) لضمان أن الحقول الفارغة لا تكسر شرط الـ min
- const customerSchema = z.object({
+const customerSchema = z.object({
   name: z.string().min(3, "الاسم يجب أن يكون 3 حروف على الأقل"),
   phone: z.string().optional().or(z.literal("")),
   countryCode: z.string().optional().or(z.literal("")),
@@ -198,9 +200,12 @@ type CustomerFormValues = z.infer<typeof customerSchema>;
 const CustomrLayout: React.FC = () => {
   const [activeTabs, setActiveTabs] = React.useState<Array<"skin" | "laser" | "slimming">>([]);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpencustomer, setIsOpencustomer] = React.useState(false);
+  const [isOpencustomerchat, setIsOpencustomerchat] = React.useState(false);
   const [customers, setCustomers] = React.useState<any[]>([])
   const [formdata, setFormdata] = React.useState<any>(null)
   const [editId, setEditId] = React.useState<string | null>(null);
+  const [customer, setCustomer] = React.useState<any>({})
 
   const toggleTab = (tab: "skin" | "laser" | "slimming") => {
     setActiveTabs((prev) =>
@@ -209,22 +214,28 @@ const CustomrLayout: React.FC = () => {
   };
 
   const getData = async () => {
-    const res = await getCustomer();
-    if (res.success) {
-      const allCustomers = res.data;
+  const res = await getCustomer();
+  if (res.success) {
+    const allCustomers = res.data;
+    
+    // 1. تحديث القائمة العامة (كما كنت تفعل)
+    if (user?.accountType === "ADMIN") {
+      setCustomers(allCustomers);
+    } else {
+      const filtered = allCustomers.filter((c) => c.users?.some((u) => u.id === user?.id));
+      setCustomers(filtered);
+    }
 
-      // منطق الفلترة بناءً على الرتبة
-      if (user?.accountType === "ADMIN") {
-        setCustomers(allCustomers);
-      } else {
-        // إذا كان موظف: نظهر فقط العملاء الذين يحتوي حقل users لديهم على id الموظف الحالي
-        const filtered = allCustomers.filter((customer: any) =>
-          customer.users?.some((u: any) => u.id === user?.id)
-        );
-        setCustomers(filtered);
+    // 2. السطر السحري: تحديث العميل المختار حالياً ببياناته الجديدة
+    // نبحث عن العميل الحالي داخل البيانات الجديدة التي وصلت من السيرفر
+    if (customer?.id) {
+      const updatedCustomer = allCustomers.find(c => c.id === customer.id);
+      if (updatedCustomer) {
+        setCustomer(updatedCustomer); // هذا سيجعل الرسائل تظهر فوراً
       }
     }
-  };
+  }
+};
   const { user } = useAuth()
   React.useEffect(() => { getData() }, [user])
   const [isPending, setIsPending] = React.useState(false);
@@ -250,6 +261,17 @@ const CustomrLayout: React.FC = () => {
       setIsPending(false);
     }
   };
+
+  const getSingleCustomer = async (data: any) => {
+    setCustomer(data)
+    console.log(data)
+    setIsOpencustomer(true)
+  }
+
+  const getchatCustomer = async (data: any) => {
+    setCustomer(data)
+    setIsOpencustomerchat(true)
+  }
 
   const tableActions: any[] = [
     {
@@ -296,19 +318,75 @@ const CustomrLayout: React.FC = () => {
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">نظام إدارة العملاء</h1>
         <Button onClick={() => setIsOpen(true)}>إضافة عميل جديد +</Button>
       </div>
-      <DataTable data={customers} actions={tableActions} columns={
-        [
-          { header: "الاسم", accessor: "name" },
-          { header: "الرقم", accessor: (e: any) => `${e.phone} ${e.countryCode} ` },
-          { header: "الدولة", accessor: "country" },
-          { header: "المدينة", accessor: "city" },
-          {
-            header: "المستخدم المسؤول عنه",
-            // تأكد من وجود users أولاً ثم حول الـ IDs إلى نص مفصول بفاصلة
-            accessor: (e: any) => e.users?.map((c: any) => c.username).join(", ") || "غير محدد"
-          },
-        ]
-      } />
+      <div className="p-8 bg-slate-50 dark:bg-slate-950 min-h-screen dir-rtl" dir="rtl">
+        <div className="max-w-5xl mx-auto">
+
+          <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-8 flex items-center gap-3">
+            <Users className="text-blue-600" />
+            متابعة أداء الفريق
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {customers.map((customer) => (
+              <div
+                onClick={() => getSingleCustomer(customer)}
+                key={customer.id}
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  {/* معلومات الاسم والأداء */}
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-slate-900 dark:text-white">
+                      {customer.name}
+                    </h3>
+                    <p className="text-rose-500 font-bold text-sm bg-rose-50 dark:bg-rose-900/20 px-3 py-1 rounded-full inline-block">
+                      {customer.status}
+                    </p>
+                  </div>
+
+                  {/* الصورة الرمزية (Avatar) */}
+                  <div className="relative">
+
+                    <div className="w-16 h-16 rounded-full bg-amber-400 flex items-center justify-center text-xl font-black text-slate-800 border-2 border-white shadow-sm">
+                      {customer.users.map((e: any) => (
+                        <div className="">{e.username[0]}</div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+
+                {/* الإحصائيات السفلية */}
+                <div className="flex justify-between items-center text-sm font-bold text-slate-500 dark:text-slate-400 pt-4 border-t border-slate-50 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle size={16} className="text-emerald-500" />
+                    المستخدمين المرتبطين بالعميل {customer.users.length}
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // هذا السطر يمنع وصول النقرة للـ div الأب
+                      getchatCustomer(customer)
+                    }}
+                  >
+                    <PhoneCallIcon />
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {/* بطاقة توضيحية جانبية (مثل الرسوم البيانية في الصورة) */}
+            <div className="bg-blue-600 rounded-[2rem] p-6 text-white flex flex-col justify-center items-center text-center shadow-xl shadow-blue-200 dark:shadow-none">
+              <PieChart size={48} className="mb-4 opacity-80" />
+              <h4 className="font-black text-xl mb-2">التقرير العام</h4>
+              <p className="text-blue-100 text-sm">شاهد ملخص أداء جميع الموظفين لهذا الشهر</p>
+              <button className="mt-6 bg-white text-blue-600 px-6 py-2 rounded-xl font-black text-sm hover:bg-blue-50 transition-colors">
+                عرض التفاصيل
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
       <AppModal size="lg" isOpen={isOpen} onClose={() => setIsOpen(false)} title="إضافة ملف عميل شامل">
         <DynamicForm schema={customerSchema} onSubmit={onSubmit} defaultValues={formdata}>
@@ -334,8 +412,151 @@ const CustomrLayout: React.FC = () => {
           )}
         </DynamicForm>
       </AppModal>
+      <AppModal size="lg" isOpen={isOpencustomer} onClose={() => setIsOpencustomer(false)} title="بيانات العميل">
+        <GetCustomerSingle data={customer} />
+      </AppModal>
+      {isOpencustomerchat && (
+        <NessageCustomer data={customer} getdatas={getData} setisopen={() => setIsOpencustomerchat(false)} />
+      )}
     </div>
   );
 };
+
+
+function GetCustomerSingle({ data }: { data: any }) {
+  return (
+    <div className="text-slate-800 dark:text-slate-50">
+      <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-200 dark:shadow-none">
+            {data.name?.charAt(0) || "U"}
+          </div>
+          <div>
+            <h3 className="text-xl font-bold dark:text-white">{data.name}</h3>
+            <p className="text-xs text-slate-500 flex items-center gap-1">حالة الزبون :{data.status}</p>
+            <p className="text-xs text-slate-500 flex items-center gap-1">حالة ال :{data.phonestatus}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-6 space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-center gap-3">
+            <Phone size={18} className="text-blue-500" />
+            <div>
+              <p className="text-[10px] text-slate-500 font-bold uppercase">الهاتف</p>
+              <p className="text-sm font-bold dark:text-white">{data.phone}</p>
+            </div>
+          </div>
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-center gap-3">
+            <MapPin size={18} className="text-red-500" />
+            <div>
+              <p className="text-[10px] text-slate-500 font-bold uppercase">العنوان</p>
+              <p className="text-sm font-bold dark:text-white truncate">{data.address || "غير محدد"}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h4 className="font-bold flex items-center gap-2 dark:text-white"> سجل الفواتير</h4>
+            <span className="text-[10px] bg-blue-100 text-blue-600 px-2 py-1 rounded-lg font-bold">
+              {data.orders?.length || 0} عملية
+            </span>
+          </div>
+
+          <div className="max-h-[250px] overflow-y-auto rounded-2xl border border-slate-100 dark:border-slate-800">
+            <table className="w-full text-right text-sm">
+              <thead className="bg-slate-50 dark:bg-slate-800 sticky top-0">
+                <tr>
+                  <th className="px-4 py-3 text-slate-500 font-bold">التاريخ</th>
+                  <th className="px-4 py-3 text-slate-500 font-bold">الحالة</th>
+                  <th className="px-4 py-3 text-slate-500 font-bold">المبلغ</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                {data.orders && data.orders.length > 0 ? (
+                  data.orders.map((inv: any) => (
+                    <tr key={inv.id} className="dark:text-slate-300">
+                      <td className="px-4 py-3">{new Date(inv.createdAt).toLocaleDateString("ar-EG")}</td>
+                      <td className="px-4 py-3">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold">{inv.status}</span>
+                      </td>
+                      <td className="px-4 py-3 font-bold">{inv.finalAmount} $</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="px-4 py-10 text-center text-slate-400 italic">لا توجد فواتير</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function NessageCustomer({ data, getdatas , setisopen }: { data: any, getdatas: any , setisopen:any }) {
+  const scrollRef = React.useRef<any>(null);
+  const [msg, setMsg] = React.useState("")
+  const { user } = useAuth()
+
+
+  const submit = async () => {
+  if (!msg.trim()) return;
+
+  const res = await createmessage(msg, data.id, user?.id);
+  
+  if(res.success){
+    setMsg(""); // مسح الحقل فوراً
+    await getdatas(); // انتظار جلب البيانات الجديدة وتحديث الـ State في الأب
+    toast.success("تم الإرسال");
+  }
+};
+  return (
+    <>
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]" onClick={() => { }} />
+      <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} className="fixed left-0 top-0 bottom-0 w-full md:w-[400px] bg-white dark:bg-slate-900 z-[200] shadow-2xl flex flex-col">
+        <div className="p-6 border-b dark:border-slate-800 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold">{data.name[0]}</div>
+            <h3 className="font-black dark:text-white">{data.name}</h3>
+          </div>
+          <button onClick={setisopen} className="p-2 hover:bg-slate-100 rounded-lg"><X size={20} /></button>
+        </div>
+
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30">
+          {data.message.length === 0 && <p className="text-center text-slate-400 text-xs py-10 italic">لا توجد محادثات سابقة مع هذا العميل</p>}
+          {data.message.map((chat: any) => (
+            <div key={chat.id} className={`flex justify-start`}>
+              <div className={`max-w-[85%] p-3 rounded-2xl text-sm  bg-blue-600 text-white rounded-tr-none}`}>
+                {chat.message}
+                {/* <p className="text-[8px] mt-1 opacity-50">{chat.time}</p> */}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-4 border-t dark:border-slate-800">
+          <div className="flex gap-2">
+            <input
+              value={msg}
+              onChange={(e) => setMsg(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submit();
+              }}
+              placeholder="اكتب رسالة..."
+              className="flex-1 bg-slate-100 dark:bg-slate-800 p-3 rounded-xl outline-none text-sm"
+            />
+            <button onClick={submit} className="p-3 bg-blue-600 text-white rounded-xl active:scale-90 transition-all"><Send size={20} /></button>
+          </div>
+        </div>
+      </motion.div>
+    </>
+  )
+}
 
 export default CustomrLayout;

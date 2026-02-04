@@ -10,12 +10,26 @@ export async function getCustomer() {
       id:"desc"
     },
     include:{
-      users:true
+      users:true,
+      orders:true,
+      message:true
     }
+    
   })
 revalidatePath("/customers");
   return {success:true , data:res }
   
+}
+
+export async function createmessage(msg:any , customer:any , user:any) {
+  const res = await prisma.message.create({
+    data:{
+      message:msg,
+      customerId:customer,
+      userId:user
+    }
+  })
+  return {success:true , data:res}
 }
 
 export async function createCustomerAction(data: any, activeTabs: string[], id: any) {
