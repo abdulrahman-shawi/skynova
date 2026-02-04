@@ -189,7 +189,7 @@ const ageGroup = [
   ageGroup: z.string().optional().or(z.literal("")),
   socialStatus: z.string().optional().or(z.literal("")),
   status: z.string().optional().or(z.literal("")),
-  statusphone: z.string().optional().or(z.literal("")),
+  phonestatus: z.string().optional().or(z.literal("")),
 });
 
 type CustomerFormValues = z.infer<typeof customerSchema>;
@@ -324,7 +324,7 @@ const CustomrLayout: React.FC = () => {
                 <FormInput label="المدينة" {...register("city")} error={errors.city?.message?.toString()} />
                 <FormSelect label="مصدر العميل" options={SOURCE_OPTIONS} placeholder="اختر المصدر" {...register("source")} error={errors.source?.message?.toString()} />
                 <FormSelect label="حال العميل" options={STATUS_OPTIONS} placeholder="اختر الحالة" {...register("status")} error={errors.status?.message?.toString()} />
-                <FormSelect label="جواب العميل" options={STATUS_PHONE_OPTIONS} placeholder="اختر الجواب" {...register("statusphone")} error={errors.statusphone?.message?.toString()} />
+                <FormSelect label="جواب العميل" options={STATUS_PHONE_OPTIONS} placeholder="اختر الجواب" {...register("phonestatus")} error={errors.phonestatus?.message?.toString()} />
               </div>
 
               <FormSelect label="الفئة العمرية" options={ageGroup} {...register("ageGroup")} />
