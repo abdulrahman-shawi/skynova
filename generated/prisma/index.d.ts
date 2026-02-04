@@ -44,6 +44,11 @@ export type ProductImage = $Result.DefaultSelection<Prisma.$ProductImagePayload>
  */
 export type Customer = $Result.DefaultSelection<Prisma.$CustomerPayload>
 /**
+ * Model Message
+ * 
+ */
+export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
+/**
  * Model Order
  * 
  */
@@ -66,24 +71,11 @@ export namespace $Enums {
 
 export type AccountType = (typeof AccountType)[keyof typeof AccountType]
 
-
-export const Interest: {
-  SKIN_PRODUCTS: 'SKIN_PRODUCTS',
-  LASER_DEVICES: 'LASER_DEVICES',
-  SLIMMING_PROG: 'SLIMMING_PROG'
-};
-
-export type Interest = (typeof Interest)[keyof typeof Interest]
-
 }
 
 export type AccountType = $Enums.AccountType
 
 export const AccountType: typeof $Enums.AccountType
-
-export type Interest = $Enums.Interest
-
-export const Interest: typeof $Enums.Interest
 
 /**
  * ##  Prisma Client ʲˢ
@@ -261,6 +253,16 @@ export class PrismaClient<
     * ```
     */
   get customer(): Prisma.CustomerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.message`: Exposes CRUD operations for the **Message** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Messages
+    * const messages = await prisma.message.findMany()
+    * ```
+    */
+  get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.order`: Exposes CRUD operations for the **Order** model.
@@ -721,6 +723,7 @@ export namespace Prisma {
     Product: 'Product',
     ProductImage: 'ProductImage',
     Customer: 'Customer',
+    Message: 'Message',
     Order: 'Order',
     OrderItem: 'OrderItem'
   };
@@ -738,7 +741,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "permission" | "category" | "product" | "productImage" | "customer" | "order" | "orderItem"
+      modelProps: "user" | "permission" | "category" | "product" | "productImage" | "customer" | "message" | "order" | "orderItem"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1186,6 +1189,80 @@ export namespace Prisma {
           }
         }
       }
+      Message: {
+        payload: Prisma.$MessagePayload<ExtArgs>
+        fields: Prisma.MessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          findFirst: {
+            args: Prisma.MessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          findMany: {
+            args: Prisma.MessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          create: {
+            args: Prisma.MessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          createMany: {
+            args: Prisma.MessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          delete: {
+            args: Prisma.MessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          update: {
+            args: Prisma.MessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          aggregate: {
+            args: Prisma.MessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessage>
+          }
+          groupBy: {
+            args: Prisma.MessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageCountAggregateOutputType> | number
+          }
+        }
+      }
       Order: {
         payload: Prisma.$OrderPayload<ExtArgs>
         fields: Prisma.OrderFieldRefs
@@ -1448,6 +1525,7 @@ export namespace Prisma {
     product?: ProductOmit
     productImage?: ProductImageOmit
     customer?: CustomerOmit
+    message?: MessageOmit
     order?: OrderOmit
     orderItem?: OrderItemOmit
   }
@@ -1532,11 +1610,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     orders: number
     customers: number
+    message: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | UserCountOutputTypeCountOrdersArgs
     customers?: boolean | UserCountOutputTypeCountCustomersArgs
+    message?: boolean | UserCountOutputTypeCountMessageArgs
   }
 
   // Custom InputTypes
@@ -1562,6 +1642,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CustomerWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
   }
 
 
@@ -1674,11 +1761,13 @@ export namespace Prisma {
   export type CustomerCountOutputType = {
     orders: number
     users: number
+    message: number
   }
 
   export type CustomerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | CustomerCountOutputTypeCountOrdersArgs
     users?: boolean | CustomerCountOutputTypeCountUsersArgs
+    message?: boolean | CustomerCountOutputTypeCountMessageArgs
   }
 
   // Custom InputTypes
@@ -1704,6 +1793,13 @@ export namespace Prisma {
    */
   export type CustomerCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * CustomerCountOutputType without action
+   */
+  export type CustomerCountOutputTypeCountMessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
   }
 
 
@@ -1949,6 +2045,7 @@ export namespace Prisma {
     orders?: boolean | User$ordersArgs<ExtArgs>
     permission?: boolean | User$permissionArgs<ExtArgs>
     customers?: boolean | User$customersArgs<ExtArgs>
+    message?: boolean | User$messageArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1998,6 +2095,7 @@ export namespace Prisma {
     orders?: boolean | User$ordersArgs<ExtArgs>
     permission?: boolean | User$permissionArgs<ExtArgs>
     customers?: boolean | User$customersArgs<ExtArgs>
+    message?: boolean | User$messageArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2013,6 +2111,7 @@ export namespace Prisma {
       orders: Prisma.$OrderPayload<ExtArgs>[]
       permission: Prisma.$PermissionPayload<ExtArgs> | null
       customers: Prisma.$CustomerPayload<ExtArgs>[]
+      message: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2422,6 +2521,7 @@ export namespace Prisma {
     orders<T extends User$ordersArgs<ExtArgs> = {}>(args?: Subset<T, User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     permission<T extends User$permissionArgs<ExtArgs> = {}>(args?: Subset<T, User$permissionArgs<ExtArgs>>): Prisma__PermissionClient<$Result.GetResult<Prisma.$PermissionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     customers<T extends User$customersArgs<ExtArgs> = {}>(args?: Subset<T, User$customersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    message<T extends User$messageArgs<ExtArgs> = {}>(args?: Subset<T, User$messageArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2921,6 +3021,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CustomerScalarFieldEnum | CustomerScalarFieldEnum[]
+  }
+
+  /**
+   * User.message
+   */
+  export type User$messageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
   }
 
   /**
@@ -7503,20 +7627,8 @@ export namespace Prisma {
 
   export type AggregateCustomer = {
     _count: CustomerCountAggregateOutputType | null
-    _avg: CustomerAvgAggregateOutputType | null
-    _sum: CustomerSumAggregateOutputType | null
     _min: CustomerMinAggregateOutputType | null
     _max: CustomerMaxAggregateOutputType | null
-  }
-
-  export type CustomerAvgAggregateOutputType = {
-    weight: number | null
-    height: number | null
-  }
-
-  export type CustomerSumAggregateOutputType = {
-    weight: number | null
-    height: number | null
   }
 
   export type CustomerMinAggregateOutputType = {
@@ -7529,30 +7641,8 @@ export namespace Prisma {
     source: string | null
     ageGroup: string | null
     socialStatus: string | null
-    skinType: string | null
-    gender: string | null
-    skinColor: string | null
-    hairColor: string | null
-    genderlaser: string | null
-    laserPurpose: string | null
-    bodyType: string | null
-    weight: number | null
-    height: number | null
-    mainProblem: string | null
-    isDiabetic: boolean | null
-    isPregnant: boolean | null
-    hasHypertension: boolean | null
-    isBreastfeeding: boolean | null
-    hormonalTherapy: boolean | null
-    followsDiet: boolean | null
-    regularExercise: boolean | null
-    interestedInAds: boolean | null
-    isTargetClient: boolean | null
-    inquiresForElse: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
-    genderfit: string | null
-    genderhair: string | null
   }
 
   export type CustomerMaxAggregateOutputType = {
@@ -7565,30 +7655,8 @@ export namespace Prisma {
     source: string | null
     ageGroup: string | null
     socialStatus: string | null
-    skinType: string | null
-    gender: string | null
-    skinColor: string | null
-    hairColor: string | null
-    genderlaser: string | null
-    laserPurpose: string | null
-    bodyType: string | null
-    weight: number | null
-    height: number | null
-    mainProblem: string | null
-    isDiabetic: boolean | null
-    isPregnant: boolean | null
-    hasHypertension: boolean | null
-    isBreastfeeding: boolean | null
-    hormonalTherapy: boolean | null
-    followsDiet: boolean | null
-    regularExercise: boolean | null
-    interestedInAds: boolean | null
-    isTargetClient: boolean | null
-    inquiresForElse: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
-    genderfit: string | null
-    genderhair: string | null
   }
 
   export type CustomerCountAggregateOutputType = {
@@ -7601,45 +7669,11 @@ export namespace Prisma {
     source: number
     ageGroup: number
     socialStatus: number
-    skinType: number
-    gender: number
-    skinProblems: number
-    skinColor: number
-    hairColor: number
-    genderlaser: number
-    laserPurpose: number
-    bodyType: number
-    weight: number
-    height: number
-    mainProblem: number
-    isDiabetic: number
-    isPregnant: number
-    hasHypertension: number
-    isBreastfeeding: number
-    hormonalTherapy: number
-    followsDiet: number
-    regularExercise: number
-    interestedInAds: number
-    isTargetClient: number
-    inquiresForElse: number
-    interests: number
     createdAt: number
     updatedAt: number
-    genderfit: number
-    genderhair: number
     _all: number
   }
 
-
-  export type CustomerAvgAggregateInputType = {
-    weight?: true
-    height?: true
-  }
-
-  export type CustomerSumAggregateInputType = {
-    weight?: true
-    height?: true
-  }
 
   export type CustomerMinAggregateInputType = {
     id?: true
@@ -7651,30 +7685,8 @@ export namespace Prisma {
     source?: true
     ageGroup?: true
     socialStatus?: true
-    skinType?: true
-    gender?: true
-    skinColor?: true
-    hairColor?: true
-    genderlaser?: true
-    laserPurpose?: true
-    bodyType?: true
-    weight?: true
-    height?: true
-    mainProblem?: true
-    isDiabetic?: true
-    isPregnant?: true
-    hasHypertension?: true
-    isBreastfeeding?: true
-    hormonalTherapy?: true
-    followsDiet?: true
-    regularExercise?: true
-    interestedInAds?: true
-    isTargetClient?: true
-    inquiresForElse?: true
     createdAt?: true
     updatedAt?: true
-    genderfit?: true
-    genderhair?: true
   }
 
   export type CustomerMaxAggregateInputType = {
@@ -7687,30 +7699,8 @@ export namespace Prisma {
     source?: true
     ageGroup?: true
     socialStatus?: true
-    skinType?: true
-    gender?: true
-    skinColor?: true
-    hairColor?: true
-    genderlaser?: true
-    laserPurpose?: true
-    bodyType?: true
-    weight?: true
-    height?: true
-    mainProblem?: true
-    isDiabetic?: true
-    isPregnant?: true
-    hasHypertension?: true
-    isBreastfeeding?: true
-    hormonalTherapy?: true
-    followsDiet?: true
-    regularExercise?: true
-    interestedInAds?: true
-    isTargetClient?: true
-    inquiresForElse?: true
     createdAt?: true
     updatedAt?: true
-    genderfit?: true
-    genderhair?: true
   }
 
   export type CustomerCountAggregateInputType = {
@@ -7723,32 +7713,8 @@ export namespace Prisma {
     source?: true
     ageGroup?: true
     socialStatus?: true
-    skinType?: true
-    gender?: true
-    skinProblems?: true
-    skinColor?: true
-    hairColor?: true
-    genderlaser?: true
-    laserPurpose?: true
-    bodyType?: true
-    weight?: true
-    height?: true
-    mainProblem?: true
-    isDiabetic?: true
-    isPregnant?: true
-    hasHypertension?: true
-    isBreastfeeding?: true
-    hormonalTherapy?: true
-    followsDiet?: true
-    regularExercise?: true
-    interestedInAds?: true
-    isTargetClient?: true
-    inquiresForElse?: true
-    interests?: true
     createdAt?: true
     updatedAt?: true
-    genderfit?: true
-    genderhair?: true
     _all?: true
   }
 
@@ -7790,18 +7756,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: CustomerAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: CustomerSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: CustomerMinAggregateInputType
@@ -7832,8 +7786,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CustomerCountAggregateInputType | true
-    _avg?: CustomerAvgAggregateInputType
-    _sum?: CustomerSumAggregateInputType
     _min?: CustomerMinAggregateInputType
     _max?: CustomerMaxAggregateInputType
   }
@@ -7848,35 +7800,9 @@ export namespace Prisma {
     source: string | null
     ageGroup: string | null
     socialStatus: string | null
-    skinType: string | null
-    gender: string | null
-    skinProblems: string[]
-    skinColor: string | null
-    hairColor: string | null
-    genderlaser: string | null
-    laserPurpose: string | null
-    bodyType: string | null
-    weight: number | null
-    height: number | null
-    mainProblem: string | null
-    isDiabetic: boolean
-    isPregnant: boolean
-    hasHypertension: boolean
-    isBreastfeeding: boolean
-    hormonalTherapy: boolean
-    followsDiet: boolean
-    regularExercise: boolean
-    interestedInAds: boolean
-    isTargetClient: boolean
-    inquiresForElse: boolean
-    interests: $Enums.Interest[]
     createdAt: Date
     updatedAt: Date
-    genderfit: string | null
-    genderhair: string | null
     _count: CustomerCountAggregateOutputType | null
-    _avg: CustomerAvgAggregateOutputType | null
-    _sum: CustomerSumAggregateOutputType | null
     _min: CustomerMinAggregateOutputType | null
     _max: CustomerMaxAggregateOutputType | null
   }
@@ -7905,34 +7831,11 @@ export namespace Prisma {
     source?: boolean
     ageGroup?: boolean
     socialStatus?: boolean
-    skinType?: boolean
-    gender?: boolean
-    skinProblems?: boolean
-    skinColor?: boolean
-    hairColor?: boolean
-    genderlaser?: boolean
-    laserPurpose?: boolean
-    bodyType?: boolean
-    weight?: boolean
-    height?: boolean
-    mainProblem?: boolean
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    genderfit?: boolean
-    genderhair?: boolean
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     users?: boolean | Customer$usersArgs<ExtArgs>
+    message?: boolean | Customer$messageArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
@@ -7946,32 +7849,8 @@ export namespace Prisma {
     source?: boolean
     ageGroup?: boolean
     socialStatus?: boolean
-    skinType?: boolean
-    gender?: boolean
-    skinProblems?: boolean
-    skinColor?: boolean
-    hairColor?: boolean
-    genderlaser?: boolean
-    laserPurpose?: boolean
-    bodyType?: boolean
-    weight?: boolean
-    height?: boolean
-    mainProblem?: boolean
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    genderfit?: boolean
-    genderhair?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -7984,32 +7863,8 @@ export namespace Prisma {
     source?: boolean
     ageGroup?: boolean
     socialStatus?: boolean
-    skinType?: boolean
-    gender?: boolean
-    skinProblems?: boolean
-    skinColor?: boolean
-    hairColor?: boolean
-    genderlaser?: boolean
-    laserPurpose?: boolean
-    bodyType?: boolean
-    weight?: boolean
-    height?: boolean
-    mainProblem?: boolean
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    genderfit?: boolean
-    genderhair?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectScalar = {
@@ -8022,38 +7877,15 @@ export namespace Prisma {
     source?: boolean
     ageGroup?: boolean
     socialStatus?: boolean
-    skinType?: boolean
-    gender?: boolean
-    skinProblems?: boolean
-    skinColor?: boolean
-    hairColor?: boolean
-    genderlaser?: boolean
-    laserPurpose?: boolean
-    bodyType?: boolean
-    weight?: boolean
-    height?: boolean
-    mainProblem?: boolean
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    genderfit?: boolean
-    genderhair?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phone" | "countryCode" | "country" | "city" | "source" | "ageGroup" | "socialStatus" | "skinType" | "gender" | "skinProblems" | "skinColor" | "hairColor" | "genderlaser" | "laserPurpose" | "bodyType" | "weight" | "height" | "mainProblem" | "isDiabetic" | "isPregnant" | "hasHypertension" | "isBreastfeeding" | "hormonalTherapy" | "followsDiet" | "regularExercise" | "interestedInAds" | "isTargetClient" | "inquiresForElse" | "interests" | "createdAt" | "updatedAt" | "genderfit" | "genderhair", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phone" | "countryCode" | "country" | "city" | "source" | "ageGroup" | "socialStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     users?: boolean | Customer$usersArgs<ExtArgs>
+    message?: boolean | Customer$messageArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8064,6 +7896,7 @@ export namespace Prisma {
     objects: {
       orders: Prisma.$OrderPayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
+      message: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8075,32 +7908,8 @@ export namespace Prisma {
       source: string | null
       ageGroup: string | null
       socialStatus: string | null
-      skinType: string | null
-      gender: string | null
-      skinProblems: string[]
-      skinColor: string | null
-      hairColor: string | null
-      genderlaser: string | null
-      laserPurpose: string | null
-      bodyType: string | null
-      weight: number | null
-      height: number | null
-      mainProblem: string | null
-      isDiabetic: boolean
-      isPregnant: boolean
-      hasHypertension: boolean
-      isBreastfeeding: boolean
-      hormonalTherapy: boolean
-      followsDiet: boolean
-      regularExercise: boolean
-      interestedInAds: boolean
-      isTargetClient: boolean
-      inquiresForElse: boolean
-      interests: $Enums.Interest[]
       createdAt: Date
       updatedAt: Date
-      genderfit: string | null
-      genderhair: string | null
     }, ExtArgs["result"]["customer"]>
     composites: {}
   }
@@ -8497,6 +8306,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     orders<T extends Customer$ordersArgs<ExtArgs> = {}>(args?: Subset<T, Customer$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Customer$usersArgs<ExtArgs> = {}>(args?: Subset<T, Customer$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    message<T extends Customer$messageArgs<ExtArgs> = {}>(args?: Subset<T, Customer$messageArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8535,32 +8345,8 @@ export namespace Prisma {
     readonly source: FieldRef<"Customer", 'String'>
     readonly ageGroup: FieldRef<"Customer", 'String'>
     readonly socialStatus: FieldRef<"Customer", 'String'>
-    readonly skinType: FieldRef<"Customer", 'String'>
-    readonly gender: FieldRef<"Customer", 'String'>
-    readonly skinProblems: FieldRef<"Customer", 'String[]'>
-    readonly skinColor: FieldRef<"Customer", 'String'>
-    readonly hairColor: FieldRef<"Customer", 'String'>
-    readonly genderlaser: FieldRef<"Customer", 'String'>
-    readonly laserPurpose: FieldRef<"Customer", 'String'>
-    readonly bodyType: FieldRef<"Customer", 'String'>
-    readonly weight: FieldRef<"Customer", 'Float'>
-    readonly height: FieldRef<"Customer", 'Float'>
-    readonly mainProblem: FieldRef<"Customer", 'String'>
-    readonly isDiabetic: FieldRef<"Customer", 'Boolean'>
-    readonly isPregnant: FieldRef<"Customer", 'Boolean'>
-    readonly hasHypertension: FieldRef<"Customer", 'Boolean'>
-    readonly isBreastfeeding: FieldRef<"Customer", 'Boolean'>
-    readonly hormonalTherapy: FieldRef<"Customer", 'Boolean'>
-    readonly followsDiet: FieldRef<"Customer", 'Boolean'>
-    readonly regularExercise: FieldRef<"Customer", 'Boolean'>
-    readonly interestedInAds: FieldRef<"Customer", 'Boolean'>
-    readonly isTargetClient: FieldRef<"Customer", 'Boolean'>
-    readonly inquiresForElse: FieldRef<"Customer", 'Boolean'>
-    readonly interests: FieldRef<"Customer", 'Interest[]'>
     readonly createdAt: FieldRef<"Customer", 'DateTime'>
     readonly updatedAt: FieldRef<"Customer", 'DateTime'>
-    readonly genderfit: FieldRef<"Customer", 'String'>
-    readonly genderhair: FieldRef<"Customer", 'String'>
   }
     
 
@@ -8997,6 +8783,30 @@ export namespace Prisma {
   }
 
   /**
+   * Customer.message
+   */
+  export type Customer$messageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
    * Customer without action
    */
   export type CustomerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9012,6 +8822,1059 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CustomerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Message
+   */
+
+  export type AggregateMessage = {
+    _count: MessageCountAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  export type MessageMinAggregateOutputType = {
+    id: string | null
+    message: string | null
+    customerId: string | null
+    userId: string | null
+  }
+
+  export type MessageMaxAggregateOutputType = {
+    id: string | null
+    message: string | null
+    customerId: string | null
+    userId: string | null
+  }
+
+  export type MessageCountAggregateOutputType = {
+    id: number
+    message: number
+    customerId: number
+    userId: number
+    _all: number
+  }
+
+
+  export type MessageMinAggregateInputType = {
+    id?: true
+    message?: true
+    customerId?: true
+    userId?: true
+  }
+
+  export type MessageMaxAggregateInputType = {
+    id?: true
+    message?: true
+    customerId?: true
+    userId?: true
+  }
+
+  export type MessageCountAggregateInputType = {
+    id?: true
+    message?: true
+    customerId?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type MessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Message to aggregate.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Messages
+    **/
+    _count?: true | MessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type GetMessageAggregateType<T extends MessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessage[P]>
+      : GetScalarType<T[P], AggregateMessage[P]>
+  }
+
+
+
+
+  export type MessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithAggregationInput | MessageOrderByWithAggregationInput[]
+    by: MessageScalarFieldEnum[] | MessageScalarFieldEnum
+    having?: MessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageCountAggregateInputType | true
+    _min?: MessageMinAggregateInputType
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type MessageGroupByOutputType = {
+    id: string
+    message: string | null
+    customerId: string
+    userId: string
+    _count: MessageCountAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  type GetMessageGroupByPayload<T extends MessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    message?: boolean
+    customerId?: boolean
+    userId?: boolean
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    message?: boolean
+    customerId?: boolean
+    userId?: boolean
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    message?: boolean
+    customerId?: boolean
+    userId?: boolean
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectScalar = {
+    id?: boolean
+    message?: boolean
+    customerId?: boolean
+    userId?: boolean
+  }
+
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "message" | "customerId" | "userId", ExtArgs["result"]["message"]>
+  export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type MessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $MessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Message"
+    objects: {
+      customer: Prisma.$CustomerPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      message: string | null
+      customerId: string
+      userId: string
+    }, ExtArgs["result"]["message"]>
+    composites: {}
+  }
+
+  type MessageGetPayload<S extends boolean | null | undefined | MessageDefaultArgs> = $Result.GetResult<Prisma.$MessagePayload, S>
+
+  type MessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageCountAggregateInputType | true
+    }
+
+  export interface MessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Message'], meta: { name: 'Message' } }
+    /**
+     * Find zero or one Message that matches the filter.
+     * @param {MessageFindUniqueArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageFindUniqueArgs>(args: SelectSubset<T, MessageFindUniqueArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Message that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageFindUniqueOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Message that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageFindFirstArgs>(args?: SelectSubset<T, MessageFindFirstArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Message that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Messages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Messages
+     * const messages = await prisma.message.findMany()
+     * 
+     * // Get first 10 Messages
+     * const messages = await prisma.message.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageWithIdOnly = await prisma.message.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageFindManyArgs>(args?: SelectSubset<T, MessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Message.
+     * @param {MessageCreateArgs} args - Arguments to create a Message.
+     * @example
+     * // Create one Message
+     * const Message = await prisma.message.create({
+     *   data: {
+     *     // ... data to create a Message
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageCreateArgs>(args: SelectSubset<T, MessageCreateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Messages.
+     * @param {MessageCreateManyArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const message = await prisma.message.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageCreateManyArgs>(args?: SelectSubset<T, MessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Messages and returns the data saved in the database.
+     * @param {MessageCreateManyAndReturnArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const message = await prisma.message.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Messages and only return the `id`
+     * const messageWithIdOnly = await prisma.message.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Message.
+     * @param {MessageDeleteArgs} args - Arguments to delete one Message.
+     * @example
+     * // Delete one Message
+     * const Message = await prisma.message.delete({
+     *   where: {
+     *     // ... filter to delete one Message
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageDeleteArgs>(args: SelectSubset<T, MessageDeleteArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Message.
+     * @param {MessageUpdateArgs} args - Arguments to update one Message.
+     * @example
+     * // Update one Message
+     * const message = await prisma.message.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageUpdateArgs>(args: SelectSubset<T, MessageUpdateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Messages.
+     * @param {MessageDeleteManyArgs} args - Arguments to filter Messages to delete.
+     * @example
+     * // Delete a few Messages
+     * const { count } = await prisma.message.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageDeleteManyArgs>(args?: SelectSubset<T, MessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageUpdateManyArgs>(args: SelectSubset<T, MessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages and returns the data updated in the database.
+     * @param {MessageUpdateManyAndReturnArgs} args - Arguments to update many Messages.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Messages and only return the `id`
+     * const messageWithIdOnly = await prisma.message.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Message.
+     * @param {MessageUpsertArgs} args - Arguments to update or create a Message.
+     * @example
+     * // Update or create a Message
+     * const message = await prisma.message.upsert({
+     *   create: {
+     *     // ... data to create a Message
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Message we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageUpsertArgs>(args: SelectSubset<T, MessageUpsertArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCountArgs} args - Arguments to filter Messages to count.
+     * @example
+     * // Count the number of Messages
+     * const count = await prisma.message.count({
+     *   where: {
+     *     // ... the filter for the Messages we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageCountArgs>(
+      args?: Subset<T, MessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageAggregateArgs>(args: Subset<T, MessageAggregateArgs>): Prisma.PrismaPromise<GetMessageAggregateType<T>>
+
+    /**
+     * Group by Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageGroupByArgs['orderBy'] }
+        : { orderBy?: MessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Message model
+   */
+  readonly fields: MessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Message.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Message model
+   */
+  interface MessageFieldRefs {
+    readonly id: FieldRef<"Message", 'String'>
+    readonly message: FieldRef<"Message", 'String'>
+    readonly customerId: FieldRef<"Message", 'String'>
+    readonly userId: FieldRef<"Message", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Message findUnique
+   */
+  export type MessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message findUniqueOrThrow
+   */
+  export type MessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message findFirst
+   */
+  export type MessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message findFirstOrThrow
+   */
+  export type MessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message findMany
+   */
+  export type MessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message create
+   */
+  export type MessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Message.
+     */
+    data: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+  }
+
+  /**
+   * Message createMany
+   */
+  export type MessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessageCreateManyInput | MessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Message createManyAndReturn
+   */
+  export type MessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessageCreateManyInput | MessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Message update
+   */
+  export type MessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Message.
+     */
+    data: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+    /**
+     * Choose, which Message to update.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message updateMany
+   */
+  export type MessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Message updateManyAndReturn
+   */
+  export type MessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Message upsert
+   */
+  export type MessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Message to update in case it exists.
+     */
+    where: MessageWhereUniqueInput
+    /**
+     * In case the Message found by the `where` argument doesn't exist, create a new Message with this data.
+     */
+    create: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+    /**
+     * In case the Message was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+  }
+
+  /**
+   * Message delete
+   */
+  export type MessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter which Message to delete.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message deleteMany
+   */
+  export type MessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Messages to delete
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Message without action
+   */
+  export type MessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
   }
 
 
@@ -11635,35 +12498,21 @@ export namespace Prisma {
     source: 'source',
     ageGroup: 'ageGroup',
     socialStatus: 'socialStatus',
-    skinType: 'skinType',
-    gender: 'gender',
-    skinProblems: 'skinProblems',
-    skinColor: 'skinColor',
-    hairColor: 'hairColor',
-    genderlaser: 'genderlaser',
-    laserPurpose: 'laserPurpose',
-    bodyType: 'bodyType',
-    weight: 'weight',
-    height: 'height',
-    mainProblem: 'mainProblem',
-    isDiabetic: 'isDiabetic',
-    isPregnant: 'isPregnant',
-    hasHypertension: 'hasHypertension',
-    isBreastfeeding: 'isBreastfeeding',
-    hormonalTherapy: 'hormonalTherapy',
-    followsDiet: 'followsDiet',
-    regularExercise: 'regularExercise',
-    interestedInAds: 'interestedInAds',
-    isTargetClient: 'isTargetClient',
-    inquiresForElse: 'inquiresForElse',
-    interests: 'interests',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    genderfit: 'genderfit',
-    genderhair: 'genderhair'
+    updatedAt: 'updatedAt'
   };
 
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
+  export const MessageScalarFieldEnum: {
+    id: 'id',
+    message: 'message',
+    customerId: 'customerId',
+    userId: 'userId'
+  };
+
+  export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
   export const OrderScalarFieldEnum: {
@@ -11811,20 +12660,6 @@ export namespace Prisma {
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
-
-
-  /**
-   * Reference to a field of type 'Interest[]'
-   */
-  export type ListEnumInterestFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Interest[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Interest'
-   */
-  export type EnumInterestFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Interest'>
-    
   /**
    * Deep Input Types
    */
@@ -11847,6 +12682,7 @@ export namespace Prisma {
     orders?: OrderListRelationFilter
     permission?: XOR<PermissionNullableScalarRelationFilter, PermissionWhereInput> | null
     customers?: CustomerListRelationFilter
+    message?: MessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -11863,6 +12699,7 @@ export namespace Prisma {
     orders?: OrderOrderByRelationAggregateInput
     permission?: PermissionOrderByWithRelationInput
     customers?: CustomerOrderByRelationAggregateInput
+    message?: MessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -11882,6 +12719,7 @@ export namespace Prisma {
     orders?: OrderListRelationFilter
     permission?: XOR<PermissionNullableScalarRelationFilter, PermissionWhereInput> | null
     customers?: CustomerListRelationFilter
+    message?: MessageListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -12201,34 +13039,11 @@ export namespace Prisma {
     source?: StringNullableFilter<"Customer"> | string | null
     ageGroup?: StringNullableFilter<"Customer"> | string | null
     socialStatus?: StringNullableFilter<"Customer"> | string | null
-    skinType?: StringNullableFilter<"Customer"> | string | null
-    gender?: StringNullableFilter<"Customer"> | string | null
-    skinProblems?: StringNullableListFilter<"Customer">
-    skinColor?: StringNullableFilter<"Customer"> | string | null
-    hairColor?: StringNullableFilter<"Customer"> | string | null
-    genderlaser?: StringNullableFilter<"Customer"> | string | null
-    laserPurpose?: StringNullableFilter<"Customer"> | string | null
-    bodyType?: StringNullableFilter<"Customer"> | string | null
-    weight?: FloatNullableFilter<"Customer"> | number | null
-    height?: FloatNullableFilter<"Customer"> | number | null
-    mainProblem?: StringNullableFilter<"Customer"> | string | null
-    isDiabetic?: BoolFilter<"Customer"> | boolean
-    isPregnant?: BoolFilter<"Customer"> | boolean
-    hasHypertension?: BoolFilter<"Customer"> | boolean
-    isBreastfeeding?: BoolFilter<"Customer"> | boolean
-    hormonalTherapy?: BoolFilter<"Customer"> | boolean
-    followsDiet?: BoolFilter<"Customer"> | boolean
-    regularExercise?: BoolFilter<"Customer"> | boolean
-    interestedInAds?: BoolFilter<"Customer"> | boolean
-    isTargetClient?: BoolFilter<"Customer"> | boolean
-    inquiresForElse?: BoolFilter<"Customer"> | boolean
-    interests?: EnumInterestNullableListFilter<"Customer">
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
-    genderfit?: StringNullableFilter<"Customer"> | string | null
-    genderhair?: StringNullableFilter<"Customer"> | string | null
     orders?: OrderListRelationFilter
     users?: UserListRelationFilter
+    message?: MessageListRelationFilter
   }
 
   export type CustomerOrderByWithRelationInput = {
@@ -12241,34 +13056,11 @@ export namespace Prisma {
     source?: SortOrderInput | SortOrder
     ageGroup?: SortOrderInput | SortOrder
     socialStatus?: SortOrderInput | SortOrder
-    skinType?: SortOrderInput | SortOrder
-    gender?: SortOrderInput | SortOrder
-    skinProblems?: SortOrder
-    skinColor?: SortOrderInput | SortOrder
-    hairColor?: SortOrderInput | SortOrder
-    genderlaser?: SortOrderInput | SortOrder
-    laserPurpose?: SortOrderInput | SortOrder
-    bodyType?: SortOrderInput | SortOrder
-    weight?: SortOrderInput | SortOrder
-    height?: SortOrderInput | SortOrder
-    mainProblem?: SortOrderInput | SortOrder
-    isDiabetic?: SortOrder
-    isPregnant?: SortOrder
-    hasHypertension?: SortOrder
-    isBreastfeeding?: SortOrder
-    hormonalTherapy?: SortOrder
-    followsDiet?: SortOrder
-    regularExercise?: SortOrder
-    interestedInAds?: SortOrder
-    isTargetClient?: SortOrder
-    inquiresForElse?: SortOrder
-    interests?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    genderfit?: SortOrderInput | SortOrder
-    genderhair?: SortOrderInput | SortOrder
     orders?: OrderOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
+    message?: MessageOrderByRelationAggregateInput
   }
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
@@ -12284,34 +13076,11 @@ export namespace Prisma {
     source?: StringNullableFilter<"Customer"> | string | null
     ageGroup?: StringNullableFilter<"Customer"> | string | null
     socialStatus?: StringNullableFilter<"Customer"> | string | null
-    skinType?: StringNullableFilter<"Customer"> | string | null
-    gender?: StringNullableFilter<"Customer"> | string | null
-    skinProblems?: StringNullableListFilter<"Customer">
-    skinColor?: StringNullableFilter<"Customer"> | string | null
-    hairColor?: StringNullableFilter<"Customer"> | string | null
-    genderlaser?: StringNullableFilter<"Customer"> | string | null
-    laserPurpose?: StringNullableFilter<"Customer"> | string | null
-    bodyType?: StringNullableFilter<"Customer"> | string | null
-    weight?: FloatNullableFilter<"Customer"> | number | null
-    height?: FloatNullableFilter<"Customer"> | number | null
-    mainProblem?: StringNullableFilter<"Customer"> | string | null
-    isDiabetic?: BoolFilter<"Customer"> | boolean
-    isPregnant?: BoolFilter<"Customer"> | boolean
-    hasHypertension?: BoolFilter<"Customer"> | boolean
-    isBreastfeeding?: BoolFilter<"Customer"> | boolean
-    hormonalTherapy?: BoolFilter<"Customer"> | boolean
-    followsDiet?: BoolFilter<"Customer"> | boolean
-    regularExercise?: BoolFilter<"Customer"> | boolean
-    interestedInAds?: BoolFilter<"Customer"> | boolean
-    isTargetClient?: BoolFilter<"Customer"> | boolean
-    inquiresForElse?: BoolFilter<"Customer"> | boolean
-    interests?: EnumInterestNullableListFilter<"Customer">
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
-    genderfit?: StringNullableFilter<"Customer"> | string | null
-    genderhair?: StringNullableFilter<"Customer"> | string | null
     orders?: OrderListRelationFilter
     users?: UserListRelationFilter
+    message?: MessageListRelationFilter
   }, "id" | "name">
 
   export type CustomerOrderByWithAggregationInput = {
@@ -12324,37 +13093,11 @@ export namespace Prisma {
     source?: SortOrderInput | SortOrder
     ageGroup?: SortOrderInput | SortOrder
     socialStatus?: SortOrderInput | SortOrder
-    skinType?: SortOrderInput | SortOrder
-    gender?: SortOrderInput | SortOrder
-    skinProblems?: SortOrder
-    skinColor?: SortOrderInput | SortOrder
-    hairColor?: SortOrderInput | SortOrder
-    genderlaser?: SortOrderInput | SortOrder
-    laserPurpose?: SortOrderInput | SortOrder
-    bodyType?: SortOrderInput | SortOrder
-    weight?: SortOrderInput | SortOrder
-    height?: SortOrderInput | SortOrder
-    mainProblem?: SortOrderInput | SortOrder
-    isDiabetic?: SortOrder
-    isPregnant?: SortOrder
-    hasHypertension?: SortOrder
-    isBreastfeeding?: SortOrder
-    hormonalTherapy?: SortOrder
-    followsDiet?: SortOrder
-    regularExercise?: SortOrder
-    interestedInAds?: SortOrder
-    isTargetClient?: SortOrder
-    inquiresForElse?: SortOrder
-    interests?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    genderfit?: SortOrderInput | SortOrder
-    genderhair?: SortOrderInput | SortOrder
     _count?: CustomerCountOrderByAggregateInput
-    _avg?: CustomerAvgOrderByAggregateInput
     _max?: CustomerMaxOrderByAggregateInput
     _min?: CustomerMinOrderByAggregateInput
-    _sum?: CustomerSumOrderByAggregateInput
   }
 
   export type CustomerScalarWhereWithAggregatesInput = {
@@ -12370,32 +13113,61 @@ export namespace Prisma {
     source?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     ageGroup?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     socialStatus?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    skinType?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    gender?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    skinProblems?: StringNullableListFilter<"Customer">
-    skinColor?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    hairColor?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    genderlaser?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    laserPurpose?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    bodyType?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    weight?: FloatNullableWithAggregatesFilter<"Customer"> | number | null
-    height?: FloatNullableWithAggregatesFilter<"Customer"> | number | null
-    mainProblem?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    isDiabetic?: BoolWithAggregatesFilter<"Customer"> | boolean
-    isPregnant?: BoolWithAggregatesFilter<"Customer"> | boolean
-    hasHypertension?: BoolWithAggregatesFilter<"Customer"> | boolean
-    isBreastfeeding?: BoolWithAggregatesFilter<"Customer"> | boolean
-    hormonalTherapy?: BoolWithAggregatesFilter<"Customer"> | boolean
-    followsDiet?: BoolWithAggregatesFilter<"Customer"> | boolean
-    regularExercise?: BoolWithAggregatesFilter<"Customer"> | boolean
-    interestedInAds?: BoolWithAggregatesFilter<"Customer"> | boolean
-    isTargetClient?: BoolWithAggregatesFilter<"Customer"> | boolean
-    inquiresForElse?: BoolWithAggregatesFilter<"Customer"> | boolean
-    interests?: EnumInterestNullableListFilter<"Customer">
     createdAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
-    genderfit?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    genderhair?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+  }
+
+  export type MessageWhereInput = {
+    AND?: MessageWhereInput | MessageWhereInput[]
+    OR?: MessageWhereInput[]
+    NOT?: MessageWhereInput | MessageWhereInput[]
+    id?: StringFilter<"Message"> | string
+    message?: StringNullableFilter<"Message"> | string | null
+    customerId?: StringFilter<"Message"> | string
+    userId?: StringFilter<"Message"> | string
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type MessageOrderByWithRelationInput = {
+    id?: SortOrder
+    message?: SortOrderInput | SortOrder
+    customerId?: SortOrder
+    userId?: SortOrder
+    customer?: CustomerOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type MessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MessageWhereInput | MessageWhereInput[]
+    OR?: MessageWhereInput[]
+    NOT?: MessageWhereInput | MessageWhereInput[]
+    message?: StringNullableFilter<"Message"> | string | null
+    customerId?: StringFilter<"Message"> | string
+    userId?: StringFilter<"Message"> | string
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type MessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    message?: SortOrderInput | SortOrder
+    customerId?: SortOrder
+    userId?: SortOrder
+    _count?: MessageCountOrderByAggregateInput
+    _max?: MessageMaxOrderByAggregateInput
+    _min?: MessageMinOrderByAggregateInput
+  }
+
+  export type MessageScalarWhereWithAggregatesInput = {
+    AND?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
+    OR?: MessageScalarWhereWithAggregatesInput[]
+    NOT?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Message"> | string
+    message?: StringNullableWithAggregatesFilter<"Message"> | string | null
+    customerId?: StringWithAggregatesFilter<"Message"> | string
+    userId?: StringWithAggregatesFilter<"Message"> | string
   }
 
   export type OrderWhereInput = {
@@ -12629,6 +13401,7 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutUserInput
     permission?: PermissionCreateNestedOneWithoutUsersInput
     customers?: CustomerCreateNestedManyWithoutUsersInput
+    message?: MessageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -12644,6 +13417,7 @@ export namespace Prisma {
     permissionId?: string | null
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUsersInput
+    message?: MessageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -12659,6 +13433,7 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutUserNestedInput
     permission?: PermissionUpdateOneWithoutUsersNestedInput
     customers?: CustomerUpdateManyWithoutUsersNestedInput
+    message?: MessageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -12674,6 +13449,7 @@ export namespace Prisma {
     permissionId?: NullableStringFieldUpdateOperationsInput | string | null
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUsersNestedInput
+    message?: MessageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -13009,34 +13785,11 @@ export namespace Prisma {
     source?: string | null
     ageGroup?: string | null
     socialStatus?: string | null
-    skinType?: string | null
-    gender?: string | null
-    skinProblems?: CustomerCreateskinProblemsInput | string[]
-    skinColor?: string | null
-    hairColor?: string | null
-    genderlaser?: string | null
-    laserPurpose?: string | null
-    bodyType?: string | null
-    weight?: number | null
-    height?: number | null
-    mainProblem?: string | null
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: CustomerCreateinterestsInput | $Enums.Interest[]
     createdAt?: Date | string
     updatedAt?: Date | string
-    genderfit?: string | null
-    genderhair?: string | null
     orders?: OrderCreateNestedManyWithoutCustomerInput
     users?: UserCreateNestedManyWithoutCustomersInput
+    message?: MessageCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateInput = {
@@ -13049,34 +13802,11 @@ export namespace Prisma {
     source?: string | null
     ageGroup?: string | null
     socialStatus?: string | null
-    skinType?: string | null
-    gender?: string | null
-    skinProblems?: CustomerCreateskinProblemsInput | string[]
-    skinColor?: string | null
-    hairColor?: string | null
-    genderlaser?: string | null
-    laserPurpose?: string | null
-    bodyType?: string | null
-    weight?: number | null
-    height?: number | null
-    mainProblem?: string | null
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: CustomerCreateinterestsInput | $Enums.Interest[]
     createdAt?: Date | string
     updatedAt?: Date | string
-    genderfit?: string | null
-    genderhair?: string | null
     orders?: OrderUncheckedCreateNestedManyWithoutCustomerInput
     users?: UserUncheckedCreateNestedManyWithoutCustomersInput
+    message?: MessageUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUpdateInput = {
@@ -13089,34 +13819,11 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
     orders?: OrderUpdateManyWithoutCustomerNestedInput
     users?: UserUpdateManyWithoutCustomersNestedInput
+    message?: MessageUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateInput = {
@@ -13129,34 +13836,11 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
     orders?: OrderUncheckedUpdateManyWithoutCustomerNestedInput
     users?: UserUncheckedUpdateManyWithoutCustomersNestedInput
+    message?: MessageUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerCreateManyInput = {
@@ -13169,32 +13853,8 @@ export namespace Prisma {
     source?: string | null
     ageGroup?: string | null
     socialStatus?: string | null
-    skinType?: string | null
-    gender?: string | null
-    skinProblems?: CustomerCreateskinProblemsInput | string[]
-    skinColor?: string | null
-    hairColor?: string | null
-    genderlaser?: string | null
-    laserPurpose?: string | null
-    bodyType?: string | null
-    weight?: number | null
-    height?: number | null
-    mainProblem?: string | null
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: CustomerCreateinterestsInput | $Enums.Interest[]
     createdAt?: Date | string
     updatedAt?: Date | string
-    genderfit?: string | null
-    genderhair?: string | null
   }
 
   export type CustomerUpdateManyMutationInput = {
@@ -13207,32 +13867,8 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CustomerUncheckedUpdateManyInput = {
@@ -13245,32 +13881,55 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MessageCreateInput = {
+    id?: string
+    message?: string | null
+    customer: CustomerCreateNestedOneWithoutMessageInput
+    user: UserCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageUncheckedCreateInput = {
+    id?: string
+    message?: string | null
+    customerId: string
+    userId: string
+  }
+
+  export type MessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    customer?: CustomerUpdateOneRequiredWithoutMessageNestedInput
+    user?: UserUpdateOneRequiredWithoutMessageNestedInput
+  }
+
+  export type MessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MessageCreateManyInput = {
+    id?: string
+    message?: string | null
+    customerId: string
+    userId: string
+  }
+
+  export type MessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type OrderCreateInput = {
@@ -13577,6 +14236,12 @@ export namespace Prisma {
     none?: CustomerWhereInput
   }
 
+  export type MessageListRelationFilter = {
+    every?: MessageWhereInput
+    some?: MessageWhereInput
+    none?: MessageWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -13587,6 +14252,10 @@ export namespace Prisma {
   }
 
   export type CustomerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14012,22 +14681,6 @@ export namespace Prisma {
     productId?: SortOrder
   }
 
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
-  export type EnumInterestNullableListFilter<$PrismaModel = never> = {
-    equals?: $Enums.Interest[] | ListEnumInterestFieldRefInput<$PrismaModel> | null
-    has?: $Enums.Interest | EnumInterestFieldRefInput<$PrismaModel> | null
-    hasEvery?: $Enums.Interest[] | ListEnumInterestFieldRefInput<$PrismaModel>
-    hasSome?: $Enums.Interest[] | ListEnumInterestFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
   export type CustomerCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -14038,37 +14691,8 @@ export namespace Prisma {
     source?: SortOrder
     ageGroup?: SortOrder
     socialStatus?: SortOrder
-    skinType?: SortOrder
-    gender?: SortOrder
-    skinProblems?: SortOrder
-    skinColor?: SortOrder
-    hairColor?: SortOrder
-    genderlaser?: SortOrder
-    laserPurpose?: SortOrder
-    bodyType?: SortOrder
-    weight?: SortOrder
-    height?: SortOrder
-    mainProblem?: SortOrder
-    isDiabetic?: SortOrder
-    isPregnant?: SortOrder
-    hasHypertension?: SortOrder
-    isBreastfeeding?: SortOrder
-    hormonalTherapy?: SortOrder
-    followsDiet?: SortOrder
-    regularExercise?: SortOrder
-    interestedInAds?: SortOrder
-    isTargetClient?: SortOrder
-    inquiresForElse?: SortOrder
-    interests?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    genderfit?: SortOrder
-    genderhair?: SortOrder
-  }
-
-  export type CustomerAvgOrderByAggregateInput = {
-    weight?: SortOrder
-    height?: SortOrder
   }
 
   export type CustomerMaxOrderByAggregateInput = {
@@ -14081,30 +14705,8 @@ export namespace Prisma {
     source?: SortOrder
     ageGroup?: SortOrder
     socialStatus?: SortOrder
-    skinType?: SortOrder
-    gender?: SortOrder
-    skinColor?: SortOrder
-    hairColor?: SortOrder
-    genderlaser?: SortOrder
-    laserPurpose?: SortOrder
-    bodyType?: SortOrder
-    weight?: SortOrder
-    height?: SortOrder
-    mainProblem?: SortOrder
-    isDiabetic?: SortOrder
-    isPregnant?: SortOrder
-    hasHypertension?: SortOrder
-    isBreastfeeding?: SortOrder
-    hormonalTherapy?: SortOrder
-    followsDiet?: SortOrder
-    regularExercise?: SortOrder
-    interestedInAds?: SortOrder
-    isTargetClient?: SortOrder
-    inquiresForElse?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    genderfit?: SortOrder
-    genderhair?: SortOrder
   }
 
   export type CustomerMinOrderByAggregateInput = {
@@ -14117,40 +14719,39 @@ export namespace Prisma {
     source?: SortOrder
     ageGroup?: SortOrder
     socialStatus?: SortOrder
-    skinType?: SortOrder
-    gender?: SortOrder
-    skinColor?: SortOrder
-    hairColor?: SortOrder
-    genderlaser?: SortOrder
-    laserPurpose?: SortOrder
-    bodyType?: SortOrder
-    weight?: SortOrder
-    height?: SortOrder
-    mainProblem?: SortOrder
-    isDiabetic?: SortOrder
-    isPregnant?: SortOrder
-    hasHypertension?: SortOrder
-    isBreastfeeding?: SortOrder
-    hormonalTherapy?: SortOrder
-    followsDiet?: SortOrder
-    regularExercise?: SortOrder
-    interestedInAds?: SortOrder
-    isTargetClient?: SortOrder
-    inquiresForElse?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    genderfit?: SortOrder
-    genderhair?: SortOrder
-  }
-
-  export type CustomerSumOrderByAggregateInput = {
-    weight?: SortOrder
-    height?: SortOrder
   }
 
   export type CustomerScalarRelationFilter = {
     is?: CustomerWhereInput
     isNot?: CustomerWhereInput
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type MessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    message?: SortOrder
+    customerId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type MessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    message?: SortOrder
+    customerId?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type MessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    message?: SortOrder
+    customerId?: SortOrder
+    userId?: SortOrder
   }
 
   export type UserNullableScalarRelationFilter = {
@@ -14319,6 +14920,13 @@ export namespace Prisma {
     connect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
   }
 
+  export type MessageCreateNestedManyWithoutUserInput = {
+    create?: XOR<MessageCreateWithoutUserInput, MessageUncheckedCreateWithoutUserInput> | MessageCreateWithoutUserInput[] | MessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutUserInput | MessageCreateOrConnectWithoutUserInput[]
+    createMany?: MessageCreateManyUserInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
   export type OrderUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OrderCreateWithoutUserInput, OrderUncheckedCreateWithoutUserInput> | OrderCreateWithoutUserInput[] | OrderUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutUserInput | OrderCreateOrConnectWithoutUserInput[]
@@ -14330,6 +14938,13 @@ export namespace Prisma {
     create?: XOR<CustomerCreateWithoutUsersInput, CustomerUncheckedCreateWithoutUsersInput> | CustomerCreateWithoutUsersInput[] | CustomerUncheckedCreateWithoutUsersInput[]
     connectOrCreate?: CustomerCreateOrConnectWithoutUsersInput | CustomerCreateOrConnectWithoutUsersInput[]
     connect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<MessageCreateWithoutUserInput, MessageUncheckedCreateWithoutUserInput> | MessageCreateWithoutUserInput[] | MessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutUserInput | MessageCreateOrConnectWithoutUserInput[]
+    createMany?: MessageCreateManyUserInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -14385,6 +15000,20 @@ export namespace Prisma {
     deleteMany?: CustomerScalarWhereInput | CustomerScalarWhereInput[]
   }
 
+  export type MessageUpdateManyWithoutUserNestedInput = {
+    create?: XOR<MessageCreateWithoutUserInput, MessageUncheckedCreateWithoutUserInput> | MessageCreateWithoutUserInput[] | MessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutUserInput | MessageCreateOrConnectWithoutUserInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutUserInput | MessageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: MessageCreateManyUserInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutUserInput | MessageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutUserInput | MessageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type OrderUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OrderCreateWithoutUserInput, OrderUncheckedCreateWithoutUserInput> | OrderCreateWithoutUserInput[] | OrderUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutUserInput | OrderCreateOrConnectWithoutUserInput[]
@@ -14410,6 +15039,20 @@ export namespace Prisma {
     update?: CustomerUpdateWithWhereUniqueWithoutUsersInput | CustomerUpdateWithWhereUniqueWithoutUsersInput[]
     updateMany?: CustomerUpdateManyWithWhereWithoutUsersInput | CustomerUpdateManyWithWhereWithoutUsersInput[]
     deleteMany?: CustomerScalarWhereInput | CustomerScalarWhereInput[]
+  }
+
+  export type MessageUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<MessageCreateWithoutUserInput, MessageUncheckedCreateWithoutUserInput> | MessageCreateWithoutUserInput[] | MessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutUserInput | MessageCreateOrConnectWithoutUserInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutUserInput | MessageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: MessageCreateManyUserInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutUserInput | MessageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutUserInput | MessageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
   export type UserCreateNestedManyWithoutPermissionInput = {
@@ -14646,14 +15289,6 @@ export namespace Prisma {
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutImagesInput, ProductUpdateWithoutImagesInput>, ProductUncheckedUpdateWithoutImagesInput>
   }
 
-  export type CustomerCreateskinProblemsInput = {
-    set: string[]
-  }
-
-  export type CustomerCreateinterestsInput = {
-    set: $Enums.Interest[]
-  }
-
   export type OrderCreateNestedManyWithoutCustomerInput = {
     create?: XOR<OrderCreateWithoutCustomerInput, OrderUncheckedCreateWithoutCustomerInput> | OrderCreateWithoutCustomerInput[] | OrderUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutCustomerInput | OrderCreateOrConnectWithoutCustomerInput[]
@@ -14665,6 +15300,13 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutCustomersInput, UserUncheckedCreateWithoutCustomersInput> | UserCreateWithoutCustomersInput[] | UserUncheckedCreateWithoutCustomersInput[]
     connectOrCreate?: UserCreateOrConnectWithoutCustomersInput | UserCreateOrConnectWithoutCustomersInput[]
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type MessageCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<MessageCreateWithoutCustomerInput, MessageUncheckedCreateWithoutCustomerInput> | MessageCreateWithoutCustomerInput[] | MessageUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutCustomerInput | MessageCreateOrConnectWithoutCustomerInput[]
+    createMany?: MessageCreateManyCustomerInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type OrderUncheckedCreateNestedManyWithoutCustomerInput = {
@@ -14680,14 +15322,11 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
-  export type CustomerUpdateskinProblemsInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
-  export type CustomerUpdateinterestsInput = {
-    set?: $Enums.Interest[]
-    push?: $Enums.Interest | $Enums.Interest[]
+  export type MessageUncheckedCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<MessageCreateWithoutCustomerInput, MessageUncheckedCreateWithoutCustomerInput> | MessageCreateWithoutCustomerInput[] | MessageUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutCustomerInput | MessageCreateOrConnectWithoutCustomerInput[]
+    createMany?: MessageCreateManyCustomerInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type OrderUpdateManyWithoutCustomerNestedInput = {
@@ -14717,6 +15356,20 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type MessageUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<MessageCreateWithoutCustomerInput, MessageUncheckedCreateWithoutCustomerInput> | MessageCreateWithoutCustomerInput[] | MessageUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutCustomerInput | MessageCreateOrConnectWithoutCustomerInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutCustomerInput | MessageUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: MessageCreateManyCustomerInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutCustomerInput | MessageUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutCustomerInput | MessageUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type OrderUncheckedUpdateManyWithoutCustomerNestedInput = {
     create?: XOR<OrderCreateWithoutCustomerInput, OrderUncheckedCreateWithoutCustomerInput> | OrderCreateWithoutCustomerInput[] | OrderUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutCustomerInput | OrderCreateOrConnectWithoutCustomerInput[]
@@ -14742,6 +15395,48 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutCustomersInput | UserUpdateWithWhereUniqueWithoutCustomersInput[]
     updateMany?: UserUpdateManyWithWhereWithoutCustomersInput | UserUpdateManyWithWhereWithoutCustomersInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type MessageUncheckedUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<MessageCreateWithoutCustomerInput, MessageUncheckedCreateWithoutCustomerInput> | MessageCreateWithoutCustomerInput[] | MessageUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutCustomerInput | MessageCreateOrConnectWithoutCustomerInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutCustomerInput | MessageUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: MessageCreateManyCustomerInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutCustomerInput | MessageUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutCustomerInput | MessageUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type CustomerCreateNestedOneWithoutMessageInput = {
+    create?: XOR<CustomerCreateWithoutMessageInput, CustomerUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutMessageInput
+    connect?: CustomerWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutMessageInput = {
+    create?: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessageInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CustomerUpdateOneRequiredWithoutMessageNestedInput = {
+    create?: XOR<CustomerCreateWithoutMessageInput, CustomerUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutMessageInput
+    upsert?: CustomerUpsertWithoutMessageInput
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutMessageInput, CustomerUpdateWithoutMessageInput>, CustomerUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutMessageNestedInput = {
+    create?: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessageInput
+    upsert?: UserUpsertWithoutMessageInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessageInput, UserUpdateWithoutMessageInput>, UserUncheckedUpdateWithoutMessageInput>
   }
 
   export type CustomerCreateNestedOneWithoutOrdersInput = {
@@ -15179,33 +15874,10 @@ export namespace Prisma {
     source?: string | null
     ageGroup?: string | null
     socialStatus?: string | null
-    skinType?: string | null
-    gender?: string | null
-    skinProblems?: CustomerCreateskinProblemsInput | string[]
-    skinColor?: string | null
-    hairColor?: string | null
-    genderlaser?: string | null
-    laserPurpose?: string | null
-    bodyType?: string | null
-    weight?: number | null
-    height?: number | null
-    mainProblem?: string | null
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: CustomerCreateinterestsInput | $Enums.Interest[]
     createdAt?: Date | string
     updatedAt?: Date | string
-    genderfit?: string | null
-    genderhair?: string | null
     orders?: OrderCreateNestedManyWithoutCustomerInput
+    message?: MessageCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutUsersInput = {
@@ -15218,38 +15890,37 @@ export namespace Prisma {
     source?: string | null
     ageGroup?: string | null
     socialStatus?: string | null
-    skinType?: string | null
-    gender?: string | null
-    skinProblems?: CustomerCreateskinProblemsInput | string[]
-    skinColor?: string | null
-    hairColor?: string | null
-    genderlaser?: string | null
-    laserPurpose?: string | null
-    bodyType?: string | null
-    weight?: number | null
-    height?: number | null
-    mainProblem?: string | null
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: CustomerCreateinterestsInput | $Enums.Interest[]
     createdAt?: Date | string
     updatedAt?: Date | string
-    genderfit?: string | null
-    genderhair?: string | null
     orders?: OrderUncheckedCreateNestedManyWithoutCustomerInput
+    message?: MessageUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutUsersInput = {
     where: CustomerWhereUniqueInput
     create: XOR<CustomerCreateWithoutUsersInput, CustomerUncheckedCreateWithoutUsersInput>
+  }
+
+  export type MessageCreateWithoutUserInput = {
+    id?: string
+    message?: string | null
+    customer: CustomerCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageUncheckedCreateWithoutUserInput = {
+    id?: string
+    message?: string | null
+    customerId: string
+  }
+
+  export type MessageCreateOrConnectWithoutUserInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutUserInput, MessageUncheckedCreateWithoutUserInput>
+  }
+
+  export type MessageCreateManyUserInputEnvelope = {
+    data: MessageCreateManyUserInput | MessageCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrderUpsertWithWhereUniqueWithoutUserInput = {
@@ -15371,32 +16042,34 @@ export namespace Prisma {
     source?: StringNullableFilter<"Customer"> | string | null
     ageGroup?: StringNullableFilter<"Customer"> | string | null
     socialStatus?: StringNullableFilter<"Customer"> | string | null
-    skinType?: StringNullableFilter<"Customer"> | string | null
-    gender?: StringNullableFilter<"Customer"> | string | null
-    skinProblems?: StringNullableListFilter<"Customer">
-    skinColor?: StringNullableFilter<"Customer"> | string | null
-    hairColor?: StringNullableFilter<"Customer"> | string | null
-    genderlaser?: StringNullableFilter<"Customer"> | string | null
-    laserPurpose?: StringNullableFilter<"Customer"> | string | null
-    bodyType?: StringNullableFilter<"Customer"> | string | null
-    weight?: FloatNullableFilter<"Customer"> | number | null
-    height?: FloatNullableFilter<"Customer"> | number | null
-    mainProblem?: StringNullableFilter<"Customer"> | string | null
-    isDiabetic?: BoolFilter<"Customer"> | boolean
-    isPregnant?: BoolFilter<"Customer"> | boolean
-    hasHypertension?: BoolFilter<"Customer"> | boolean
-    isBreastfeeding?: BoolFilter<"Customer"> | boolean
-    hormonalTherapy?: BoolFilter<"Customer"> | boolean
-    followsDiet?: BoolFilter<"Customer"> | boolean
-    regularExercise?: BoolFilter<"Customer"> | boolean
-    interestedInAds?: BoolFilter<"Customer"> | boolean
-    isTargetClient?: BoolFilter<"Customer"> | boolean
-    inquiresForElse?: BoolFilter<"Customer"> | boolean
-    interests?: EnumInterestNullableListFilter<"Customer">
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
-    genderfit?: StringNullableFilter<"Customer"> | string | null
-    genderhair?: StringNullableFilter<"Customer"> | string | null
+  }
+
+  export type MessageUpsertWithWhereUniqueWithoutUserInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutUserInput, MessageUncheckedUpdateWithoutUserInput>
+    create: XOR<MessageCreateWithoutUserInput, MessageUncheckedCreateWithoutUserInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutUserInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutUserInput, MessageUncheckedUpdateWithoutUserInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutUserInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type MessageScalarWhereInput = {
+    AND?: MessageScalarWhereInput | MessageScalarWhereInput[]
+    OR?: MessageScalarWhereInput[]
+    NOT?: MessageScalarWhereInput | MessageScalarWhereInput[]
+    id?: StringFilter<"Message"> | string
+    message?: StringNullableFilter<"Message"> | string | null
+    customerId?: StringFilter<"Message"> | string
+    userId?: StringFilter<"Message"> | string
   }
 
   export type UserCreateWithoutPermissionInput = {
@@ -15411,6 +16084,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     orders?: OrderCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUsersInput
+    message?: MessageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPermissionInput = {
@@ -15425,6 +16099,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUsersInput
+    message?: MessageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPermissionInput = {
@@ -15801,6 +16476,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     orders?: OrderCreateNestedManyWithoutUserInput
     permission?: PermissionCreateNestedOneWithoutUsersInput
+    message?: MessageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCustomersInput = {
@@ -15815,11 +16491,34 @@ export namespace Prisma {
     updatedAt?: Date | string
     permissionId?: string | null
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    message?: MessageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCustomersInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCustomersInput, UserUncheckedCreateWithoutCustomersInput>
+  }
+
+  export type MessageCreateWithoutCustomerInput = {
+    id?: string
+    message?: string | null
+    user: UserCreateNestedOneWithoutMessageInput
+  }
+
+  export type MessageUncheckedCreateWithoutCustomerInput = {
+    id?: string
+    message?: string | null
+    userId: string
+  }
+
+  export type MessageCreateOrConnectWithoutCustomerInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutCustomerInput, MessageUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type MessageCreateManyCustomerInputEnvelope = {
+    data: MessageCreateManyCustomerInput | MessageCreateManyCustomerInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrderUpsertWithWhereUniqueWithoutCustomerInput = {
@@ -15854,6 +16553,178 @@ export namespace Prisma {
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutCustomersInput>
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutCustomerInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutCustomerInput, MessageUncheckedUpdateWithoutCustomerInput>
+    create: XOR<MessageCreateWithoutCustomerInput, MessageUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutCustomerInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutCustomerInput, MessageUncheckedUpdateWithoutCustomerInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutCustomerInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutCustomerInput>
+  }
+
+  export type CustomerCreateWithoutMessageInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    countryCode?: string | null
+    country?: string | null
+    city?: string | null
+    source?: string | null
+    ageGroup?: string | null
+    socialStatus?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orders?: OrderCreateNestedManyWithoutCustomerInput
+    users?: UserCreateNestedManyWithoutCustomersInput
+  }
+
+  export type CustomerUncheckedCreateWithoutMessageInput = {
+    id?: string
+    name: string
+    phone?: string | null
+    countryCode?: string | null
+    country?: string | null
+    city?: string | null
+    source?: string | null
+    ageGroup?: string | null
+    socialStatus?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orders?: OrderUncheckedCreateNestedManyWithoutCustomerInput
+    users?: UserUncheckedCreateNestedManyWithoutCustomersInput
+  }
+
+  export type CustomerCreateOrConnectWithoutMessageInput = {
+    where: CustomerWhereUniqueInput
+    create: XOR<CustomerCreateWithoutMessageInput, CustomerUncheckedCreateWithoutMessageInput>
+  }
+
+  export type UserCreateWithoutMessageInput = {
+    id?: string
+    username: string
+    email: string
+    phone?: string | null
+    jobTitle?: string | null
+    accountType?: $Enums.AccountType
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    orders?: OrderCreateNestedManyWithoutUserInput
+    permission?: PermissionCreateNestedOneWithoutUsersInput
+    customers?: CustomerCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutMessageInput = {
+    id?: string
+    username: string
+    email: string
+    phone?: string | null
+    jobTitle?: string | null
+    accountType?: $Enums.AccountType
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissionId?: string | null
+    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutUsersInput
+  }
+
+  export type UserCreateOrConnectWithoutMessageInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+  }
+
+  export type CustomerUpsertWithoutMessageInput = {
+    update: XOR<CustomerUpdateWithoutMessageInput, CustomerUncheckedUpdateWithoutMessageInput>
+    create: XOR<CustomerCreateWithoutMessageInput, CustomerUncheckedCreateWithoutMessageInput>
+    where?: CustomerWhereInput
+  }
+
+  export type CustomerUpdateToOneWithWhereWithoutMessageInput = {
+    where?: CustomerWhereInput
+    data: XOR<CustomerUpdateWithoutMessageInput, CustomerUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type CustomerUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUpdateManyWithoutCustomerNestedInput
+    users?: UserUpdateManyWithoutCustomersNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    countryCode?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
+    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUncheckedUpdateManyWithoutCustomerNestedInput
+    users?: UserUncheckedUpdateManyWithoutCustomersNestedInput
+  }
+
+  export type UserUpsertWithoutMessageInput = {
+    update: XOR<UserUpdateWithoutMessageInput, UserUncheckedUpdateWithoutMessageInput>
+    create: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMessageInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMessageInput, UserUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type UserUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    accountType?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orders?: OrderUpdateManyWithoutUserNestedInput
+    permission?: PermissionUpdateOneWithoutUsersNestedInput
+    customers?: CustomerUpdateManyWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    accountType?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissionId?: NullableStringFieldUpdateOperationsInput | string | null
+    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutUsersNestedInput
+  }
+
   export type CustomerCreateWithoutOrdersInput = {
     id?: string
     name: string
@@ -15864,33 +16735,10 @@ export namespace Prisma {
     source?: string | null
     ageGroup?: string | null
     socialStatus?: string | null
-    skinType?: string | null
-    gender?: string | null
-    skinProblems?: CustomerCreateskinProblemsInput | string[]
-    skinColor?: string | null
-    hairColor?: string | null
-    genderlaser?: string | null
-    laserPurpose?: string | null
-    bodyType?: string | null
-    weight?: number | null
-    height?: number | null
-    mainProblem?: string | null
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: CustomerCreateinterestsInput | $Enums.Interest[]
     createdAt?: Date | string
     updatedAt?: Date | string
-    genderfit?: string | null
-    genderhair?: string | null
     users?: UserCreateNestedManyWithoutCustomersInput
+    message?: MessageCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutOrdersInput = {
@@ -15903,33 +16751,10 @@ export namespace Prisma {
     source?: string | null
     ageGroup?: string | null
     socialStatus?: string | null
-    skinType?: string | null
-    gender?: string | null
-    skinProblems?: CustomerCreateskinProblemsInput | string[]
-    skinColor?: string | null
-    hairColor?: string | null
-    genderlaser?: string | null
-    laserPurpose?: string | null
-    bodyType?: string | null
-    weight?: number | null
-    height?: number | null
-    mainProblem?: string | null
-    isDiabetic?: boolean
-    isPregnant?: boolean
-    hasHypertension?: boolean
-    isBreastfeeding?: boolean
-    hormonalTherapy?: boolean
-    followsDiet?: boolean
-    regularExercise?: boolean
-    interestedInAds?: boolean
-    isTargetClient?: boolean
-    inquiresForElse?: boolean
-    interests?: CustomerCreateinterestsInput | $Enums.Interest[]
     createdAt?: Date | string
     updatedAt?: Date | string
-    genderfit?: string | null
-    genderhair?: string | null
     users?: UserUncheckedCreateNestedManyWithoutCustomersInput
+    message?: MessageUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutOrdersInput = {
@@ -15949,6 +16774,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     permission?: PermissionCreateNestedOneWithoutUsersInput
     customers?: CustomerCreateNestedManyWithoutUsersInput
+    message?: MessageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrdersInput = {
@@ -15963,6 +16789,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     permissionId?: string | null
     customers?: CustomerUncheckedCreateNestedManyWithoutUsersInput
+    message?: MessageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutOrdersInput = {
@@ -16016,33 +16843,10 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
     users?: UserUpdateManyWithoutCustomersNestedInput
+    message?: MessageUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutOrdersInput = {
@@ -16055,33 +16859,10 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
     users?: UserUncheckedUpdateManyWithoutCustomersNestedInput
+    message?: MessageUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type UserUpsertWithoutOrdersInput = {
@@ -16107,6 +16888,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permission?: PermissionUpdateOneWithoutUsersNestedInput
     customers?: CustomerUpdateManyWithoutUsersNestedInput
+    message?: MessageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrdersInput = {
@@ -16121,6 +16903,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissionId?: NullableStringFieldUpdateOperationsInput | string | null
     customers?: CustomerUncheckedUpdateManyWithoutUsersNestedInput
+    message?: MessageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutOrderInput = {
@@ -16344,6 +17127,12 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type MessageCreateManyUserInput = {
+    id?: string
+    message?: string | null
+    customerId: string
+  }
+
   export type OrderUpdateWithoutUserInput = {
     orderNumber?: StringFieldUpdateOperationsInput | string
     totalAmount?: FloatFieldUpdateOperationsInput | number
@@ -16430,33 +17219,10 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
     orders?: OrderUpdateManyWithoutCustomerNestedInput
+    message?: MessageUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutUsersInput = {
@@ -16469,33 +17235,10 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
     orders?: OrderUncheckedUpdateManyWithoutCustomerNestedInput
+    message?: MessageUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateManyWithoutUsersInput = {
@@ -16508,32 +17251,26 @@ export namespace Prisma {
     source?: NullableStringFieldUpdateOperationsInput | string | null
     ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
     socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
-    skinType?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    skinProblems?: CustomerUpdateskinProblemsInput | string[]
-    skinColor?: NullableStringFieldUpdateOperationsInput | string | null
-    hairColor?: NullableStringFieldUpdateOperationsInput | string | null
-    genderlaser?: NullableStringFieldUpdateOperationsInput | string | null
-    laserPurpose?: NullableStringFieldUpdateOperationsInput | string | null
-    bodyType?: NullableStringFieldUpdateOperationsInput | string | null
-    weight?: NullableFloatFieldUpdateOperationsInput | number | null
-    height?: NullableFloatFieldUpdateOperationsInput | number | null
-    mainProblem?: NullableStringFieldUpdateOperationsInput | string | null
-    isDiabetic?: BoolFieldUpdateOperationsInput | boolean
-    isPregnant?: BoolFieldUpdateOperationsInput | boolean
-    hasHypertension?: BoolFieldUpdateOperationsInput | boolean
-    isBreastfeeding?: BoolFieldUpdateOperationsInput | boolean
-    hormonalTherapy?: BoolFieldUpdateOperationsInput | boolean
-    followsDiet?: BoolFieldUpdateOperationsInput | boolean
-    regularExercise?: BoolFieldUpdateOperationsInput | boolean
-    interestedInAds?: BoolFieldUpdateOperationsInput | boolean
-    isTargetClient?: BoolFieldUpdateOperationsInput | boolean
-    inquiresForElse?: BoolFieldUpdateOperationsInput | boolean
-    interests?: CustomerUpdateinterestsInput | $Enums.Interest[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    genderfit?: NullableStringFieldUpdateOperationsInput | string | null
-    genderhair?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MessageUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    customer?: CustomerUpdateOneRequiredWithoutMessageNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MessageUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserCreateManyPermissionInput = {
@@ -16560,6 +17297,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUsersNestedInput
+    message?: MessageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPermissionInput = {
@@ -16574,6 +17312,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUsersNestedInput
+    message?: MessageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutPermissionInput = {
@@ -16710,6 +17449,12 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type MessageCreateManyCustomerInput = {
+    id?: string
+    message?: string | null
+    userId: string
+  }
+
   export type OrderUpdateWithoutCustomerInput = {
     orderNumber?: StringFieldUpdateOperationsInput | string
     totalAmount?: FloatFieldUpdateOperationsInput | number
@@ -16798,6 +17543,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUpdateManyWithoutUserNestedInput
     permission?: PermissionUpdateOneWithoutUsersNestedInput
+    message?: MessageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCustomersInput = {
@@ -16812,6 +17558,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissionId?: NullableStringFieldUpdateOperationsInput | string | null
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    message?: MessageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCustomersInput = {
@@ -16825,6 +17572,24 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permissionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MessageUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutMessageNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MessageUncheckedUpdateManyWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type OrderItemCreateManyOrderInput = {

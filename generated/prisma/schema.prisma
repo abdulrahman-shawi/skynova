@@ -21,6 +21,7 @@ model User {
   orders       Order[]
   permission   Permission? @relation(fields: [permissionId], references: [id])
   customers    Customer[]  @relation("CustomerToUser")
+  message      Message[]
 }
 
 model Permission {
@@ -70,43 +71,29 @@ model ProductImage {
 }
 
 model Customer {
-  id              String     @id @default(uuid())
-  name            String     @unique
-  phone           String?
-  countryCode     String?
-  country         String?
-  city            String?
-  source          String?
-  ageGroup        String?
-  socialStatus    String?
-  skinType        String?
-  gender          String?
-  skinProblems    String[]
-  skinColor       String?
-  hairColor       String?
-  genderlaser     String?
-  laserPurpose    String?
-  bodyType        String?
-  weight          Float?
-  height          Float?
-  mainProblem     String?
-  isDiabetic      Boolean    @default(false)
-  isPregnant      Boolean    @default(false)
-  hasHypertension Boolean    @default(false)
-  isBreastfeeding Boolean    @default(false)
-  hormonalTherapy Boolean    @default(false)
-  followsDiet     Boolean    @default(false)
-  regularExercise Boolean    @default(false)
-  interestedInAds Boolean    @default(false)
-  isTargetClient  Boolean    @default(false)
-  inquiresForElse Boolean    @default(false)
-  interests       Interest[]
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  genderfit       String?
-  genderhair      String?
-  orders          Order[]
-  users           User[]     @relation("CustomerToUser")
+  id           String    @id @default(uuid())
+  name         String    @unique
+  phone        String?
+  countryCode  String?
+  country      String?
+  city         String?
+  source       String?
+  ageGroup     String?
+  socialStatus String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  orders       Order[]
+  users        User[]    @relation("CustomerToUser")
+  message      Message[]
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  message    String?
+  customerId String
+  userId     String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Order {
@@ -153,10 +140,4 @@ enum AccountType {
   ADMIN
   MANAGER
   STAFF
-}
-
-enum Interest {
-  SKIN_PRODUCTS
-  LASER_DEVICES
-  SLIMMING_PROG
 }

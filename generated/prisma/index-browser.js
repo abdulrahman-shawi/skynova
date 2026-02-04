@@ -183,32 +183,15 @@ exports.Prisma.CustomerScalarFieldEnum = {
   source: 'source',
   ageGroup: 'ageGroup',
   socialStatus: 'socialStatus',
-  skinType: 'skinType',
-  gender: 'gender',
-  skinProblems: 'skinProblems',
-  skinColor: 'skinColor',
-  hairColor: 'hairColor',
-  genderlaser: 'genderlaser',
-  laserPurpose: 'laserPurpose',
-  bodyType: 'bodyType',
-  weight: 'weight',
-  height: 'height',
-  mainProblem: 'mainProblem',
-  isDiabetic: 'isDiabetic',
-  isPregnant: 'isPregnant',
-  hasHypertension: 'hasHypertension',
-  isBreastfeeding: 'isBreastfeeding',
-  hormonalTherapy: 'hormonalTherapy',
-  followsDiet: 'followsDiet',
-  regularExercise: 'regularExercise',
-  interestedInAds: 'interestedInAds',
-  isTargetClient: 'isTargetClient',
-  inquiresForElse: 'inquiresForElse',
-  interests: 'interests',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  genderfit: 'genderfit',
-  genderhair: 'genderhair'
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MessageScalarFieldEnum = {
+  id: 'id',
+  message: 'message',
+  customerId: 'customerId',
+  userId: 'userId'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
@@ -266,12 +249,6 @@ exports.AccountType = exports.$Enums.AccountType = {
   STAFF: 'STAFF'
 };
 
-exports.Interest = exports.$Enums.Interest = {
-  SKIN_PRODUCTS: 'SKIN_PRODUCTS',
-  LASER_DEVICES: 'LASER_DEVICES',
-  SLIMMING_PROG: 'SLIMMING_PROG'
-};
-
 exports.Prisma.ModelName = {
   User: 'User',
   Permission: 'Permission',
@@ -279,6 +256,7 @@ exports.Prisma.ModelName = {
   Product: 'Product',
   ProductImage: 'ProductImage',
   Customer: 'Customer',
+  Message: 'Message',
   Order: 'Order',
   OrderItem: 'OrderItem'
 };
