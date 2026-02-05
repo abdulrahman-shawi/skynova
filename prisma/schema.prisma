@@ -73,13 +73,9 @@ model ProductImage {
 model Customer {
   id              String     @id @default(uuid())
   name            String     @unique
-  phone           String?
+  phone           String?    @unique
   countryCode     String?
   country         String?
-  city            String?
-  source          String?
-  ageGroup        String?
-  socialStatus    String?
   status          String?
   phonestatus          String?
   createdAt       DateTime   @default(now())
