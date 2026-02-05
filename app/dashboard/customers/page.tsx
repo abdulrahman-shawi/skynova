@@ -934,15 +934,20 @@ function GetCustomerSingle({ data, getdatas }: { data: any, getdatas: any }) {
           </div>
           <div>
             <h3 className="text-xl font-bold dark:text-white">{data.name}</h3>
-            <p className="text-xs text-slate-500 flex items-center gap-1">حالة الزبون :{data.status}</p>
+            <p className="text-xs text-slate-500 flex items-center gap-1">تم الانشاء في  :{new Date(data.createdAt).toLocaleDateString('ar-EG')}</p>
+          
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          
+            <p className="text-sm text-slate-500 flex items-center gap-1">حالة الزبون :{data.status}</p>
             <div className="flex items-center gap-1">
-              <p className="text-xs text-slate-500 flex items-center gap-1">الموظفين المسؤلين عنه:</p>
+              <p className="text-sm text-slate-500 flex items-center gap-1">الموظفين المسؤلين عنه:</p>
               {data.users.map((e: any) => (
                 <p className="text-xs text-slate-500 flex items-center gap-1"> {e.username}</p>
 
               ))}
             </div>
-          </div>
         </div>
       </div>
 
