@@ -895,8 +895,7 @@ const CustomrLayout: React.FC = () => {
 
       <AppModal isOpen={OpenAssignModal} onClose={() => setOpenAssignModal(false)} title="ربط المستخدمين بالعميل" >
         <AssignUserModal customer={customer} allUsers={alluser} onSave={handleAssignUsers} />
-      </AppModal>  // فتح موديل الموظفين
-    </div>
+      </AppModal>     </div>
   );
 };
 
