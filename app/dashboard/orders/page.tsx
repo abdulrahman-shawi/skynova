@@ -408,9 +408,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         <div className="">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-gray-800 dark:text-white">إدارة الطلبات</h1>
-                <Button onClick={() => { setEditId(null); setIsOpen(true); }} className="bg-blue-600 hover:bg-blue-700 text-white px-6">
-                    إضافة طلب جديد
-                </Button>
+
                 <button
                     onClick={() => exportAllOrdersToExcel(orders)} // نمرر مصفوفة الطلبات التي لديك بالفعل
                     className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-200 dark:shadow-none"

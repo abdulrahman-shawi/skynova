@@ -160,6 +160,24 @@ const CustomrLayout: React.FC = () => {
     setItems(newItems);
   };
 
+  const deleteCus = async (data:any) => {
+   const confirm = window.confirm("هل انت متأكد من الحذف")
+   if(confirm){
+      try {
+        const res = await deleteCustomer(data)
+        if(res.success){
+          toast.success("تم الحذف بنجاح")
+          getData()
+        }else{
+          toast.error("حدث خطأ")
+        }
+      } catch (error) {
+        toast.error("حدث خطأ")
+      }finally{
+      }
+   }
+  }
+
 
   const addNewItem = () => {
     setItems([...items, { productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "" }]);
@@ -494,7 +512,9 @@ const CustomrLayout: React.FC = () => {
                       <Pencil size={16} />
                     </button>
                     <button
-                      onClick={(e) => { }}
+                      onClick={(e) => { 
+
+                      }}
                       className="p-2 bg-rose-50 text-rose-600 rounded-full hover:bg-rose-100 dark:bg-slate-800 dark:text-rose-400 transition-colors"
                     >
                       <Trash2 size={16} />
