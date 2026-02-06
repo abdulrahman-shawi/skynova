@@ -57,32 +57,65 @@ export async function createmessage(msg:any , customer:any , user:any) {
   return {success:true , data:res}
 }
 
-export async function createCustomerAction(data: any, activeTabs: string[], id: any) {
+export async function createCustomerAction(data: any, id: string) {
   try {
+    // 1. التحقق يدويًا إذا كان الرقم موجودًا مسبقًا في أي مصفوفة
+    // نستخدم عامل البحث hasAny أو has لتفقد المصفوفات
+    const existingCustomer = await prisma.customer.findFirst({
+      where: {
+        phone: {
+          hasSome: data.phone // يبحث إذا كان أي رقم في المصفوفة المرسلة موجود مسبقاً
+        }
+      }
+    });
+
+    if (existingCustomer) {
+      return { success: false, error: "عذراً، رقم الهاتف هذا مسجل لعميل آخر بالفعل" };
+    }
+
+    // 2. إذا لم يكن موجوداً، نقوم بالإضافة
     const newCustomer = await prisma.customer.create({
       data: {
         name: data.name,
-        status:"عميل محتمل",
-        phonestatus:"معلق",
-        phone: data.phone,
+        status: "عميل محتمل",
+        phonestatus: "معلق",
+        phone: data.phone, // مصفوفة مثل ["05xxxx"]
         countryCode: data.countryCode,
-        country: data.country,  
+        country: data.country,
         users: {
           connect: { id: id }
         },
       },
     });
 
-    revalidatePath("/customers"); // تحديث الصفحة لظهور العميل الجديد
+    revalidatePath("/customers");
     return { success: true, data: newCustomer };
-    
+
   } catch (error: any) {
     console.error("Prisma Error:", error);
-    if (error.code === 'P2002') {
-      return { success: false, error: " الاسم أو رقم الهاتف موجودين بالفعل" };
-    }
-    return { success: false, error: error.message || "حدث خطأ أثناء حفظ البيانات" };
+    return { success: false, error: "حدث خطأ أثناء حفظ البيانات" };
   }
+}
+
+export async function updateCustomer(data:any , customer:any) {
+  try {
+    const res = await prisma.customer.update({
+    where:{
+      id:customer
+    },
+    data:{
+      name: data.name,
+        phone: data.phone, // مصفوفة مثل ["05xxxx"]
+        countryCode: data.countryCode,
+        country: data.country,
+    }
+  })
+
+  return {success:true , data:res}
+  } catch (error) {
+    return {success:false , error:error}
+  }
+
 }
 
 export async function UpdateStusa(customer:any , status:any) {

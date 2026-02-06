@@ -12,7 +12,7 @@ import * as React from 'react';
 import toast from 'react-hot-toast';
 import { useReactToPrint } from 'react-to-print';
 import { TableAction } from '../../../components/shared/DataTable';
-    import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 interface IOrderLayoutProps {
 }
 
@@ -51,6 +51,9 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
     const [trackingCode, setTrackingCode] = React.useState("");
     const [googleMapsLink, setGoogleMapsLink] = React.useState("");
 
+    const [page, setPage] = React.useState(1);
+    const PAGE_SIZE = 10;
+
     const [customerSearchQuery, setCustomerSearchQuery] = React.useState("");
     const [showCustomerDropdown, setShowCustomerDropdown] = React.useState(false);
     const [deliveryNotes, setDeliveryNotes] = React.useState("");
@@ -87,52 +90,52 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
 
 
 
- const exportAllOrdersToExcel = (orders: any[]) => {
-    // تجهيز البيانات مع شمول كل حقول الموديل
-    const worksheetData = orders.map((order) => {
-        // تجميع أسماء المنتجات وكمياتها في نص واحد
-        const itemsSummary = order.items?.map((i: any) => 
-            `${i.product?.name || 'منتج'} (${i.quantity})`
-        ).join(" - ");
+    const exportAllOrdersToExcel = (orders: any[]) => {
+        // تجهيز البيانات مع شمول كل حقول الموديل
+        const worksheetData = orders.map((order) => {
+            // تجميع أسماء المنتجات وكمياتها في نص واحد
+            const itemsSummary = order.items?.map((i: any) =>
+                `${i.product?.name || 'منتج'} (${i.quantity})`
+            ).join(" - ");
 
-        return {
-            "رقم المرجع": order.orderNumber,
-            "تاريخ الإنشاء": new Date(order.createdAt).toLocaleString('ar-EG'),
-            "حالة الطلب": order.status,
-            "اسم العميل": order.customer?.name,
-            "هاتف العميل": order.customer?.phone,
-            "المبلغ الإجمالي": order.totalAmount,
-            "الخصم": order.discount,
-            "المبلغ النهائي": order.finalAmount,
-            "طريقة الدفع": order.paymentMethod,
-            "المنتجات المشتراة": itemsSummary,
-            "اسم المستلم": order.receiverName || "نفس العميل",
-            "هاتف المستلم": order.receiverPhone,
-            "الدولة": order.country,
-            "المدينة": order.city,
-            "البلدية": order.municipality,
-            "العنوان الكامل": order.fullAddress,
-            "رابط الخريطة": order.googleMapsLink,
-            "طريقة التوصيل": order.deliveryMethod,
-            "شركة الشحن": order.shippingCompany,
-            "كود التتبع": order.trackingCode,
-            "ملاحظات التوصيل": order.deliveryNotes,
-            "ملاحظات إضافية": order.additionalNotes,
-            "بواسطة الموظف": order.user?.name || "Admin",
-        };
-    });
+            return {
+                "رقم المرجع": order.orderNumber,
+                "تاريخ الإنشاء": new Date(order.createdAt).toLocaleString('ar-EG'),
+                "حالة الطلب": order.status,
+                "اسم العميل": order.customer?.name,
+                "هاتف العميل": order.customer?.phone,
+                "المبلغ الإجمالي": order.totalAmount,
+                "الخصم": order.discount,
+                "المبلغ النهائي": order.finalAmount,
+                "طريقة الدفع": order.paymentMethod,
+                "المنتجات المشتراة": itemsSummary,
+                "اسم المستلم": order.receiverName || "نفس العميل",
+                "هاتف المستلم": order.receiverPhone,
+                "الدولة": order.country,
+                "المدينة": order.city,
+                "البلدية": order.municipality,
+                "العنوان الكامل": order.fullAddress,
+                "رابط الخريطة": order.googleMapsLink,
+                "طريقة التوصيل": order.deliveryMethod,
+                "شركة الشحن": order.shippingCompany,
+                "كود التتبع": order.trackingCode,
+                "ملاحظات التوصيل": order.deliveryNotes,
+                "ملاحظات إضافية": order.additionalNotes,
+                "بواسطة الموظف": order.user?.name || "Admin",
+            };
+        });
 
-    // إنشاء ورقة العمل
-    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "كافة الطلبات");
+        // إنشاء ورقة العمل
+        const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "كافة الطلبات");
 
-    // ضبط اتجاه الصفحة للعربية وضبط عرض الأعمدة تلقائياً
-    worksheet['!dir'] = "rtl";
-    
-    // تصدير الملف
-    XLSX.writeFile(workbook, `Skynova_Full_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
-};
+        // ضبط اتجاه الصفحة للعربية وضبط عرض الأعمدة تلقائياً
+        worksheet['!dir'] = "rtl";
+
+        // تصدير الملف
+        XLSX.writeFile(workbook, `Skynova_Full_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    };
 
     const getAlluser = async () => {
         const res = await getCustomer();
@@ -274,15 +277,15 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
 
     const [ordercustomer, setordercustomer] = React.useState<any[]>([]); // مصفوفة للطلبات
 
-const showordercustomer = async (customerId: any) => {
-    const res = await getOrdersByUser(customerId);
-    if(res.success){
-        // التصحيح: خزن مصفوفة الطلبات القادمة من res وليس الـ id
-        setordercustomer(res.data); 
-        console.log(ordercustomer)
-        setisOpenordercustomer(true);
-    }
-};
+    const showordercustomer = async (customerId: any) => {
+        const res = await getOrdersByUser(customerId);
+        if (res.success) {
+            // التصحيح: خزن مصفوفة الطلبات القادمة من res وليس الـ id
+            setordercustomer(res.data);
+            console.log(ordercustomer)
+            setisOpenordercustomer(true);
+        }
+    };
 
     const tableActions: any[] = [
         {
@@ -408,89 +411,94 @@ const showordercustomer = async (customerId: any) => {
                 <Button onClick={() => { setEditId(null); setIsOpen(true); }} className="bg-blue-600 hover:bg-blue-700 text-white px-6">
                     إضافة طلب جديد
                 </Button>
-                <button 
-    onClick={() => exportAllOrdersToExcel(orders)} // نمرر مصفوفة الطلبات التي لديك بالفعل
-    className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-200 dark:shadow-none"
->
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="C12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-    </svg>
-    تصدير إلى Excel
-</button>
+                <button
+                    onClick={() => exportAllOrdersToExcel(orders)} // نمرر مصفوفة الطلبات التي لديك بالفعل
+                    className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-200 dark:shadow-none"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="C12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    تصدير إلى Excel
+                </button>
             </div>
-            <DataTable data={orders} actions={tableActions} columns={[
-                {
-                    header: "رقم الطلب",
-                    accessor: "orderNumber"
-                },
-                {
-                    header: "العميل",
-                    accessor: (e: any) => (
-                        <div onClick={() => showordercustomer(e.customer?.id)} className="cursor-pointer flex flex-col">
-                            <span className="font-bold">{e.customer?.name}</span>
-                        </div>
-                    )
-                },
-                { header: "بيعت من قبل", accessor: (e: any) => e.user.username },
-                {
-                    header: "قيمة الفاتورة",
-                    accessor: (e: any) => (
-                        <span className="font-black text-blue-600">
-                            {e.finalAmount?.toLocaleString()}  $
-                        </span>
-                    )
-                },
-                {
-                    header: "حالة الطلب",
-                    accessor: (c: any) => {
-                        const statusColors: Record<string, string> = {
-                            "طلب جديد": "bg-blue-100 text-blue-700 border-blue-200",
-                            "تم التجهيز": "bg-purple-100 text-purple-700 border-purple-200",
-                            "تم الاستلام": "bg-green-100 text-green-700 border-green-200",
-                            "تم الغاء الطلب": "bg-red-100 text-red-700 border-red-200",
-                            "فشل التسليم": "bg-slate-100 text-slate-700 border-slate-200",
-                        };
-
-                        return (
-                            <div className="">
-
-                                <select
-                                    className={`w-full bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold transition-all ${statusColors}`}
-                                    value={c.status}
-                                    onChange={(e) => {
-                                        const newValue = e.target.value; // القيمة الجديدة مباشرة من المستخدم
-
-                                        // 1. تحديث الـ state المحلي (اختياري لو كان الجدول سيعاد تحميله)
-                                        setStatus(newValue);
-                                        updatestatuschange(newValue, c.id)// طباعة القيمة في الكونسول
-                                    }}
-                                    name="order-status"
-                                    id="order-status"
-                                >
-                                    <option value="" disabled>اختر الحالة</option>
-                                    <option value="طلب جديد">طلب جديد</option>
-                                    <option value="تم التجهيز">تم التجهيز</option>
-                                    <option value="قيد الاستلام">قيد الاستلام</option>
-                                    <option value="تم الاستلام">تم الاستلام</option>
-                                    <option value="معلق / نقص معلومات">معلق / نقص معلومات</option>
-                                    <option value="تم الغاء الطلب">تم الغاء الطلب</option>
-                                    <option value="فشل التسليم">فشل التسليم</option>
-                                    <option value="حجز بمبلغ مال">حجز بمبلغ مال</option>
-                                </select>
+            <DataTable data={orders}
+                totalCount={orders.length} // لنفترض وجود 150 عميل في الداتا بيز
+                pageSize={PAGE_SIZE}
+                currentPage={page}
+                onPageChange={(newPage) => setPage(newPage)}
+                actions={tableActions} columns={[
+                    {
+                        header: "رقم الطلب",
+                        accessor: "orderNumber"
+                    },
+                    {
+                        header: "العميل",
+                        accessor: (e: any) => (
+                            <div onClick={() => showordercustomer(e.customer?.id)} className="cursor-pointer flex flex-col">
+                                <span className="font-bold">{e.customer?.name}</span>
                             </div>
+                        )
+                    },
+                    { header: "بيعت من قبل", accessor: (e: any) => e.user.username },
+                    {
+                        header: "قيمة الفاتورة",
+                        accessor: (e: any) => (
+                            <span className="font-black text-blue-600">
+                                {e.finalAmount?.toLocaleString()}  $
+                            </span>
+                        )
+                    },
+                    {
+                        header: "حالة الطلب",
+                        accessor: (c: any) => {
+                            const statusColors: Record<string, string> = {
+                                "طلب جديد": "bg-blue-100 text-blue-700 border-blue-200",
+                                "تم التجهيز": "bg-purple-100 text-purple-700 border-purple-200",
+                                "تم الاستلام": "bg-green-100 text-green-700 border-green-200",
+                                "تم الغاء الطلب": "bg-red-100 text-red-700 border-red-200",
+                                "فشل التسليم": "bg-slate-100 text-slate-700 border-slate-200",
+                            };
 
-                        );
-                    }
-                },
-                {
-                    header: "تاريخ الإنشاء",
-                    accessor: (e: any) => new Date(e.createdAt).toLocaleDateString('ar-EG', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    })
-                },
-            ]} />
+                            return (
+                                <div className="">
+
+                                    <select
+                                        className={`w-full bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold transition-all ${statusColors}`}
+                                        value={c.status}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value; // القيمة الجديدة مباشرة من المستخدم
+
+                                            // 1. تحديث الـ state المحلي (اختياري لو كان الجدول سيعاد تحميله)
+                                            setStatus(newValue);
+                                            updatestatuschange(newValue, c.id)// طباعة القيمة في الكونسول
+                                        }}
+                                        name="order-status"
+                                        id="order-status"
+                                    >
+                                        <option value="" disabled>اختر الحالة</option>
+                                        <option value="طلب جديد">طلب جديد</option>
+                                        <option value="تم التجهيز">تم التجهيز</option>
+                                        <option value="قيد الاستلام">قيد الاستلام</option>
+                                        <option value="تم الاستلام">تم الاستلام</option>
+                                        <option value="معلق / نقص معلومات">معلق / نقص معلومات</option>
+                                        <option value="تم الغاء الطلب">تم الغاء الطلب</option>
+                                        <option value="فشل التسليم">فشل التسليم</option>
+                                        <option value="حجز بمبلغ مال">حجز بمبلغ مال</option>
+                                    </select>
+                                </div>
+
+                            );
+                        }
+                    },
+                    {
+                        header: "تاريخ الإنشاء",
+                        accessor: (e: any) => new Date(e.createdAt).toLocaleDateString('ar-EG', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })
+                    },
+                ]} />
             <AppModal footer={
                 <div className="pt-6 w-full flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex gap-6 items-center">
@@ -733,7 +741,7 @@ const showordercustomer = async (customerId: any) => {
             </AppModal>
 
             <AppModal size='full' isOpen={isOpenordercustomer} onClose={() => setisOpenordercustomer(false)} title='طلبات العميل'>
-                <ViewOrderCustomer  orders={ordercustomer}/>
+                <ViewOrderCustomer orders={ordercustomer} />
             </AppModal>
 
             <AppModal size='full' isOpen={isOpenorder} onClose={() => setisOpenorder(false)} title='ملخص الطلب' >
@@ -766,8 +774,8 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
     return (
         <div className="p-10 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 min-h-screen" id="printable-area">
 
-<div className="flex justify-end p-4 bg-white dark:bg-slate-900 no-print">
-                <button 
+            <div className="flex justify-end p-4 bg-white dark:bg-slate-900 no-print">
+                <button
                     onClick={handlePrint}
                     className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 dark:shadow-none"
                 >
@@ -777,9 +785,10 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
             </div>
             {/* منطقة الفاتورة - هي التي سيتم طباعتها فقط */}
             <div ref={componentRef} className="p-10 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50" dir="rtl">
-                
+
                 {/* نمط CSS خاص للطباعة فقط لضمان جودة الألوان والخلفيات */}
-                <style dangerouslySetInnerHTML={{ __html: `
+                <style dangerouslySetInnerHTML={{
+                    __html: `
                     @media print {
                         @page { size: auto; margin: 10mm; }
                         body { -webkit-print-color-adjust: exact; }
@@ -790,97 +799,97 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
 
                 <div id="printable-area">
                     {/* الهيدر العلوي */}
-            <div className="flex justify-between items-start mb-10 pb-8 border-b-2 border-slate-50">
-                <div>
-                    <h1 className="text-5xl font-black text-blue-600 mb-4 tracking-tighter italic">SKYNOVA</h1>
-                    <div className="space-y-1 text-sm text-slate-500 font-bold">
-                        <p>رقم الفاتورة: <span className="text-slate-900 dark:text-white font-mono">#{data.orderNumber}</span></p>
-                        <p>تاريخ الإصدار: <span className="text-slate-900 dark:text-white">{data.createdAt instanceof Date ? data.createdAt.toLocaleDateString('ar-EG') : String(data.createdAt)}</span></p>
-                    </div>
-                </div>
-            </div>
-
-            {/* تفاصيل العميل والمستلم */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                <div className="p-6 bg-blue-50/50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100/50">
-                    <h3 className="text-blue-600 font-black text-sm mb-3 uppercase tracking-wider">العميل المحاسب</h3>
-                    <p className="text-xl font-black text-slate-900 dark:text-white">{data.customer?.name}</p>
-                    <p className="text-sm font-bold text-slate-500">حالة الحساب: {data.status}</p>
-                </div>
-
-                <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100">
-                    <h3 className="text-slate-400 font-black text-sm mb-3 uppercase tracking-wider">تفاصيل الشحن / الاستلام</h3>
-                    <p className="text-lg font-black text-slate-800 dark:text-white">المستلم: {data.receiverName || 'غير محدد'}</p>
-                    <p className="text-sm font-bold text-slate-500">رقم التواصل: {data.receiverPhone || 'غير محدد'}</p>
-                    <p className="text-sm font-bold text-slate-500">عنوان التوصيل : {data.fullAddress || 'غير محدد'}</p>
-                </div>
-                <div className="p-6 col-span-2 bg-blue-50/50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100/50">
-                    <h3 className="text-blue-600 font-black text-sm mb-3 uppercase tracking-wider">الدفع و الاستلام</h3>
-                    <p className="text-xl font-black text-slate-900 dark:text-white">طريقة الدفع: {data.paymentMethod}</p>
-                    <p className="text-sm font-bold text-slate-500">طريقة الاستلام: {data.deliveryMethod}</p>
-                </div>
-            </div>
-
-            {/* الجدول */}
-            <div className="overflow-x-auto rounded-[2rem] border border-slate-100 mb-8">
-                <table className="w-full text-right">
-                    <thead>
-                        <tr className="bg-slate-900 text-white">
-                            <th className="px-8 py-5 font-black text-sm">المنتج</th>
-                            <th className="px-8 py-5 font-black text-sm text-center">الكمية</th>
-                            <th className="px-8 py-5 font-black text-sm text-center">السعر الإفرادي</th>
-                            <th className="px-8 py-5 font-black text-sm text-left">الإجمالي</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-50">
-                        
-                        {data.items?.map((item: any, idx: number) => (
-                            <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
-                                <td className="px-8 py-6">
-                                    <p className="font-black text-slate-800 dark:text-slate-100">{getProductName(item.productId)}</p>
-                                    <p className="text-[10px] text-slate-400 font-mono">ID: {item.productId}</p>
-                                </td>
-                                <td className="px-8 py-6 text-center font-bold text-slate-600 italic">x{item.quantity}</td>
-                                <td className="px-8 py-6 text-center font-bold text-slate-600">{item.price.toLocaleString()}  $</td>
-                                <td className="px-8 py-6 text-left font-black text-slate-900 dark:text-white">{(item.price * item.quantity).toLocaleString()}  $</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* ملخص الحساب النهائي */}
-            <div className="flex justify-between items-end">
-                <div className="text-slate-400 text-xs font-bold leading-relaxed max-w-[300px]">
-                    * هذه الفاتورة صدرت إلكترونياً وهي وثيقة رسمية لعملية الشراء.
-                    <br />
-                    * شكراً لتعاملك مع SKYNOVA.
-                </div>
-
-                <div className="w-96 space-y-4">
-                    <div className="flex justify-between px-6 text-slate-500 font-bold">
-                        <span>المجموع الفرعي:</span>
-                        <span>{subtotal.toLocaleString()}  $</span>
-                    </div>
-
-                    {totalDiscount > 0 && (
-                        <div className="flex justify-between px-6 text-rose-500 font-bold">
-                            <span>الخصم الممنوح:</span>
-                            <span>-{totalDiscount.toLocaleString()}  $</span>
-                        </div>
-                    )}
-
-                    <div className="flex justify-between items-center p-6 bg-blue-600 rounded-[2rem] text-white shadow-xl shadow-blue-200 dark:shadow-none">
-                        <span className="text-xl font-black">الإجمالي النهائي</span>
-                        <div className="text-right">
-                            <span className="text-3xl font-black italic tracking-tighter">
-                                {finalAmount.toLocaleString()}
-                            </span>
-                            <span className="text-sm font-bold mr-1"> $</span>
+                    <div className="flex justify-between items-start mb-10 pb-8 border-b-2 border-slate-50">
+                        <div>
+                            <h1 className="text-5xl font-black text-blue-600 mb-4 tracking-tighter italic">SKYNOVA</h1>
+                            <div className="space-y-1 text-sm text-slate-500 font-bold">
+                                <p>رقم الفاتورة: <span className="text-slate-900 dark:text-white font-mono">#{data.orderNumber}</span></p>
+                                <p>تاريخ الإصدار: <span className="text-slate-900 dark:text-white">{data.createdAt instanceof Date ? data.createdAt.toLocaleDateString('ar-EG') : String(data.createdAt)}</span></p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+
+                    {/* تفاصيل العميل والمستلم */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                        <div className="p-6 bg-blue-50/50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100/50">
+                            <h3 className="text-blue-600 font-black text-sm mb-3 uppercase tracking-wider">العميل المحاسب</h3>
+                            <p className="text-xl font-black text-slate-900 dark:text-white">{data.customer?.name}</p>
+                            <p className="text-sm font-bold text-slate-500">حالة الحساب: {data.status}</p>
+                        </div>
+
+                        <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100">
+                            <h3 className="text-slate-400 font-black text-sm mb-3 uppercase tracking-wider">تفاصيل الشحن / الاستلام</h3>
+                            <p className="text-lg font-black text-slate-800 dark:text-white">المستلم: {data.receiverName || 'غير محدد'}</p>
+                            <p className="text-sm font-bold text-slate-500">رقم التواصل: {data.receiverPhone || 'غير محدد'}</p>
+                            <p className="text-sm font-bold text-slate-500">عنوان التوصيل : {data.fullAddress || 'غير محدد'}</p>
+                        </div>
+                        <div className="p-6 col-span-2 bg-blue-50/50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100/50">
+                            <h3 className="text-blue-600 font-black text-sm mb-3 uppercase tracking-wider">الدفع و الاستلام</h3>
+                            <p className="text-xl font-black text-slate-900 dark:text-white">طريقة الدفع: {data.paymentMethod}</p>
+                            <p className="text-sm font-bold text-slate-500">طريقة الاستلام: {data.deliveryMethod}</p>
+                        </div>
+                    </div>
+
+                    {/* الجدول */}
+                    <div className="overflow-x-auto rounded-[2rem] border border-slate-100 mb-8">
+                        <table className="w-full text-right">
+                            <thead>
+                                <tr className="bg-slate-900 text-white">
+                                    <th className="px-8 py-5 font-black text-sm">المنتج</th>
+                                    <th className="px-8 py-5 font-black text-sm text-center">الكمية</th>
+                                    <th className="px-8 py-5 font-black text-sm text-center">السعر الإفرادي</th>
+                                    <th className="px-8 py-5 font-black text-sm text-left">الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-50">
+
+                                {data.items?.map((item: any, idx: number) => (
+                                    <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
+                                        <td className="px-8 py-6">
+                                            <p className="font-black text-slate-800 dark:text-slate-100">{getProductName(item.productId)}</p>
+                                            <p className="text-[10px] text-slate-400 font-mono">ID: {item.productId}</p>
+                                        </td>
+                                        <td className="px-8 py-6 text-center font-bold text-slate-600 italic">x{item.quantity}</td>
+                                        <td className="px-8 py-6 text-center font-bold text-slate-600">{item.price.toLocaleString()}  $</td>
+                                        <td className="px-8 py-6 text-left font-black text-slate-900 dark:text-white">{(item.price * item.quantity).toLocaleString()}  $</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* ملخص الحساب النهائي */}
+                    <div className="flex justify-between items-end">
+                        <div className="text-slate-400 text-xs font-bold leading-relaxed max-w-[300px]">
+                            * هذه الفاتورة صدرت إلكترونياً وهي وثيقة رسمية لعملية الشراء.
+                            <br />
+                            * شكراً لتعاملك مع SKYNOVA.
+                        </div>
+
+                        <div className="w-96 space-y-4">
+                            <div className="flex justify-between px-6 text-slate-500 font-bold">
+                                <span>المجموع الفرعي:</span>
+                                <span>{subtotal.toLocaleString()}  $</span>
+                            </div>
+
+                            {totalDiscount > 0 && (
+                                <div className="flex justify-between px-6 text-rose-500 font-bold">
+                                    <span>الخصم الممنوح:</span>
+                                    <span>-{totalDiscount.toLocaleString()}  $</span>
+                                </div>
+                            )}
+
+                            <div className="flex justify-between items-center p-6 bg-blue-600 rounded-[2rem] text-white shadow-xl shadow-blue-200 dark:shadow-none">
+                                <span className="text-xl font-black">الإجمالي النهائي</span>
+                                <div className="text-right">
+                                    <span className="text-3xl font-black italic tracking-tighter">
+                                        {finalAmount.toLocaleString()}
+                                    </span>
+                                    <span className="text-sm font-bold mr-1"> $</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -915,16 +924,15 @@ function ViewOrderCustomer({ orders }: { orders: any[] }) {
                 {orders.map((order: any) => (
                     <div key={order.id} className="flex flex-col gap-2">
                         {/* بطاقة الطلب الرئيسية */}
-                        <div 
+                        <div
                             onClick={() => toggleOrder(order.id)}
-                            className={`flex justify-between items-center p-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2rem] hover:shadow-lg transition-all cursor-pointer border-r-4 ${
-                                expandedOrderId === order.id ? 'border-r-blue-600 shadow-md' : 'border-r-blue-500'
-                            }`}
+                            className={`flex justify-between items-center p-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2rem] hover:shadow-lg transition-all cursor-pointer border-r-4 ${expandedOrderId === order.id ? 'border-r-blue-600 shadow-md' : 'border-r-blue-500'
+                                }`}
                         >
                             <div className="space-y-1">
                                 <p className="font-black text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
                                     رقم المرجع: <span className="font-mono text-blue-600">#{order.orderNumber}</span>
-                                    {expandedOrderId === order.id ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
+                                    {expandedOrderId === order.id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                                 </p>
                                 <div className="flex items-center gap-3 text-[11px] font-bold text-slate-400">
                                     <span className="flex items-center gap-1">📅 {new Date(order.createdAt).toLocaleDateString('ar-EG')}</span>
@@ -936,11 +944,10 @@ function ViewOrderCustomer({ orders }: { orders: any[] }) {
                                 <p className="font-black text-lg text-slate-900 dark:text-white italic">
                                     {Number(order.finalAmount).toLocaleString()} <span className="text-xs">ل.س</span>
                                 </p>
-                                <div className={`text-[10px] px-2 py-0.5 rounded-full inline-block font-bold ${
-                                    order.status === 'مدفوعة' || order.status === 'تم التسليم' 
-                                    ? 'bg-emerald-100 text-emerald-600' 
-                                    : 'bg-amber-100 text-amber-600'
-                                }`}>
+                                <div className={`text-[10px] px-2 py-0.5 rounded-full inline-block font-bold ${order.status === 'مدفوعة' || order.status === 'تم التسليم'
+                                        ? 'bg-emerald-100 text-emerald-600'
+                                        : 'bg-amber-100 text-amber-600'
+                                    }`}>
                                     {order.status}
                                 </div>
                             </div>
@@ -953,7 +960,7 @@ function ViewOrderCustomer({ orders }: { orders: any[] }) {
                                     <Package size={12} /> محتويات الطلب:
                                 </h4>
                                 <div className="space-y-2">
-                        
+
                                     {order.items?.map((item: any, idx: number) => (
                                         <div key={idx} className="flex justify-between items-center text-sm border-b border-slate-100 dark:border-slate-700 pb-2 last:border-0">
                                             <div className="flex flex-col">
@@ -965,7 +972,7 @@ function ViewOrderCustomer({ orders }: { orders: any[] }) {
                                                 </span>
                                             </div>
                                             <div className="text-left font-bold">
-                                                <span className="text-blue-600">{item.quantity}</span> 
+                                                <span className="text-blue-600">{item.quantity}</span>
                                                 <span className="text-[10px] text-slate-400 mr-1">×</span>
                                                 <span className="text-xs text-slate-600 dark:text-slate-400 ml-2">
                                                     {Number(item.price).toLocaleString()} ل.س

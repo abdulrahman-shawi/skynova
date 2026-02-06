@@ -38,6 +38,8 @@ const ProductLayout = () => {
     const [selectedProduct, setSelectedProduct] = React.useState<any>(null);
     const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
     const [forData, setFormData] = React.useState<any>(null);
+    const [page, setPage] = React.useState(1);
+  const PAGE_SIZE = 10;
     React.useEffect(() => {
         getallcategory().then(setCategories).catch(console.error);
         getProduct().then((products) => {
@@ -314,6 +316,10 @@ const ProductLayout = () => {
             {tab === 'table' && (
                 <DataTable
                     data={products}
+                     totalCount={products.length} // لنفترض وجود 150 عميل في الداتا بيز
+                pageSize={PAGE_SIZE}
+                currentPage={page}
+                onPageChange={(newPage) => setPage(newPage)}
                     actions={tableActions}
                     columns={[
                         {

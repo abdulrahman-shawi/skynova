@@ -71,22 +71,18 @@ model ProductImage {
 }
 
 model Customer {
-  id           String    @id @default(uuid())
-  name         String    @unique
-  phone        String?
-  countryCode  String?
-  country      String?
-  city         String?
-  source       String?
-  ageGroup     String?
-  socialStatus String?
-  status       String?
-  phonestatus  String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  orders       Order[]
-  users        User[]    @relation("CustomerToUser")
-  message      Message[]
+  id          String    @id @default(uuid())
+  name        String    @unique
+  phone       String[]
+  countryCode String?
+  country     String?
+  status      String?
+  phonestatus String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  orders      Order[]
+  users       User[]    @relation("CustomerToUser")
+  message     Message[]
 }
 
 model Message {
@@ -94,6 +90,8 @@ model Message {
   message    String?
   customerId String
   userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

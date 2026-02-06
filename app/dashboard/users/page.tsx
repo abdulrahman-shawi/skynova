@@ -54,6 +54,9 @@ const UserManagement: React.FunctionComponent = () => {
 
   React.useEffect(() => { getRoul(); getAlluser(); }, []);
 
+  const [page, setPage] = React.useState(1);
+  const PAGE_SIZE = 10;
+
   const handleClose = () => {
     setIsOpen(false);
     setEditId(null);
@@ -156,7 +159,12 @@ const UserManagement: React.FunctionComponent = () => {
           إضافة مستخدم جديد
         </Button>
       </div>
-      <DataTable data={users} actions={tableActions} columns={
+      <DataTable data={users} 
+       totalCount={users.length} // لنفترض وجود 150 عميل في الداتا بيز
+                pageSize={PAGE_SIZE}
+                currentPage={page}
+                onPageChange={(newPage) => setPage(newPage)}
+      actions={tableActions} columns={
         [
           { header: "الاسم", accessor: "username" },
           { header: "البريد الإلكتروني", accessor: "email" },

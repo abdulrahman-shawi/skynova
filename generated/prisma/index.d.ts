@@ -7634,13 +7634,8 @@ export namespace Prisma {
   export type CustomerMinAggregateOutputType = {
     id: string | null
     name: string | null
-    phone: string | null
     countryCode: string | null
     country: string | null
-    city: string | null
-    source: string | null
-    ageGroup: string | null
-    socialStatus: string | null
     status: string | null
     phonestatus: string | null
     createdAt: Date | null
@@ -7650,13 +7645,8 @@ export namespace Prisma {
   export type CustomerMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    phone: string | null
     countryCode: string | null
     country: string | null
-    city: string | null
-    source: string | null
-    ageGroup: string | null
-    socialStatus: string | null
     status: string | null
     phonestatus: string | null
     createdAt: Date | null
@@ -7669,10 +7659,6 @@ export namespace Prisma {
     phone: number
     countryCode: number
     country: number
-    city: number
-    source: number
-    ageGroup: number
-    socialStatus: number
     status: number
     phonestatus: number
     createdAt: number
@@ -7684,13 +7670,8 @@ export namespace Prisma {
   export type CustomerMinAggregateInputType = {
     id?: true
     name?: true
-    phone?: true
     countryCode?: true
     country?: true
-    city?: true
-    source?: true
-    ageGroup?: true
-    socialStatus?: true
     status?: true
     phonestatus?: true
     createdAt?: true
@@ -7700,13 +7681,8 @@ export namespace Prisma {
   export type CustomerMaxAggregateInputType = {
     id?: true
     name?: true
-    phone?: true
     countryCode?: true
     country?: true
-    city?: true
-    source?: true
-    ageGroup?: true
-    socialStatus?: true
     status?: true
     phonestatus?: true
     createdAt?: true
@@ -7719,10 +7695,6 @@ export namespace Prisma {
     phone?: true
     countryCode?: true
     country?: true
-    city?: true
-    source?: true
-    ageGroup?: true
-    socialStatus?: true
     status?: true
     phonestatus?: true
     createdAt?: true
@@ -7805,13 +7777,9 @@ export namespace Prisma {
   export type CustomerGroupByOutputType = {
     id: string
     name: string
-    phone: string | null
+    phone: string[]
     countryCode: string | null
     country: string | null
-    city: string | null
-    source: string | null
-    ageGroup: string | null
-    socialStatus: string | null
     status: string | null
     phonestatus: string | null
     createdAt: Date
@@ -7841,10 +7809,6 @@ export namespace Prisma {
     phone?: boolean
     countryCode?: boolean
     country?: boolean
-    city?: boolean
-    source?: boolean
-    ageGroup?: boolean
-    socialStatus?: boolean
     status?: boolean
     phonestatus?: boolean
     createdAt?: boolean
@@ -7861,10 +7825,6 @@ export namespace Prisma {
     phone?: boolean
     countryCode?: boolean
     country?: boolean
-    city?: boolean
-    source?: boolean
-    ageGroup?: boolean
-    socialStatus?: boolean
     status?: boolean
     phonestatus?: boolean
     createdAt?: boolean
@@ -7877,10 +7837,6 @@ export namespace Prisma {
     phone?: boolean
     countryCode?: boolean
     country?: boolean
-    city?: boolean
-    source?: boolean
-    ageGroup?: boolean
-    socialStatus?: boolean
     status?: boolean
     phonestatus?: boolean
     createdAt?: boolean
@@ -7893,17 +7849,13 @@ export namespace Prisma {
     phone?: boolean
     countryCode?: boolean
     country?: boolean
-    city?: boolean
-    source?: boolean
-    ageGroup?: boolean
-    socialStatus?: boolean
     status?: boolean
     phonestatus?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phone" | "countryCode" | "country" | "city" | "source" | "ageGroup" | "socialStatus" | "status" | "phonestatus" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "phone" | "countryCode" | "country" | "status" | "phonestatus" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     users?: boolean | Customer$usersArgs<ExtArgs>
@@ -7923,13 +7875,9 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      phone: string | null
+      phone: string[]
       countryCode: string | null
       country: string | null
-      city: string | null
-      source: string | null
-      ageGroup: string | null
-      socialStatus: string | null
       status: string | null
       phonestatus: string | null
       createdAt: Date
@@ -8362,13 +8310,9 @@ export namespace Prisma {
   interface CustomerFieldRefs {
     readonly id: FieldRef<"Customer", 'String'>
     readonly name: FieldRef<"Customer", 'String'>
-    readonly phone: FieldRef<"Customer", 'String'>
+    readonly phone: FieldRef<"Customer", 'String[]'>
     readonly countryCode: FieldRef<"Customer", 'String'>
     readonly country: FieldRef<"Customer", 'String'>
-    readonly city: FieldRef<"Customer", 'String'>
-    readonly source: FieldRef<"Customer", 'String'>
-    readonly ageGroup: FieldRef<"Customer", 'String'>
-    readonly socialStatus: FieldRef<"Customer", 'String'>
     readonly status: FieldRef<"Customer", 'String'>
     readonly phonestatus: FieldRef<"Customer", 'String'>
     readonly createdAt: FieldRef<"Customer", 'DateTime'>
@@ -8866,6 +8810,8 @@ export namespace Prisma {
     message: string | null
     customerId: string | null
     userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type MessageMaxAggregateOutputType = {
@@ -8873,6 +8819,8 @@ export namespace Prisma {
     message: string | null
     customerId: string | null
     userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type MessageCountAggregateOutputType = {
@@ -8880,6 +8828,8 @@ export namespace Prisma {
     message: number
     customerId: number
     userId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -8889,6 +8839,8 @@ export namespace Prisma {
     message?: true
     customerId?: true
     userId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type MessageMaxAggregateInputType = {
@@ -8896,6 +8848,8 @@ export namespace Prisma {
     message?: true
     customerId?: true
     userId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type MessageCountAggregateInputType = {
@@ -8903,6 +8857,8 @@ export namespace Prisma {
     message?: true
     customerId?: true
     userId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -8983,6 +8939,8 @@ export namespace Prisma {
     message: string | null
     customerId: string
     userId: string
+    createdAt: Date
+    updatedAt: Date
     _count: MessageCountAggregateOutputType | null
     _min: MessageMinAggregateOutputType | null
     _max: MessageMaxAggregateOutputType | null
@@ -9007,6 +8965,8 @@ export namespace Prisma {
     message?: boolean
     customerId?: boolean
     userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
@@ -9016,6 +8976,8 @@ export namespace Prisma {
     message?: boolean
     customerId?: boolean
     userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
@@ -9025,6 +8987,8 @@ export namespace Prisma {
     message?: boolean
     customerId?: boolean
     userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
@@ -9034,9 +8998,11 @@ export namespace Prisma {
     message?: boolean
     customerId?: boolean
     userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "message" | "customerId" | "userId", ExtArgs["result"]["message"]>
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "message" | "customerId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9061,6 +9027,8 @@ export namespace Prisma {
       message: string | null
       customerId: string
       userId: string
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["message"]>
     composites: {}
   }
@@ -9490,6 +9458,8 @@ export namespace Prisma {
     readonly message: FieldRef<"Message", 'String'>
     readonly customerId: FieldRef<"Message", 'String'>
     readonly userId: FieldRef<"Message", 'String'>
+    readonly createdAt: FieldRef<"Message", 'DateTime'>
+    readonly updatedAt: FieldRef<"Message", 'DateTime'>
   }
     
 
@@ -12520,10 +12490,6 @@ export namespace Prisma {
     phone: 'phone',
     countryCode: 'countryCode',
     country: 'country',
-    city: 'city',
-    source: 'source',
-    ageGroup: 'ageGroup',
-    socialStatus: 'socialStatus',
     status: 'status',
     phonestatus: 'phonestatus',
     createdAt: 'createdAt',
@@ -12537,7 +12503,9 @@ export namespace Prisma {
     id: 'id',
     message: 'message',
     customerId: 'customerId',
-    userId: 'userId'
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -13060,13 +13028,9 @@ export namespace Prisma {
     NOT?: CustomerWhereInput | CustomerWhereInput[]
     id?: StringFilter<"Customer"> | string
     name?: StringFilter<"Customer"> | string
-    phone?: StringNullableFilter<"Customer"> | string | null
+    phone?: StringNullableListFilter<"Customer">
     countryCode?: StringNullableFilter<"Customer"> | string | null
     country?: StringNullableFilter<"Customer"> | string | null
-    city?: StringNullableFilter<"Customer"> | string | null
-    source?: StringNullableFilter<"Customer"> | string | null
-    ageGroup?: StringNullableFilter<"Customer"> | string | null
-    socialStatus?: StringNullableFilter<"Customer"> | string | null
     status?: StringNullableFilter<"Customer"> | string | null
     phonestatus?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
@@ -13079,13 +13043,9 @@ export namespace Prisma {
   export type CustomerOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    phone?: SortOrderInput | SortOrder
+    phone?: SortOrder
     countryCode?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
-    city?: SortOrderInput | SortOrder
-    source?: SortOrderInput | SortOrder
-    ageGroup?: SortOrderInput | SortOrder
-    socialStatus?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
     phonestatus?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -13101,13 +13061,9 @@ export namespace Prisma {
     AND?: CustomerWhereInput | CustomerWhereInput[]
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
-    phone?: StringNullableFilter<"Customer"> | string | null
+    phone?: StringNullableListFilter<"Customer">
     countryCode?: StringNullableFilter<"Customer"> | string | null
     country?: StringNullableFilter<"Customer"> | string | null
-    city?: StringNullableFilter<"Customer"> | string | null
-    source?: StringNullableFilter<"Customer"> | string | null
-    ageGroup?: StringNullableFilter<"Customer"> | string | null
-    socialStatus?: StringNullableFilter<"Customer"> | string | null
     status?: StringNullableFilter<"Customer"> | string | null
     phonestatus?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
@@ -13120,13 +13076,9 @@ export namespace Prisma {
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    phone?: SortOrderInput | SortOrder
+    phone?: SortOrder
     countryCode?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
-    city?: SortOrderInput | SortOrder
-    source?: SortOrderInput | SortOrder
-    ageGroup?: SortOrderInput | SortOrder
-    socialStatus?: SortOrderInput | SortOrder
     status?: SortOrderInput | SortOrder
     phonestatus?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -13142,13 +13094,9 @@ export namespace Prisma {
     NOT?: CustomerScalarWhereWithAggregatesInput | CustomerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Customer"> | string
     name?: StringWithAggregatesFilter<"Customer"> | string
-    phone?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    phone?: StringNullableListFilter<"Customer">
     countryCode?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     country?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    city?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    source?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    ageGroup?: StringNullableWithAggregatesFilter<"Customer"> | string | null
-    socialStatus?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     status?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     phonestatus?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
@@ -13163,6 +13111,8 @@ export namespace Prisma {
     message?: StringNullableFilter<"Message"> | string | null
     customerId?: StringFilter<"Message"> | string
     userId?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+    updatedAt?: DateTimeFilter<"Message"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -13172,6 +13122,8 @@ export namespace Prisma {
     message?: SortOrderInput | SortOrder
     customerId?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     customer?: CustomerOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
@@ -13184,6 +13136,8 @@ export namespace Prisma {
     message?: StringNullableFilter<"Message"> | string | null
     customerId?: StringFilter<"Message"> | string
     userId?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+    updatedAt?: DateTimeFilter<"Message"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -13193,6 +13147,8 @@ export namespace Prisma {
     message?: SortOrderInput | SortOrder
     customerId?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: MessageCountOrderByAggregateInput
     _max?: MessageMaxOrderByAggregateInput
     _min?: MessageMinOrderByAggregateInput
@@ -13206,6 +13162,8 @@ export namespace Prisma {
     message?: StringNullableWithAggregatesFilter<"Message"> | string | null
     customerId?: StringWithAggregatesFilter<"Message"> | string
     userId?: StringWithAggregatesFilter<"Message"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
   }
 
   export type OrderWhereInput = {
@@ -13816,13 +13774,9 @@ export namespace Prisma {
   export type CustomerCreateInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -13835,13 +13789,9 @@ export namespace Prisma {
   export type CustomerUncheckedCreateInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -13854,13 +13804,9 @@ export namespace Prisma {
   export type CustomerUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13873,13 +13819,9 @@ export namespace Prisma {
   export type CustomerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13892,13 +13834,9 @@ export namespace Prisma {
   export type CustomerCreateManyInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -13908,13 +13846,9 @@ export namespace Prisma {
   export type CustomerUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13924,13 +13858,9 @@ export namespace Prisma {
   export type CustomerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13940,6 +13870,8 @@ export namespace Prisma {
   export type MessageCreateInput = {
     id?: string
     message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutMessageInput
     user: UserCreateNestedOneWithoutMessageInput
   }
@@ -13949,11 +13881,15 @@ export namespace Prisma {
     message?: string | null
     customerId: string
     userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MessageUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutMessageNestedInput
     user?: UserUpdateOneRequiredWithoutMessageNestedInput
   }
@@ -13963,6 +13899,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageCreateManyInput = {
@@ -13970,11 +13908,15 @@ export namespace Prisma {
     message?: string | null
     customerId: string
     userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MessageUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageUncheckedUpdateManyInput = {
@@ -13982,6 +13924,8 @@ export namespace Prisma {
     message?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrderCreateInput = {
@@ -14733,16 +14677,20 @@ export namespace Prisma {
     productId?: SortOrder
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type CustomerCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     phone?: SortOrder
     countryCode?: SortOrder
     country?: SortOrder
-    city?: SortOrder
-    source?: SortOrder
-    ageGroup?: SortOrder
-    socialStatus?: SortOrder
     status?: SortOrder
     phonestatus?: SortOrder
     createdAt?: SortOrder
@@ -14752,13 +14700,8 @@ export namespace Prisma {
   export type CustomerMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    phone?: SortOrder
     countryCode?: SortOrder
     country?: SortOrder
-    city?: SortOrder
-    source?: SortOrder
-    ageGroup?: SortOrder
-    socialStatus?: SortOrder
     status?: SortOrder
     phonestatus?: SortOrder
     createdAt?: SortOrder
@@ -14768,13 +14711,8 @@ export namespace Prisma {
   export type CustomerMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    phone?: SortOrder
     countryCode?: SortOrder
     country?: SortOrder
-    city?: SortOrder
-    source?: SortOrder
-    ageGroup?: SortOrder
-    socialStatus?: SortOrder
     status?: SortOrder
     phonestatus?: SortOrder
     createdAt?: SortOrder
@@ -14796,6 +14734,8 @@ export namespace Prisma {
     message?: SortOrder
     customerId?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type MessageMaxOrderByAggregateInput = {
@@ -14803,6 +14743,8 @@ export namespace Prisma {
     message?: SortOrder
     customerId?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type MessageMinOrderByAggregateInput = {
@@ -14810,6 +14752,8 @@ export namespace Prisma {
     message?: SortOrder
     customerId?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserNullableScalarRelationFilter = {
@@ -15347,6 +15291,10 @@ export namespace Prisma {
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutImagesInput, ProductUpdateWithoutImagesInput>, ProductUncheckedUpdateWithoutImagesInput>
   }
 
+  export type CustomerCreatephoneInput = {
+    set: string[]
+  }
+
   export type OrderCreateNestedManyWithoutCustomerInput = {
     create?: XOR<OrderCreateWithoutCustomerInput, OrderUncheckedCreateWithoutCustomerInput> | OrderCreateWithoutCustomerInput[] | OrderUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutCustomerInput | OrderCreateOrConnectWithoutCustomerInput[]
@@ -15385,6 +15333,11 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutCustomerInput | MessageCreateOrConnectWithoutCustomerInput[]
     createMany?: MessageCreateManyCustomerInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type CustomerUpdatephoneInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type OrderUpdateManyWithoutCustomerNestedInput = {
@@ -15925,13 +15878,9 @@ export namespace Prisma {
   export type CustomerCreateWithoutUsersInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -15943,13 +15892,9 @@ export namespace Prisma {
   export type CustomerUncheckedCreateWithoutUsersInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -15966,6 +15911,8 @@ export namespace Prisma {
   export type MessageCreateWithoutUserInput = {
     id?: string
     message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutMessageInput
   }
 
@@ -15973,6 +15920,8 @@ export namespace Prisma {
     id?: string
     message?: string | null
     customerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MessageCreateOrConnectWithoutUserInput = {
@@ -16097,13 +16046,9 @@ export namespace Prisma {
     NOT?: CustomerScalarWhereInput | CustomerScalarWhereInput[]
     id?: StringFilter<"Customer"> | string
     name?: StringFilter<"Customer"> | string
-    phone?: StringNullableFilter<"Customer"> | string | null
+    phone?: StringNullableListFilter<"Customer">
     countryCode?: StringNullableFilter<"Customer"> | string | null
     country?: StringNullableFilter<"Customer"> | string | null
-    city?: StringNullableFilter<"Customer"> | string | null
-    source?: StringNullableFilter<"Customer"> | string | null
-    ageGroup?: StringNullableFilter<"Customer"> | string | null
-    socialStatus?: StringNullableFilter<"Customer"> | string | null
     status?: StringNullableFilter<"Customer"> | string | null
     phonestatus?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
@@ -16134,6 +16079,8 @@ export namespace Prisma {
     message?: StringNullableFilter<"Message"> | string | null
     customerId?: StringFilter<"Message"> | string
     userId?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+    updatedAt?: DateTimeFilter<"Message"> | Date | string
   }
 
   export type UserCreateWithoutPermissionInput = {
@@ -16566,6 +16513,8 @@ export namespace Prisma {
   export type MessageCreateWithoutCustomerInput = {
     id?: string
     message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutMessageInput
   }
 
@@ -16573,6 +16522,8 @@ export namespace Prisma {
     id?: string
     message?: string | null
     userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type MessageCreateOrConnectWithoutCustomerInput = {
@@ -16636,13 +16587,9 @@ export namespace Prisma {
   export type CustomerCreateWithoutMessageInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -16654,13 +16601,9 @@ export namespace Prisma {
   export type CustomerUncheckedCreateWithoutMessageInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -16723,13 +16666,9 @@ export namespace Prisma {
   export type CustomerUpdateWithoutMessageInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16741,13 +16680,9 @@ export namespace Prisma {
   export type CustomerUncheckedUpdateWithoutMessageInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16800,13 +16735,9 @@ export namespace Prisma {
   export type CustomerCreateWithoutOrdersInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -16818,13 +16749,9 @@ export namespace Prisma {
   export type CustomerUncheckedCreateWithoutOrdersInput = {
     id?: string
     name: string
-    phone?: string | null
+    phone?: CustomerCreatephoneInput | string[]
     countryCode?: string | null
     country?: string | null
-    city?: string | null
-    source?: string | null
-    ageGroup?: string | null
-    socialStatus?: string | null
     status?: string | null
     phonestatus?: string | null
     createdAt?: Date | string
@@ -16912,13 +16839,9 @@ export namespace Prisma {
   export type CustomerUpdateWithoutOrdersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16930,13 +16853,9 @@ export namespace Prisma {
   export type CustomerUncheckedUpdateWithoutOrdersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17211,6 +17130,8 @@ export namespace Prisma {
     id?: string
     message?: string | null
     customerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type OrderUpdateWithoutUserInput = {
@@ -17292,13 +17213,9 @@ export namespace Prisma {
   export type CustomerUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17310,13 +17227,9 @@ export namespace Prisma {
   export type CustomerUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17328,13 +17241,9 @@ export namespace Prisma {
   export type CustomerUncheckedUpdateManyWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: CustomerUpdatephoneInput | string[]
     countryCode?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableStringFieldUpdateOperationsInput | string | null
-    socialStatus?: NullableStringFieldUpdateOperationsInput | string | null
     status?: NullableStringFieldUpdateOperationsInput | string | null
     phonestatus?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17344,6 +17253,8 @@ export namespace Prisma {
   export type MessageUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutMessageNestedInput
   }
 
@@ -17351,12 +17262,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateManyPermissionInput = {
@@ -17539,6 +17454,8 @@ export namespace Prisma {
     id?: string
     message?: string | null
     userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type OrderUpdateWithoutCustomerInput = {
@@ -17663,6 +17580,8 @@ export namespace Prisma {
   export type MessageUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutMessageNestedInput
   }
 
@@ -17670,12 +17589,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MessageUncheckedUpdateManyWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrderItemCreateManyOrderInput = {

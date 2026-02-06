@@ -9,140 +9,41 @@ import { FormSelect } from "@/components/ui/select-form";
 import { FormTextArea } from "@/components/ui/textera-form";
 import { Button } from "@/components/ui/button";
 import { AppModal } from "@/components/ui/app-modal";
-import { AssignUsers, createCustomerAction, createmessage, deleteCustomer, getCustomer, UpdateStusa } from "@/server/customer";
+import { AssignUsers, createCustomerAction, createmessage, deleteCustomer, getCustomer, updateCustomer, UpdateStusa } from "@/server/customer";
 import { useAuth } from "@/context/AuthContext";
 import { DataTable } from "@/components/shared/DataTable";
 import toast from "react-hot-toast";
-import { CheckCircle, ListOrdered, Mail, MapPin, Phone, PhoneCallIcon, PieChart, Plus, Save, Search, Send, Trash2, UserPlus, Users, X } from "lucide-react";
+import { CheckCircle, ListOrdered, Mail, MapPin, MessageCircle, Pencil, Phone, PhoneCallIcon, PieChart, Plus, Save, Search, Send, ShoppingBag, Trash2, UserCog, UserPlus, Users, X } from "lucide-react";
 import useState from 'react';
 import { AnimatePresence, motion } from "framer-motion";
 import { getProduct } from "@/server/product";
 import { createOrder } from "@/server/order";
+import { success } from 'zod';
 
 /* ===================== Constants ===================== */
 
 const STATUS_OPTIONS = [
   { label: "عميل محتمل", value: "عميل محتمل" },
-  { label: "تم التواصل معه", value: "تم التواصل معه" },
-  { label: "تم الإتفاق", value: "تم الإتفاق" },
+  { label: "تم التواصل", value: "تم التواصل" },
   { label: "مهتم", value: "مهتم" },
   { label: "تم الإلغاء", value: "تم الألغاء" },
-  { label: "مختلطة", value: "مختلطة" },
 ];
 
 const countryOptions = [
-  { label: "أفغانستان (+93)", value: "+93" },
-  { label: "ألبانيا (+355)", value: "+355" },
-  { label: "الجزائر (+213)", value: "+213" },
-  { label: "أندورا (+376)", value: "+376" },
-  { label: "أنغولا (+244)", value: "+244" },
-  { label: "الأرجنتين (+54)", value: "+54" },
-  { label: "أرمينيا (+374)", value: "+374" },
-  { label: "أستراليا (+61)", value: "+61" },
-  { label: "النمسا (+43)", value: "+43" },
-  { label: "أذربيجان (+994)", value: "+994" },
-
-  { label: "البحرين (+973)", value: "+973" },
-  { label: "بنغلاديش (+880)", value: "+880" },
-  { label: "بلجيكا (+32)", value: "+32" },
-  { label: "بوليفيا (+591)", value: "+591" },
-  { label: "البرازيل (+55)", value: "+55" },
-  { label: "بلغاريا (+359)", value: "+359" },
-
-  { label: "كندا (+1)", value: "+1" },
-  { label: "تشيلي (+56)", value: "+56" },
-  { label: "الصين (+86)", value: "+86" },
-  { label: "كولومبيا (+57)", value: "+57" },
-  { label: "كوبا (+53)", value: "+53" },
-
-  { label: "الدنمارك (+45)", value: "+45" },
-  { label: "جمهورية الدومينيكان (+1)", value: "+1" },
-
-  { label: "مصر (+20)", value: "+20" },
-  { label: "الإكوادور (+593)", value: "+593" },
-  { label: "إستونيا (+372)", value: "+372" },
-  { label: "إثيوبيا (+251)", value: "+251" },
-
-  { label: "فنلندا (+358)", value: "+358" },
-  { label: "فرنسا (+33)", value: "+33" },
-
-  { label: "ألمانيا (+49)", value: "+49" },
-  { label: "غانا (+233)", value: "+233" },
-  { label: "اليونان (+30)", value: "+30" },
-
-  { label: "المجر (+36)", value: "+36" },
-
-  { label: "الهند (+91)", value: "+91" },
-  { label: "إندونيسيا (+62)", value: "+62" },
-  { label: "إيران (+98)", value: "+98" },
-  { label: "العراق (+964)", value: "+964" },
-  { label: "أيرلندا (+353)", value: "+353" },
-  { label: "إيطاليا (+39)", value: "+39" },
-
-  { label: "اليابان (+81)", value: "+81" },
-  { label: "الأردن (+962)", value: "+962" },
-
-  { label: "كازاخستان (+7)", value: "+7" },
-  { label: "كينيا (+254)", value: "+254" },
-  { label: "الكويت (+965)", value: "+965" },
-
-  { label: "لبنان (+961)", value: "+961" },
-  { label: "ليبيا (+218)", value: "+218" },
-  { label: "ليتوانيا (+370)", value: "+370" },
-
-  { label: "ماليزيا (+60)", value: "+60" },
-  { label: "المكسيك (+52)", value: "+52" },
-  { label: "المغرب (+212)", value: "+212" },
-
-  { label: "هولندا (+31)", value: "+31" },
-  { label: "نيوزيلندا (+64)", value: "+64" },
-  { label: "نيجيريا (+234)", value: "+234" },
-  { label: "النرويج (+47)", value: "+47" },
-
-  { label: "عُمان (+968)", value: "+968" },
-
-  { label: "باكستان (+92)", value: "+92" },
-  { label: "فلسطين (+970)", value: "+970" },
-  { label: "بيرو (+51)", value: "+51" },
-  { label: "الفلبين (+63)", value: "+63" },
-  { label: "بولندا (+48)", value: "+48" },
-  { label: "البرتغال (+351)", value: "+351" },
-
-  { label: "قطر (+974)", value: "+974" },
-
-  { label: "رومانيا (+40)", value: "+40" },
-  { label: "روسيا (+7)", value: "+7" },
-
-  { label: "السعودية (+966)", value: "+966" },
-  { label: "صربيا (+381)", value: "+381" },
-  { label: "سنغافورة (+65)", value: "+65" },
-  { label: "سلوفاكيا (+421)", value: "+421" },
-  { label: "سلوفينيا (+386)", value: "+386" },
-  { label: "جنوب أفريقيا (+27)", value: "+27" },
-  { label: "إسبانيا (+34)", value: "+34" },
-  { label: "السودان (+249)", value: "+249" },
-  { label: "السويد (+46)", value: "+46" },
-  { label: "سويسرا (+41)", value: "+41" },
-  { label: "سوريا (+963)", value: "+963" },
-
-  { label: "تايلاند (+66)", value: "+66" },
-  { label: "تونس (+216)", value: "+216" },
-  { label: "تركيا (+90)", value: "+90" },
-
-  { label: "أوكرانيا (+380)", value: "+380" },
-  { label: "الإمارات (+971)", value: "+971" },
-  { label: "المملكة المتحدة (+44)", value: "+44" },
-  { label: "الولايات المتحدة (+1)", value: "+1" },
-
-  { label: "فنزويلا (+58)", value: "+58" },
-  { label: "فيتنام (+84)", value: "+84" },
-
-  { label: "اليمن (+967)", value: "+967" },
+  { label: "أفغانستان (+93)", value: "+93-AF" },
+  { label: "ألبانيا (+355)", value: "+355-AL" },
+  { label: "الجزائر (+213)", value: "+213-DZ" },
+  // ...
+  { label: "كندا (+1)", value: "+1-CA" },
+  { label: "الولايات المتحدة (+1)", value: "+1-US" },
+  // ...
+  { label: "كازاخستان (+7)", value: "+7-KZ" },
+  { label: "روسيا (+7)", value: "+7-RU" },
 ];
 
 const contry = [
-  { label: "تركيا", value: "تركيا" },
   { label: "سوريا", value: "سوريا" },
+  { label: "تركيا", value: "تركيا" },
   { label: "العراق", value: "العراق" },
   { label: "ليبيا", value: "ليبيا" },
   { label: "أوروبا", value: "أوروبا" },
@@ -154,7 +55,11 @@ const contry = [
 // نصيحة خبير: استخدم .or(z.literal("")) لضمان أن الحقول الفارغة لا تكسر شرط الـ min
 const customerSchema = z.object({
   name: z.string().min(3, "الاسم يجب أن يكون 3 حروف على الأقل"),
-  phone: z.string().optional().or(z.literal("")),
+  // هنا نتأكد أننا نستقبل نصاً من الفورم ثم نحوله لمصفوفة
+  phone: z.preprocess(
+    (val) => (typeof val === "string" && val !== "" ? [val] : val),
+    z.array(z.string()).optional().default([])
+  ),
   countryCode: z.string().optional().or(z.literal("")),
   country: z.string().optional().or(z.literal("")),
 });
@@ -212,6 +117,7 @@ const CustomrLayout: React.FC = () => {
     // 1. منطق البحث النصي الحالي
     const matchesSearch =
       e.name?.toLowerCase().includes(search.toLowerCase()) ||
+      e.countryCode?.toLowerCase().includes(search.toLowerCase()) ||
       e.phone?.toLowerCase().includes(search.toLowerCase()) ||
       e.city?.toLowerCase().includes(search.toLowerCase()) || // أضفت المدينة كما طلبت
       e.country?.toLowerCase().includes(search.toLowerCase());
@@ -344,41 +250,71 @@ const CustomrLayout: React.FC = () => {
     setAdditionalNotes("");
   };
 
-  const handleStatus = async(customerId:any , status:any) =>{
-    console.log(customerId , status)
+  const handleStatus = async (customerId: any, status: any) => {
+    console.log(customerId, status)
     const loading = toast.loading("جار التحديث")
     try {
-      const res = await UpdateStusa(customerId , status)
-      if (res.success){
+      const res = await UpdateStusa(customerId, status)
+      if (res.success) {
         toast.success("تم التحديث")
         getData()
-      }else{toast.error("حدثث خطأ")}
+      } else { toast.error("حدثث خطأ") }
     } catch (error) {
-      
-    }finally{
+
+    } finally {
       toast.dismiss(loading)
     }
   }
 
   const onSubmit = async (data: CustomerFormValues) => {
-    setIsPending(true);
-    try {
-      console.log("🚀 جاري إرسال البيانات...", data);
-
-      const res = await createCustomerAction(data, activeTabs, (user?.id as any));
-
-      if (res.success) {
-        toast.success("✅ تم إضافة العميل بنجاح!");
+    const loading = toast.loading(editId? "جاري تحديث العميل" : "جاري إضافة العميل")
+    if(editId){
+      
+      try {
+        const res = await updateCustomer(data , editId)
+      if(res.success){
+        toast.success("تم التحديث بنجاح")
         setIsOpen(false);
         getData()
-        // يمكنك هنا عمل reset للنموذج إذا أردت
+      }else{
+        toast.error(` خطأ ${res.error}`)
+      }
+      } catch (error) {
+        toast.error(` خطأ ${error}`)
+      }finally{
+        toast.dismiss(loading)
+      }
+    }else{
+      try {
+      // 1. استلام القيمة والتأكد من تحويلها لنص أولاً للمعالجة
+      // نستخدم String() لضمان تحويل أي نوع قادم إلى نص بأمان
+      const rawInput = String(data.phone || "");
+
+      // 2. تقسيم النص بناءً على المسافات أو الفواصل
+      const phoneArray = rawInput
+        .split(/[,\s\n]+/)
+        .map(num => num.trim())
+        .filter(num => num.length > 0);
+
+      const formattedData = {
+        ...data,
+        phone: phoneArray, // هنا سيتم إرسال ["098786", "099876"]
+      };
+
+      const res = await createCustomerAction(formattedData, user?.id as string);
+
+      if (res.success) {
+        toast.success("✅ تم الإضافة بنجاح");
+        setIsOpen(false);
+        getData();
       } else {
-        toast.error("❌ خطأ: " + res.error);
+        toast.error("خطأ");
       }
     } catch (err) {
-      toast.error("❌ حدث خطأ غير متوقع");
+      toast.error("حدث خطأ غير متوقع");
     } finally {
-      setIsPending(false);
+      toast.dismiss(loading)
+    }
     }
   };
 
@@ -513,13 +449,14 @@ const CustomrLayout: React.FC = () => {
                 key={tab.id}
                 onClick={() => setDateFilter(tab.id)} // تأكد من تعريف هذا الـ State
                 className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${dateFilter === tab.id
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
               >
                 {tab.label}
               </button>
             ))}
+
           </div>
         </div>
       </div>
@@ -529,7 +466,6 @@ const CustomrLayout: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filterCustomer
               .filter((customer) => {
-                // إذا كان أدمن يرى الجميع، وإذا لم يكن يرى فقط المرتبطين به
                 if (user.accountType === "ADMIN") return true;
                 return customer.users.some((u: any) => u.id === user?.id);
               })
@@ -537,90 +473,143 @@ const CustomrLayout: React.FC = () => {
                 <div
                   onClick={() => getSingleCustomer(customer)}
                   key={customer.id}
-                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-[2rem] shadow-sm hover:shadow-md transition-all cursor-pointer"
+                  className={`group border ${customer.orders.length === 1 ? `border-pink-500` :customer.orders.length >=2  ? 'border-purple-500' : 'border-transparent'} relative bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer`}
                 >
+                  {/* أزرار الحذف والتعديل - تظهر عند الحوام (Hover) */}
+                  <div className="absolute top-4 left-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation() 
+                        setEditId(customer.id)
+                        setFormdata({
+                          name:customer.name,
+                          phone:customer.phone ? customer.phone.join(' ') : '',
+                          countryCode:customer.countryCode,
+                          country:customer.country
+                        })
+                        setIsOpen(true)
+                      }}
+                      className="p-2 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 dark:bg-slate-800 dark:text-blue-400 transition-colors"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                    <button
+                      onClick={(e) => { }}
+                      className="p-2 bg-rose-50 text-rose-600 rounded-full hover:bg-rose-100 dark:bg-slate-800 dark:text-rose-400 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+
                   <div className="flex justify-between items-start mb-6">
-                    {/* معلومات الاسم والأداء */}
-                    <div className="space-y-1">
-                      <h3 className="text-sm font-black text-slate-900 dark:text-white">
-                        {customer.name}
-                      </h3><select
-                        value={customer.status}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                        }}
-                        onChange={(e) => {
-                          e.stopPropagation()
-                          setStatus(e.target.value)
-                          handleStatus(customer.id , e.target.value)
-                        }} // دالة التحديث الخاصة بك
-                        className={`
-    appearance-none outline-none cursor-pointer
-    px-4 py-1.5 rounded-full text-xs font-black text-center transition-all
-    ${customer.status === "عميل محتمل" ? 'bg-rose-100 text-rose-600 border border-rose-200' :
-                            customer.status === "تم الإتفاق" ? 'bg-green-100 text-green-600 border border-green-200' :
-                              customer.status === "تم الإلغاء" || customer.status === "معرض" ? 'bg-slate-100 text-slate-500 border border-slate-200' :
-                                'bg-amber-100 text-amber-600 border border-amber-200' // للحالات الأخرى (مهتم، تم التواصل)
-                          }
-  `}
-                      >
-                        {STATUS_OPTIONS.map((option) => (
-                          <option
-                            key={option.value}
-                            value={option.value}
-                            className="bg-white text-slate-900" // لضمان ظهور النص بوضوح داخل القائمة
-                          >
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="space-y-3 mt-4">
+                      <div>
+                        <h3 className="text-base font-black text-slate-900 dark:text-white mb-1">
+                          {customer.name}
+                        </h3>
+                        {/* عرض آخر رسالة إذا وجدت */}
+                        <p className="text-xs text-slate-500 line-clamp-1 italic font-medium">
+                          {customer.message && customer.message.length > 0
+                            ? customer.message[customer.message.length - 1].message
+                            : "لا توجد رسائل..."}
+                        </p>
+                        
+                      </div>
+
+                    <div className="flex flex-wrap gap-3 items-center mt-2">
+  {/* حالة العميل */}
+  <select
+    value={customer.status}
+    onClick={(e) => e.stopPropagation()}
+    onChange={(e) => {
+      e.stopPropagation();
+      handleStatus(customer.id, e.target.value);
+    }}
+    className={`
+      appearance-none outline-none cursor-pointer
+      px-4 py-1.5 rounded-full text-[10px] font-black text-center transition-all border
+      ${customer.status === "عميل محتمل" ? 'bg-blue-100 text-blue-600 border-rose-200' :
+        customer.status === "مهتم" ? 'bg-green-100 text-green-600 border-green-200' :
+        customer.status === "تم التواصل" ? 'bg-yellow-100 text-yellow-600 border-green-200' :
+        customer.status === "تم الإلغاء" ? 'bg-red-100 text-red-500 border-slate-200' :
+        'bg-amber-100 text-amber-600 border-amber-200'
+      }
+    `}
+  >
+    {STATUS_OPTIONS.map((option) => (
+      <option key={option.value} value={option.value} className="bg-white text-slate-900">
+        {option.label}
+      </option>
+    ))}
+  </select>
+
+  {/* التاريخ المنسق */}
+  <div className="flex flex-col border-r border-slate-200 dark:border-slate-700 pr-3">
+    <span className="text-[9px] text-slate-400 font-bold leading-none mb-1">تاريخ التسجيل</span>
+    <span className="text-[10px] text-slate-600 dark:text-slate-400 font-black leading-none">
+      {new Date(customer.createdAt).toLocaleDateString('ar-EG', { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric' 
+      })}
+    </span>
+  </div>
+</div>
                     </div>
 
-                    {/* الصورة الرمزية (Avatar) */}
-                    <div className="relative">
-                      <div className="w-16 h-16 rounded-full bg-amber-400 flex items-center justify-center text-xl font-black text-slate-800 border-2 border-white shadow-sm overflow-hidden">
-                        {customer.name[0].toUpperCase()}
-                      </div>
+                    {/* الصورة الرمزية */}
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-xl font-black text-white border-4 border-white dark:border-slate-800 shadow-lg">
+                      {customer.name[0].toUpperCase()}
                     </div>
                   </div>
 
-                  {/* الإحصائيات السفلية */}
-                  <div className="flex justify-between items-center text-sm font-bold text-slate-500 dark:text-slate-400 pt-4 border-t border-slate-50 dark:border-slate-800">
-                    <div className="flex items-center gap-2">
+                  {/* الإحصائيات والأزرار السفلية */}
+                  <div className="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-3">
+                      {/* أيقونة الطلبات */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setCustomerId(customer.id);
                           setisOpenOrder(true);
                         }}
-                        className="hover:text-amber-500 transition-colors"
+                        className="p-2 text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-xl transition-all"
+                        title="الطلبات"
                       >
-                        <ListOrdered size={20} />
+                        <ShoppingBag size={20} />
                       </button>
+
+                      {/* أيقونة تعيين موظف (للأدمن فقط) */}
                       {user.accountType === "ADMIN" && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            setCustomer(customer); // تخزين العميل المختار
+                            setCustomer(customer);
                             setOpenAssignModal(true);
                           }}
-                          className="hover:text-blue-500 transition-colors"
+                          className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
+                          title="تعيين موظف"
                         >
-                          <UserPlus size={20} />
+                          <UserCog size={20} />
                         </button>
                       )}
                     </div>
 
+                    {/* زر واتساب */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        const phoneNumber = customer.phone?.replace(/\D/g, '') || '';
-                        const countryCode = customer.countryCode?.replace(/\D/g, '') || '';
-                        window.open(`https://wa.me/${countryCode}${phoneNumber}`, '_blank');
+                        const rawPhone = customer.phone?.[0] || '';
+                        const phoneNumber = rawPhone.replace(/\D/g, '');
+                        const countryCode = (customer.countryCode || '').replace(/\D/g, '');
+                        if (phoneNumber) {
+                          window.open(`https://wa.me/${countryCode}${phoneNumber}`, '_blank');
+                        }
                       }}
-                      className="hover:text-green-500 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-md shadow-green-200 dark:shadow-none"
                     >
-                      <PhoneCallIcon size={20} />
+                      <MessageCircle size={16} />
+                      تواصل
                     </button>
                   </div>
                 </div>
@@ -639,7 +628,7 @@ const CustomrLayout: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormInput label="اسم العميل *" {...register("name")} error={errors.name?.message?.toString()} />
                 <FormSelect label="اختر رمز الدولة" options={countryOptions} {...register("countryCode")} error={errors.countryCode?.message?.toString()} />
-                <FormInput label="رقم الهاتف" {...register("phone")} error={errors.phone?.message?.toString()} />
+                <FormInput label="رقم الهاتف" placeholder="يمكن اضافة أكثر من رقم بين كل رقم مسافة" {...register("phone")} error={errors.phone?.message?.toString()} />
                 <FormSelect label="الدولة" options={contry} {...register("country")} error={errors.country?.message?.toString()} />
               </div>
 
@@ -903,60 +892,53 @@ const CustomrLayout: React.FC = () => {
 function GetCustomerSingle({ data, getdatas }: { data: any, getdatas: any }) {
   const [msg, setMsg] = React.useState("")
   const scrollRef = React.useRef<any>(null);
+  const { user } = useAuth()
 
+  // التمرير التلقائي عند وصول رسالة جديدة
   React.useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth", // تمرير سلس
+        top: 0, // لأننا نستخدم الترتيب العكسي، فالأعلى هو الأحدث
+        behavior: "smooth",
       });
     }
   }, [data.message]);
-  const { user } = useAuth()
+
   const submit = async () => {
     if (!msg.trim()) return;
-
     const res = await createmessage(msg, data.id, user?.id);
-
     if (res.success) {
-      setMsg(""); // مسح الحقل فوراً
-      await getdatas(); // انتظار جلب البيانات الجديدة وتحديث الـ State في الأب
+      setMsg("");
+      await getdatas();
       toast.success("تم الإرسال");
     }
   };
+
   return (
     <div className="text-slate-800 dark:text-slate-50">
+      {/* الهيدر - يبقى كما هو */}
       <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-200 dark:shadow-none">
+          <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
             {data.name?.charAt(0) || "U"}
           </div>
           <div>
             <h3 className="text-xl font-bold dark:text-white">{data.name}</h3>
-            <p className="text-xs text-slate-500 flex items-center gap-1">تم الانشاء في  :{new Date(data.createdAt).toLocaleDateString('ar-EG')}</p>
-          
+            <p className="text-xs text-slate-500">تم الانشاء في: {new Date(data.createdAt).toLocaleDateString('ar-EG')}</p>
           </div>
-        </div>
-        <div className="flex flex-col gap-1">
-          
-            <p className="text-sm text-slate-500 flex items-center gap-1">حالة الزبون :{data.status}</p>
-            <div className="flex items-center gap-1">
-              <p className="text-sm text-slate-500 flex items-center gap-1">الموظفين المسؤلين عنه:</p>
-              {data.users.map((e: any) => (
-                <p className="text-xs text-slate-500 flex items-center gap-1"> {e.username}</p>
-
-              ))}
-            </div>
         </div>
       </div>
 
       <div className="p-6 space-y-6">
+        {/* معلومات الهاتف والدولة */}
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-center gap-3">
             <Phone size={18} className="text-blue-500" />
             <div>
               <p className="text-[10px] text-slate-500 font-bold uppercase">الهاتف</p>
-              <p className="text-sm font-bold dark:text-white">{data.phone}</p>
+              <p className="text-sm font-bold dark:text-white">
+                {data.phone.join(" - ")}
+              </p>
             </div>
           </div>
           <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-center gap-3">
@@ -968,65 +950,70 @@ function GetCustomerSingle({ data, getdatas }: { data: any, getdatas: any }) {
           </div>
         </div>
 
-        <div className="space-y-4 flex flex-col h-full">
-          {/* العنوان وسجل المحادثة */}
-          <div className="space-y-4 flex flex-col h-full">
-            {/* حاوية المحادثة */}
-            <div className="flex flex-col flex-1 border rounded-[2rem] overflow-hidden border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-              <div className="p-4 border-b dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
-                <h4 className="font-bold flex items-center gap-2 dark:text-white text-sm">
-                  <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-                  سجل المحادثة
-                </h4>
-              </div>
+        {/* حاوية المحادثة الجديدة */}
+        <div className="flex flex-col border rounded-[2rem] overflow-hidden border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm min-h-[450px]">
 
-              {/* منطقة الرسائل - هنا نضع الـ scrollRef */}
-              <div
-                ref={scrollRef}
-                className="h-[300px] overflow-y-auto p-4 space-y-4 bg-transparent scroll-smooth no-scrollbar"
+          {/* 1. منطقة الإدخال أصبحت في الأعلى */}
+          <div className="p-4 border-b dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/30">
+            <div className="flex gap-2 items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+              <input
+                value={msg}
+                onChange={(e) => setMsg(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && msg.trim()) submit();
+                }}
+                placeholder="اكتب رسالة جديدة هنا..."
+                className="flex-1 bg-transparent p-2.5 outline-none text-sm dark:text-white"
+              />
+              <button
+                onClick={submit}
+                disabled={!msg.trim()}
+                className="p-2.5 bg-blue-600 text-white rounded-xl active:scale-95 transition-all disabled:opacity-50"
               >
-                {data.message.length === 0 && (
-                  <p className="text-center text-slate-400 text-xs py-10 italic">
-                    لا توجد محادثات سابقة
-                  </p>
-                )}
-
-                {data.message.map((chat: any) => (
-                  <div key={chat.id} className="flex justify-start animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="w-full p-3 rounded-2xl rounded-tr-none text-sm bg-blue-600 text-white shadow-sm">
-                      {chat.message}
-                      <p className="text-[9px] mt-1 opacity-70 text-left">
-                        {new Date(chat.createdAt || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* منطقة الإدخال */}
-              <div className="p-3 border-t dark:border-slate-800 bg-white dark:bg-slate-900">
-                <div className="flex gap-2 items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
-                  <input
-                    value={msg}
-                    onChange={(e) => setMsg(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && msg.trim()) submit();
-                    }}
-                    placeholder="اكتب رسالة..."
-                    className="flex-1 bg-transparent p-2.5 outline-none text-sm dark:text-white"
-                  />
-                  <button
-                    onClick={submit}
-                    disabled={!msg.trim()}
-                    className="p-2.5 bg-blue-600 text-white rounded-xl active:scale-95 transition-all"
-                  >
-                    <Send size={18} />
-                  </button>
-                </div>
-              </div>
+                <Send size={18} />
+              </button>
             </div>
           </div>
 
+          {/* عنوان سجل المحادثة */}
+          <div className="px-4 py-2 border-b dark:border-slate-800">
+            <h4 className="font-bold flex items-center gap-2 dark:text-white text-[11px] uppercase tracking-wider text-slate-400">
+              سجل الأنشطة
+            </h4>
+          </div>
+
+          {/* 2. منطقة الرسائل أصبحت تحت الإدخال */}
+          {/* ملاحظة: استخدمنا flex-col-reverse لجعل الرسائل الجديدة تظهر في الأعلى دائماً */}
+          <div
+            ref={scrollRef}
+            className="flex-1 h-[350px] overflow-y-auto p-4 flex flex-col-reverse gap-4 bg-transparent no-scrollbar"
+          >
+            {[...data.message].map((chat: any) => (
+              <div key={chat.id} className="flex justify-start animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="w-full p-3 rounded-2xl rounded-tr-none text-sm bg-blue-600 text-white shadow-sm">
+                  {chat.message}
+                  <p className="text-[9px] mt-1 opacity-70 text-left">
+                    {new Date(chat.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                    
+                  </p>
+                   <p className="text-[9px] opacity-70 text-left">
+                    {new Date(chat.createdAt).toLocaleDateString('ar-EG', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </p>
+                  
+                </div>
+              </div>
+            ))}
+
+            {data.message.length === 0 && (
+              <p className="text-center text-slate-400 text-xs py-10 italic">
+                لا توجد محادثات سابقة
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -1121,8 +1108,8 @@ function AssignUserModal({ customer, allUsers, onSave }: { customer: any, allUse
               key={user.id}
               onClick={() => toggleUser(user.id)}
               className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all border-2 ${selectedUserIds.includes(user.id)
-                  ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
-                  : "border-transparent bg-slate-50 dark:bg-slate-800"
+                ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                : "border-transparent bg-slate-50 dark:bg-slate-800"
                 }`}
             >
               <div className="flex items-center gap-3">

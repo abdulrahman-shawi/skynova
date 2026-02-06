@@ -179,10 +179,6 @@ exports.Prisma.CustomerScalarFieldEnum = {
   phone: 'phone',
   countryCode: 'countryCode',
   country: 'country',
-  city: 'city',
-  source: 'source',
-  ageGroup: 'ageGroup',
-  socialStatus: 'socialStatus',
   status: 'status',
   phonestatus: 'phonestatus',
   createdAt: 'createdAt',
@@ -193,7 +189,9 @@ exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   message: 'message',
   customerId: 'customerId',
-  userId: 'userId'
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
