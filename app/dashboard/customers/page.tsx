@@ -513,7 +513,8 @@ const CustomrLayout: React.FC = () => {
                     </button>
                     <button
                       onClick={(e) => { 
-
+                        e.stopPropagation()
+                        deleteCus(customer)
                       }}
                       className="p-2 bg-rose-50 text-rose-600 rounded-full hover:bg-rose-100 dark:bg-slate-800 dark:text-rose-400 transition-colors"
                     >
