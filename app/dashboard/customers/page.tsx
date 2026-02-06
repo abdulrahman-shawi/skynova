@@ -111,7 +111,7 @@ const CustomrLayout: React.FC = () => {
   const [search, setSearch] = React.useState("")
   const [OpenAssignModal, setOpenAssignModal] = React.useState(false)
 
-  const [dateFilter, setDateFilter] = React.useState('all');
+  const [dateFilter, setDateFilter] = React.useState('الكل');
   const [alluser, setUsers] = React.useState<any[]>([])
   const filterCustomer = customers.filter((e: any) => {
     // 1. منطق البحث النصي الحالي
@@ -122,23 +122,13 @@ const CustomrLayout: React.FC = () => {
       e.city?.toLowerCase().includes(search.toLowerCase()) || // أضفت المدينة كما طلبت
       e.country?.toLowerCase().includes(search.toLowerCase());
 
-    // 2. منطق تاريخ العميل
-    const createdAt = new Date(e.createdAt);
-    const now = new Date();
 
-    let matchesDate = true;
+    // إذا كان المستخدم اختار حالة معينة، نقوم بالمطابقة، وإذا لم يختار (All) نعرض الكل
+const matchesStatus = dateFilter !== 'الكل' 
+  ? e.status === dateFilter 
+  : true;
 
-    if (dateFilter === 'day') {
-      matchesDate = createdAt.toDateString() === now.toDateString();
-    } else if (dateFilter === 'week') {
-      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      matchesDate = createdAt >= oneWeekAgo;
-    } else if (dateFilter === 'month') {
-      const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      matchesDate = createdAt >= oneMonthAgo;
-    }
-
-    return matchesSearch && matchesDate;
+    return matchesSearch && matchesStatus;
   });
   const updateItem = (index: number, field: string, value: any, products: any[]) => {
     const newItems = [...items];
@@ -458,10 +448,11 @@ const CustomrLayout: React.FC = () => {
           {/* خيارات التاريخ */}
           <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl gap-1 h-11 items-center">
             {[
-              { id: 'all', label: 'الكل' },
-              { id: 'day', label: 'اليوم' },
-              { id: 'week', label: 'أسبوع' },
-              { id: 'month', label: 'شهر' }
+              { id: 'الكل', label: 'الكل' },
+              { id: 'عميل محتمل', label: 'عميل محتمل' },
+              { id: 'تم التواصل', label: 'تم التواصل' },
+              { id: 'مهتم', label: 'مهتم' },
+              { id: 'تم الإلغاء', label: 'تم الإلغاء' },
             ].map((tab) => (
               <button
                 key={tab.id}
