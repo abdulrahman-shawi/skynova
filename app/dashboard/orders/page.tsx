@@ -829,23 +829,23 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
                     {/* جدول المنتجات */}
                     <div className="overflow-x-auto rounded-[2rem] border border-slate-100 mb-8">
                         <table className="w-full text-right">
-                            <thead>
+                            <thead className='border border-slate-600'>
                                 <tr className="bg-slate-900 text-white">
-                                    <th className="px-8 py-5 font-black text-sm">المنتج</th>
-                                    <th className="px-8 py-5 font-black text-sm text-center">الكمية</th>
-                                    <th className="px-8 py-5 font-black text-sm text-center">السعر</th>
-                                    <th className="px-8 py-5 font-black text-sm text-left">الإجمالي</th>
+                                    <th className="px-8 py-2 font-black text-sm">المنتج</th>
+                                    <th className="px-8 py-2 font-black text-sm text-center">الكمية</th>
+                                    <th className="px-8 py-2 font-black text-sm text-center">السعر</th>
+                                    <th className="px-8 py-2 font-black text-sm text-left">الإجمالي</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {data.items?.map((item: any, idx: number) => (
                                     <tr key={idx} className="hover:bg-slate-50/50">
-                                        <td className="px-8 py-6">
+                                        <td className="px-8 py-2">
                                             <p className="font-black text-slate-800 dark:text-slate-100">{getProductName(item.productId)}</p>
                                         </td>
-                                        <td className="px-8 py-6 text-center font-bold text-slate-600 italic">x{item.quantity}</td>
-                                        <td className="px-8 py-6 text-center font-bold text-slate-600">{Number(item.price).toLocaleString()} $</td>
-                                        <td className="px-8 py-6 text-left font-black text-slate-900 dark:text-white">{(item.price * item.quantity).toLocaleString()} $</td>
+                                        <td className="px-8 py-2 text-center font-bold text-slate-600 italic">x{item.quantity}</td>
+                                        <td className="px-8 py-2 text-center font-bold text-slate-600">{Number(item.price).toLocaleString()} $</td>
+                                        <td className="px-8 py-2 text-left font-black text-slate-900 dark:text-white">{(item.price * item.quantity).toLocaleString()} $</td>
                                     </tr>
                                 ))}
                             </tbody>
