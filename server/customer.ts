@@ -11,7 +11,15 @@ export async function getCustomer() {
     },
     include:{
       users:true,
-      orders:true,
+      orders:{
+        include:{
+          items:{
+            include:{
+              product:true
+            }
+          }
+        }
+      },
       message:true
     }
     

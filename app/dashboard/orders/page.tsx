@@ -447,47 +447,46 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                         )
                     },
                     {
-                        header: "حالة الطلب",
-                        accessor: (c: any) => {
-                            const statusColors: Record<string, string> = {
-                                "طلب جديد": "bg-blue-100 text-blue-700 border-blue-200",
-                                "تم التجهيز": "bg-purple-100 text-purple-700 border-purple-200",
-                                "تم الاستلام": "bg-green-100 text-green-700 border-green-200",
-                                "تم الغاء الطلب": "bg-red-100 text-red-700 border-red-200",
-                                "فشل التسليم": "bg-slate-100 text-slate-700 border-slate-200",
-                            };
+    header: "حالة الطلب",
+    accessor: (c: any) => {
+        // تعريف الألوان بناءً على طلبك
+        const statusColors: Record<string, string> = {
+            "طلب جديد": "bg-sky-100 text-sky-700 border-sky-200",
+            "تم استلام الطلب": "bg-blue-100 text-blue-700 border-blue-200", // أزرق
+            "تم ارسال الطلب": "bg-yellow-100 text-yellow-700 border-yellow-200", // أصفر
+            "تم تسليم الطلب": "bg-green-100 text-green-700 border-green-200", // أخضر
+            "فشل التسليم مرتجع": "bg-red-600 text-white border-red-700", // أحمر غامق
+            "تم الغاء الطلب": "bg-red-100 text-red-700 border-red-200", // أحمر فاتح
+            "معلق / نقص معلومات": "bg-gray-100 text-gray-700 border-gray-200", // رمادي
+        };
 
-                            return (
-                                <div className="">
+        // دالة لجلب اللون الحالي بناءً على القيمة
+        const currentColor = statusColors[c.status] || "bg-slate-50 text-slate-500 border-slate-200";
 
-                                    <select
-                                        className={`w-full bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold transition-all ${statusColors}`}
-                                        value={c.status}
-                                        onChange={(e) => {
-                                            const newValue = e.target.value; // القيمة الجديدة مباشرة من المستخدم
-
-                                            // 1. تحديث الـ state المحلي (اختياري لو كان الجدول سيعاد تحميله)
-                                            setStatus(newValue);
-                                            updatestatuschange(newValue, c.id)// طباعة القيمة في الكونسول
-                                        }}
-                                        name="order-status"
-                                        id="order-status"
-                                    >
-                                        <option value="" disabled>اختر الحالة</option>
-                                        <option value="طلب جديد">طلب جديد</option>
-                                        <option value="تم التجهيز">تم التجهيز</option>
-                                        <option value="قيد الاستلام">قيد الاستلام</option>
-                                        <option value="تم الاستلام">تم الاستلام</option>
-                                        <option value="معلق / نقص معلومات">معلق / نقص معلومات</option>
-                                        <option value="تم الغاء الطلب">تم الغاء الطلب</option>
-                                        <option value="فشل التسليم">فشل التسليم</option>
-                                        <option value="حجز بمبلغ مال">حجز بمبلغ مال</option>
-                                    </select>
-                                </div>
-
-                            );
-                        }
-                    },
+        return (
+            <div className="min-w-[150px]">
+                <select
+                    className={`${currentColor} w-full p-2.5 rounded-xl border font-bold transition-all cursor-pointer outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400`}
+                    value={c.status}
+                    onChange={(e) => {
+                        const newValue = e.target.value;
+                        updatestatuschange(newValue, c.id);
+                    }}
+                    name="order-status"
+                >
+                    <option value="" disabled>اختر الحالة</option>
+                    <option value="طلب جديد" className="bg-white text-black">طلب جديد</option>
+                    <option value="تم استلام الطلب" className="bg-white text-black">تم استلام الطلب</option>
+                    <option value="تم ارسال الطلب" className="bg-white text-black">تم ارسال الطلب</option>
+                    <option value="تم تسليم الطلب" className="bg-white text-black">تم تسليم الطلب</option>
+                    <option value="فشل التسليم مرتجع" className="bg-white text-black">فشل التسليم مرتجع</option>
+                    <option value="تم الغاء الطلب" className="bg-white text-black">تم الغاء الطلب</option>
+                    <option value="معلق / نقص معلومات" className="bg-white text-black">معلق / نقص معلومات</option>
+                </select>
+            </div>
+        );
+    }
+},
                     {
                         header: "تاريخ الإنشاء",
                         accessor: (e: any) => new Date(e.createdAt).toLocaleDateString('ar-EG', {
@@ -750,19 +749,17 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
 };
 
 function ViewOrder({ data, products }: { data: any, products: any }) {
-
     const componentRef = React.useRef<HTMLDivElement>(null);
 
-    // دالة المعالجة للطباعة
     const handlePrint = useReactToPrint({
         contentRef: componentRef,
         documentTitle: `فاتورة-${data.orderNumber}`,
         onAfterPrint: () => console.log("تمت الطباعة بنجاح"),
     });
-    // حسابات المبالغ
+
     const totalDiscount = Number(data.discount) || 0;
     const finalAmount = Number(data.finalAmount) || 0;
-    const subtotal = finalAmount + totalDiscount; // المجموع قبل الخصم
+    const subtotal = finalAmount + totalDiscount;
 
     const getProductName = (productId: any) => {
         const product = products?.find((p: any) => p.id === productId);
@@ -770,114 +767,128 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
     };
 
     return (
-        <div className="p-10 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 min-h-screen" id="printable-area">
-
+        <div className="p-10 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 min-h-screen">
+            
+            {/* زر الطباعة */}
             <div className="flex justify-end p-4 bg-white dark:bg-slate-900 no-print">
                 <button
                     onClick={handlePrint}
-                    className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 dark:shadow-none"
+                    className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
                 >
                     <Printer size={20} />
                     طباعة الفاتورة
                 </button>
             </div>
-            {/* منطقة الفاتورة - هي التي سيتم طباعتها فقط */}
-            <div ref={componentRef} className="p-10 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50" dir="rtl">
 
-                {/* نمط CSS خاص للطباعة فقط لضمان جودة الألوان والخلفيات */}
+            <div ref={componentRef} className="p-10 bg-white dark:bg-slate-900" dir="rtl">
                 <style dangerouslySetInnerHTML={{
                     __html: `
                     @media print {
                         @page { size: auto; margin: 10mm; }
-                        body { -webkit-print-color-adjust: exact; }
+                        body { -webkit-print-color-adjust: exact; background-color: white !important; }
                         .no-print { display: none !important; }
-                        #printable-area { padding: 0 !important; }
                     }
                 `}} />
 
                 <div id="printable-area">
-                    {/* الهيدر العلوي */}
-                    <div className="flex justify-between items-start mb-10 pb-8 border-b-2 border-slate-50">
-                        <div>
-                            <h1 className="text-5xl font-black text-blue-600 mb-4 tracking-tighter italic">SKYNOVA</h1>
-                            <div className="space-y-1 text-sm text-slate-500 font-bold">
-                                <p>رقم الفاتورة: <span className="text-slate-900 dark:text-white font-mono">#{data.orderNumber}</span></p>
-                                <p>تاريخ الإصدار: <span className="text-slate-900 dark:text-white">{data.createdAt instanceof Date ? data.createdAt.toLocaleDateString('ar-EG') : String(data.createdAt)}</span></p>
+                    {/* الهيدر العلوي مع إضافة "فاتورة" */}
+                    <div className="flex justify-between items-start mb-10 pb-8 border-b-2 border-slate-100">
+                        <div className="flex items-baseline gap-4">
+                            <h1 className="text-5xl font-black text-blue-600 tracking-tighter italic">SKYNOVA</h1>
+                            <span className="text-2xl font-bold text-slate-400">| فاتورة مبيعات</span>
+                        </div>
+                        <div className="text-left space-y-1 text-sm text-slate-500 font-bold">
+                            <p>رقم الفاتورة: <span className="text-slate-900 dark:text-white font-mono">#{data.orderNumber}</span></p>
+                            <p>تاريخ الإصدار: <span className="text-slate-900 dark:text-white">{data.createdAt instanceof Date ? data.createdAt.toLocaleDateString('ar-EG') : String(data.createdAt)}</span></p>
+                        </div>
+                    </div>
+
+                    {/* تفاصيل العميل والمستلم والعنوان */}
+                    <div className="grid grid-cols-1 gap-8 mb-12">
+                        <div className="p-6 bg-blue-50/50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100/50">
+                            <h3 className="text-blue-600 font-black text-sm mb-3 uppercase tracking-wider">العميل المحاسب</h3>
+                            <p className="text-xl font-black text-slate-900 dark:text-white">{data.customer?.name}</p>
+                            <p className="text-sm font-bold text-slate-500 mt-2">طريقة الدفع: {data.paymentMethod}</p>
+                        </div>
+
+                        <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100">
+                            <h3 className="text-slate-400 font-black text-sm mb-3 uppercase tracking-wider">تفاصيل العنوان والتوصيل</h3>
+                            <p className="text-lg font-black text-slate-800 dark:text-white">المستلم: {data.receiverName || 'غير محدد'}</p>
+                            
+                            {/* عرض العنوان التفصيلي */}
+                            <div className="text-sm font-bold text-slate-500 mt-2 space-y-1">
+                                <p>البلد: {data.country} </p>
+                                <p>المحافظة:{data.city ? ` - ${data.city}` : 'لم يسجل'}</p>
+                                <p>المنظقة: {data.municipality ? ` - ${data.municipality}` : 'لم يسجل'}</p>
+                                <p>العنوان: {data.fullAddress || 'لم يسجل'}</p>
+                                <p>رقم التواصل: {data.receiverPhone || 'لم يسجل'}</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* تفاصيل العميل والمستلم */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                        <div className="p-6 bg-blue-50/50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100/50">
-                            <h3 className="text-blue-600 font-black text-sm mb-3 uppercase tracking-wider">العميل المحاسب</h3>
-                            <p className="text-xl font-black text-slate-900 dark:text-white">{data.customer?.name}</p>
-                            <p className="text-sm font-bold text-slate-500">حالة الحساب: {data.status}</p>
-                        </div>
-
-                        <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100">
-                            <h3 className="text-slate-400 font-black text-sm mb-3 uppercase tracking-wider">تفاصيل الشحن / الاستلام</h3>
-                            <p className="text-lg font-black text-slate-800 dark:text-white">المستلم: {data.receiverName || 'غير محدد'}</p>
-                            <p className="text-sm font-bold text-slate-500">رقم التواصل: {data.receiverPhone || 'غير محدد'}</p>
-                            <p className="text-sm font-bold text-slate-500">عنوان التوصيل : {data.fullAddress || 'غير محدد'}</p>
-                        </div>
-                        <div className="p-6 col-span-2 bg-blue-50/50 dark:bg-blue-900/10 rounded-[2rem] border border-blue-100/50">
-                            <h3 className="text-blue-600 font-black text-sm mb-3 uppercase tracking-wider">الدفع و الاستلام</h3>
-                            <p className="text-xl font-black text-slate-900 dark:text-white">طريقة الدفع: {data.paymentMethod}</p>
-                            <p className="text-sm font-bold text-slate-500">طريقة الاستلام: {data.deliveryMethod}</p>
-                        </div>
-                    </div>
-
-                    {/* الجدول */}
+                    {/* جدول المنتجات */}
                     <div className="overflow-x-auto rounded-[2rem] border border-slate-100 mb-8">
                         <table className="w-full text-right">
                             <thead>
                                 <tr className="bg-slate-900 text-white">
                                     <th className="px-8 py-5 font-black text-sm">المنتج</th>
                                     <th className="px-8 py-5 font-black text-sm text-center">الكمية</th>
-                                    <th className="px-8 py-5 font-black text-sm text-center">السعر الإفرادي</th>
+                                    <th className="px-8 py-5 font-black text-sm text-center">السعر</th>
                                     <th className="px-8 py-5 font-black text-sm text-left">الإجمالي</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-
                                 {data.items?.map((item: any, idx: number) => (
-                                    <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
+                                    <tr key={idx} className="hover:bg-slate-50/50">
                                         <td className="px-8 py-6">
                                             <p className="font-black text-slate-800 dark:text-slate-100">{getProductName(item.productId)}</p>
-                                            <p className="text-[10px] text-slate-400 font-mono">ID: {item.productId}</p>
                                         </td>
                                         <td className="px-8 py-6 text-center font-bold text-slate-600 italic">x{item.quantity}</td>
-                                        <td className="px-8 py-6 text-center font-bold text-slate-600">{item.price.toLocaleString()}  $</td>
-                                        <td className="px-8 py-6 text-left font-black text-slate-900 dark:text-white">{(item.price * item.quantity).toLocaleString()}  $</td>
+                                        <td className="px-8 py-6 text-center font-bold text-slate-600">{Number(item.price).toLocaleString()} $</td>
+                                        <td className="px-8 py-6 text-left font-black text-slate-900 dark:text-white">{(item.price * item.quantity).toLocaleString()} $</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
 
-                    {/* ملخص الحساب النهائي */}
-                    <div className="flex justify-between items-end">
-                        <div className="text-slate-400 text-xs font-bold leading-relaxed max-w-[300px]">
-                            * هذه الفاتورة صدرت إلكترونياً وهي وثيقة رسمية لعملية الشراء.
+                    <div className="flex justify-between items-end gap-10">
+                        {/* ملاحظات قانونية */}
+                        <div className="text-slate-400 text-xs font-bold leading-relaxed flex-1">
+                            * هذه الفاتورة صدرت إلكترونياً وهي وثيقة رسمية.
                             <br />
                             * شكراً لتعاملك مع SKYNOVA.
                         </div>
 
-                        <div className="w-96 space-y-4">
-                            <div className="flex justify-between px-6 text-slate-500 font-bold">
+                        {/* ملخص الحسابات */}
+                        <div className="w-96 space-y-3">
+                            <div className="flex justify-between px-6 text-slate-500 font-bold text-sm">
                                 <span>المجموع الفرعي:</span>
-                                <span>{subtotal.toLocaleString()}  $</span>
+                                <span>{subtotal.toLocaleString()} $</span>
                             </div>
 
                             {totalDiscount > 0 && (
-                                <div className="flex justify-between px-6 text-rose-500 font-bold">
+                                <div className="flex justify-between px-6 text-rose-500 font-bold text-sm">
                                     <span>الخصم الممنوح:</span>
-                                    <span>-{totalDiscount.toLocaleString()}  $</span>
+                                    <span>-{totalDiscount.toLocaleString()} $</span>
                                 </div>
                             )}
 
-                            <div className="flex justify-between items-center p-6 bg-blue-600 rounded-[2rem] text-white shadow-xl shadow-blue-200 dark:shadow-none">
+                            {/* عرض تفاصيل الدفع المختلط */}
+                            {data.paymentMethod === "مختلطة" && (
+                                <div className="border-t border-b border-dashed border-slate-200 py-3 space-y-2">
+                                    <div className="flex justify-between px-6 text-blue-600 font-bold text-sm">
+                                        <span>القيمة المستلمة (كاش):</span>
+                                        <span>{Number(data.amount).toLocaleString()} $</span>
+                                    </div>
+                                    <div className="flex justify-between px-6 text-purple-600 font-bold text-sm">
+                                        <span>القيمة المتبقية (بنك):</span>
+                                        <span>{Number(data.amountBank).toLocaleString()} $</span>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="flex justify-between items-center p-6 bg-blue-600 rounded-[2rem] text-white shadow-xl">
                                 <span className="text-xl font-black">الإجمالي النهائي</span>
                                 <div className="text-right">
                                     <span className="text-3xl font-black italic tracking-tighter">
