@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as z from "zod";
+import * as XLSX from 'xlsx';
 import { DynamicForm } from "@/components/shared/dynamic-form";
 import { FormInput } from "@/components/ui/form-input";
 import { FormCheckbox } from "@/components/ui/formcheck";
@@ -13,7 +14,7 @@ import { AssignUsers, createCustomerAction, createmessage, deleteCustomer, getCu
 import { useAuth } from "@/context/AuthContext";
 import { DataTable } from "@/components/shared/DataTable";
 import toast from "react-hot-toast";
-import { CheckCircle, ChevronDown, ChevronUp, Eye, ListOrdered, Mail, MapPin, MessageCircle, Package, Pencil, Phone, PhoneCallIcon, PieChart, Plus, Save, Search, Send, ShoppingBag, Trash2, UserCog, UserPlus, Users, X } from "lucide-react";
+import { CheckCircle, ChevronDown, ChevronUp, Download, Eye, ListOrdered, Mail, MapPin, MessageCircle, Package, Pencil, Phone, PhoneCallIcon, PieChart, Plus, Save, Search, Send, ShoppingBag, Trash2, UserCog, UserPlus, Users, X, XCircle } from "lucide-react";
 import useState from 'react';
 import { AnimatePresence, motion } from "framer-motion";
 import { getProduct } from "@/server/product";
@@ -115,7 +116,7 @@ const CustomrLayout: React.FC = () => {
 
   const [dateFilter, setDateFilter] = React.useState('الكل');
   const [alluser, setUsers] = React.useState<any[]>([])
-  const [selectedCustomers, setSelectedCustomers] =React. useState([]);
+  const [selectedCustomers, setSelectedCustomers] =React. useState<any[]>([]);
 
 // دالة للتعامل مع الاختيار
 
@@ -344,6 +345,46 @@ const matchesStatus = dateFilter !== 'الكل'
     setIsOpencustomer(true)
   }
 
+const handleExportAction = () => {
+  // 1. تحديد أي بيانات سنصدرها
+  // إذا كانت مصفوفة selectedCustomers تحتوي على عناصر، نفلتر filterCustomer بناءً عليها
+  // وإلا، نأخذ كل filterCustomer
+  const dataToExport = selectedCustomers.length > 0 
+    ? filterCustomer.filter(customer => selectedCustomers.includes(customer.id))
+    : filterCustomer;
+
+  // 2. استدعاء دالة التصدير الأصلية وتمرير البيانات المحددة لها
+  exportCustomersToExcel(dataToExport);
+};
+
+const exportCustomersToExcel = (customers: any[]) => {
+  const worksheetData = customers.map((customer) => {
+    // تجميع الرسائل الأخيرة أو الطلبات إذا أردت
+    const lastMessage = customer.message && customer.message.length > 0
+      ? customer.message[customer.message.length - 1].message
+      : "لا توجد رسائل";
+
+    return {
+      "اسم العميل": customer.name,
+      "رقم الهاتف": customer.phone ? customer.phone.join(' - ') : 'N/A',
+      "الدولة": customer.country,
+      "الحالة": customer.status,
+      "تاريخ التسجيل": new Date(customer.createdAt).toLocaleDateString('ar-EG'),
+      "عدد الطلبات": customer.orders?.length || 0,
+      "آخر رسالة": lastMessage,
+      "الموظفين المسؤولين": customer.users?.map((u: any) => u.username).join(', ') || "غير معين",
+    };
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "بيانات العملاء");
+
+  worksheet['!dir'] = "rtl";
+
+  XLSX.writeFile(workbook, `Customers_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+};
+
   const handleAssignUsers = async (customerId: string, userIds: string[]) => {
     const loading = toast.loading("جار ربط الموظفين بالعميل")
     try {
@@ -444,6 +485,36 @@ const matchesStatus = dateFilter !== 'الكل'
       <div className="flex justify-between items-center mb-8 bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">نظام إدارة العملاء</h1>
         <Button onClick={() => setIsOpen(true)}>إضافة عميل جديد +</Button>
+        <div className="flex justify-between items-center mb-6">
+  
+  <div className="flex gap-2">
+    {/* زر التصدير الذكي */}
+    <button
+      onClick={handleExportAction}
+      className={`flex items-center gap-2 px-6 py-2 rounded-xl text-white font-bold transition-all ${
+        selectedCustomers.length > 0 
+        ? 'bg-blue-600 hover:bg-blue-700 shadow-lg scale-105' 
+        : 'bg-slate-600 hover:bg-slate-700'
+      }`}
+    >
+      <Download size={18} />
+      {selectedCustomers.length > 0 
+        ? `تصدير المحددين (${selectedCustomers.length})` 
+        : "تصدير الكل إلى Excel"}
+    </button>
+
+    {/* زر مسح التحديد - يظهر فقط عند وجود تحديد */}
+    {selectedCustomers.length > 0 && (
+      <button
+        onClick={() => setSelectedCustomers([])}
+        className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
+        title="إلغاء التحديد"
+      >
+        <XCircle size={24} />
+      </button>
+    )}
+  </div>
+</div>
       </div>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col md:flex-row gap-3 items-center">
@@ -495,6 +566,19 @@ const matchesStatus = dateFilter !== 'الكل'
                   key={customer.id}
                   className={`group border ${customer.orders.length === 1 ? `border-pink-500` :customer.orders.length >=2  ? 'border-purple-500' : 'border-transparent'} relative bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer`}
                 >
+                  <div className="absolute top-4 right-6 z-10">
+       <input 
+  type="checkbox"
+  checked={selectedCustomers.includes(customer.id)}
+  // 1. منع الانتشار عند النقر (هذا ما يمنع البطاقة من التفاعل)
+  onClick={(e) => e.stopPropagation()} 
+  // 2. معالجة تغيير الحالة
+  onChange={(e) => {
+    toggleSelect(customer.id);
+  }}
+  className="w-5 h-5 rounded-full border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+/>
+      </div>
                   {/* أزرار الحذف والتعديل - تظهر عند الحوام (Hover) */}
                   <div className="absolute top-4 left-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
