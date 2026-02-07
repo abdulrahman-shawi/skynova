@@ -92,7 +92,7 @@ const CustomrLayout: React.FC = () => {
 
   // بيانات المستلم والعنوان
   const [receiverName, setReceiverName] = React.useState("");
-  const [receiverPhone, setReceiverPhone] = React.useState("");
+  const [receiverPhone, setReceiverPhone] = React.useState<string[]>([""]);
   const [country, setCountry] = React.useState("ليبيا"); // افتراضي حسب الصورة
   const [city, setCity] = React.useState("");
   const [municipality, setMunicipality] = React.useState("");
@@ -256,7 +256,7 @@ const matchesStatus = dateFilter !== 'الكل'
 
     // إعادة بيانات المستلم والعنوان
     setReceiverName("");
-    setReceiverPhone("");
+    setReceiverPhone([""]);
     setCountry("ليبيا");
     setCity("");
     setMunicipality("");
@@ -466,9 +466,10 @@ const exportCustomersToExcel = (customers: any[]) => {
       } else {
         // عرض الخطأ القادم من السيرفر (مثل كمية غير كافية أو فشل Transaction)
         toast.error(res.success || "فشل في معالجة الطلب");
+      
       }
     } catch (error) {
-      console.error("Submit Error:", error);
+      console.log("Submit Error:", error);
       toast.error("حدث خطأ غير متوقع في النظام");
     } finally {
       // إنهاء حالة التحميل وإخفاء الـ Toast
@@ -945,9 +946,42 @@ const exportCustomersToExcel = (customers: any[]) => {
                 <input type="text" value={receiverName} onChange={(e) => setReceiverName(e.target.value)} placeholder="اسم المستلم" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold" />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 mr-2">رقم هاتف المستلم</label>
-                <input type="text" value={receiverPhone} onChange={(e) => setReceiverPhone(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
-              </div>
+  <label className="text-xs font-bold text-slate-500">أرقام هواتف المستلم</label>
+  
+  {receiverPhone.map((phone, index) => (
+    <div key={index} className="flex gap-2">
+      <input
+        type="text"
+        value={phone}
+        onChange={(e) => {
+          const newPhones = [...receiverPhone];
+          newPhones[index] = e.target.value;
+          setReceiverPhone(newPhones);
+        }}
+        className="w-full bg-white dark:bg-slate-900 p-3.5 rounded-xl border ..."
+        placeholder={`رقم الهاتف ${index + 1}`}
+      />
+      
+      {/* زر حذف الحقل إذا كان هناك أكثر من حقل واحد */}
+      {receiverPhone.length > 1 && (
+        <button 
+          onClick={() => setReceiverPhone(receiverPhone.filter((_, i) => i !== index))}
+          className="p-2 text-rose-500 bg-rose-50 rounded-lg"
+        >
+          X
+        </button>
+      )}
+    </div>
+  ))}
+
+  <button
+    type="button"
+    onClick={() => setReceiverPhone([...receiverPhone, ""])}
+    className="text-xs text-blue-600 font-bold hover:underline"
+  >
+    + إضافة رقم هاتف آخر
+  </button>
+</div>
               <div className="space-y-2 md:col-span-2">
                 <label className="text-xs font-bold text-slate-500 mr-2">طريقة الدفع</label>
                 <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold">

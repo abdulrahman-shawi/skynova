@@ -9908,7 +9908,6 @@ export namespace Prisma {
     finalAmount: number | null
     paymentMethod: string | null
     receiverName: string | null
-    receiverPhone: string | null
     country: string | null
     city: string | null
     municipality: string | null
@@ -9934,7 +9933,6 @@ export namespace Prisma {
     finalAmount: number | null
     paymentMethod: string | null
     receiverName: string | null
-    receiverPhone: string | null
     country: string | null
     city: string | null
     municipality: string | null
@@ -10002,7 +10000,6 @@ export namespace Prisma {
     finalAmount?: true
     paymentMethod?: true
     receiverName?: true
-    receiverPhone?: true
     country?: true
     city?: true
     municipality?: true
@@ -10028,7 +10025,6 @@ export namespace Prisma {
     finalAmount?: true
     paymentMethod?: true
     receiverName?: true
-    receiverPhone?: true
     country?: true
     city?: true
     municipality?: true
@@ -10167,7 +10163,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName: string | null
-    receiverPhone: string | null
+    receiverPhone: string[]
     country: string | null
     city: string | null
     municipality: string | null
@@ -10347,7 +10343,7 @@ export namespace Prisma {
       finalAmount: number
       paymentMethod: string
       receiverName: string | null
-      receiverPhone: string | null
+      receiverPhone: string[]
       country: string | null
       city: string | null
       municipality: string | null
@@ -10796,7 +10792,7 @@ export namespace Prisma {
     readonly finalAmount: FieldRef<"Order", 'Float'>
     readonly paymentMethod: FieldRef<"Order", 'String'>
     readonly receiverName: FieldRef<"Order", 'String'>
-    readonly receiverPhone: FieldRef<"Order", 'String'>
+    readonly receiverPhone: FieldRef<"Order", 'String[]'>
     readonly country: FieldRef<"Order", 'String'>
     readonly city: FieldRef<"Order", 'String'>
     readonly municipality: FieldRef<"Order", 'String'>
@@ -13177,7 +13173,7 @@ export namespace Prisma {
     finalAmount?: FloatFilter<"Order"> | number
     paymentMethod?: StringFilter<"Order"> | string
     receiverName?: StringNullableFilter<"Order"> | string | null
-    receiverPhone?: StringNullableFilter<"Order"> | string | null
+    receiverPhone?: StringNullableListFilter<"Order">
     country?: StringNullableFilter<"Order"> | string | null
     city?: StringNullableFilter<"Order"> | string | null
     municipality?: StringNullableFilter<"Order"> | string | null
@@ -13206,7 +13202,7 @@ export namespace Prisma {
     finalAmount?: SortOrder
     paymentMethod?: SortOrder
     receiverName?: SortOrderInput | SortOrder
-    receiverPhone?: SortOrderInput | SortOrder
+    receiverPhone?: SortOrder
     country?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
     municipality?: SortOrderInput | SortOrder
@@ -13238,7 +13234,7 @@ export namespace Prisma {
     finalAmount?: FloatFilter<"Order"> | number
     paymentMethod?: StringFilter<"Order"> | string
     receiverName?: StringNullableFilter<"Order"> | string | null
-    receiverPhone?: StringNullableFilter<"Order"> | string | null
+    receiverPhone?: StringNullableListFilter<"Order">
     country?: StringNullableFilter<"Order"> | string | null
     city?: StringNullableFilter<"Order"> | string | null
     municipality?: StringNullableFilter<"Order"> | string | null
@@ -13267,7 +13263,7 @@ export namespace Prisma {
     finalAmount?: SortOrder
     paymentMethod?: SortOrder
     receiverName?: SortOrderInput | SortOrder
-    receiverPhone?: SortOrderInput | SortOrder
+    receiverPhone?: SortOrder
     country?: SortOrderInput | SortOrder
     city?: SortOrderInput | SortOrder
     municipality?: SortOrderInput | SortOrder
@@ -13301,7 +13297,7 @@ export namespace Prisma {
     finalAmount?: FloatWithAggregatesFilter<"Order"> | number
     paymentMethod?: StringWithAggregatesFilter<"Order"> | string
     receiverName?: StringNullableWithAggregatesFilter<"Order"> | string | null
-    receiverPhone?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    receiverPhone?: StringNullableListFilter<"Order">
     country?: StringNullableWithAggregatesFilter<"Order"> | string | null
     city?: StringNullableWithAggregatesFilter<"Order"> | string | null
     municipality?: StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -13935,7 +13931,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -13962,7 +13958,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -13988,7 +13984,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14015,7 +14011,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14042,7 +14038,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -14067,7 +14063,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14091,7 +14087,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14802,7 +14798,6 @@ export namespace Prisma {
     finalAmount?: SortOrder
     paymentMethod?: SortOrder
     receiverName?: SortOrder
-    receiverPhone?: SortOrder
     country?: SortOrder
     city?: SortOrder
     municipality?: SortOrder
@@ -14828,7 +14823,6 @@ export namespace Prisma {
     finalAmount?: SortOrder
     paymentMethod?: SortOrder
     receiverName?: SortOrder
-    receiverPhone?: SortOrder
     country?: SortOrder
     city?: SortOrder
     municipality?: SortOrder
@@ -15450,6 +15444,10 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessageInput, UserUpdateWithoutMessageInput>, UserUncheckedUpdateWithoutMessageInput>
   }
 
+  export type OrderCreatereceiverPhoneInput = {
+    set: string[]
+  }
+
   export type CustomerCreateNestedOneWithoutOrdersInput = {
     create?: XOR<CustomerCreateWithoutOrdersInput, CustomerUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: CustomerCreateOrConnectWithoutOrdersInput
@@ -15474,6 +15472,11 @@ export namespace Prisma {
     connectOrCreate?: OrderItemCreateOrConnectWithoutOrderInput | OrderItemCreateOrConnectWithoutOrderInput[]
     createMany?: OrderItemCreateManyOrderInputEnvelope
     connect?: OrderItemWhereUniqueInput | OrderItemWhereUniqueInput[]
+  }
+
+  export type OrderUpdatereceiverPhoneInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type CustomerUpdateOneRequiredWithoutOrdersNestedInput = {
@@ -15782,7 +15785,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -15808,7 +15811,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -15961,7 +15964,7 @@ export namespace Prisma {
     finalAmount?: FloatFilter<"Order"> | number
     paymentMethod?: StringFilter<"Order"> | string
     receiverName?: StringNullableFilter<"Order"> | string | null
-    receiverPhone?: StringNullableFilter<"Order"> | string | null
+    receiverPhone?: StringNullableListFilter<"Order">
     country?: StringNullableFilter<"Order"> | string | null
     city?: StringNullableFilter<"Order"> | string | null
     municipality?: StringNullableFilter<"Order"> | string | null
@@ -16421,7 +16424,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -16447,7 +16450,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -16928,7 +16931,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -16954,7 +16957,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -17023,7 +17026,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17049,7 +17052,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17109,7 +17112,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -17141,7 +17144,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17167,7 +17170,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17193,7 +17196,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17433,7 +17436,7 @@ export namespace Prisma {
     finalAmount: number
     paymentMethod: string
     receiverName?: string | null
-    receiverPhone?: string | null
+    receiverPhone?: OrderCreatereceiverPhoneInput | string[]
     country?: string | null
     city?: string | null
     municipality?: string | null
@@ -17465,7 +17468,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17491,7 +17494,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17517,7 +17520,7 @@ export namespace Prisma {
     finalAmount?: FloatFieldUpdateOperationsInput | number
     paymentMethod?: StringFieldUpdateOperationsInput | string
     receiverName?: NullableStringFieldUpdateOperationsInput | string | null
-    receiverPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    receiverPhone?: OrderUpdatereceiverPhoneInput | string[]
     country?: NullableStringFieldUpdateOperationsInput | string | null
     city?: NullableStringFieldUpdateOperationsInput | string | null
     municipality?: NullableStringFieldUpdateOperationsInput | string | null

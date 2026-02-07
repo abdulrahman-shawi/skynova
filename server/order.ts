@@ -55,7 +55,10 @@ export async function createOrder(data: any, items: any[], user: any) {
                     status: data.status,
                     paymentMethod: data.paymentMethod || "عند الاستلام",
                     receiverName: data.receiverName,
-                    receiverPhone: data.receiverPhone,
+                    // ضمان أن receiverPhone مصفوفة حتى لو جاءت قيمة واحدة أو فارغة
+                    receiverPhone: Array.isArray(data.receiverPhone) 
+                        ? data.receiverPhone 
+                        : data.receiverPhone ? [data.receiverPhone] : [],
                     country: data.country,
                     city: data.city,
                     municipality: data.municipality,

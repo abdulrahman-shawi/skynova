@@ -104,7 +104,7 @@ model Order {
   finalAmount     Float
   paymentMethod   String
   receiverName    String?
-  receiverPhone   String?
+  receiverPhone   String[]
   country         String?
   city            String?
   municipality    String?
