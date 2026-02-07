@@ -111,8 +111,8 @@ model Order {
   fullAddress     String?
   deliveryNotes   String?
   googleMapsLink  String?
-  shippingCompany String?
-  trackingCode    String?
+  amount String?
+  amountBank    String?
   deliveryMethod  String?
   additionalNotes String?
   status          String      @default("PENDING")

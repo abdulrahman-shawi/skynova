@@ -9915,8 +9915,8 @@ export namespace Prisma {
     fullAddress: string | null
     deliveryNotes: string | null
     googleMapsLink: string | null
-    shippingCompany: string | null
-    trackingCode: string | null
+    amount: string | null
+    amountBank: string | null
     deliveryMethod: string | null
     additionalNotes: string | null
     status: string | null
@@ -9941,8 +9941,8 @@ export namespace Prisma {
     fullAddress: string | null
     deliveryNotes: string | null
     googleMapsLink: string | null
-    shippingCompany: string | null
-    trackingCode: string | null
+    amount: string | null
+    amountBank: string | null
     deliveryMethod: string | null
     additionalNotes: string | null
     status: string | null
@@ -9967,8 +9967,8 @@ export namespace Prisma {
     fullAddress: number
     deliveryNotes: number
     googleMapsLink: number
-    shippingCompany: number
-    trackingCode: number
+    amount: number
+    amountBank: number
     deliveryMethod: number
     additionalNotes: number
     status: number
@@ -10009,8 +10009,8 @@ export namespace Prisma {
     fullAddress?: true
     deliveryNotes?: true
     googleMapsLink?: true
-    shippingCompany?: true
-    trackingCode?: true
+    amount?: true
+    amountBank?: true
     deliveryMethod?: true
     additionalNotes?: true
     status?: true
@@ -10035,8 +10035,8 @@ export namespace Prisma {
     fullAddress?: true
     deliveryNotes?: true
     googleMapsLink?: true
-    shippingCompany?: true
-    trackingCode?: true
+    amount?: true
+    amountBank?: true
     deliveryMethod?: true
     additionalNotes?: true
     status?: true
@@ -10061,8 +10061,8 @@ export namespace Prisma {
     fullAddress?: true
     deliveryNotes?: true
     googleMapsLink?: true
-    shippingCompany?: true
-    trackingCode?: true
+    amount?: true
+    amountBank?: true
     deliveryMethod?: true
     additionalNotes?: true
     status?: true
@@ -10174,8 +10174,8 @@ export namespace Prisma {
     fullAddress: string | null
     deliveryNotes: string | null
     googleMapsLink: string | null
-    shippingCompany: string | null
-    trackingCode: string | null
+    amount: string | null
+    amountBank: string | null
     deliveryMethod: string | null
     additionalNotes: string | null
     status: string
@@ -10219,8 +10219,8 @@ export namespace Prisma {
     fullAddress?: boolean
     deliveryNotes?: boolean
     googleMapsLink?: boolean
-    shippingCompany?: boolean
-    trackingCode?: boolean
+    amount?: boolean
+    amountBank?: boolean
     deliveryMethod?: boolean
     additionalNotes?: boolean
     status?: boolean
@@ -10249,8 +10249,8 @@ export namespace Prisma {
     fullAddress?: boolean
     deliveryNotes?: boolean
     googleMapsLink?: boolean
-    shippingCompany?: boolean
-    trackingCode?: boolean
+    amount?: boolean
+    amountBank?: boolean
     deliveryMethod?: boolean
     additionalNotes?: boolean
     status?: boolean
@@ -10277,8 +10277,8 @@ export namespace Prisma {
     fullAddress?: boolean
     deliveryNotes?: boolean
     googleMapsLink?: boolean
-    shippingCompany?: boolean
-    trackingCode?: boolean
+    amount?: boolean
+    amountBank?: boolean
     deliveryMethod?: boolean
     additionalNotes?: boolean
     status?: boolean
@@ -10305,8 +10305,8 @@ export namespace Prisma {
     fullAddress?: boolean
     deliveryNotes?: boolean
     googleMapsLink?: boolean
-    shippingCompany?: boolean
-    trackingCode?: boolean
+    amount?: boolean
+    amountBank?: boolean
     deliveryMethod?: boolean
     additionalNotes?: boolean
     status?: boolean
@@ -10316,7 +10316,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderNumber" | "totalAmount" | "discount" | "finalAmount" | "paymentMethod" | "receiverName" | "receiverPhone" | "country" | "city" | "municipality" | "fullAddress" | "deliveryNotes" | "googleMapsLink" | "shippingCompany" | "trackingCode" | "deliveryMethod" | "additionalNotes" | "status" | "customerId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderNumber" | "totalAmount" | "discount" | "finalAmount" | "paymentMethod" | "receiverName" | "receiverPhone" | "country" | "city" | "municipality" | "fullAddress" | "deliveryNotes" | "googleMapsLink" | "amount" | "amountBank" | "deliveryMethod" | "additionalNotes" | "status" | "customerId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
@@ -10354,8 +10354,8 @@ export namespace Prisma {
       fullAddress: string | null
       deliveryNotes: string | null
       googleMapsLink: string | null
-      shippingCompany: string | null
-      trackingCode: string | null
+      amount: string | null
+      amountBank: string | null
       deliveryMethod: string | null
       additionalNotes: string | null
       status: string
@@ -10803,8 +10803,8 @@ export namespace Prisma {
     readonly fullAddress: FieldRef<"Order", 'String'>
     readonly deliveryNotes: FieldRef<"Order", 'String'>
     readonly googleMapsLink: FieldRef<"Order", 'String'>
-    readonly shippingCompany: FieldRef<"Order", 'String'>
-    readonly trackingCode: FieldRef<"Order", 'String'>
+    readonly amount: FieldRef<"Order", 'String'>
+    readonly amountBank: FieldRef<"Order", 'String'>
     readonly deliveryMethod: FieldRef<"Order", 'String'>
     readonly additionalNotes: FieldRef<"Order", 'String'>
     readonly status: FieldRef<"Order", 'String'>
@@ -12526,8 +12526,8 @@ export namespace Prisma {
     fullAddress: 'fullAddress',
     deliveryNotes: 'deliveryNotes',
     googleMapsLink: 'googleMapsLink',
-    shippingCompany: 'shippingCompany',
-    trackingCode: 'trackingCode',
+    amount: 'amount',
+    amountBank: 'amountBank',
     deliveryMethod: 'deliveryMethod',
     additionalNotes: 'additionalNotes',
     status: 'status',
@@ -13184,8 +13184,8 @@ export namespace Prisma {
     fullAddress?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
     googleMapsLink?: StringNullableFilter<"Order"> | string | null
-    shippingCompany?: StringNullableFilter<"Order"> | string | null
-    trackingCode?: StringNullableFilter<"Order"> | string | null
+    amount?: StringNullableFilter<"Order"> | string | null
+    amountBank?: StringNullableFilter<"Order"> | string | null
     deliveryMethod?: StringNullableFilter<"Order"> | string | null
     additionalNotes?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
@@ -13213,8 +13213,8 @@ export namespace Prisma {
     fullAddress?: SortOrderInput | SortOrder
     deliveryNotes?: SortOrderInput | SortOrder
     googleMapsLink?: SortOrderInput | SortOrder
-    shippingCompany?: SortOrderInput | SortOrder
-    trackingCode?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
+    amountBank?: SortOrderInput | SortOrder
     deliveryMethod?: SortOrderInput | SortOrder
     additionalNotes?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -13245,8 +13245,8 @@ export namespace Prisma {
     fullAddress?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
     googleMapsLink?: StringNullableFilter<"Order"> | string | null
-    shippingCompany?: StringNullableFilter<"Order"> | string | null
-    trackingCode?: StringNullableFilter<"Order"> | string | null
+    amount?: StringNullableFilter<"Order"> | string | null
+    amountBank?: StringNullableFilter<"Order"> | string | null
     deliveryMethod?: StringNullableFilter<"Order"> | string | null
     additionalNotes?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
@@ -13274,8 +13274,8 @@ export namespace Prisma {
     fullAddress?: SortOrderInput | SortOrder
     deliveryNotes?: SortOrderInput | SortOrder
     googleMapsLink?: SortOrderInput | SortOrder
-    shippingCompany?: SortOrderInput | SortOrder
-    trackingCode?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
+    amountBank?: SortOrderInput | SortOrder
     deliveryMethod?: SortOrderInput | SortOrder
     additionalNotes?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -13308,8 +13308,8 @@ export namespace Prisma {
     fullAddress?: StringNullableWithAggregatesFilter<"Order"> | string | null
     deliveryNotes?: StringNullableWithAggregatesFilter<"Order"> | string | null
     googleMapsLink?: StringNullableWithAggregatesFilter<"Order"> | string | null
-    shippingCompany?: StringNullableWithAggregatesFilter<"Order"> | string | null
-    trackingCode?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    amount?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    amountBank?: StringNullableWithAggregatesFilter<"Order"> | string | null
     deliveryMethod?: StringNullableWithAggregatesFilter<"Order"> | string | null
     additionalNotes?: StringNullableWithAggregatesFilter<"Order"> | string | null
     status?: StringWithAggregatesFilter<"Order"> | string
@@ -13942,8 +13942,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -13969,8 +13969,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -13995,8 +13995,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -14022,8 +14022,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -14049,8 +14049,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -14074,8 +14074,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -14098,8 +14098,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -14776,8 +14776,8 @@ export namespace Prisma {
     fullAddress?: SortOrder
     deliveryNotes?: SortOrder
     googleMapsLink?: SortOrder
-    shippingCompany?: SortOrder
-    trackingCode?: SortOrder
+    amount?: SortOrder
+    amountBank?: SortOrder
     deliveryMethod?: SortOrder
     additionalNotes?: SortOrder
     status?: SortOrder
@@ -14809,8 +14809,8 @@ export namespace Prisma {
     fullAddress?: SortOrder
     deliveryNotes?: SortOrder
     googleMapsLink?: SortOrder
-    shippingCompany?: SortOrder
-    trackingCode?: SortOrder
+    amount?: SortOrder
+    amountBank?: SortOrder
     deliveryMethod?: SortOrder
     additionalNotes?: SortOrder
     status?: SortOrder
@@ -14835,8 +14835,8 @@ export namespace Prisma {
     fullAddress?: SortOrder
     deliveryNotes?: SortOrder
     googleMapsLink?: SortOrder
-    shippingCompany?: SortOrder
-    trackingCode?: SortOrder
+    amount?: SortOrder
+    amountBank?: SortOrder
     deliveryMethod?: SortOrder
     additionalNotes?: SortOrder
     status?: SortOrder
@@ -15789,8 +15789,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -15815,8 +15815,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -15968,8 +15968,8 @@ export namespace Prisma {
     fullAddress?: StringNullableFilter<"Order"> | string | null
     deliveryNotes?: StringNullableFilter<"Order"> | string | null
     googleMapsLink?: StringNullableFilter<"Order"> | string | null
-    shippingCompany?: StringNullableFilter<"Order"> | string | null
-    trackingCode?: StringNullableFilter<"Order"> | string | null
+    amount?: StringNullableFilter<"Order"> | string | null
+    amountBank?: StringNullableFilter<"Order"> | string | null
     deliveryMethod?: StringNullableFilter<"Order"> | string | null
     additionalNotes?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
@@ -16428,8 +16428,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -16454,8 +16454,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -16935,8 +16935,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -16961,8 +16961,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -17030,8 +17030,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -17056,8 +17056,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -17116,8 +17116,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -17148,8 +17148,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -17174,8 +17174,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -17200,8 +17200,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -17440,8 +17440,8 @@ export namespace Prisma {
     fullAddress?: string | null
     deliveryNotes?: string | null
     googleMapsLink?: string | null
-    shippingCompany?: string | null
-    trackingCode?: string | null
+    amount?: string | null
+    amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
     status?: string
@@ -17472,8 +17472,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -17498,8 +17498,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -17524,8 +17524,8 @@ export namespace Prisma {
     fullAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryNotes?: NullableStringFieldUpdateOperationsInput | string | null
     googleMapsLink?: NullableStringFieldUpdateOperationsInput | string | null
-    shippingCompany?: NullableStringFieldUpdateOperationsInput | string | null
-    trackingCode?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableStringFieldUpdateOperationsInput | string | null
+    amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string

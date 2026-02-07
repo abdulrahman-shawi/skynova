@@ -98,8 +98,8 @@ const CustomrLayout: React.FC = () => {
   const [status, setStatus] = React.useState("طلب جديد");
   // تفاصيل الشحن
   const [deliveryMethod, setDeliveryMethod] = React.useState("توصيل الى المنزل");
-  const [shippingCompany, setShippingCompany] = React.useState("");
-  const [trackingCode, setTrackingCode] = React.useState("");
+  const [amount, setamount] = React.useState("");
+  const [amountBank, setamountBank] = React.useState("");
   const [googleMapsLink, setGoogleMapsLink] = React.useState("");
 
   const [customerSearchQuery, setCustomerSearchQuery] = React.useState("");
@@ -251,8 +251,8 @@ const matchesStatus = dateFilter !== 'الكل'
 
     // إعادة تفاصيل الشحن والملاحظات
     setDeliveryMethod("توصيل الى المنزل");
-    setShippingCompany("");
-    setTrackingCode("");
+    setamount("");
+    setamountBank("");
     setGoogleMapsLink("");
     setDeliveryNotes("");
     setAdditionalNotes("");
@@ -384,9 +384,8 @@ const matchesStatus = dateFilter !== 'الكل'
       municipality,
       fullAddress,
       googleMapsLink,
-      shippingCompany,
-      trackingCode,
-      deliveryMethod,
+      amount,
+      amountBank,
       deliveryNotes,
       paymentMethod,
       additionalNotes,
@@ -685,6 +684,22 @@ const matchesStatus = dateFilter !== 'الكل'
       } size='full' isOpen={isOpenOrder} onClose={resetForm} title='اضافة طلب'>
         <div>
           <div className="space-y-4 mb-4">
+          <div className="flex flex-col gap-2 my-1">
+            <label className="text-xs font-bold text-slate-500 mr-2" htmlFor="">العميل /المورد</label>
+            <input
+                  disabled={true}
+                    type="text"
+                    // يعرض اسم العميل المختار حالياً أو نص البحث
+                    value={customerSearchQuery || customers?.find(c => c.id === customerId)?.name || ""}
+                    placeholder="ابحث عن عميل..."
+                    onFocus={() => setShowCustomerDropdown(true)}
+                    onChange={(e) => {
+                      setCustomerSearchQuery(e.target.value);
+                      setShowCustomerDropdown(true);
+                    }}
+                    className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold transition-all"
+                  />
+          </div>
             {items.map((item: any, index: number) => (
               <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 items-center">
                 <div className="md:col-span-3 relative"> {/* تم إضافة relative هنا لضبط القائمة المنسدلة */}
@@ -758,18 +773,7 @@ const matchesStatus = dateFilter !== 'الكل'
               <div className="space-y-2 md:col-span-2 relative">
                 <label className="text-xs font-bold text-slate-500 mr-2">العميل / المورد</label>
                 <div className="relative">
-                  <input
-                    type="text"
-                    // يعرض اسم العميل المختار حالياً أو نص البحث
-                    value={customerSearchQuery || customers?.find(c => c.id === customerId)?.name || ""}
-                    placeholder="ابحث عن عميل..."
-                    onFocus={() => setShowCustomerDropdown(true)}
-                    onChange={(e) => {
-                      setCustomerSearchQuery(e.target.value);
-                      setShowCustomerDropdown(true);
-                    }}
-                    className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold transition-all"
-                  />
+                  
 
                   {/* أيقونة سهم أو بحث صغيرة للجمالية */}
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
@@ -842,6 +846,20 @@ const matchesStatus = dateFilter !== 'الكل'
                   <option value="مختلطة">مختلطة</option>
                 </select>
               </div>
+              {paymentMethod === "مختلطة" ?(
+                <div className="grid col-span-2 grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 mr-2">المبلغ المستلم</label>
+                <input type="text" value={receiverPhone} onChange={(e) => setReceiverPhone(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 mr-2">المبلغ المتبقي</label>
+                <input type="text" value={receiverPhone} onChange={(e) => setReceiverPhone(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
+              </div>
+                </div>
+              ):(
+                <div className=""></div>
+              )}
             </div>
 
             {/* القسم الثاني: تفاصيل العنوان والشحن */}
@@ -870,14 +888,6 @@ const matchesStatus = dateFilter !== 'الكل'
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-500 mr-2">عنوان التسليم التفصيلي</label>
                 <input type="text" value={fullAddress} onChange={(e) => setFullAddress(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 p-3.5 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 mr-2">شركة الشحن</label>
-                <input type="text" value={shippingCompany} onChange={(e) => setShippingCompany(e.target.value)} placeholder="اسم الشركة..." className="w-full bg-slate-50 dark:bg-slate-800 p-3.5 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 mr-2">كود التتبع (Tracking)</label>
-                <input type="text" value={trackingCode} onChange={(e) => setTrackingCode(e.target.value)} placeholder="رقم الشحنة..." className="w-full bg-slate-50 dark:bg-slate-800 p-3.5 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-500 mr-2">رابط الخريطة</label>
