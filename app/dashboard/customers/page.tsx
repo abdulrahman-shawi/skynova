@@ -850,11 +850,11 @@ const matchesStatus = dateFilter !== 'الكل'
                 <div className="grid col-span-2 grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-500 mr-2">المبلغ المستلم</label>
-                <input type="text" value={receiverPhone} onChange={(e) => setReceiverPhone(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
+                <input type="text" value={amount} onChange={(e) => setamount(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-500 mr-2">المبلغ المتبقي</label>
-                <input type="text" value={receiverPhone} onChange={(e) => setReceiverPhone(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
+                <input type="text" value={amountBank} onChange={(e) => setamountBank(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
               </div>
                 </div>
               ):(
