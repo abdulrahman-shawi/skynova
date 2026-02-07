@@ -31,6 +31,7 @@ export interface Column<T> {
 interface DataTableProps<T> {
   data: T[];
   columns: Column<T>[];
+  actindir?:boolean;
   actions?: TableAction<T>[];
   isLoading?: boolean;
   totalCount: number;  
@@ -45,6 +46,7 @@ interface DataTableProps<T> {
  */
 export function DataTable<T extends { id: string | number }>({
   data,
+  actindir,
   columns,
   actions,
   isLoading,
@@ -109,7 +111,7 @@ export function DataTable<T extends { id: string | number }>({
                   
                   {actions && (
                     <td className="p-4 w-20 text-center">
-                      <ActionMenu actions={actions} item={item} />
+                      <ActionMenu actions={actions} item={item} actiondir={actindir} />
                     </td>
                   )}
                 </tr>
@@ -162,9 +164,17 @@ export function DataTable<T extends { id: string | number }>({
 }
 
 // مكون قائمة الإجراءات
-function ActionMenu<T>({ actions, item }: { actions: TableAction<T>[], item: T }) {
+function ActionMenu<T>({ actions, item  , actiondir}: { actions: TableAction<T>[], item: T , actiondir?:boolean }) {
   return (
-    <DropdownMenu.Root>
+    <div className="">
+      {actiondir === true ? (
+        <div className="flex items-center gap-2">
+          {actions.map((e , i) => (
+            <button key={i} className="hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-all" onClick={() =>  e.onClick(item)}>{e.icon}</button>
+          ))}
+        </div>
+      ):(
+        <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-all">
           <MoreVertical className="w-4 h-4 text-slate-500" />
@@ -188,5 +198,7 @@ function ActionMenu<T>({ actions, item }: { actions: TableAction<T>[], item: T }
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
+      )}
+    </div>
   );
 }

@@ -420,6 +420,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                 </button>
             </div>
             <DataTable data={orders}
+            actindir={true}
                 totalCount={orders.length} // لنفترض وجود 150 عميل في الداتا بيز
                 pageSize={PAGE_SIZE}
                 currentPage={page}
