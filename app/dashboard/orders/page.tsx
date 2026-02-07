@@ -822,7 +822,7 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
                                 <p>المحافظة:{data.city ? ` - ${data.city}` : 'لم يسجل'}</p>
                                 <p>المنظقة: {data.municipality ? ` - ${data.municipality}` : 'لم يسجل'}</p>
                                 <p>العنوان: {data.fullAddress || 'لم يسجل'}</p>
-                                <p>رقم التواصل: {data.receiverPhone || 'لم يسجل'}</p>
+                                <p>رقم التواصل: {data.receiverPhone.join(" - ") || 'لم يسجل'}</p>
                             </div>
                         </div>
                     </div>
