@@ -115,6 +115,10 @@ const CustomrLayout: React.FC = () => {
 
   const [dateFilter, setDateFilter] = React.useState('الكل');
   const [alluser, setUsers] = React.useState<any[]>([])
+  const [selectedCustomers, setSelectedCustomers] =React. useState([]);
+
+// دالة للتعامل مع الاختيار
+
   const filterCustomer = customers.filter((e: any) => {
     // 1. منطق البحث النصي الحالي
     const matchesSearch =
@@ -132,6 +136,12 @@ const matchesStatus = dateFilter !== 'الكل'
 
     return matchesSearch && matchesStatus;
   });
+
+  const toggleSelect = (id:any) => {
+  setSelectedCustomers((prev:any) => 
+    prev.includes(id) ? prev.filter((itemId:any) => itemId !== id) : [...prev, id]
+  );
+};
   const updateItem = (index: number, field: string, value: any, products: any[]) => {
     const newItems = [...items];
     const item = newItems[index];
@@ -593,19 +603,7 @@ const matchesStatus = dateFilter !== 'الكل'
                       </button>
 
                       {/* أيقونة تعيين موظف (للأدمن فقط) */}
-                      {user.accountType === "ADMIN" && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setCustomer(customer);
-                            setOpenAssignModal(true);
-                          }}
-                          className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
-                          title="تعيين موظف"
-                        >
-                          <UserCog size={20} />
-                        </button>
-                      )}
+                      
                       <button
                       className="p-2 text-slate-400 hover:text-green-500 hover:bg-blue-50 rounded-xl transition-all"
                           title="اظهار الفواتير"
@@ -614,6 +612,23 @@ const matchesStatus = dateFilter !== 'الكل'
                       setisOpenordercustomer(true)
                       setCustomerorder(customer.orders)
                     }}><Eye size={20} /></button>
+                    {user.accountType === "ADMIN" && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCustomer(customer);
+                            setOpenAssignModal(true);
+                          }}
+                          className="p-2 flex text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
+                          title="تعيين موظف"
+                        >
+                          {customer.users.map((e:any , i:any) => (
+                            <div className="w-5 h-5 flex items-center rounded-full p-1">
+                              <p>{e.username[0]}</p>
+                            </div>
+                          ))}
+                        </button>
+                      )}
                     </div>
 
                     {/* زر واتساب */}
