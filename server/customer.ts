@@ -119,7 +119,7 @@ export async function createCustomerAction(data: any, id: string) {
     const newCustomer = await prisma.customer.create({
       data: {
         name: data.name,
-        status: "عميل محتمل",
+        status: "فرصة جديدة",
         phonestatus: "معلق",
         phone: data.phone, // مصفوفة مثل ["05xxxx"]
         countryCode: data.countryCode,
