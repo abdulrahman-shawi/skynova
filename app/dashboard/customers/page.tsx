@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx';
 import { DynamicForm } from "@/components/shared/dynamic-form";
 import { FormInput } from "@/components/ui/form-input";
 import { FormCheckbox } from "@/components/ui/formcheck";
+import PhoneInput from 'react-phone-number-input'
 import { FormSelect } from "@/components/ui/select-form";
 import { FormTextArea } from "@/components/ui/textera-form";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { getProduct } from "@/server/product";
 import { createOrder } from "@/server/order";
 import { success } from 'zod';
+import { Controller, useFieldArray } from "react-hook-form";
 
 /* ===================== Constants ===================== */
 
@@ -92,7 +94,7 @@ const CustomrLayout: React.FC = () => {
 
   // بيانات المستلم والعنوان
   const [receiverName, setReceiverName] = React.useState("");
-  const [receiverPhone, setReceiverPhone] = React.useState<string[]>([""]);
+  const [receiverPhone, setReceiverPhone] = React.useState<(string | undefined)[]>([""]);
   const [country, setCountry] = React.useState("ليبيا"); // افتراضي حسب الصورة
   const [city, setCity] = React.useState("");
   const [municipality, setMunicipality] = React.useState("");
@@ -111,14 +113,14 @@ const CustomrLayout: React.FC = () => {
   const subTotal = items.reduce((sum, i) => sum + i.total, 0);
   const grandTotal = subTotal - overallDiscount;
   const [search, setSearch] = React.useState("")
-  const [isOpenordercustomer , setisOpenordercustomer] = React.useState(false)
+  const [isOpenordercustomer, setisOpenordercustomer] = React.useState(false)
   const [OpenAssignModal, setOpenAssignModal] = React.useState(false)
 
   const [dateFilter, setDateFilter] = React.useState('الكل');
   const [alluser, setUsers] = React.useState<any[]>([])
-  const [selectedCustomers, setSelectedCustomers] =React. useState<any[]>([]);
+  const [selectedCustomers, setSelectedCustomers] = React.useState<any[]>([]);
 
-// دالة للتعامل مع الاختيار
+  // دالة للتعامل مع الاختيار
 
   const filterCustomer = customers.filter((e: any) => {
     // 1. منطق البحث النصي الحالي
@@ -131,21 +133,28 @@ const CustomrLayout: React.FC = () => {
 
 
     // إذا كان المستخدم اختار حالة معينة، نقوم بالمطابقة، وإذا لم يختار (All) نعرض الكل
-const matchesStatus = dateFilter !== 'الكل' 
-  ? e.status === dateFilter 
-  : true;
+    const matchesStatus = dateFilter !== 'الكل'
+      ? e.status === dateFilter
+      : true;
 
     return matchesSearch && matchesStatus;
   });
 
-  const toggleSelect = (id:any) => {
-  setSelectedCustomers((prev:any) => 
-    prev.includes(id) ? prev.filter((itemId:any) => itemId !== id) : [...prev, id]
-  );
-};
+  const toggleSelect = (id: any) => {
+    setSelectedCustomers((prev: any) =>
+      prev.includes(id) ? prev.filter((itemId: any) => itemId !== id) : [...prev, id]
+    );
+  };
   const updateItem = (index: number, field: string, value: any, products: any[]) => {
     const newItems = [...items];
     const item = newItems[index];
+
+    const isDuplicate = items.some((item, i) => item.productId === value && i !== index);
+
+    if (isDuplicate) {
+      toast.error("هذا المنتج مضاف بالفعل! يرجى اختيار منتج آخر أو تعديل الكمية.");
+      return; // توقف عن التنفيذ ولا تقم بتحديث الحالة
+    }
 
     if (field === "productId") {
       const product = products.find(p => p.id === Number(value));
@@ -163,22 +172,22 @@ const matchesStatus = dateFilter !== 'الكل'
     setItems(newItems);
   };
 
-  const deleteCus = async (data:any) => {
-   const confirm = window.confirm("هل انت متأكد من الحذف")
-   if(confirm){
+  const deleteCus = async (data: any) => {
+    const confirm = window.confirm("هل انت متأكد من الحذف")
+    if (confirm) {
       try {
         const res = await deleteCustomer(data)
-        if(res.success){
+        if (res.success) {
           toast.success("تم الحذف بنجاح")
           getData()
-        }else{
+        } else {
           toast.error("حدث خطأ")
         }
       } catch (error) {
         toast.error("حدث خطأ")
-      }finally{
+      } finally {
       }
-   }
+    }
   }
 
 
@@ -288,54 +297,54 @@ const matchesStatus = dateFilter !== 'الكل'
   }
 
   const onSubmit = async (data: CustomerFormValues) => {
-    const loading = toast.loading(editId? "جاري تحديث العميل" : "جاري إضافة العميل")
-    if(editId){
-      
+    const loading = toast.loading(editId ? "جاري تحديث العميل" : "جاري إضافة العميل")
+    if (editId) {
+
       try {
-        const res = await updateCustomer(data , editId)
-      if(res.success){
-        toast.success("تم التحديث بنجاح")
-        setIsOpen(false);
-        getData()
-      }else{
-        toast.error(` خطأ ${res.error}`)
-      }
+        const res = await updateCustomer(data, editId)
+        if (res.success) {
+          toast.success("تم التحديث بنجاح")
+          setIsOpen(false);
+          getData()
+        } else {
+          toast.error(` خطأ ${res.error}`)
+        }
       } catch (error) {
         toast.error(` خطأ ${error}`)
-      }finally{
+      } finally {
         toast.dismiss(loading)
       }
-    }else{
+    } else {
       try {
-      // 1. استلام القيمة والتأكد من تحويلها لنص أولاً للمعالجة
-      // نستخدم String() لضمان تحويل أي نوع قادم إلى نص بأمان
-      const rawInput = String(data.phone || "");
+        // 1. استلام القيمة والتأكد من تحويلها لنص أولاً للمعالجة
+        // نستخدم String() لضمان تحويل أي نوع قادم إلى نص بأمان
+        const rawInput = String(data.phone || "");
 
-      // 2. تقسيم النص بناءً على المسافات أو الفواصل
-      const phoneArray = rawInput
-        .split(/[,\s\n]+/)
-        .map(num => num.trim())
-        .filter(num => num.length > 0);
+        // 2. تقسيم النص بناءً على المسافات أو الفواصل
+        const phoneArray = rawInput
+          .split(/[,\s\n]+/)
+          .map(num => num.trim())
+          .filter(num => num.length > 0);
 
-      const formattedData = {
-        ...data,
-        phone: phoneArray, // هنا سيتم إرسال ["098786", "099876"]
-      };
+        const formattedData = {
+          ...data,
+          phone: phoneArray, // هنا سيتم إرسال ["098786", "099876"]
+        };
 
-      const res = await createCustomerAction(formattedData, user?.id as string);
+        const res = await createCustomerAction(formattedData, user?.id as string);
 
-      if (res.success) {
-        toast.success("✅ تم الإضافة بنجاح");
-        setIsOpen(false);
-        getData();
-      } else {
-        toast.error("خطأ");
+        if (res.success) {
+          toast.success("✅ تم الإضافة بنجاح");
+          setIsOpen(false);
+          getData();
+        } else {
+          toast.error("خطأ");
+        }
+      } catch (err) {
+        toast.error("حدث خطأ غير متوقع");
+      } finally {
+        toast.dismiss(loading)
       }
-    } catch (err) {
-      toast.error("حدث خطأ غير متوقع");
-    } finally {
-      toast.dismiss(loading)
-    }
     }
   };
 
@@ -345,45 +354,45 @@ const matchesStatus = dateFilter !== 'الكل'
     setIsOpencustomer(true)
   }
 
-const handleExportAction = () => {
-  // 1. تحديد أي بيانات سنصدرها
-  // إذا كانت مصفوفة selectedCustomers تحتوي على عناصر، نفلتر filterCustomer بناءً عليها
-  // وإلا، نأخذ كل filterCustomer
-  const dataToExport = selectedCustomers.length > 0 
-    ? filterCustomer.filter(customer => selectedCustomers.includes(customer.id))
-    : filterCustomer;
+  const handleExportAction = () => {
+    // 1. تحديد أي بيانات سنصدرها
+    // إذا كانت مصفوفة selectedCustomers تحتوي على عناصر، نفلتر filterCustomer بناءً عليها
+    // وإلا، نأخذ كل filterCustomer
+    const dataToExport = selectedCustomers.length > 0
+      ? filterCustomer.filter(customer => selectedCustomers.includes(customer.id))
+      : filterCustomer;
 
-  // 2. استدعاء دالة التصدير الأصلية وتمرير البيانات المحددة لها
-  exportCustomersToExcel(dataToExport);
-};
+    // 2. استدعاء دالة التصدير الأصلية وتمرير البيانات المحددة لها
+    exportCustomersToExcel(dataToExport);
+  };
 
-const exportCustomersToExcel = (customers: any[]) => {
-  const worksheetData = customers.map((customer) => {
-    // تجميع الرسائل الأخيرة أو الطلبات إذا أردت
-    const lastMessage = customer.message && customer.message.length > 0
-      ? customer.message[customer.message.length - 1].message
-      : "لا توجد رسائل";
+  const exportCustomersToExcel = (customers: any[]) => {
+    const worksheetData = customers.map((customer) => {
+      // تجميع الرسائل الأخيرة أو الطلبات إذا أردت
+      const lastMessage = customer.message && customer.message.length > 0
+        ? customer.message[customer.message.length - 1].message
+        : "لا توجد رسائل";
 
-    return {
-      "اسم العميل": customer.name,
-      "رقم الهاتف": customer.phone ? customer.phone.join(' - ') : 'N/A',
-      "الدولة": customer.country,
-      "الحالة": customer.status,
-      "تاريخ التسجيل": new Date(customer.createdAt).toLocaleDateString('ar-EG'),
-      "عدد الطلبات": customer.orders?.length || 0,
-      "آخر رسالة": lastMessage,
-      "الموظفين المسؤولين": customer.users?.map((u: any) => u.username).join(', ') || "غير معين",
-    };
-  });
+      return {
+        "اسم العميل": customer.name,
+        "رقم الهاتف": customer.phone ? customer.phone.join(' - ') : 'N/A',
+        "الدولة": customer.country,
+        "الحالة": customer.status,
+        "تاريخ التسجيل": new Date(customer.createdAt).toLocaleDateString('ar-EG'),
+        "عدد الطلبات": customer.orders?.length || 0,
+        "آخر رسالة": lastMessage,
+        "الموظفين المسؤولين": customer.users?.map((u: any) => u.username).join(', ') || "غير معين",
+      };
+    });
 
-  const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "بيانات العملاء");
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "بيانات العملاء");
 
-  worksheet['!dir'] = "rtl";
+    worksheet['!dir'] = "rtl";
 
-  XLSX.writeFile(workbook, `Customers_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
-};
+    XLSX.writeFile(workbook, `Customers_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
 
   const handleAssignUsers = async (customerId: string, userIds: string[]) => {
     const loading = toast.loading("جار ربط الموظفين بالعميل")
@@ -465,8 +474,9 @@ const exportCustomersToExcel = (customers: any[]) => {
         // resetForm(); 
       } else {
         // عرض الخطأ القادم من السيرفر (مثل كمية غير كافية أو فشل Transaction)
-        toast.error(res.success || "فشل في معالجة الطلب");
-      
+        console.log(res.success)
+        toast.error(res.success || "فشل في معالجة الطلب يرجى التأكد من عدد المنتجات أو اسم المنتج");
+
       }
     } catch (error) {
       console.log("Submit Error:", error);
@@ -487,35 +497,34 @@ const exportCustomersToExcel = (customers: any[]) => {
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">نظام إدارة العملاء</h1>
         <Button onClick={() => setIsOpen(true)}>إضافة عميل جديد +</Button>
         <div className="flex justify-between items-center mb-6">
-  
-  <div className="flex gap-2">
-    {/* زر التصدير الذكي */}
-    <button
-      onClick={handleExportAction}
-      className={`flex items-center gap-2 px-6 py-2 rounded-xl text-white font-bold transition-all ${
-        selectedCustomers.length > 0 
-        ? 'bg-blue-600 hover:bg-blue-700 shadow-lg scale-105' 
-        : 'bg-slate-600 hover:bg-slate-700'
-      }`}
-    >
-      <Download size={18} />
-      {selectedCustomers.length > 0 
-        ? `تصدير المحددين (${selectedCustomers.length})` 
-        : "تصدير الكل إلى Excel"}
-    </button>
 
-    {/* زر مسح التحديد - يظهر فقط عند وجود تحديد */}
-    {selectedCustomers.length > 0 && (
-      <button
-        onClick={() => setSelectedCustomers([])}
-        className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
-        title="إلغاء التحديد"
-      >
-        <XCircle size={24} />
-      </button>
-    )}
-  </div>
-</div>
+          <div className="flex gap-2">
+            {/* زر التصدير الذكي */}
+            <button
+              onClick={handleExportAction}
+              className={`flex items-center gap-2 px-6 py-2 rounded-xl text-white font-bold transition-all ${selectedCustomers.length > 0
+                  ? 'bg-blue-600 hover:bg-blue-700 shadow-lg scale-105'
+                  : 'bg-slate-600 hover:bg-slate-700'
+                }`}
+            >
+              <Download size={18} />
+              {selectedCustomers.length > 0
+                ? `تصدير المحددين (${selectedCustomers.length})`
+                : "تصدير الكل إلى Excel"}
+            </button>
+
+            {/* زر مسح التحديد - يظهر فقط عند وجود تحديد */}
+            {selectedCustomers.length > 0 && (
+              <button
+                onClick={() => setSelectedCustomers([])}
+                className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
+                title="إلغاء التحديد"
+              >
+                <XCircle size={24} />
+              </button>
+            )}
+          </div>
+        </div>
       </div>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col md:flex-row gap-3 items-center">
@@ -565,32 +574,32 @@ const exportCustomersToExcel = (customers: any[]) => {
                 <div
                   onClick={() => getSingleCustomer(customer)}
                   key={customer.id}
-                  className={`group border ${customer.orders.length === 1 ? `border-pink-500` :customer.orders.length >=2  ? 'border-purple-500' : 'border-transparent'} relative bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer`}
+                  className={`group border ${customer.orders.length === 1 ? `border-pink-500` : customer.orders.length >= 2 ? 'border-purple-500' : 'border-transparent'} relative bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer`}
                 >
                   <div className="absolute top-4 right-6 z-10">
-       <input 
-  type="checkbox"
-  checked={selectedCustomers.includes(customer.id)}
-  // 1. منع الانتشار عند النقر (هذا ما يمنع البطاقة من التفاعل)
-  onClick={(e) => e.stopPropagation()} 
-  // 2. معالجة تغيير الحالة
-  onChange={(e) => {
-    toggleSelect(customer.id);
-  }}
-  className="w-5 h-5 rounded-full border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-/>
-      </div>
+                    <input
+                      type="checkbox"
+                      checked={selectedCustomers.includes(customer.id)}
+                      // 1. منع الانتشار عند النقر (هذا ما يمنع البطاقة من التفاعل)
+                      onClick={(e) => e.stopPropagation()}
+                      // 2. معالجة تغيير الحالة
+                      onChange={(e) => {
+                        toggleSelect(customer.id);
+                      }}
+                      className="w-5 h-5 rounded-full border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    />
+                  </div>
                   {/* أزرار الحذف والتعديل - تظهر عند الحوام (Hover) */}
                   <div className="absolute top-4 left-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={(e) => {
-                        e.stopPropagation() 
+                        e.stopPropagation()
                         setEditId(customer.id)
                         setFormdata({
-                          name:customer.name,
-                          phone:customer.phone ? customer.phone.join(' ') : '',
-                          countryCode:customer.countryCode,
-                          country:customer.country
+                          name: customer.name,
+                          phone: customer.phone ? customer.phone.join(' ') : '',
+                          countryCode: customer.countryCode,
+                          country: customer.country
                         })
                         setIsOpen(true)
                       }}
@@ -599,7 +608,7 @@ const exportCustomersToExcel = (customers: any[]) => {
                       <Pencil size={16} />
                     </button>
                     <button
-                      onClick={(e) => { 
+                      onClick={(e) => {
                         e.stopPropagation()
                         deleteCus(customer)
                       }}
@@ -621,48 +630,48 @@ const exportCustomersToExcel = (customers: any[]) => {
                             ? customer.message[customer.message.length - 1].message
                             : "لا توجد رسائل..."}
                         </p>
-                        
+
                       </div>
 
-                    <div className="flex flex-wrap gap-3 items-center mt-2">
-  {/* حالة العميل */}
-  <select
-    value={customer.status}
-    onClick={(e) => e.stopPropagation()}
-    onChange={(e) => {
-      e.stopPropagation();
-      handleStatus(customer.id, e.target.value);
-    }}
-    className={`
+                      <div className="flex flex-wrap gap-3 items-center mt-2">
+                        {/* حالة العميل */}
+                        <select
+                          value={customer.status}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleStatus(customer.id, e.target.value);
+                          }}
+                          className={`
       appearance-none outline-none cursor-pointer
       px-4 py-1.5 rounded-full text-[10px] font-black text-center transition-all border
       ${customer.status === "عميل محتمل" ? 'bg-blue-100 text-blue-600 border-rose-200' :
-        customer.status === "مهتم" ? 'bg-green-100 text-green-600 border-green-200' :
-        customer.status === "تم التواصل" ? 'bg-yellow-100 text-yellow-600 border-green-200' :
-        customer.status === "تم الإلغاء" ? 'bg-red-100 text-red-500 border-slate-200' :
-        'bg-amber-100 text-amber-600 border-amber-200'
-      }
+                              customer.status === "مهتم" ? 'bg-green-100 text-green-600 border-green-200' :
+                                customer.status === "تم التواصل" ? 'bg-yellow-100 text-yellow-600 border-green-200' :
+                                  customer.status === "تم الإلغاء" ? 'bg-red-100 text-red-500 border-slate-200' :
+                                    'bg-amber-100 text-amber-600 border-amber-200'
+                            }
     `}
-  >
-    {STATUS_OPTIONS.map((option) => (
-      <option key={option.value} value={option.value} className="bg-white text-slate-900">
-        {option.label}
-      </option>
-    ))}
-  </select>
+                        >
+                          {STATUS_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value} className="bg-white text-slate-900">
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
 
-  {/* التاريخ المنسق */}
-  <div className="flex flex-col border-r border-slate-200 dark:border-slate-700 pr-3">
-    <span className="text-[9px] text-slate-400 font-bold leading-none mb-1">تاريخ التسجيل</span>
-    <span className="text-[10px] text-slate-600 dark:text-slate-400 font-black leading-none">
-      {new Date(customer.createdAt).toLocaleDateString('ar-EG', { 
-        day: '2-digit', 
-        month: 'short', 
-        year: 'numeric' 
-      })}
-    </span>
-  </div>
-</div>
+                        {/* التاريخ المنسق */}
+                        <div className="flex flex-col border-r border-slate-200 dark:border-slate-700 pr-3">
+                          <span className="text-[9px] text-slate-400 font-bold leading-none mb-1">تاريخ التسجيل</span>
+                          <span className="text-[10px] text-slate-600 dark:text-slate-400 font-black leading-none">
+                            {new Date(customer.createdAt).toLocaleDateString('ar-EG', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })}
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
                     {/* الصورة الرمزية */}
@@ -688,16 +697,16 @@ const exportCustomersToExcel = (customers: any[]) => {
                       </button>
 
                       {/* أيقونة تعيين موظف (للأدمن فقط) */}
-                      
+
                       <button
-                      className="p-2 text-slate-400 hover:text-green-500 hover:bg-blue-50 rounded-xl transition-all"
-                          title="اظهار الفواتير"
-                      onClick={(e) =>{
-                      e.stopPropagation()
-                      setisOpenordercustomer(true)
-                      setCustomerorder(customer.orders)
-                    }}><Eye size={20} /></button>
-                    {user.accountType === "ADMIN" && (
+                        className="p-2 text-slate-400 hover:text-green-500 hover:bg-blue-50 rounded-xl transition-all"
+                        title="اظهار الفواتير"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setisOpenordercustomer(true)
+                          setCustomerorder(customer.orders)
+                        }}><Eye size={20} /></button>
+                      {user.accountType === "ADMIN" && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -707,7 +716,7 @@ const exportCustomersToExcel = (customers: any[]) => {
                           className="p-2 flex text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
                           title="تعيين موظف"
                         >
-                          {customer.users.map((e:any , i:any) => (
+                          {customer.users.map((e: any, i: any) => (
                             <div className="w-5 h-5 flex items-center rounded-full p-1">
                               <p>{e.username[0]}</p>
                             </div>
@@ -732,7 +741,7 @@ const exportCustomersToExcel = (customers: any[]) => {
                       <MessageCircle size={16} />
                       تواصل
                     </button>
-                    
+
                   </div>
                 </div>
               ))}
@@ -743,20 +752,96 @@ const exportCustomersToExcel = (customers: any[]) => {
 
       <AppModal size="lg" isOpen={isOpen} onClose={() => setIsOpen(false)} title="إضافة ملف عميل شامل">
         <DynamicForm schema={customerSchema} onSubmit={onSubmit} defaultValues={formdata}>
-          {({ register, formState: { errors } }) => (
-            <div className="space-y-6">
+  {({ register, control, formState: { errors } }) => {
+    // إعداد المصفوفة الديناميكية للحقول
+    const { fields, append, remove } = useFieldArray({
+      control,
+      name: "phone", // يجب أن يطابق الاسم في الـ Schema
+    });
 
-              {/* القسم الأول: المعلومات الأساسية */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormInput label="اسم العميل *" {...register("name")} error={errors.name?.message?.toString()} />
-                <FormSelect label="اختر رمز الدولة" options={countryOptions} {...register("countryCode")} error={errors.countryCode?.message?.toString()} />
-                <FormInput label="رقم الهاتف" placeholder="يمكن اضافة أكثر من رقم بين كل رقم مسافة" {...register("phone")} error={errors.phone?.message?.toString()} />
-                <FormSelect label="الدولة" options={contry} {...register("country")} error={errors.country?.message?.toString()} />
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          {/* اسم العميل */}
+          <FormInput 
+            label="اسم العميل *" 
+            {...register("name")} 
+            error={errors.name?.message?.toString()} 
+          />
+
+          {/* الدولة */}
+          <FormSelect 
+            label="الدولة" 
+            options={contry} 
+            {...register("country")} 
+            error={errors.country?.message?.toString()} 
+          />
+
+          {/* قسم أرقام الهواتف الديناميكي */}
+          <div className="col-span-1 md:col-span-2 space-y-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-200">
+              أرقام الهاتف *
+            </label>
+            
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex flex-col gap-1">
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1 dir-ltr">
+                    <Controller
+                      name={`phone.${index}`} // لاحظ الربط مع الـ index
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <PhoneInput
+                          international
+                          withCountryCallingCode
+                          defaultCountry="SY"
+                          value={value}
+                          onChange={onChange}
+                          className="PhoneInputCustom"
+                          numberInputProps={{
+                            className: "w-full bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+
+                  {/* زر حذف الرقم (يظهر فقط إذا كان هناك أكثر من رقم) */}
+                  {fields.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="p-3 text-rose-500 bg-rose-50 dark:bg-rose-950/30 rounded-xl hover:bg-rose-100 transition-colors border border-rose-100 dark:border-rose-900/50"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                  )}
+                </div>
+                
+                {/* عرض خطأ التحقق لكل حقل مستقل */}
+      
               </div>
+            ))}
 
-            </div>
-          )}
-        </DynamicForm>
+            {/* زر إضافة رقم جديد */}
+            <button
+              type="button"
+              onClick={() => append("")}
+              className="flex items-center gap-2 text-sm text-blue-600 font-bold hover:text-blue-700 transition-all mt-2"
+            >
+              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30">
+                +
+              </div>
+              إضافة رقم هاتف آخر
+            </button>
+          </div>
+
+        </div>
+      </div>
+    );
+  }}
+</DynamicForm>
       </AppModal>
       <AppModal size="lg" isOpen={isOpencustomer} onClose={() => setIsOpencustomer(false)} title="بيانات العميل">
         <GetCustomerSingle data={customer} getdatas={getData} />
@@ -795,22 +880,22 @@ const exportCustomersToExcel = (customers: any[]) => {
       } size='full' isOpen={isOpenOrder} onClose={resetForm} title='اضافة طلب'>
         <div>
           <div className="space-y-4 mb-4">
-          <div className="flex flex-col gap-2 my-1">
-            <label className="text-xs font-bold text-slate-500 mr-2" htmlFor="">العميل /المورد</label>
-            <input
-                  disabled={true}
-                    type="text"
-                    // يعرض اسم العميل المختار حالياً أو نص البحث
-                    value={customerSearchQuery || customers?.find(c => c.id === customerId)?.name || ""}
-                    placeholder="ابحث عن عميل..."
-                    onFocus={() => setShowCustomerDropdown(true)}
-                    onChange={(e) => {
-                      setCustomerSearchQuery(e.target.value);
-                      setShowCustomerDropdown(true);
-                    }}
-                    className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold transition-all"
-                  />
-          </div>
+            <div className="flex flex-col gap-2 my-1">
+              <label className="text-xs font-bold text-slate-500 mr-2" htmlFor="">العميل /المورد</label>
+              <input
+                disabled={true}
+                type="text"
+                // يعرض اسم العميل المختار حالياً أو نص البحث
+                value={customerSearchQuery || customers?.find(c => c.id === customerId)?.name || ""}
+                placeholder="ابحث عن عميل..."
+                onFocus={() => setShowCustomerDropdown(true)}
+                onChange={(e) => {
+                  setCustomerSearchQuery(e.target.value);
+                  setShowCustomerDropdown(true);
+                }}
+                className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold transition-all"
+              />
+            </div>
             {items.map((item: any, index: number) => (
               <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 items-center">
                 <div className="md:col-span-3 relative"> {/* تم إضافة relative هنا لضبط القائمة المنسدلة */}
@@ -884,7 +969,7 @@ const exportCustomersToExcel = (customers: any[]) => {
               <div className="space-y-2 md:col-span-2 relative">
                 <label className="text-xs font-bold text-slate-500 mr-2">العميل / المورد</label>
                 <div className="relative">
-                  
+
 
                   {/* أيقونة سهم أو بحث صغيرة للجمالية */}
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
@@ -946,42 +1031,44 @@ const exportCustomersToExcel = (customers: any[]) => {
                 <input type="text" value={receiverName} onChange={(e) => setReceiverName(e.target.value)} placeholder="اسم المستلم" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold" />
               </div>
               <div className="space-y-2">
-  <label className="text-xs font-bold text-slate-500">أرقام هواتف المستلم</label>
-  
-  {receiverPhone.map((phone, index) => (
-    <div key={index} className="flex gap-2">
-      <input
-        type="text"
-        value={phone}
-        onChange={(e) => {
-          const newPhones = [...receiverPhone];
-          newPhones[index] = e.target.value;
-          setReceiverPhone(newPhones);
-        }}
-        className="w-full bg-white dark:bg-slate-900 p-3.5 rounded-xl border ..."
-        placeholder={`رقم الهاتف ${index + 1}`}
-      />
-      
-      {/* زر حذف الحقل إذا كان هناك أكثر من حقل واحد */}
-      {receiverPhone.length > 1 && (
-        <button 
-          onClick={() => setReceiverPhone(receiverPhone.filter((_, i) => i !== index))}
-          className="p-2 text-rose-500 bg-rose-50 rounded-lg"
-        >
-          X
-        </button>
-      )}
-    </div>
-  ))}
+                <label className="text-xs font-bold text-slate-500">أرقام هواتف المستلم</label>
 
-  <button
-    type="button"
-    onClick={() => setReceiverPhone([...receiverPhone, ""])}
-    className="text-xs text-blue-600 font-bold hover:underline"
-  >
-    + إضافة رقم هاتف آخر
-  </button>
-</div>
+                {receiverPhone.map((phone: any, index: any) => (
+                  <div key={index} className="flex gap-2">
+                    <PhoneInput
+                    international
+                      placeholder="Enter phone number"
+                      value={phone}
+                      withCountryCallingCode
+                      className="w-full bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      onChange={(value) => { // القيمة هنا هي الرقم مباشرة وليست e
+                        const newPhones = [...receiverPhone];
+                        newPhones[index] = value; // نضع القيمة مباشرة
+                        setReceiverPhone(newPhones);
+                      }}
+                      defaultCountry="SY"
+                    />
+
+                    {/* زر حذف الحقل إذا كان هناك أكثر من حقل واحد */}
+                    {receiverPhone.length > 1 && (
+                      <button
+                        onClick={() => setReceiverPhone(receiverPhone.filter((_: any, i: any) => i !== index))}
+                        className="p-2 text-rose-500 bg-rose-50 rounded-lg"
+                      >
+                        X
+                      </button>
+                    )}
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => setReceiverPhone([...receiverPhone, ""])}
+                  className="text-xs text-blue-600 font-bold hover:underline"
+                >
+                  + إضافة رقم هاتف آخر
+                </button>
+              </div>
               <div className="space-y-2 md:col-span-2">
                 <label className="text-xs font-bold text-slate-500 mr-2">طريقة الدفع</label>
                 <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold">
@@ -990,18 +1077,18 @@ const exportCustomersToExcel = (customers: any[]) => {
                   <option value="مختلطة">مختلطة</option>
                 </select>
               </div>
-              {paymentMethod === "مختلطة" ?(
+              {paymentMethod === "مختلطة" ? (
                 <div className="grid col-span-2 grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 mr-2">المبلغ المستلم</label>
-                <input type="text" value={amount} onChange={(e) => setamount(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 mr-2">المبلغ المتبقي</label>
-                <input type="text" value={amountBank} onChange={(e) => setamountBank(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
-              </div>
+                    <label className="text-xs font-bold text-slate-500 mr-2">المبلغ المستلم</label>
+                    <input type="text" value={amount} onChange={(e) => setamount(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 mr-2">المبلغ المتبقي</label>
+                    <input type="text" value={amountBank} onChange={(e) => setamountBank(e.target.value)} placeholder="09XXXXXXXX" className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold text-left" dir="ltr" />
+                  </div>
                 </div>
-              ):(
+              ) : (
                 <div className=""></div>
               )}
             </div>
@@ -1050,11 +1137,11 @@ const exportCustomersToExcel = (customers: any[]) => {
 
       <AppModal isOpen={OpenAssignModal} onClose={() => setOpenAssignModal(false)} title="ربط المستخدمين بالعميل" >
         <AssignUserModal customer={customer} allUsers={alluser} onSave={handleAssignUsers} />
-      </AppModal> 
+      </AppModal>
       <AppModal size='lg' isOpen={isOpenordercustomer} onClose={() => setisOpenordercustomer(false)} title='طلبات العميل'>
-                      <ViewOrderCustomer orders={customerorder} />
-                  </AppModal>
-          </div>
+        <ViewOrderCustomer orders={customerorder} />
+      </AppModal>
+    </div>
   );
 };
 
@@ -1164,16 +1251,16 @@ function GetCustomerSingle({ data, getdatas }: { data: any, getdatas: any }) {
                   {chat.message}
                   <p className="text-[9px] mt-1 opacity-70 text-left">
                     {new Date(chat.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
-                    
+
                   </p>
-                   <p className="text-[9px] opacity-70 text-left">
+                  <p className="text-[9px] opacity-70 text-left">
                     {new Date(chat.createdAt).toLocaleDateString('ar-EG', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
                     })}
                   </p>
-                  
+
                 </div>
               </div>
             ))}
@@ -1315,100 +1402,100 @@ function AssignUserModal({ customer, allUsers, onSave }: { customer: any, allUse
 };
 
 function ViewOrderCustomer({ orders }: { orders: any[] }) {
-    // حالة لتخزين معرف الطلب المفتوح حالياً لعرض منتجاته
-    const [expandedOrderId, setExpandedOrderId] = React.useState<number | null>(null);
+  // حالة لتخزين معرف الطلب المفتوح حالياً لعرض منتجاته
+  const [expandedOrderId, setExpandedOrderId] = React.useState<number | null>(null);
 
-    if (!orders || orders.length === 0) return <div className="p-10 text-center font-bold">لا يوجد طلبات سابقة لهذا العميل</div>;
+  if (!orders || orders.length === 0) return <div className="p-10 text-center font-bold">لا يوجد طلبات سابقة لهذا العميل</div>;
 
-    const clientName = orders[0].customer?.name || "العميل";
+  const clientName = orders[0].customer?.name || "العميل";
 
-    // دالة لتبديل حالة العرض (فتح/إغلاق)
-    const toggleOrder = (id: number) => {
-        setExpandedOrderId(expandedOrderId === id ? null : id);
-    };
+  // دالة لتبديل حالة العرض (فتح/إغلاق)
+  const toggleOrder = (id: number) => {
+    setExpandedOrderId(expandedOrderId === id ? null : id);
+  };
 
-    return (
-        <div className="space-y-6 p-4">
-            <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-black text-slate-800 dark:text-white flex items-center gap-3">
-                    طلبات العميل: {clientName}
-                    <span className="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
-                        {orders.length} فواتير
-                    </span>
-                </h3>
+  return (
+    <div className="space-y-6 p-4">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl font-black text-slate-800 dark:text-white flex items-center gap-3">
+          طلبات العميل: {clientName}
+          <span className="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">
+            {orders.length} فواتير
+          </span>
+        </h3>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 max-h-[70vh] overflow-y-auto pr-2">
+        {orders.map((order: any) => (
+          <div key={order.id} className="flex flex-col gap-2">
+            {/* بطاقة الطلب الرئيسية */}
+            <div
+              onClick={() => toggleOrder(order.id)}
+              className={`flex justify-between items-center p-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2rem] hover:shadow-lg transition-all cursor-pointer border-r-4 ${expandedOrderId === order.id ? 'border-r-blue-600 shadow-md' : 'border-r-blue-500'
+                }`}
+            >
+              <div className="space-y-1">
+                <p className="font-black text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                  رقم المرجع: <span className="font-mono text-blue-600">#{order.orderNumber}</span>
+                  {expandedOrderId === order.id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                </p>
+                <div className="flex items-center gap-3 text-[11px] font-bold text-slate-400">
+                  <span className="flex items-center gap-1">📅 {new Date(order.createdAt).toLocaleDateString('ar-EG')}</span>
+                  <span className="flex items-center gap-1">👤 بواسطة: {order.user?.name || 'Admin'}</span>
+                </div>
+              </div>
+
+              <div className="text-left space-y-1">
+                <p className="font-black text-lg text-slate-900 dark:text-white italic">
+                  {Number(order.finalAmount).toLocaleString()} <span className="text-xs">ل.س</span>
+                </p>
+                <div className={`text-[10px] px-2 py-0.5 rounded-full inline-block font-bold ${order.status === 'مدفوعة' || order.status === 'تم التسليم'
+                  ? 'bg-emerald-100 text-emerald-600'
+                  : 'bg-amber-100 text-amber-600'
+                  }`}>
+                  {order.status}
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 max-h-[70vh] overflow-y-auto pr-2">
-                {orders.map((order: any) => (
-                    <div key={order.id} className="flex flex-col gap-2">
-                        {/* بطاقة الطلب الرئيسية */}
-                        <div
-                            onClick={() => toggleOrder(order.id)}
-                            className={`flex justify-between items-center p-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2rem] hover:shadow-lg transition-all cursor-pointer border-r-4 ${expandedOrderId === order.id ? 'border-r-blue-600 shadow-md' : 'border-r-blue-500'
-                                }`}
-                        >
-                            <div className="space-y-1">
-                                <p className="font-black text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                                    رقم المرجع: <span className="font-mono text-blue-600">#{order.orderNumber}</span>
-                                    {expandedOrderId === order.id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                                </p>
-                                <div className="flex items-center gap-3 text-[11px] font-bold text-slate-400">
-                                    <span className="flex items-center gap-1">📅 {new Date(order.createdAt).toLocaleDateString('ar-EG')}</span>
-                                    <span className="flex items-center gap-1">👤 بواسطة: {order.user?.name || 'Admin'}</span>
-                                </div>
-                            </div>
+            {/* قسم المنتجات (يظهر فقط عند الضغط) */}
+            {expandedOrderId === order.id && (
+              <div className="mx-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-b-[1.5rem] border-x border-b border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2 duration-300">
+                <h4 className="text-[11px] font-black text-slate-400 mb-3 flex items-center gap-2">
+                  <Package size={12} /> محتويات الطلب:
+                </h4>
+                <div className="space-y-2">
 
-                            <div className="text-left space-y-1">
-                                <p className="font-black text-lg text-slate-900 dark:text-white italic">
-                                    {Number(order.finalAmount).toLocaleString()} <span className="text-xs">ل.س</span>
-                                </p>
-                                <div className={`text-[10px] px-2 py-0.5 rounded-full inline-block font-bold ${order.status === 'مدفوعة' || order.status === 'تم التسليم'
-                                    ? 'bg-emerald-100 text-emerald-600'
-                                    : 'bg-amber-100 text-amber-600'
-                                    }`}>
-                                    {order.status}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* قسم المنتجات (يظهر فقط عند الضغط) */}
-                        {expandedOrderId === order.id && (
-                            <div className="mx-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-b-[1.5rem] border-x border-b border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2 duration-300">
-                                <h4 className="text-[11px] font-black text-slate-400 mb-3 flex items-center gap-2">
-                                    <Package size={12} /> محتويات الطلب:
-                                </h4>
-                                <div className="space-y-2">
-
-                                    {order.items?.map((item: any, idx: number) => (
-                                        <div key={idx} className="flex justify-between items-center text-sm border-b border-slate-100 dark:border-slate-700 pb-2 last:border-0">
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-slate-700 dark:text-slate-200">
-                                                    {item.product?.name || item.name || "منتج غير مسمى"}
-                                                </span>
-                                                <span className="text-[10px] text-slate-400 font-mono italic">
-                                                    {item.product?.modelNumber || item.modelNumber || "بدون موديل"}
-                                                </span>
-                                            </div>
-                                            <div className="text-left font-bold">
-                                                <span className="text-blue-600">{item.quantity}</span>
-                                                <span className="text-[10px] text-slate-400 mr-1">×</span>
-                                                <span className="text-xs text-slate-600 dark:text-slate-400 ml-2">
-                                                    {Number(item.price).toLocaleString()} ل.س
-                                                </span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {(!order.items || order.items.length === 0) && (
-                                        <div className="text-xs text-center text-slate-400 italic">لا توجد منتجات مسجلة لهذا الطلب</div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
+                  {order.items?.map((item: any, idx: number) => (
+                    <div key={idx} className="flex justify-between items-center text-sm border-b border-slate-100 dark:border-slate-700 pb-2 last:border-0">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-slate-700 dark:text-slate-200">
+                          {item.product?.name || item.name || "منتج غير مسمى"}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono italic">
+                          {item.product?.modelNumber || item.modelNumber || "بدون موديل"}
+                        </span>
+                      </div>
+                      <div className="text-left font-bold">
+                        <span className="text-blue-600">{item.quantity}</span>
+                        <span className="text-[10px] text-slate-400 mr-1">×</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-400 ml-2">
+                          {Number(item.price).toLocaleString()} ل.س
+                        </span>
+                      </div>
                     </div>
-                ))}
-            </div>
-        </div>
-    );
+                  ))}
+                  {(!order.items || order.items.length === 0) && (
+                    <div className="text-xs text-center text-slate-400 italic">لا توجد منتجات مسجلة لهذا الطلب</div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default CustomrLayout;

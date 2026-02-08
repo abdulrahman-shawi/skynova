@@ -14,6 +14,97 @@
   }
 }
 
+/* --- تنسيقات مكتبة Phone Input للوضع الليلي والنهاري --- */
+
+/* 1. الحاوية الرئيسية */
+.PhoneInput {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px;
+  padding: 0.5rem;
+  border-radius: 0.75rem; /* rounded-xl */
+  transition: all 0.3s ease;
+}
+
+/* 2. ضبط الألوان بناءً على وضع النظام */
+/* الوضع النهار (Light Mode) */
+.PhoneInput {
+  background-color: #ffffff; 
+  border: 1px solid #e2e8f0; /* slate-200 */
+}
+
+/* الوضع الليلي (Dark Mode) */
+.dark .PhoneInput {
+  background-color: #0f172a; /* slate-900 */
+  border: 1px solid #1e293b; /* slate-800 */
+}
+
+/* 3. تنسيق حقل الإدخال (Input) */
+.PhoneInputInput {
+  flex: 1;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 0.95rem;
+}
+
+/* ألوان الخط في الوضعين */
+.PhoneInputInput { color: #1e293b; } /* نصوص غامقة في النهار */
+.dark .PhoneInputInput { color: #f1f5f9; } /* نصوص فاتحة في الليل */
+
+/* 4. تنسيق قائمة الدول (Select) */
+.PhoneInputCountrySelect {
+  cursor: pointer;
+  background-color: transparent !important;
+  border: none !important;
+  padding: 5px;
+  outline: none;
+  width: 150px;
+}
+
+/* حل مشكلة لون الخلفية في القائمة المنسدلة (Option) */
+.PhoneInputCountrySelect option {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.dark .PhoneInputCountrySelect {
+  background-color: #0f172a;
+  color: #e9e9e9;
+}
+.PhoneInputCountry{
+  width: 150px;
+}
+
+
+.dark .PhoneInputCountrySelect option {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+/* 5. إصلاح حجم العلم (المنقذ من العلم العملاق) */
+.PhoneInputCountryIcon {
+  width: 28px !important;
+  height: 20px !important;
+  box-shadow: 0 0 2px rgba(0,0,0,0.1);
+  display: flex !important;
+  align-items: center;
+}
+
+.PhoneInputCountryIconImg {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 2px;
+}
+
+/* 6. تأثير عند الضغط (Focus) */
+.PhoneInput:focus-within {
+  border-color: #3b82f6 !important; /* blue-500 */
+  ring: 2px;
+  --tw-ring-color: #3b82f6;
+}
+
 @layer utilities {
   /* إخفاء شريط التمرير لمتصفحات Chrome و Safari و Edge */
   .no-scrollbar::-webkit-scrollbar {
