@@ -879,11 +879,11 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
                             {data.paymentMethod === "مختلطة" && (
                                 <div className="border-t border-b border-dashed border-slate-200 py-3 space-y-2">
                                     <div className="flex justify-between px-6 text-blue-600 font-bold text-sm">
-                                        <span>القيمة المستلمة (كاش):</span>
+                                        <span>القيمة المستلمة (حوالة):</span>
                                         <span>{Number(data.amount).toLocaleString()} $</span>
                                     </div>
                                     <div className="flex justify-between px-6 text-purple-600 font-bold text-sm">
-                                        <span>القيمة المتبقية (بنك):</span>
+                                        <span>القيمة المتبقية (عند الباب):</span>
                                         <span>{Number(data.amountBank).toLocaleString()} $</span>
                                     </div>
                                 </div>

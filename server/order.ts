@@ -65,7 +65,7 @@ export async function createOrder(data: any, items: any[], user: any) {
                     fullAddress: data.fullAddress,
                     googleMapsLink: data.googleMapsLink,
                     amount: data.amount,
-                    amountBank: data.amountBank,
+                    amountBank: String(data.amountBank),
                     deliveryMethod: data.deliveryMethod,
                     deliveryNotes: data.deliveryNotes,
                     customer: { connect: { id: data.customerId } },
