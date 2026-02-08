@@ -820,6 +820,14 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
                                 <p>المنظقة: {data.municipality ? ` - ${data.municipality}` : 'لم يسجل'}</p>
                                 <p>العنوان: {data.fullAddress || 'لم يسجل'}</p>
                                 <p>رقم التواصل: {data.receiverPhone.join(" - ") || 'لم يسجل'}</p>
+                                {
+                                    data.googleMapsLink && (
+                                        <div  className="">
+                                            <a target='_blank' href={`${data.googleMapsLink}`}>رابط الخريطة</a>
+                                        </div>
+                                    )
+                                }
+                                
                             </div>
                         </div>
                     </div>
