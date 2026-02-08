@@ -145,28 +145,50 @@ export async function UpdateStusa(customer:any , status:any) {
 
 export async function deleteCustomer(data: any) {
   try {
-    const result = await prisma.$transaction(async (tx) => {
-      // 1. حذف الرسائل المرتبطة بالعميل أولاً
-      await tx.message.deleteMany({
-        where: { customerId: data.id }
-      });
-
-      // 2. حذف الطلبات المرتبطة بالعميل
-      await tx.order.deleteMany({
-        where: { customerId: data.id }
-      });
-
-      // 3. حذف العميل (سيقوم Prisma تلقائياً بفك الارتباط مع الـ Users في علاقة Many-to-Many)
-      const deletedCustomer = await tx.customer.delete({
-        where: { id: data.id }
-      });
-
-      return deletedCustomer;
+    // 1. تحقق أولاً مما إذا كان لدى العميل أي طلبات
+    const customerWithOrders = await prisma.customer.findUnique({
+      where: { id: data.id },
+      include: {
+        _count: {
+          select: { orders: true }
+        }
+      }
     });
 
-    return { success: true, data: result };
+    if (!customerWithOrders) {
+      return { success: false, message: "العميل غير موجود" };
+    }
+
+    // 2. إذا كان عدد الطلبات أكبر من صفر، امنع الحذف
+    if (customerWithOrders._count.orders > 0) {
+      return { 
+        success: false, 
+        message: "لا يمكن حذف العميل لوجود طلبات مرتبطة به. يجب حذف الطلبات أولاً." 
+      };
+    }
+
+    // 3. إذا لم توجد طلبات، قم بعملية الحذف
+    // نستخدم transaction للتأكد من فك الارتباطات الأخرى (مثل الرسائل والمستخدمين) قبل الحذف النهائي
+    const res = await prisma.$transaction(async (tx) => {
+      // فك ارتباط العميل بالمستخدمين (Many-to-Many)
+      await tx.customer.update({
+        where: { id: data.id },
+        data: {
+          users: { set: [] },
+          message: { deleteMany: {} } // حذف الرسائل المرتبطة إن وجدت
+        }
+      });
+
+      // الحذف النهائي للعميل
+      return await tx.customer.delete({
+        where: { id: data.id }
+      });
+    });
+
+    return { success: true, data: res };
+
   } catch (error) {
-    console.error("خطأ أثناء الحذف:", error);
-    return { success: false, error: "فشل حذف العميل بسبب وجود بيانات مرتبطة به" };
+    console.error("Error during deletion:", error);
+    return { success: false, error: "حدث خطأ أثناء محاولة الحذف" };
   }
 }
