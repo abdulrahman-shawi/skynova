@@ -17,7 +17,7 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
   // بيانات المستلم والعنوان
   const [receiverName, setReceiverName] = React.useState("");
   const [receiverPhone, setReceiverPhone] = React.useState<(string | undefined)[]>([""]);
-  const [country, setCountry] = React.useState("ليبيا"); // افتراضي حسب الصورة
+  const [country, setCountry] = React.useState("سوريا"); // افتراضي حسب الصورة
   const [city, setCity] = React.useState("");
   const [municipality, setMunicipality] = React.useState("");
   const [fullAddress, setFullAddress] = React.useState("");
@@ -117,10 +117,37 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
       return;
     }
 
+    if (!receiverName || receiverName.trim() === "") {
+      toast.error("يرجى تحديد اسم المستلم");
+      return;
+    }
+
+    if (!municipality || municipality.trim() === "") {
+      toast.error("يرجى تحديد البلدية/المنطقة");
+      return;
+    }
+    if (!fullAddress || fullAddress.trim() === "") {
+      toast.error("يرجى كتابة عنوان التسليم");
+      return;
+    }
+
     if (items.length === 0 || !items[0].productId) {
       toast.error("يرجى إضافة منتج واحد على الأقل");
       return;
     }
+
+    if (receiverPhone.length === 0) {
+      toast.error("يرجى إضافة رقم واحد على الأقل");
+      return;
+    }
+
+    if(paymentMethod === "مختلطة"){
+      if(amount === "" && amountBank === ""){
+        toast.error("يجب ادخال قيمة الدفعة المستلمة")
+      }
+    }
+
+
 
     // تفعيل حالة التحم
 
