@@ -20,7 +20,11 @@ export async function getCustomer() {
           }
         }
       },
-      message:true
+      message:{
+        include:{
+          user:true
+        }
+      }
     }
     
   })
@@ -139,19 +143,30 @@ export async function UpdateStusa(customer:any , status:any) {
   return {success:true , data:stusas}
 }
 
-export async function deleteCustomer(data:any) {
-  await prisma.customer.update({
-  where:{id:data.id},
-  data:{
-    users:{
-      set:[]
-    }
+export async function deleteCustomer(data: any) {
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. حذف الرسائل المرتبطة بالعميل أولاً
+      await tx.message.deleteMany({
+        where: { customerId: data.id }
+      });
+
+      // 2. حذف الطلبات المرتبطة بالعميل
+      await tx.order.deleteMany({
+        where: { customerId: data.id }
+      });
+
+      // 3. حذف العميل (سيقوم Prisma تلقائياً بفك الارتباط مع الـ Users في علاقة Many-to-Many)
+      const deletedCustomer = await tx.customer.delete({
+        where: { id: data.id }
+      });
+
+      return deletedCustomer;
+    });
+
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("خطأ أثناء الحذف:", error);
+    return { success: false, error: "فشل حذف العميل بسبب وجود بيانات مرتبطة به" };
   }
-})
-
-const res = await prisma.customer.delete({
-  where:{id:data.id}
-})
-
-return {success:true , data:res}
 }

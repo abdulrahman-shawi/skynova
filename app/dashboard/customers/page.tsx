@@ -503,8 +503,8 @@ const CustomrLayout: React.FC = () => {
             <button
               onClick={handleExportAction}
               className={`flex items-center gap-2 px-6 py-2 rounded-xl text-white font-bold transition-all ${selectedCustomers.length > 0
-                  ? 'bg-blue-600 hover:bg-blue-700 shadow-lg scale-105'
-                  : 'bg-slate-600 hover:bg-slate-700'
+                ? 'bg-blue-600 hover:bg-blue-700 shadow-lg scale-105'
+                : 'bg-slate-600 hover:bg-slate-700'
                 }`}
             >
               <Download size={18} />
@@ -752,96 +752,96 @@ const CustomrLayout: React.FC = () => {
 
       <AppModal size="lg" isOpen={isOpen} onClose={() => setIsOpen(false)} title="إضافة ملف عميل شامل">
         <DynamicForm schema={customerSchema} onSubmit={onSubmit} defaultValues={formdata}>
-  {({ register, control, formState: { errors } }) => {
-    // إعداد المصفوفة الديناميكية للحقول
-    const { fields, append, remove } = useFieldArray({
-      control,
-      name: "phone", // يجب أن يطابق الاسم في الـ Schema
-    });
+          {({ register, control, formState: { errors } }) => {
+            // إعداد المصفوفة الديناميكية للحقول
+            const { fields, append, remove } = useFieldArray({
+              control,
+              name: "phone", // يجب أن يطابق الاسم في الـ Schema
+            });
 
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
-          {/* اسم العميل */}
-          <FormInput 
-            label="اسم العميل *" 
-            {...register("name")} 
-            error={errors.name?.message?.toString()} 
-          />
+            return (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          {/* الدولة */}
-          <FormSelect 
-            label="الدولة" 
-            options={contry} 
-            {...register("country")} 
-            error={errors.country?.message?.toString()} 
-          />
+                  {/* اسم العميل */}
+                  <FormInput
+                    label="اسم العميل *"
+                    {...register("name")}
+                    error={errors.name?.message?.toString()}
+                  />
 
-          {/* قسم أرقام الهواتف الديناميكي */}
-          <div className="col-span-1 md:col-span-2 space-y-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-slate-200">
-              أرقام الهاتف *
-            </label>
-            
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex flex-col gap-1">
-                <div className="flex gap-2 items-center">
-                  <div className="flex-1 dir-ltr">
-                    <Controller
-                      name={`phone.${index}`} // لاحظ الربط مع الـ index
-                      control={control}
-                      render={({ field: { onChange, value } }) => (
-                        <PhoneInput
-                          international
-                          withCountryCallingCode
-                          defaultCountry="SY"
-                          value={value}
-                          onChange={onChange}
-                          className="PhoneInputCustom"
-                          numberInputProps={{
-                            className: "w-full bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
+                  {/* الدولة */}
+                  <FormSelect
+                    label="الدولة"
+                    options={contry}
+                    {...register("country")}
+                    error={errors.country?.message?.toString()}
+                  />
 
-                  {/* زر حذف الرقم (يظهر فقط إذا كان هناك أكثر من رقم) */}
-                  {fields.length > 1 && (
+                  {/* قسم أرقام الهواتف الديناميكي */}
+                  <div className="col-span-1 md:col-span-2 space-y-4">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-200">
+                      أرقام الهاتف *
+                    </label>
+
+                    {fields.map((field, index) => (
+                      <div key={field.id} className="flex flex-col gap-1">
+                        <div className="flex gap-2 items-center">
+                          <div className="flex-1 dir-ltr">
+                            <Controller
+                              name={`phone.${index}`} // لاحظ الربط مع الـ index
+                              control={control}
+                              render={({ field: { onChange, value } }) => (
+                                <PhoneInput
+                                  international
+                                  withCountryCallingCode
+                                  defaultCountry="SY"
+                                  value={value}
+                                  onChange={onChange}
+                                  className="PhoneInputCustom"
+                                  numberInputProps={{
+                                    className: "w-full bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                                  }}
+                                />
+                              )}
+                            />
+                          </div>
+
+                          {/* زر حذف الرقم (يظهر فقط إذا كان هناك أكثر من رقم) */}
+                          {fields.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => remove(index)}
+                              className="p-3 text-rose-500 bg-rose-50 dark:bg-rose-950/30 rounded-xl hover:bg-rose-100 transition-colors border border-rose-100 dark:border-rose-900/50"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                            </button>
+                          )}
+                        </div>
+
+                        {/* عرض خطأ التحقق لكل حقل مستقل */}
+
+                      </div>
+                    ))}
+
+                    {/* زر إضافة رقم جديد */}
                     <button
                       type="button"
-                      onClick={() => remove(index)}
-                      className="p-3 text-rose-500 bg-rose-50 dark:bg-rose-950/30 rounded-xl hover:bg-rose-100 transition-colors border border-rose-100 dark:border-rose-900/50"
+                      onClick={() => append("")}
+                      className="flex items-center gap-2 text-sm text-blue-600 font-bold hover:text-blue-700 transition-all mt-2"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      <div className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30">
+                        +
+                      </div>
+                      إضافة رقم هاتف آخر
                     </button>
-                  )}
+                  </div>
+
                 </div>
-                
-                {/* عرض خطأ التحقق لكل حقل مستقل */}
-      
               </div>
-            ))}
-
-            {/* زر إضافة رقم جديد */}
-            <button
-              type="button"
-              onClick={() => append("")}
-              className="flex items-center gap-2 text-sm text-blue-600 font-bold hover:text-blue-700 transition-all mt-2"
-            >
-              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30">
-                +
-              </div>
-              إضافة رقم هاتف آخر
-            </button>
-          </div>
-
-        </div>
-      </div>
-    );
-  }}
-</DynamicForm>
+            );
+          }}
+        </DynamicForm>
       </AppModal>
       <AppModal size="lg" isOpen={isOpencustomer} onClose={() => setIsOpencustomer(false)} title="بيانات العميل">
         <GetCustomerSingle data={customer} getdatas={getData} />
@@ -1036,7 +1036,7 @@ const CustomrLayout: React.FC = () => {
                 {receiverPhone.map((phone: any, index: any) => (
                   <div key={index} className="flex gap-2">
                     <PhoneInput
-                    international
+                      international
                       placeholder="Enter phone number"
                       value={phone}
                       withCountryCallingCode
@@ -1188,7 +1188,7 @@ function GetCustomerSingle({ data, getdatas }: { data: any, getdatas: any }) {
 
       <div className="p-6 space-y-6">
         {/* معلومات الهاتف والدولة */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 flex items-center gap-3">
             <Phone size={18} className="text-blue-500" />
             <div>
@@ -1219,7 +1219,7 @@ function GetCustomerSingle({ data, getdatas }: { data: any, getdatas: any }) {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && msg.trim()) submit();
                 }}
-                placeholder="اكتب رسالة جديدة هنا..."
+                placeholder="اكتب ملخص تواصل اليوم"
                 className="flex-1 bg-transparent p-2.5 outline-none text-sm dark:text-white"
               />
               <button
@@ -1249,19 +1249,29 @@ function GetCustomerSingle({ data, getdatas }: { data: any, getdatas: any }) {
               <div key={chat.id} className="flex justify-start animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="w-full p-3 rounded-2xl rounded-tr-none text-sm bg-blue-600 text-white shadow-sm">
                   {chat.message}
-                  <p className="text-[9px] mt-1 opacity-70 text-left">
-                    {new Date(chat.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                  <div className="flex items-end justify-between">
+                    <div className="">
+                        <p className="text-[9px] mt-1 opacity-70 text-left">
+                          {chat.user.username}
+                        </p>
+                    </div>
+                    <div className="">
+                      <p className="text-[9px] mt-1 opacity-70 text-left">
+                        {new Date(chat.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
 
-                  </p>
-                  <p className="text-[9px] opacity-70 text-left">
-                    {new Date(chat.createdAt).toLocaleDateString('ar-EG', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </p>
-
+                      </p>
+                      <p className="text-[9px] opacity-70 text-left">
+                        {new Date(chat.createdAt).toLocaleDateString('ar-EG', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                    
+                  </div>
                 </div>
+
               </div>
             ))}
 
