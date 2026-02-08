@@ -25,10 +25,10 @@ import OrderCustomer from "@/components/pages/customers/orderCustomer";
 /* ===================== Constants ===================== */
 
 const STATUS_OPTIONS = [
-  { label: "عميل محتمل", value: "عميل محتمل" },
-  { label: "تم التواصل", value: "تم التواصل" },
-  { label: "مهتم", value: "مهتم" },
-  { label: "تم الإلغاء", value: "تم الألغاء" },
+  { label: "فرصة جديدة", value: "فرصة جديدة" },
+  { label: "جاري المتابعة", value: "جاري المتابعة" },
+  { label: "تم البيع", value: "تم البيع" },
+  { label: "غير مهتم / ملغي", value: "غير مهتم / ملغي" },
 ];
 
 const countryOptions = [
@@ -244,40 +244,40 @@ const CustomrLayout: React.FC = () => {
   }, [user])
   const [isPending, setIsPending] = React.useState(false);
 
-  const resetForm = () => {
-    // إغلاق المودال أولاً
-    setisOpenOrder(false);
+  // const resetForm = () => {
+  //   // إغلاق المودال أولاً
+  //   setisOpenOrder(false);
 
-    // إعادة بيانات الطلب والمنتجات
-    setStatus("طلب جديد");
-    setEditId(null);
-    setItems([{ productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "" }]);
-    setSearchQueries({});
-    setShowDropdown({});
-    setOverallDiscount(0);
+  //   // إعادة بيانات الطلب والمنتجات
+  //   setStatus("طلب جديد");
+  //   setEditId(null);
+  //   setItems([{ productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "" }]);
+  //   setSearchQueries({});
+  //   setShowDropdown({});
+  //   setOverallDiscount(0);
 
-    // إعادة بيانات العميل
-    setCustomerId("");
-    setCustomerSearchQuery("");
-    setShowCustomerDropdown(false);
-    setPaymentMethod("عند الاستلام");
+  //   // إعادة بيانات العميل
+  //   setCustomerId("");
+  //   setCustomerSearchQuery("");
+  //   setShowCustomerDropdown(false);
+  //   setPaymentMethod("عند الاستلام");
 
-    // إعادة بيانات المستلم والعنوان
-    setReceiverName("");
-    setReceiverPhone([""]);
-    setCountry("ليبيا");
-    setCity("");
-    setMunicipality("");
-    setFullAddress("");
+  //   // إعادة بيانات المستلم والعنوان
+  //   setReceiverName("");
+  //   setReceiverPhone([""]);
+  //   setCountry("ليبيا");
+  //   setCity("");
+  //   setMunicipality("");
+  //   setFullAddress("");
 
-    // إعادة تفاصيل الشحن والملاحظات
-    setDeliveryMethod("توصيل الى المنزل");
-    setamount("");
-    setamountBank("");
-    setGoogleMapsLink("");
-    setDeliveryNotes("");
-    setAdditionalNotes("");
-  };
+  //   // إعادة تفاصيل الشحن والملاحظات
+  //   setDeliveryMethod("توصيل الى المنزل");
+  //   setamount("");
+  //   setamountBank("");
+  //   setGoogleMapsLink("");
+  //   setDeliveryNotes("");
+  //   setAdditionalNotes("");
+  // };
 
   const handleStatus = async (customerId: any, status: any) => {
     console.log(customerId, status)
@@ -415,81 +415,6 @@ const CustomrLayout: React.FC = () => {
     console.log(customerId, userIds)
   };
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const handleSubmit = async () => {
-    // التحقق الأولي
-    if (!customerId) {
-      toast.error("يرجى اختيار العميل");
-      return;
-    }
-
-    if (items.length === 0 || !items[0].productId) {
-      toast.error("يرجى إضافة منتج واحد على الأقل");
-      return;
-    }
-
-    // تفعيل حالة التحميل لمنع النقرات المتكررة (تعالج خطأ P2028)
-    setIsSubmitting(true);
-
-    // تصحيح رسالة الـ Toast
-    const loadingMessage = "جاري حفظ الطلب الجديد...";
-    const loadingToast = toast.loading(loadingMessage);
-
-    const orderData = {
-      customerId,
-      status,
-      receiverName,
-      receiverPhone,
-      country,
-      city,
-      municipality,
-      fullAddress,
-      googleMapsLink,
-      amount,
-      amountBank:Number(grandTotal - Number(amount)),
-      deliveryNotes,
-      paymentMethod,
-      additionalNotes,
-      grandTotal: Number(grandTotal),
-      overallDiscount: Number(overallDiscount),
-      subTotal: Number(subTotal)
-    };
-
-    try {
-      let res;
-      // // حالة إنشاء طلب جديد
-      res = await createOrder(orderData, items, user?.id);
-      console.log(orderData, customerId, items, user?.id)
-      if (res.success) {
-        toast.success(editId ? "تم تحديث الطلب بنجاح" : "تم حفظ الطلب بنجاح");
-
-        // تحديث قائمة الطلبات في الواجهة
-        getData()
-
-        // إغلاق المودال
-        setisOpenOrder(false);
-
-        // تنظيف الحقول (اختياري حسب حاجتك)
-        resetForm(); 
-      } else {
-        // عرض الخطأ القادم من السيرفر (مثل كمية غير كافية أو فشل Transaction)
-        console.log(res.success)
-        toast.error(res.success || "فشل في معالجة الطلب يرجى التأكد من عدد المنتجات أو اسم المنتج");
-
-      }
-    } catch (error) {
-      console.log("Submit Error:", error);
-      toast.error("حدث خطأ غير متوقع في النظام");
-    } finally {
-      // إنهاء حالة التحميل وإخفاء الـ Toast
-      setIsSubmitting(false);
-      toast.dismiss(loadingToast);
-    }
-  };
-
-
-
-
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-8 bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800">
@@ -542,10 +467,10 @@ const CustomrLayout: React.FC = () => {
           <div className="flex bg-slate-100 w-full justify-center dark:bg-slate-800 p-1 rounded-xl gap-1 h-11 items-center">
             {[
               { id: 'الكل', label: 'الكل' },
-              { id: 'عميل محتمل', label: 'عميل محتمل' },
-              { id: 'تم التواصل', label: 'تم التواصل' },
-              { id: 'مهتم', label: 'مهتم' },
-              { id: 'تم الإلغاء', label: 'تم الإلغاء' },
+              { id: 'فرصة جديدة', label: 'فرصة جديدو' },
+              { id: 'جاري المتابعة', label: 'جاري المتابعة' },
+              { id: 'تم البيع', label: 'تم البيع' },
+              { id: 'غير مهتم / ملغي', label: 'غير مهتم / ملغي' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -646,10 +571,10 @@ const CustomrLayout: React.FC = () => {
                           className={`
       appearance-none outline-none cursor-pointer
       px-4 py-1.5 rounded-full text-[10px] font-black text-center transition-all border
-      ${customer.status === "عميل محتمل" ? 'bg-blue-100 text-blue-600 border-rose-200' :
-                              customer.status === "مهتم" ? 'bg-green-100 text-green-600 border-green-200' :
-                                customer.status === "تم التواصل" ? 'bg-yellow-100 text-yellow-600 border-green-200' :
-                                  customer.status === "تم الإلغاء" ? 'bg-red-100 text-red-500 border-slate-200' :
+      ${customer.status === "فرصة جديدة" ? 'bg-blue-100 text-blue-600 border-rose-200' :
+                              customer.status === "جاري المتابعة" ? 'bg-green-100 text-green-600 border-green-200' :
+                                customer.status === "تم البيع" ? 'bg-yellow-100 text-yellow-600 border-green-200' :
+                                  customer.status === "غير مهتم / ملغي" ? 'bg-red-100 text-red-500 border-slate-200' :
                                     'bg-amber-100 text-amber-600 border-amber-200'
                             }
     `}
@@ -851,7 +776,7 @@ const CustomrLayout: React.FC = () => {
       <OrderCustomer customerId={customerId} customers={customers}
        editId={editId} getData={getData}
         isOpenOrder={isOpenOrder} products={products}
-      resetForm={resetForm} setisOpenOrder={setisOpenOrder} />
+      setEditId={setEditId} setCustomerId={setCustomerId} setisOpenOrder={setisOpenOrder} />
 
 
       <AppModal isOpen={OpenAssignModal} onClose={() => setOpenAssignModal(false)} title="ربط المستخدمين بالعميل" >

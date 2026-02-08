@@ -8,7 +8,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import PhoneInput from 'react-phone-number-input'
 
-export default function OrderCustomer({customers , customerId , products , isOpenOrder , resetForm , setisOpenOrder , editId , getData}:{customers:any , customerId:any , products:any , isOpenOrder:any , resetForm:any , setisOpenOrder:any , editId:any , getData:any}){
+export default function OrderCustomer({customers , customerId , products , isOpenOrder , setEditId , setCustomerId , setisOpenOrder , editId , getData}:{customers:any , customerId:any , products:any , isOpenOrder:any , setEditId:any , setCustomerId:any , setisOpenOrder:any , editId:any , getData:any}){
     const [items, setItems] = React.useState([
         { productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "" }
       ]);
@@ -76,6 +76,40 @@ const grandTotal = subTotal - overallDiscount;
         setGrandTotal(grandTotal);
     }, [grandTotal]);    
 
+    const resetForm = () => {
+    // إغلاق المودال أولاً
+    setisOpenOrder(false);
+
+    // إعادة بيانات الطلب والمنتجات
+    setStatus("طلب جديد");
+    setEditId(null);
+    setItems([{ productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "" }]);
+    setSearchQueries({});
+    setShowDropdown({});
+    setOverallDiscount(0);
+
+    // إعادة بيانات العميل
+    setCustomerId("");
+    setCustomerSearchQuery("");
+    setShowCustomerDropdown(false);
+    setPaymentMethod("عند الاستلام");
+
+    // إعادة بيانات المستلم والعنوان
+    setReceiverName("");
+    setReceiverPhone([""]);
+    setCountry("ليبيا");
+    setCity("");
+    setMunicipality("");
+    setFullAddress("");
+
+    // إعادة تفاصيل الشحن والملاحظات
+    setDeliveryMethod("توصيل الى المنزل");
+    setamount("");
+    setamountBank("");
+    setGoogleMapsLink("");
+    setDeliveryNotes("");
+    setAdditionalNotes("");
+  };
     const handleSubmit = async () => {
         // التحقق الأولي
         if (!customerId) {
@@ -144,6 +178,8 @@ const grandTotal = subTotal - overallDiscount;
           toast.dismiss(loadingToast);
         }
       };
+
+      
 return (
         <div>
                   <AppModal footer={

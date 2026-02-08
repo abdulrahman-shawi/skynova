@@ -58,15 +58,45 @@ export async function AssignUsers(customerId: string, userIds: string[]) {
   }
 }
 
-export async function createmessage(msg:any , customer:any , user:any) {
-  const res = await prisma.message.create({
-    data:{
-      message:msg,
-      customerId:customer,
-      userId:user
-    }
-  })
-  return {success:true , data:res}
+export async function createmessage(msg: string, customerId: string, userId: string) {
+  try {
+    // نستخدم $transaction لضمان سلامة البيانات
+    const result = await prisma.$transaction(async (tx) => {
+      
+      // نتحقق إذا كان هذا أول رسالة للعميل
+      const messageCount = await tx.message.count({
+        where: { customerId }
+      });
+
+      // إذا كانت هناك رسائل سابقة، نقوم بتحديث الحالة
+      if (messageCount === 0) {
+        await tx.customer.update({
+          where: { id: customerId },
+          data: { status: "جاري المتابعة" }
+        });
+      }
+
+      // إنشاء الرسالة الجديدة
+      const newMessage = await tx.message.create({
+        data: {
+          message: msg,
+          customerId,
+          userId
+        }
+      });
+
+      return newMessage;
+    });
+
+    return { success: true, data: result };
+
+  } catch (error) {
+    console.error("Error creating message:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "حدث خطأ غير متوقع" 
+    };
+  }
 }
 
 export async function createCustomerAction(data: any, id: string) {
