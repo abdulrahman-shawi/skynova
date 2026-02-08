@@ -136,10 +136,10 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
       return;
     }
 
-    if (receiverPhone.length === 0) {
-      toast.error("يرجى إضافة رقم واحد على الأقل");
-      return;
-    }
+    if (receiverPhone.length === 0 || receiverPhone.some(phone => !phone || phone.length < 10)) {
+  toast.error("يرجى إدخال رقم هاتف صحيح");
+  return;
+}
 
     if(paymentMethod === "مختلطة"){
       if(amount === "" && amountBank === ""){
