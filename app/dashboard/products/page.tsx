@@ -6,6 +6,7 @@ import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
 import { FormInput } from '@/components/ui/form-input';
 import { MultiFileUpload, FileItem } from '@/components/ui/ImageUpload';
+import { useAuth } from '@/context/AuthContext';
 import { getallcategory } from '@/server/category';
 import { deleteProduct, saveProductWithFiles, updateProductWithFiles } from '@/server/image';
 import { getProduct } from '@/server/product';
@@ -39,6 +40,7 @@ const ProductLayout = () => {
     const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
     const [forData, setFormData] = React.useState<any>(null);
     const [page, setPage] = React.useState(1);
+    const {user} = useAuth()
   const PAGE_SIZE = 10;
     React.useEffect(() => {
         getallcategory().then(setCategories).catch(console.error);
@@ -140,6 +142,7 @@ const ProductLayout = () => {
     }
 
     const tableActions: any[] = [
+        (user && (user.accountType === "ADMIN" || user.permission?.editProducts === true) ) &&
         {
             label: "تعديل",
             icon: <Mail size={14} />,
@@ -159,6 +162,7 @@ const ProductLayout = () => {
                 setIsOpen(true);
             }
         },
+        (user && (user.accountType === "ADMIN" || user.permission?.deleteProducts === true)) &&
         {
             label: "حذف",
             icon: <Plus className="rotate-45" size={14} />,
@@ -180,13 +184,18 @@ const ProductLayout = () => {
                 }
             }
         },
-    ];
+    ].filter(Boolean);
 
     return (
         <div className="p-4" dir="rtl">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-xl font-bold">إدارة المنتجات</h1>
-                <Button onClick={() => setIsOpen(true)}>إضافة منتج جديد</Button>
+                {(user && (user.acountType === "ADMIN" || user.permission?.addProducts === true ))
+                && (
+                    <Button onClick={() => setIsOpen(true)}>إضافة منتج جديد</Button>
+                )
+                }
+                
             </div>
             <div className="flex gap-4 mb-4">
                 <Button onClick={() => setTab("grid")} >قائمة</Button>
@@ -320,7 +329,10 @@ const ProductLayout = () => {
                 pageSize={PAGE_SIZE}
                 currentPage={page}
                 onPageChange={(newPage) => setPage(newPage)}
-                    actions={tableActions}
+                    actions={
+                        (user && (user.accountType === "Admin" || user.permission.editProducts || user.permission.deleteProducts)) &&
+                        tableActions
+                    }
                     columns={[
                         {
                             header: "المنتج",

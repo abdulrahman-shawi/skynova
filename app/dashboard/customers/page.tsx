@@ -420,7 +420,9 @@ const CustomrLayout: React.FC = () => {
       <div className="flex justify-between items-center mb-8 bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-800">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">نظام إدارة العملاء</h1>
         <div className="flex items-center gap-3">
-          <Button onClick={() => setIsOpen(true)}><Plus size={20} /></Button>
+          {user && (user.accountType === "ADMIN" || user.permission?.addCustomers) && (
+            <Button onClick={() => setIsOpen(true)}><Plus size={20} /></Button>
+          )}
         <div className="flex justify-between items-center">
 
           <div className="flex gap-2">
@@ -517,7 +519,8 @@ const CustomrLayout: React.FC = () => {
                   </div>
                   {/* أزرار الحذف والتعديل - تظهر عند الحوام (Hover) */}
                   <div className="absolute top-4 left-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
+                    {user && (user.accountType === "ADMIN" || user.permission?.editCustomers) && (
+                      <button
                       onClick={(e) => {
                         e.stopPropagation()
                         setEditId(customer.id)
@@ -533,7 +536,9 @@ const CustomrLayout: React.FC = () => {
                     >
                       <Pencil size={16} />
                     </button>
-                    <button
+                    )  }
+                      {user && (user.accountType === "ADMIN" || user.permission?.deleteCustomers) && (
+                        <button
                       onClick={(e) => {
                         e.stopPropagation()
                         deleteCus(customer)
@@ -542,6 +547,8 @@ const CustomrLayout: React.FC = () => {
                     >
                       <Trash2 size={16} />
                     </button>
+                      )}   
+                    
                   </div>
 
                   <div className="flex justify-between items-start mb-6">
@@ -610,7 +617,8 @@ const CustomrLayout: React.FC = () => {
                   <div className="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-800">
                     <div className="flex items-center gap-3">
                       {/* أيقونة الطلبات */}
-                      <button
+                      {user && (user.accountType === "ADMIN" || user.permission?.addOrders) && (
+                        <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setCustomerId(customer.id);
@@ -621,17 +629,21 @@ const CustomrLayout: React.FC = () => {
                       >
                         <ShoppingBag size={20} />
                       </button>
+                      )}
 
                       {/* أيقونة تعيين موظف (للأدمن فقط) */}
 
-                      <button
+                      {user && (user.accountType === "ADMIN" || user.permission?.viewOrders) && (
+                        <button
                         className="p-2 text-slate-400 hover:text-green-500 hover:bg-blue-50 rounded-xl transition-all"
                         title="اظهار الفواتير"
                         onClick={(e) => {
                           e.stopPropagation()
                           setisOpenordercustomer(true)
                           setCustomerorder(customer.orders)
-                        }}><Eye size={20} /></button>
+                        }}><Eye size={20} />
+                        </button>
+                      )}
                       {user.accountType === "ADMIN" && (
                         <button
                           onClick={(e) => {

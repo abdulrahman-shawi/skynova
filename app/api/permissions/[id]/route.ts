@@ -10,25 +10,63 @@ interface RouteParams {
 export async function PUT(req: NextRequest, { params }: RouteParams) {
     try {
         const data = await req.json();
-        // في الإصدارات الحديثة من Next.js، يفضل انتظار params إذا كنت تستخدم Next.js 15
         const { id } = params; 
 
         const updatedPermission = await prisma.permission.update({
             where: { id: id },
             data: {
                 roleName: data.roleName,
+                
+                // المنتجات
                 viewProducts: Boolean(data.viewProducts),
                 addProducts: Boolean(data.addProducts),
                 editProducts: Boolean(data.editProducts),
                 deleteProducts: Boolean(data.deleteProducts),
+                
+                // التقارير
                 viewReports: Boolean(data.viewReports),
                 addReports: Boolean(data.addReports),
                 editReports: Boolean(data.editReports),
                 deleteReports: Boolean(data.deleteReports),
+                
+                // الطلبات
                 viewOrders: Boolean(data.viewOrders),
                 addOrders: Boolean(data.addOrders),
                 editOrders: Boolean(data.editOrders),
                 deleteOrders: Boolean(data.deleteOrders),
+
+                // العملاء
+                viewCustomers: Boolean(data.viewCustomers),
+                addCustomers: Boolean(data.addCustomers),
+                editCustomers: Boolean(data.editCustomers),
+                deleteCustomers: Boolean(data.deleteCustomers),
+
+                // الموظفين
+                viewEmployees: Boolean(data.viewEmployees),
+                addEmployees: Boolean(data.addEmployees),
+                editEmployees: Boolean(data.editEmployees),
+                deleteEmployees: Boolean(data.deleteEmployees),
+
+                // المصاريف
+                viewExpenses: Boolean(data.viewExpenses),
+                addExpenses: Boolean(data.addExpenses),
+                editExpenses: Boolean(data.editExpenses),
+                deleteExpenses: Boolean(data.deleteExpenses),
+
+                // تصنيف المنتجات
+                viewCategories: Boolean(data.viewCategories),
+                addCategories: Boolean(data.addCategories),
+                editCategories: Boolean(data.editCategories),
+                deleteCategories: Boolean(data.deleteCategories),
+
+                // الصلاحيات
+                viewPermissions: Boolean(data.viewPermissions),
+                addPermissions: Boolean(data.addPermissions),
+                editPermissions: Boolean(data.editPermissions),
+                deletePermissions: Boolean(data.deletePermissions),
+
+                // إحصائيات النظام (حقل واحد فقط)
+                viewAnalytics: Boolean(data.viewAnalytics),
             }
         });
 

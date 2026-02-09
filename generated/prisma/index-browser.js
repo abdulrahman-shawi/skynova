@@ -147,7 +147,28 @@ exports.Prisma.PermissionScalarFieldEnum = {
   viewOrders: 'viewOrders',
   addOrders: 'addOrders',
   editOrders: 'editOrders',
-  deleteOrders: 'deleteOrders'
+  deleteOrders: 'deleteOrders',
+  viewCustomers: 'viewCustomers',
+  addCustomers: 'addCustomers',
+  editCustomers: 'editCustomers',
+  deleteCustomers: 'deleteCustomers',
+  viewEmployees: 'viewEmployees',
+  addEmployees: 'addEmployees',
+  editEmployees: 'editEmployees',
+  deleteEmployees: 'deleteEmployees',
+  viewExpenses: 'viewExpenses',
+  addExpenses: 'addExpenses',
+  editExpenses: 'editExpenses',
+  deleteExpenses: 'deleteExpenses',
+  viewAnalytics: 'viewAnalytics',
+  viewCategories: 'viewCategories',
+  addCategories: 'addCategories',
+  editCategories: 'editCategories',
+  deleteCategories: 'deleteCategories',
+  viewPermissions: 'viewPermissions',
+  editPermissions: 'editPermissions',
+  addPermissions: 'addPermissions',
+  deletePermissions: 'deletePermissions'
 };
 
 exports.Prisma.CategoryScalarFieldEnum = {

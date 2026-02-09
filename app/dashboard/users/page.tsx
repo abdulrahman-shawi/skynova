@@ -29,7 +29,7 @@ const UserManagement: React.FunctionComponent = () => {
   const [roles, setRoles] = React.useState<any[]>([]);
   const [users, setUsers] = React.useState<any[]>([]);
   const [formData, setFormData] = React.useState<any>(null);
-
+  const {user} = useAuth()
   const getAlluser = async () => {
     try {
       const res = await fetch("/api/users")
@@ -107,6 +107,7 @@ const UserManagement: React.FunctionComponent = () => {
 
   // هذا الجزء يستخدم عادة داخل مكون الجدول (DataTable)
   const tableActions: any[] = [
+    (user && (user.accountType === "ADMIN" || user.permission?.editEmployees)) &&
     {
       label: "تعديل",
       icon: <Mail size={14} />,
@@ -124,6 +125,7 @@ const UserManagement: React.FunctionComponent = () => {
         setIsOpen(true);
       }
     },
+    (user && (user.accountType === "ADMIN" || user.permission?.deleteEmployees)) &&
     {
       label: "حذف",
       icon: <Plus className="rotate-45" size={14} />,
@@ -155,9 +157,11 @@ const UserManagement: React.FunctionComponent = () => {
     <div className="p-4" dir="rtl">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">إدارة المستخدمين</h1>
-        <Button onClick={() => { setEditId(null); setFormData(null); setIsOpen(true); }} className="bg-blue-600 hover:bg-blue-700 text-white px-6">
+        {user && (user.accountType === "ADMIN" || user.permission?.addEmployees) && (
+          <Button onClick={() => { setEditId(null); setFormData(null); setIsOpen(true); }} className="bg-blue-600 hover:bg-blue-700 text-white px-6">
           إضافة مستخدم جديد
         </Button>
+        )}
       </div>
       <DataTable data={users} 
        totalCount={users.length} // لنفترض وجود 150 عميل في الداتا بيز

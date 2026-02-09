@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 
 type MenuItem = {
   icon: any;
@@ -30,32 +31,84 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
     },
     {
       group: "الأقسام الرئيسية",
-      items: [
-        { icon: Receipt, label: "الأقسام", href: "/dashboard/categories" },
-        { icon: Box, label: "المخزن والمنتجات", href: "/dashboard/products" },
-        { icon: Users, label: "السجلات", href: "/dashboard/customers" },
-        { icon: FileText, label: "المصاريف الثابتة", href: "/dashboard/fixed-expenses" },
-        { icon: Users2, label: "تواصل العملاء", href: "/dashboard/contact-customer" },
-        { icon: Users2, label: "تصنيف العملاء", href: "/dashboard/leads" },
-        { icon: FileText, label: "الطلبات", href: "/dashboard/orders" },
-        { icon: FileText, label: "الفواتير", href: "/dashboard/invoices" },
-      ]
+      items : [
+        (user && (
+    user.accountType === "ADMIN" || 
+    user.permission?.viewCategories === true || // تأكد من اسم الحقل viewOrders كما في الـ Schema
+    user.permission?.editCategories === true ||
+    user.permission?.addCategories === true || 
+    user.permission?.deleteCategories === true)) &&
+  { icon: Receipt, label: "الأقسام", href: "/dashboard/categories" },
+  (user && (
+    user.accountType === "ADMIN" || 
+    user.permission?.deleteProducts === true || // تأكد من اسم الحقل viewOrders كما في الـ Schema
+    user.permission?.editProducts === true ||
+    user.permission?.addProducts === true || 
+    user.permission?.viewProducts === true
+  )) &&
+  { icon: Box, label: "المخزن والمنتجات", href: "/dashboard/products" },
+  (user && (
+    user.accountType === "ADMIN" || // تأكد من اسم الحقل viewOrders كما في الـ Schema
+    user.permission?.editCustomers === true ||
+    user.permission?.deleteCustomers === true || 
+    user.permission?.addCustomers === true)) &&
+  { icon: Users, label: "السجلات", href: "/dashboard/customers" },
+  { icon: FileText, label: "المصاريف الثابتة", href: "/dashboard/fixed-expenses" },
+  
+  // نستخدم الـ Optional Chaining (?.) لضمان عدم حدوث خطأ إذا كان الـ user غير موجود بعد
+  (user && (
+    user.accountType === "ADMIN" || 
+    user.permission?.viewOrders === true || // تأكد من اسم الحقل viewOrders كما في الـ Schema
+    user.permission?.editOrders === true ||
+    user.permission?.addOrders === true || 
+    user.permission?.deleteOrders === true
+  )) && { icon: FileText, label: "الطلبات", href: "/dashboard/orders" },
+
+].filter(Boolean) // هذا السطر هو الأهم: يقوم بحذف أي قيمة false من المصفوفة
     },
     {
-      group: "الموارد",
+      group: "المستخدمين و الأدوار",
       items: [
+        (user && (
+    user.accountType === "ADMIN" || 
+    user.permission?.viewEmployees === true || // تأكد من اسم الحقل viewOrders كما في الـ Schema
+    user.permission?.editEmployees === true ||
+    user.permission?.deleteEmployees === true || 
+    user.permission?.addEmployees === true)) &&
        { icon: Users, label: "المستخدمين", href: "/dashboard/users" },
+       (user && (
+    user.accountType === "ADMIN" || 
+    user.permission?.viewPermissions === true || // تأكد من اسم الحقل viewOrders كما في الـ Schema
+    user.permission?.editPermissions === true ||
+    user.permission?.addPermissions === true || 
+    user.permission?.deletePermissions === true)) &&
        { icon: RollerCoasterIcon, label: "الأدوار", href: "/dashboard/permissions" },
-      ].filter(Boolean) as MenuItem[],
+      ].filter(Boolean),
     },
     {
       group: "إعدادات النظام",
       items: [
+        (user && user.accountType ==="ADMIN") &&
         { icon: Settings, label: "الإعدادات العامة", href: "/dashboard/settings" },
-      ]
+      ].filter(Boolean)
     },
-  ];
+  ].filter(group => group.items.length > 0);
 
+  const handleLogout = async () => {
+    try {
+        const response = await fetch('/api/users/logout', {
+            method: 'POST',
+        });
+
+        if (response.ok) {
+            // توجيه المستخدم لصفحة تسجيل الدخول
+            window.location.href = "/";
+            toast.success("نراك قريباً!");
+        }
+    } catch (error) {
+        toast.error("حدث خطأ أثناء محاولة تسجيل الخروج");
+    }
+};
   return (
     <aside className={`
         fixed md:sticky top-0 right-0 h-screen z-[70] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
@@ -143,7 +196,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
               </div>
             </div>
             
-            <button className={`mt-3 w-full flex items-center justify-center gap-2 h-10 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors ${isCollapsed ? "md:h-10 md:w-10 md:mx-auto md:p-0" : "px-3"}`}>
+            <button onClick={handleLogout} className={`mt-3 w-full flex items-center justify-center gap-2 h-10 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors ${isCollapsed ? "md:h-10 md:w-10 md:mx-auto md:p-0" : "px-3"}`}>
               <LogOut size={18} />
               {!isCollapsed && <span className="font-bold text-xs text-left w-full">خروج</span>}
             </button>

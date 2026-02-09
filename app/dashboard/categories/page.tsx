@@ -4,6 +4,7 @@ import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
 // تأكد من استيراد FormInput من المكان الصحيح في مكوناتك وليس من lucide-react
 import { FormInput } from '@/components/ui/form-input';
+import { useAuth } from '@/context/AuthContext';
 import { createcategory, deletecategory, getallcategory, updatecategory } from '@/server/category';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Edit, Trash2 } from 'lucide-react';
@@ -22,6 +23,7 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = (props
     const [editId, setEditId] = React.useState<string | null>(null);
     const [formData, setFormData] = React.useState<any>(null);
     const [category, setCategory] = React.useState<any[]>([]);
+    const { user } = useAuth()
 
     const handleClose = () => {
         setIsOpen(false);
@@ -29,26 +31,26 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = (props
         setFormData(null);
     }; // تم إغلاق الدالة هنا
 
-    const handleEdit = (data:any) =>{
+    const handleEdit = (data: any) => {
         setEditId(data.id);
         setFormData({
-            name:data.name
+            name: data.name
         });
-        setIsOpen(true);    
+        setIsOpen(true);
     }
 
-    const handledelete = async (data:any) => {
-        const loadingToast = toast.loading( 'جاري حذف الفئة...');
+    const handledelete = async (data: any) => {
+        const loadingToast = toast.loading('جاري حذف الفئة...');
         try {
             const res = await deletecategory(data.id)
-            if(res.success){
+            if (res.success) {
                 toast.success("تم حذف الفئة بنجاح")
-            }else{
+            } else {
                 toast.error("حدث خطأ أثناء حذف المنتج")
             }
-        } catch (error:any) {
-            toast.error("خطأ" , error)
-        }finally{
+        } catch (error: any) {
+            toast.error("خطأ", error)
+        } finally {
             toast.dismiss(loadingToast)
             getData()
         }
@@ -64,7 +66,7 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = (props
                         handleClose(); // نغلق المودال فقط عند النجاح
                     } else {
                         toast.error(result.error || "فشل في تحديث بيانات الفئة");
-                    }   
+                    }
                 });
             } else {
                 // نرسل البيانات مباشرة
@@ -80,7 +82,7 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = (props
         } catch (error) {
             toast.error("حدث خطأ غير متوقع");
             console.error(error);
-        }finally {
+        } finally {
             toast.dismiss(loadingToast);
             getData(); // تحديث البيانات بعد الإنشاء أو التعديل
         }
@@ -97,13 +99,16 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = (props
         <div className="p-4">
             <div className="flex justify-between items-center mb-6">
                 <div className="text-xl font-bold">إدارة الفئات</div>
-                <Button
-                    onClick={() => { setEditId(null); setFormData(null); setIsOpen(true); }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6"
-                >
-                    إضافة فئة جديدة
-                </Button>
-                
+                {
+                    user && (user.accountType === "ADMIN" || user.permission?.addCategories === true) && (
+                        <Button
+                            onClick={() => { setEditId(null); setFormData(null); setIsOpen(true); }}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+                        >
+                            إضافة فئة جديدة
+                        </Button>
+                    )
+                }
             </div>
 
             <AnimatePresence>
@@ -127,18 +132,22 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = (props
                                 </div>
 
                                 <div className="flex gap-2">
-                                    <button
+                                    {user && (user.accountType === "ADMIN" || user.permission?.editCategories === true) && (
+                                        <button
                                         onClick={() => handleEdit(cat)}
                                         className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-blue-600 hover:bg-blue-600 hover:text-white transition-all"
                                     >
                                         <Edit size={16} />
                                     </button>
-                                    <button
+                                    )}
+                                    {user && (user.accountType === "ADMIN" || user.permission?.deleteCategories === true) && (
+                                        <button
                                         onClick={() => handledelete(cat)}
                                         className="p-2.5 bg-slate-50 dark:bg-slate-800 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all"
                                     >
                                         <Trash2 size={16} />
                                     </button>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>

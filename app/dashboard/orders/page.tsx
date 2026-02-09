@@ -7,7 +7,7 @@ import { getCustomer } from '@/server/customer';
 import { createOrder, deleteOrder, getOrders, getOrdersByUser, updateOrder, updateStaus } from '@/server/order';
 import { getProduct } from '@/server/product';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, Download, Eye, Mail, Package, Plus, Printer, Save, Search, Trash, Trash2, X } from 'lucide-react';
+import { BarChart2, ChevronDown, ChevronUp, Download, Eye, Mail, Package, Plus, Printer, Save, Search, Trash, Trash2, X } from 'lucide-react';
 import * as React from 'react';
 import toast from 'react-hot-toast';
 import { useReactToPrint } from 'react-to-print';
@@ -154,6 +154,19 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         }
     }
 
+    const filterOrder = React.useMemo(() => {
+    if (!user) return []; // إذا لم يتم تحميل المستخدم بعد، ارجع مصفوفة فارغة
+
+    return orders.filter((order: any) => {
+        // 1. إذا كان أدمن، يرى كل الطلبات
+        if (user.accountType === "ADMIN") return true;
+
+        // 2. إذا كان موظف، يرى فقط الطلبات التي قام بإنشائها هو
+        // ملاحظة: تأكد أن الحقل في الـ Schema هو userId
+        return order.userId === user.id;
+    });
+}, [orders, user]);
+
     // 1. تأكد من وجود حالة للتحميل في المكون الخاص بك
     // const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -288,18 +301,19 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
     };
 
     const tableActions: any[] = [
-        {
-            label: "إظهار الفاتورة",
-            icon: <Eye size={14} />, // تأكد من استيراد Eye من lucide-react
+        (user && (user.accountType === "ADMIN" || user.permission?.viewOrders === true)) && {
+            label: "عرض تقارير الطلب",
+            icon: <BarChart2 size={14} />,
             onClick: (data: any) => {
-                // تعيين بيانات الطلب المختار لعرضها في الفاتورة
+                console.log("فتح تقارير الطلب رقم:", data.orderNumber);
+                // منطق فتح التقارير هنا
                 setorder(data);
                 console.log(data)
                 // فتح مودال الفاتورة
                 setisOpenorder(true);
             }
         },
-        {
+        (user && (user.accountType === "ADMIN" || user.permission?.editOrders)) && {
             label: "تعديل",
             icon: <Mail size={14} />,
             onClick: (data: any) => {
@@ -362,7 +376,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                 setIsOpen(true);
             }
         },
-        {
+        (user && (user.accountType === "ADMIN" || user.permission?.deleteOrders)) && {
             label: "حذف",
             icon: <Trash size={14} />,
             variant: "danger",
@@ -416,9 +430,9 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                     <Download size={20} />
                 </button>
             </div>
-            <DataTable data={orders}
-            actindir={true}
-                totalCount={orders.length} // لنفترض وجود 150 عميل في الداتا بيز
+            <DataTable data={filterOrder}
+                actindir={true}
+                totalCount={filterOrder.length} // لنفترض وجود 150 عميل في الداتا بيز
                 pageSize={PAGE_SIZE}
                 currentPage={page}
                 onPageChange={(newPage) => setPage(newPage)}
@@ -445,46 +459,46 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                         )
                     },
                     {
-    header: "حالة الطلب",
-    accessor: (c: any) => {
-        // تعريف الألوان بناءً على طلبك
-        const statusColors: Record<string, string> = {
-            "طلب جديد": "bg-sky-100 text-sky-700 border-sky-200",
-            "تم استلام الطلب": "bg-blue-100 text-blue-700 border-blue-200", // أزرق
-            "تم ارسال الطلب": "bg-yellow-100 text-yellow-700 border-yellow-200", // أصفر
-            "تم تسليم الطلب": "bg-green-100 text-green-700 border-green-200", // أخضر
-            "فشل التسليم مرتجع": "bg-red-600 text-white border-red-700", // أحمر غامق
-            "تم الغاء الطلب": "bg-red-100 text-red-700 border-red-200", // أحمر فاتح
-            "معلق / نقص معلومات": "bg-gray-100 text-gray-700 border-gray-200", // رمادي
-        };
+                        header: "حالة الطلب",
+                        accessor: (c: any) => {
+                            // تعريف الألوان بناءً على طلبك
+                            const statusColors: Record<string, string> = {
+                                "طلب جديد": "bg-sky-100 text-sky-700 border-sky-200",
+                                "تم استلام الطلب": "bg-blue-100 text-blue-700 border-blue-200", // أزرق
+                                "تم ارسال الطلب": "bg-yellow-100 text-yellow-700 border-yellow-200", // أصفر
+                                "تم تسليم الطلب": "bg-green-100 text-green-700 border-green-200", // أخضر
+                                "فشل التسليم مرتجع": "bg-red-600 text-white border-red-700", // أحمر غامق
+                                "تم الغاء الطلب": "bg-red-100 text-red-700 border-red-200", // أحمر فاتح
+                                "معلق / نقص معلومات": "bg-gray-100 text-gray-700 border-gray-200", // رمادي
+                            };
 
-        // دالة لجلب اللون الحالي بناءً على القيمة
-        const currentColor = statusColors[c.status] || "bg-slate-50 text-slate-500 border-slate-200";
+                            // دالة لجلب اللون الحالي بناءً على القيمة
+                            const currentColor = statusColors[c.status] || "bg-slate-50 text-slate-500 border-slate-200";
 
-        return (
-            <div className="min-w-[150px]">
-                <select
-                    className={`${currentColor} w-full p-2.5 rounded-xl border font-bold transition-all cursor-pointer outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400`}
-                    value={c.status}
-                    onChange={(e) => {
-                        const newValue = e.target.value;
-                        updatestatuschange(newValue, c.id);
-                    }}
-                    name="order-status"
-                >
-                    <option value="" disabled>اختر الحالة</option>
-                    <option value="طلب جديد" className="bg-white text-black">طلب جديد</option>
-                    <option value="تم استلام الطلب" className="bg-white text-black">تم استلام الطلب</option>
-                    <option value="تم ارسال الطلب" className="bg-white text-black">تم ارسال الطلب</option>
-                    <option value="تم تسليم الطلب" className="bg-white text-black">تم تسليم الطلب</option>
-                    <option value="فشل التسليم مرتجع" className="bg-white text-black">فشل التسليم مرتجع</option>
-                    <option value="تم الغاء الطلب" className="bg-white text-black">تم الغاء الطلب</option>
-                    <option value="معلق / نقص معلومات" className="bg-white text-black">معلق / نقص معلومات</option>
-                </select>
-            </div>
-        );
-    }
-},
+                            return (
+                                <div className="min-w-[150px]">
+                                    <select
+                                        className={`${currentColor} w-full p-2.5 rounded-xl border font-bold transition-all cursor-pointer outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400`}
+                                        value={c.status}
+                                        onChange={(e) => {
+                                            const newValue = e.target.value;
+                                            updatestatuschange(newValue, c.id);
+                                        }}
+                                        name="order-status"
+                                    >
+                                        <option value="" disabled>اختر الحالة</option>
+                                        <option value="طلب جديد" className="bg-white text-black">طلب جديد</option>
+                                        <option value="تم استلام الطلب" className="bg-white text-black">تم استلام الطلب</option>
+                                        <option value="تم ارسال الطلب" className="bg-white text-black">تم ارسال الطلب</option>
+                                        <option value="تم تسليم الطلب" className="bg-white text-black">تم تسليم الطلب</option>
+                                        <option value="فشل التسليم مرتجع" className="bg-white text-black">فشل التسليم مرتجع</option>
+                                        <option value="تم الغاء الطلب" className="bg-white text-black">تم الغاء الطلب</option>
+                                        <option value="معلق / نقص معلومات" className="bg-white text-black">معلق / نقص معلومات</option>
+                                    </select>
+                                </div>
+                            );
+                        }
+                    },
                     {
                         header: "تاريخ الإنشاء",
                         accessor: (e: any) => new Date(e.createdAt).toLocaleDateString('ar-EG', {
@@ -766,7 +780,7 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
 
     return (
         <div className="p-10 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 min-h-screen">
-            
+
             {/* زر الطباعة */}
             <div className="flex justify-end p-4 bg-white dark:bg-slate-900 no-print">
                 <button
@@ -812,7 +826,7 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
                         <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border border-slate-100">
                             <h3 className="text-slate-400 font-black text-sm mb-3 uppercase tracking-wider">تفاصيل العنوان والتوصيل</h3>
                             <p className="text-lg font-black text-slate-800 dark:text-white">المستلم: {data.receiverName || 'غير محدد'}</p>
-                            
+
                             {/* عرض العنوان التفصيلي */}
                             <div className="text-sm font-bold text-slate-500 mt-2 space-y-1">
                                 <p>البلد: {data.country} </p>
@@ -822,12 +836,12 @@ function ViewOrder({ data, products }: { data: any, products: any }) {
                                 <p>رقم التواصل: {data.receiverPhone.join(" - ") || 'لم يسجل'}</p>
                                 {
                                     data.googleMapsLink && (
-                                        <div  className="">
+                                        <div className="">
                                             <a target='_blank' href={`${data.googleMapsLink}`}>رابط الخريطة</a>
                                         </div>
                                     )
                                 }
-                                
+
                             </div>
                         </div>
                     </div>
@@ -960,8 +974,8 @@ function ViewOrderCustomer({ orders }: { orders: any[] }) {
                                     {Number(order.finalAmount).toLocaleString()} <span className="text-xs">ل.س</span>
                                 </p>
                                 <div className={`text-[10px] px-2 py-0.5 rounded-full inline-block font-bold ${order.status === 'مدفوعة' || order.status === 'تم التسليم'
-                                        ? 'bg-emerald-100 text-emerald-600'
-                                        : 'bg-amber-100 text-amber-600'
+                                    ? 'bg-emerald-100 text-emerald-600'
+                                    : 'bg-amber-100 text-amber-600'
                                     }`}>
                                     {order.status}
                                 </div>
