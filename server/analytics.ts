@@ -51,7 +51,7 @@ export async function GetCustomerAcquisition() {
 
 export async function GetTopCustomers() {
   const topCustomers = await prisma.customer.findMany({
-    take: 5, // أعلى 5 عملاء
+    take: 10, // أعلى 5 عملاء
     include: {
       _count: { select: { orders: true } }, // عدد الطلبات
     },
@@ -131,4 +131,92 @@ export async function GetCustomerInteractions(userId: string) {
     console.error("Error:", error);
     return { success: false, error: "Internal Server Error" };
   }
+}
+
+export async function GetBestSellingProducts() {
+  const bestSellers = await prisma.orderItem.groupBy({
+    by: ['productId'],
+    _sum: {
+      quantity: true,
+    },
+    orderBy: {
+      _sum: {
+        quantity: 'desc',
+      },
+    },
+    take: 5, // جلب أفضل 5 منتجات فقط
+  });
+
+  // جلب تفاصيل أسماء المنتجات بعد الحصول على الـ IDs
+  const productsWithDetails = await Promise.all(
+    bestSellers.map(async (item) => {
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+        select: { name: true, price: true }
+      });
+      return {
+        ...product,
+        totalSold: item._sum.quantity,
+      };
+    })
+  );
+
+  return { success: true, data: productsWithDetails };
+}
+
+export async function GetLowStockProducts() {
+  const allProducts = await prisma.product.findMany({
+    select: {
+      id: true,
+      name: true,
+      quantity: true,
+    }
+  });
+
+  // تصفية المنتجات التي كميتها أقل من 5
+  // نقوم بتحويل النص إلى رقم للمقارنة
+  const lowStock = allProducts
+    .filter(p => p.quantity !== null && parseInt(p.quantity) <= 5)
+    .map(p => ({
+      name: p.name,
+      stock: parseInt(p.quantity || "0"),
+    }));
+
+  return { success: true, data: lowStock };
+}
+
+// المستخدمين الأكثر مبيعا
+
+export async function GetTopSellingUsers() {
+  // 1. جلب أعلى المستخدمين مبيعاً (كأرقام معرفات فقط)
+  const topUsersGrouped = await prisma.order.groupBy({
+    by: ['userId'],
+    _count: { id: true },
+    orderBy: {
+      _count: { id: 'desc' }
+    },
+    take: 5
+  });
+
+  // 2. جلب تفاصيل المستخدمين (الأسماء) بناءً على المعرفات
+  const userDetails = await prisma.user.findMany({
+    where: {
+      id: { in: topUsersGrouped.map(u => u.userId).filter(Boolean) as string[] }
+    },
+    select: {
+      id: true,
+      username: true
+    }
+  });
+
+  // 3. دمج البيانات (الاسم مع عدد المبيعات)
+  const finalData = topUsersGrouped.map(group => {
+    const user = userDetails.find(u => u.id === group.userId);
+    return {
+      name: user?.username || "مستخدم غير معروف",
+      totalSold: group._count.id
+    };
+  });
+
+  return { success: true, data: finalData };
 }
