@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { useReactToPrint } from 'react-to-print';
 import { TableAction } from '../../../components/shared/DataTable';
 import * as XLSX from 'xlsx';
+import { permission } from 'process';
 interface IOrderLayoutProps {
 }
 
@@ -155,17 +156,19 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
     }
 
     const filterOrder = React.useMemo(() => {
-    if (!user) return []; // إذا لم يتم تحميل المستخدم بعد، ارجع مصفوفة فارغة
+        if (!user) return []; // إذا لم يتم تحميل المستخدم بعد، ارجع مصفوفة فارغة
 
-    return orders.filter((order: any) => {
-        // 1. إذا كان أدمن، يرى كل الطلبات
-        if (user.accountType === "ADMIN") return true;
+        return orders.filter((order: any) => {
+            // 1. إذا كان أدمن، يرى كل الطلبات
+            const isAdmin = user.accountType === "ADMIN" || user.permission?.viewOrders;
 
-        // 2. إذا كان موظف، يرى فقط الطلبات التي قام بإنشائها هو
-        // ملاحظة: تأكد أن الحقل في الـ Schema هو userId
-        return order.userId === user.id;
-    });
-}, [orders, user]);
+            if (isAdmin) return orders;
+
+            // 2. إذا كان موظف، يرى فقط الطلبات التي قام بإنشائها هو
+            // ملاحظة: تأكد أن الحقل في الـ Schema هو userId
+            return order.userId === user.id;
+        });
+    }, [orders, user]);
 
     // 1. تأكد من وجود حالة للتحميل في المكون الخاص بك
     // const [isSubmitting, setIsSubmitting] = useState(false);
