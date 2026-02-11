@@ -36,7 +36,7 @@ const CardHeader = ({ title, description, icon, action }: CardHeaderProps) => (
     <div className="flex items-center gap-3">
       {icon && <div className="text-blue-600">{icon}</div>}
       <div>
-        <h3 className="text-lg font-bold tracking-tight text-slate-900">{title}</h3>
+        <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-50">{title}</h3>
         {description && <p className="text-sm text-slate-500">{description}</p>}
       </div>
     </div>
@@ -71,7 +71,7 @@ export default function DynamicCard({
   const variants = {
     default: "bg-white shadow-sm border border-slate-200",
     outline: "bg-transparent border-2 border-dashed border-slate-300",
-    glass: "bg-white/80 backdrop-blur-md border border-white/20 shadow-xl",
+    glass: "bg-white/80 backdrop-blur-md border border-white/20 shadow-xl dark:bg-slate-900/80 dark:border-slate-800",
   };
 
   return (
