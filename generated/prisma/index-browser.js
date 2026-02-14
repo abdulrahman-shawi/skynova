@@ -202,6 +202,11 @@ exports.Prisma.CustomerScalarFieldEnum = {
   country: 'country',
   status: 'status',
   phonestatus: 'phonestatus',
+  gender: 'gender',
+  age: 'age',
+  source: 'source',
+  city: 'city',
+  rating: 'rating',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
