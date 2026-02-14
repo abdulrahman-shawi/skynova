@@ -12,20 +12,131 @@ export async function GetSalesByStatusAction(userId: string) {
 
     if (!user) return { success: false, error: "User not found" };
 
-    // المنطق: إذا كان ADMIN أو لديه صلاحية viewOrders، لا نضع قيود (يرى الكل)
-    // غير ذلك، نجببره على رؤية طلباته فقط عبر مساواة الـ userId
     const canViewAll = user.accountType === "ADMIN" || user.permission?.viewOrders === true;
-    
     const whereClause = canViewAll ? {} : { userId: userId };
 
-    const salesByStatus = await prisma.order.groupBy({
-      by: ['status'],
-      where: whereClause, 
-      _count: { id: true },
-      _sum: { finalAmount: true },
+    const orders = await prisma.order.findMany({
+      where: whereClause,
+      include: {
+        customer: true, // جلب بيانات العميل
+      },
+      orderBy: { createdAt: 'desc' }
     });
 
-    return { success: true, data: salesByStatus };
+    const statusGroups: Record<string, any> = {};
+    let totalRevenue = 0;
+    let lostRevenue = 0;
+    
+    // عدادات الحالات المطلوبة
+    let cancelledCount = 0;
+    let missingInfoCount = 0;
+    let failedReturnCount = 0;
+
+    orders.forEach(order => {
+      if (!statusGroups[order.status]) {
+        statusGroups[order.status] = {
+          status: order.status,
+          count: 0,
+          amount: 0,
+          ordersDetails: [] // لتخزين قائمة الطلبات بدل المنتجات
+        };
+      }
+
+      statusGroups[order.status].count += 1;
+      statusGroups[order.status].amount += order.finalAmount;
+      
+      // إضافة بيانات الطلب بدلاً من تجميع المنتجات
+      statusGroups[order.status].ordersDetails.push({
+        id: order.id,
+        orderNumber: order.orderNumber,
+        customerName: order.customer.name,
+        amount: order.finalAmount,
+      });
+
+      // منطق الحساب والعدادات
+      if (order.status === "تم الغاء الطلب") {
+        cancelledCount++;
+        lostRevenue += order.finalAmount;
+      } else if (order.status === "معلق / نقص معلومات") {
+        missingInfoCount++;
+        lostRevenue += order.finalAmount;
+      } else if (order.status === "فشل التسليم مرتجع") {
+        failedReturnCount++;
+        lostRevenue += order.finalAmount;
+      } else {
+        totalRevenue += order.finalAmount;
+      }
+    });
+
+    return { 
+      success: true, 
+      data: Object.values(statusGroups),
+      summary: {
+        totalRevenue,
+        lostRevenue,
+        grossTotal: totalRevenue + lostRevenue,
+        cancelledCount,      // عدد الملغاة
+        missingInfoCount,    // عدد نقص المعلومات
+        failedReturnCount    // عدد المرتجع
+      }
+    };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: "Internal Server Error" };
+  }
+}
+
+export async function GetSalesTimelineAction(userId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { permission: true }
+    });
+
+    if (!user) return { success: false, error: "User not found" };
+
+    const canViewAll = user.accountType === "ADMIN" || user.permission?.viewOrders === true;
+    const whereClause = canViewAll ? {} : { userId: userId };
+
+    const orders = await prisma.order.findMany({
+      where: whereClause,
+      select: {
+        finalAmount: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: 'asc' } // من الأقدم للأحدث لرسم الخط الزمني
+    });
+
+    // كائن لتخزين البيانات: "الشهر-السنة": { الحالات }
+    const timeline: Record<string, any> = {};
+
+    orders.forEach(order => {
+      const date = new Date(order.createdAt);
+      const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`; // مثال: 2-2024
+
+      if (!timeline[monthYear]) {
+        timeline[monthYear] = {
+          label: new Intl.DateTimeFormat('ar-EG', { month: 'long', year: 'numeric' }).format(date),
+          statuses: {}
+        };
+      }
+
+      if (!timeline[monthYear].statuses[order.status]) {
+        timeline[monthYear].statuses[order.status] = {
+          count: 0,
+          amount: 0
+        };
+      }
+
+      timeline[monthYear].statuses[order.status].count += 1;
+      timeline[monthYear].statuses[order.status].amount += order.finalAmount;
+    });
+
+    return { 
+      success: true, 
+      data: Object.values(timeline) // تحويلها لمصفوفة لسهولة العرض
+    };
   } catch (error) {
     console.error(error);
     return { success: false, error: "Internal Server Error" };
@@ -47,6 +158,43 @@ export async function GetCustomerAcquisition() {
   });
   
   return { success: true, data: newCustomers };
+}
+
+export async function GetCustomerAcquisitionMonth() {
+  try {
+    // جلب جميع العملاء (أو يمكنك تحديد فترة زمنية أطول مثل آخر سنة)
+    const customers = await prisma.customer.findMany({
+      select: { createdAt: true },
+      orderBy: { createdAt: 'asc' }
+    });
+
+    // تجميع العملاء حسب الشهر (YYYY-MM)
+    const monthlyGroups: Record<string, number> = {};
+    
+    customers.forEach(c => {
+      const date = new Date(c.createdAt);
+      // إنشاء مفتاح فريد للشهر والسنة للترتيب
+      const key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+      monthlyGroups[key] = (monthlyGroups[key] || 0) + 1;
+    });
+
+    // تحويل الكائن إلى مصفوفة مرتبة للرسم البياني
+    const chartData = Object.entries(monthlyGroups)
+      .sort(([a], [b]) => a.localeCompare(b)) // التأكد من ترتيب الشهور زمنياً
+      .map(([key, count]) => {
+        const [year, month] = key.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1);
+        return {
+          date: new Intl.DateTimeFormat('ar-EG', { month: 'long', year: 'numeric' }).format(date),
+          "العملاء الجدد": count
+        };
+      });
+
+    return { success: true, data: chartData };
+  } catch (error) {
+    console.error("Error in GetCustomerAcquisitionMonth:", error);
+    return { success: false, data: [] };
+  }
 }
 
 export async function GetTopCustomers() {
