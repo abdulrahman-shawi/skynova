@@ -33,12 +33,19 @@ export default function GetCustomerSingle({ data, getdatas }: { data: any, getda
     <div className="text-slate-800 dark:text-slate-50">
       {/* الهيدر - يبقى كما هو */}
       <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
-        <div className="flex items-center gap-4">
+        <div className="w-full flex items-center gap-4">
           <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
             {data.name?.charAt(0) || "U"}
           </div>
           <div>
-            <h3 className="text-xl font-bold dark:text-white">{data.name}</h3>
+            <h3 className="text-xl font-bold text-white">{data.name}</h3>
+            <div className="border border-slate-500 mt-2 mb-4"></div>
+            <div className="grid grid-cols-2 md:grid-cols-4 mb-2">
+              <h3 className="text-xs font-bold text-slate-500">العمر: {data.age ? data.age : "غير محدد"}</h3>
+            <h3 className="text-xs font-bold text-slate-500">الجنس: {data.gender ? data.gender : "غير محدد"}</h3>
+            <h3 className="text-xs font-bold text-slate-500">التقييم: {data.rating ? data.rating : "غير محدد"}</h3>
+            <h3 className="text-xs font-bold text-slate-500">مصدر العميل: {data.source ? data.source : "غير محدد"}</h3>
+            </div>
             <p className="text-xs text-slate-500">تم الانشاء في: {new Date(data.createdAt).toLocaleDateString('ar-EG')}</p>
           </div>
         </div>

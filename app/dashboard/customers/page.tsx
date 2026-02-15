@@ -21,6 +21,7 @@ import ViewOrderCustomer from "@/components/pages/customers/viewOrder";
 import AssignUserModal from "@/components/pages/customers/assignuser";
 import GetCustomerSingle from "@/components/pages/customers/gitSingleCustomer";
 import OrderCustomer from "@/components/pages/customers/orderCustomer";
+import { Country, City } from 'country-state-city';
 
 /* ===================== Constants ===================== */
 
@@ -29,6 +30,14 @@ const STATUS_OPTIONS = [
   { label: "جاري المتابعة", value: "جاري المتابعة" },
   { label: "تم البيع", value: "تم البيع" },
   { label: "غير مهتم / ملغي", value: "غير مهتم / ملغي" },
+];
+
+const ratingOptions = [
+  { label: "1", value: 1 },
+  { label: "2", value: 2 },
+  { label: "3", value: 3 },
+  { label: "4", value: 4 },
+  { label: "5", value: 5 },
 ];
 
 const countryOptions = [
@@ -43,14 +52,26 @@ const countryOptions = [
   { label: "روسيا (+7)", value: "+7-RU" },
 ];
 
-const contry = [
-  { label: "سوريا", value: "سوريا" },
-  { label: "تركيا", value: "تركيا" },
-  { label: "العراق", value: "العراق" },
-  { label: "ليبيا", value: "ليبيا" },
-  { label: "أوروبا", value: "أوروبا" },
-  { label: "أميركا", value: "أميركا" },
+const source = [
+  { label: "whatsApp", value: "whatsApp" },
+  { label: "Facebook", value: "Facebook" },
+  { label: "instgram", value: "instgram" },
+  { label: "احالة", value: "احالة" },
+  { label: "زيارة شخصية", value: "زيارة شخصية" },
+  { label: "معرض", value: "معرض" },
   { label: "مختلطة", value: "مختلطة" },
+];
+
+const genderOptions = [
+  { label: "ذكر", value: "ذكر" },
+  { label: "أنثى", value: "أنثى" }, 
+];
+
+const ageOptions = [
+  { label: "18-25", value: "18-25" },
+  { label: "26-35", value: "26-35" },
+  { label: "36-45", value: "36-45" },
+  { label: "46+", value: "46+" },
 ];
 
 /* ===================== Schema (التحقق المرن) ===================== */
@@ -64,6 +85,14 @@ const customerSchema = z.object({
   ),
   countryCode: z.string().optional().or(z.literal("")),
   country: z.string().optional().or(z.literal("")),
+  city: z.string().optional().or(z.literal("")),
+  age: z.string().optional().or(z.literal("")),
+  gender: z.string().optional().default("ذكر"),
+  source: z.string().optional().default("whatsApp"),
+  rating: z.preprocess(
+    (val) => (val === "" ? undefined : Number(val)),
+    z.number().optional()
+  ),
 });
 
 type CustomerFormValues = z.infer<typeof customerSchema>;
@@ -119,6 +148,16 @@ const CustomrLayout: React.FC = () => {
   const [alluser, setUsers] = React.useState<any[]>([])
   const [selectedCustomers, setSelectedCustomers] = React.useState<any[]>([]);
 
+  const [selectedCountryCode, setSelectedCountryCode] = React.useState(formdata?.countryCode || "");
+
+// جلب القوائم
+const countriesList = React.useMemo(() => 
+  Country.getAllCountries().map(c => ({ label: `${c.name} ${c.flag}`, value: c.isoCode })), 
+[]);
+
+const citiesList = React.useMemo(() => 
+  selectedCountryCode ? (City.getCitiesOfCountry(selectedCountryCode) || []).map(c => ({ label: c.name, value: c.name })) : [], 
+[selectedCountryCode]);
   // دالة للتعامل مع الاختيار
 
   const filterCustomer = customers.filter((e: any) => {
@@ -345,6 +384,7 @@ const CustomrLayout: React.FC = () => {
         toast.dismiss(loading)
       }
     }
+    console.log(`${data.source ? data.source : "whatsApp"}`)
   };
 
   const getSingleCustomer = async (data: any) => {
@@ -690,7 +730,7 @@ const CustomrLayout: React.FC = () => {
 
       <AppModal size="lg" isOpen={isOpen} onClose={() => setIsOpen(false)} title="إضافة ملف عميل شامل">
         <DynamicForm schema={customerSchema} onSubmit={onSubmit} defaultValues={formdata}>
-          {({ register, control, formState: { errors } }) => {
+          {({ register, control, formState: { errors }, setValue }) => {
             // إعداد المصفوفة الديناميكية للحقول
             const { fields, append, remove } = useFieldArray({
               control,
@@ -703,18 +743,105 @@ const CustomrLayout: React.FC = () => {
 
                   {/* اسم العميل */}
                   <FormInput
+                  className="col-span-2"
                     label="اسم العميل *"
                     {...register("name")}
                     error={errors.name?.message?.toString()}
                   />
 
                   {/* الدولة */}
-                  <FormSelect
-                    label="الدولة"
-                    options={contry}
-                    {...register("country")}
-                    error={errors.country?.message?.toString()}
-                  />
+                  <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-900 dark:text-slate-100">الدولة</label>
+            <select
+              {...register("countryCode")}
+              className="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 p-3 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e) => {
+                const code = e.target.value;
+                setSelectedCountryCode(code);
+                // تحديث اسم الدولة النصي أيضاً إذا كنت تحتاجه في الـ Schema
+                const countryName = countriesList.find(c => c.value === code)?.label || "";
+                setValue("country", countryName);
+                setValue("city", ""); // تصفير المدينة عند تغيير الدولة
+              }}
+            >
+              <option value="">اختر الدولة</option>
+              {countriesList.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+            {errors.countryCode && <p className="text-xs text-red-500">{errors.countryCode.message?.toString()}</p>}
+          </div>
+
+          {/* اختيار المدينة (يظهر فقط إذا تم اختيار دولة) */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-900 dark:text-slate-100">المدينة</label>
+            <select
+              {...register("city")}
+              disabled={!selectedCountryCode}
+              className="w-full text-slate-900 dark:text-slate-50 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            >
+              <option value="">اختر المدينة</option>
+              {citiesList.map((city) => (
+                <option key={city.value} value={city.value}>{city.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* مصدر العميل */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-900 dark:text-slate-100">مصدر العميل</label>
+            <select
+              {...register("source")}
+              className="w-full text-slate-900 dark:text-slate-50 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">اختر المصدر</option>
+              {source.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* الجنس */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-900 dark:text-slate-100">الجنس</label>
+            <select
+              {...register("gender")}
+              className="w-full text-slate-900 dark:text-slate-50 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">اختر الجنس</option>
+              {genderOptions.map((g) => (
+                <option key={g.value} value={g.value}>{g.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* العمر */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-900 dark:text-slate-100">العمر</label>
+            <select
+              {...register("age")}
+              className="w-full text-slate-900 dark:text-slate-50 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">اختر العمر</option>
+              {ageOptions.map((a) => (
+                <option key={a.value} value={a.value}>{a.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* التقييم */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-900 dark:text-slate-100">تقييم العميل</label>
+            <select
+              {...register("rating")}
+              className="w-full text-slate-900 dark:text-slate-50 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">اختر التقييم</option>
+              {ratingOptions.map((r) => (
+                <option key={r.value} value={r.value}>{r.label}</option>
+              ))}
+            </select>
+          </div>
 
                   {/* قسم أرقام الهواتف الديناميكي */}
                   <div className="col-span-1 md:col-span-2 space-y-4">
@@ -736,6 +863,14 @@ const CustomrLayout: React.FC = () => {
                                   defaultCountry="SY"
                                   value={value}
                                   onChange={onChange}
+                                  onCountryChange={(country) => {
+            if (country) { 
+              
+              // خيار ب: حفظ مفتاح الاتصال (مثلاً: 963)
+              // const code = getCountryCallingCode(country);
+              // setValue("countryCode", code);
+            }
+          }}
                                   className="PhoneInputCustom"
                                   numberInputProps={{
                                     className: "w-full bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all"

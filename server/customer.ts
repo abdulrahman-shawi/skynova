@@ -123,6 +123,11 @@ export async function createCustomerAction(data: any, id: string) {
         phonestatus: "معلق",
         phone: data.phone, // مصفوفة مثل ["05xxxx"]
         countryCode: data.countryCode,
+        city: data.city,
+        age: data.age,
+        gender: data.gender,
+        rating: data.rating,
+        source: data.source,
         country: data.country,
         users: {
           connect: { id: id }
