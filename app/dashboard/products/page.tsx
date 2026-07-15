@@ -287,7 +287,27 @@ const ProductLayout = () => {
     const { user } = useAuth()
     const PAGE_SIZE = 10;
 
-    const hasLocationAccess = React.useCallback((_location: string) => true, []);
+    const isAdminUser = user?.accountType === "ADMIN";
+    const canAccessSyria = user?.permission?.accessSyria === true;
+    const canAccessTurkey = user?.permission?.accessTurkey === true;
+
+    const hasLocationAccess = React.useCallback((location: string) => {
+        const normalizedLocation = String(location || '').trim();
+
+        if (isAdminUser) {
+            return true;
+        }
+
+        if (normalizedLocation === 'سوريا') {
+            return canAccessSyria;
+        }
+
+        if (normalizedLocation === 'تركيا') {
+            return canAccessTurkey;
+        }
+
+        return false;
+    }, [isAdminUser, canAccessSyria, canAccessTurkey]);
 
     React.useEffect(() => {
         getallcategory().then(setCategories).catch(console.error);
@@ -309,6 +329,10 @@ const ProductLayout = () => {
 
         return Array.from(new Set(visibleLocations));
     }, [products, hasLocationAccess]);
+
+    const visibleWarehouses = React.useMemo(() => {
+        return warehouses.filter((warehouse: any) => hasLocationAccess(String(warehouse?.location || '').trim()));
+    }, [warehouses, hasLocationAccess]);
 
     React.useEffect(() => {
         if (selectedWarehouseFilter !== 'all' && !locationOptions.includes(selectedWarehouseFilter)) {
@@ -1104,7 +1128,7 @@ const ProductLayout = () => {
                                     control={control}
                                     register={register}
                                     errors={errors}
-                                    warehouses={warehouses}
+                                    warehouses={visibleWarehouses}
                                 />
                                 <div className="col-span-2">
                                     <Controller

@@ -27,11 +27,35 @@ function canViewExpenses(user: any) {
     return Boolean(user?.permission?.viewExpenses);
 }
 
+function canAddExpenses(user: any) {
+    if (!user) return false;
+    if (user.accountType === "ADMIN") return true;
+    return Boolean(user?.permission?.addExpenses);
+}
+
+function canEditExpenses(user: any) {
+    if (!user) return false;
+    if (user.accountType === "ADMIN") return true;
+    return Boolean(user?.permission?.editExpenses);
+}
+
+function canDeleteExpenses(user: any) {
+    if (!user) return false;
+    if (user.accountType === "ADMIN") return true;
+    return Boolean(user?.permission?.deleteExpenses);
+}
+
 function getAllowedPaidOffices(user: any) {
     const offices: Array<"SYRIA" | "TURKEY"> = [];
     if (user?.permission?.accessSyria === true) offices.push("SYRIA");
     if (user?.permission?.accessTurkey === true) offices.push("TURKEY");
     return offices;
+}
+
+function canAccessPaidOffice(user: any, office: PaidFromOffice | null) {
+    if (!office) return true;
+    if (user?.accountType === "ADMIN") return true;
+    return getAllowedPaidOffices(user).includes(office);
 }
 
 export async function getData() {
@@ -174,6 +198,11 @@ export async function getExpenseEmployees() {
 
 export async function createExpense(data: any) {
     try {
+        const currentUser = await getCurrentSessionUser();
+        if (!currentUser || !canAddExpenses(currentUser)) {
+            return { success: false, error: "غير مصرح لك بإضافة المصاريف" };
+        }
+
         const type = normalizeExpenseType(data?.type);
         const description = sanitizeDescription(data?.description);
         const notes = sanitizeNotes(data?.notes);
@@ -197,6 +226,10 @@ export async function createExpense(data: any) {
 
             if (!paidFromOffice) {
                 return { success: false, error: "يرجى تحديد المكتب الذي تم الدفع منه" };
+            }
+
+            if (!canAccessPaidOffice(currentUser, paidFromOffice)) {
+                return { success: false, error: "لا تملك صلاحية تسجيل مصروف لهذا المكتب" };
             }
 
             const res = await prisma.$transaction(async (tx) => {
@@ -257,6 +290,11 @@ export async function createExpense(data: any) {
 
 export async function deleteExpense(id: number) {
     try {
+        const currentUser = await getCurrentSessionUser();
+        if (!currentUser || !canDeleteExpenses(currentUser)) {
+            return { success: false, error: "غير مصرح لك بحذف المصاريف" };
+        }
+
         const res = await prisma.$transaction(async (tx) => {
             const existingExpense = await tx.expense.findUnique({
                 where: { id },
@@ -264,6 +302,13 @@ export async function deleteExpense(id: number) {
 
             if (!existingExpense) {
                 throw new Error("المصروف غير موجود");
+            }
+
+            const existingType = normalizeExpenseType(existingExpense.type);
+            const existingOffice = normalizePaidFromOffice(existingExpense.paidFromOffice);
+
+            if (existingType === "DAILY" && !canAccessPaidOffice(currentUser, existingOffice)) {
+                throw new Error("غير مصرح لك بحذف هذا المصروف");
             }
 
             if (String(existingExpense.type || "").toUpperCase() === "DAILY") {
@@ -288,6 +333,11 @@ export async function deleteExpense(id: number) {
 
 export async function updateExpense(id: number, data: any) {
     try {
+        const currentUser = await getCurrentSessionUser();
+        if (!currentUser || !canEditExpenses(currentUser)) {
+            return { success: false, error: "غير مصرح لك بتعديل المصاريف" };
+        }
+
         const type = normalizeExpenseType(data?.type);
         const description = sanitizeDescription(data?.description);
         const notes = sanitizeNotes(data?.notes);
@@ -325,6 +375,10 @@ export async function updateExpense(id: number, data: any) {
                 return { success: false, error: "يرجى تحديد المكتب الذي تم الدفع منه" };
             }
 
+            if (!canAccessPaidOffice(currentUser, paidFromOffice)) {
+                return { success: false, error: "لا تملك صلاحية تسجيل مصروف لهذا المكتب" };
+            }
+
             payload = {
                 ...payload,
                 description,
@@ -354,6 +408,13 @@ export async function updateExpense(id: number, data: any) {
 
             if (!existingExpense) {
                 throw new Error("المصروف غير موجود");
+            }
+
+            const existingType = normalizeExpenseType(existingExpense.type);
+            const existingOffice = normalizePaidFromOffice(existingExpense.paidFromOffice);
+
+            if (existingType === "DAILY" && !canAccessPaidOffice(currentUser, existingOffice)) {
+                throw new Error("غير مصرح لك بتعديل هذا المصروف");
             }
 
             if (String(existingExpense.type || "").toUpperCase() === "DAILY") {
