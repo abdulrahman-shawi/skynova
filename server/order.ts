@@ -135,6 +135,11 @@ function getAllowedWarehouseLocations(user: any) {
     return locations;
 }
 
+function shouldRestrictOrdersByWarehouseLocation(user: any) {
+    if (!user || user.accountType === "ADMIN") return false;
+    return getAllowedWarehouseLocations(user).length > 0;
+}
+
 export async function getCurrentSessionUser() {
     try {
         const session = cookies().get("skynova")?.value;
@@ -391,13 +396,13 @@ export async function getOrders() {
     }
 
     const isAdminUser = currentUser.accountType === "ADMIN";
-    const isWarehouseUser = isWarehouseRole(currentUser);
     const allowedWarehouseLocations = getAllowedWarehouseLocations(currentUser);
+    const shouldRestrictByLocation = shouldRestrictOrdersByWarehouseLocation(currentUser);
 
     const where: any = {};
 
     if (!isAdminUser) {
-        if (isWarehouseUser) {
+        if (shouldRestrictByLocation) {
             if (allowedWarehouseLocations.length === 0) {
                 return { success: true, data: [] };
             }
@@ -407,7 +412,9 @@ export async function getOrders() {
                     in: allowedWarehouseLocations,
                 },
             };
-        } else {
+        }
+
+        if (!isWarehouseRole(currentUser)) {
             const scopedUserIds = await getScopedUserIds(currentUser.id);
             where.userId = {
                 in: scopedUserIds.length > 0 ? scopedUserIds : [currentUser.id],
@@ -462,9 +469,10 @@ export async function getOrderById(orderId: string | number) {
 
     const isAdminUser = currentUser.accountType === "ADMIN";
     const isWarehouseUser = isWarehouseRole(currentUser);
+    const shouldRestrictByLocation = shouldRestrictOrdersByWarehouseLocation(currentUser);
 
     if (!isAdminUser) {
-        if (isWarehouseUser) {
+        if (shouldRestrictByLocation) {
             const allowedWarehouseLocations = getAllowedWarehouseLocations(currentUser);
             const orderWarehouseLocation = normalizeWarehouseLocation(order?.warehouse?.location);
             const canAccessWarehouse = allowedWarehouseLocations
@@ -474,7 +482,9 @@ export async function getOrderById(orderId: string | number) {
             if (!canAccessWarehouse) {
                 return { success: false, error: "غير مصرح لك بعرض هذا الطلب" };
             }
-        } else {
+        }
+
+        if (!isWarehouseUser) {
             const scopedUserIds = await getScopedUserIds(currentUser.id);
             const allowedUserIds = scopedUserIds.length > 0 ? scopedUserIds : [currentUser.id];
             if (!allowedUserIds.includes(String(order.userId))) {
@@ -509,8 +519,8 @@ export async function getOrdersByIds(orderIds: Array<string | number>) {
     }
 
     const isAdminUser = currentUser.accountType === "ADMIN";
-    const isWarehouseUser = isWarehouseRole(currentUser);
     const allowedWarehouseLocations = getAllowedWarehouseLocations(currentUser);
+    const shouldRestrictByLocation = shouldRestrictOrdersByWarehouseLocation(currentUser);
 
     const where: any = {
         id: {
@@ -519,7 +529,7 @@ export async function getOrdersByIds(orderIds: Array<string | number>) {
     };
 
     if (!isAdminUser) {
-        if (isWarehouseUser) {
+        if (shouldRestrictByLocation) {
             if (allowedWarehouseLocations.length === 0) {
                 return { success: true, data: [] };
             }
@@ -529,7 +539,9 @@ export async function getOrdersByIds(orderIds: Array<string | number>) {
                     in: allowedWarehouseLocations,
                 },
             };
-        } else {
+        }
+
+        if (!isWarehouseRole(currentUser)) {
             const scopedUserIds = await getScopedUserIds(currentUser.id);
             where.userId = {
                 in: scopedUserIds.length > 0 ? scopedUserIds : [currentUser.id],
