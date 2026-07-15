@@ -8,6 +8,7 @@ import {
   Users2,
   RollerCoasterIcon,
   Download,
+  PieChart,
   Warehouse,
   Truck,
   Wallet,
@@ -157,6 +158,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
   { icon: Users, label: "العملاء", href: "/dashboard/customers-complated" },
           (user && hasAnyPermission(user, ["viewWholesaleCustomers", "addWholesaleCustomers", "editWholesaleCustomers", "deleteWholesaleCustomers"])) &&
         { icon: Users2, label: "عملاء الجملة", href: "/dashboard/wholesale-customers" },
+            (user && hasAnyPermission(user, ["viewExpenses", "addExpenses", "editExpenses", "deleteExpenses"])) &&
+            { icon: PieChart, label: "المصاريف اليومية", href: "/dashboard/expenses" },
   
   // نستخدم الـ Optional Chaining (?.) لضمان عدم حدوث خطأ إذا كان الـ user غير موجود بعد
   (user && hasAnyPermission(user, ["viewOrders", "addOrders", "editOrders", "deleteOrders"])) &&
