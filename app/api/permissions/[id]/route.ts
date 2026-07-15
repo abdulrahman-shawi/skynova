@@ -61,6 +61,12 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
                 editEmployees: Boolean(data.editEmployees),
                 deleteEmployees: Boolean(data.deleteEmployees),
 
+                // المصاريف
+                viewExpenses: Boolean(data.viewExpenses),
+                addExpenses: Boolean(data.addExpenses),
+                editExpenses: Boolean(data.editExpenses),
+                deleteExpenses: Boolean(data.deleteExpenses),
+
                 // تصنيف المنتجات
                 viewCategories: Boolean(data.viewCategories),
                 addCategories: Boolean(data.addCategories),
@@ -72,6 +78,8 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
                 addPermissions: Boolean(data.addPermissions),
                 editPermissions: Boolean(data.editPermissions),
                 deletePermissions: Boolean(data.deletePermissions),
+                accessSyria: Boolean(data.accessSyria),
+                accessTurkey: Boolean(data.accessTurkey),
 
                 // إحصائيات النظام (حقل واحد فقط)
                 viewAnalytics: Boolean(data.viewAnalytics),

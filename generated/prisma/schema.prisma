@@ -222,7 +222,10 @@ model Permission {
   addPages    Boolean @default(false)
   editPages   Boolean @default(false)
   deletePages Boolean @default(false)
-  users       User[]
+
+  accessSyria  Boolean @default(false)
+  accessTurkey Boolean @default(false)
+  users        User[]
 }
 
 // ============================================

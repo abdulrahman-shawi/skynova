@@ -860,8 +860,68 @@ export async function GetDailyExpensesAnalytics(userId: string, dateFilter?: Ord
     });
 
     if (!user) return { success: false, error: "User not found", data: [] };
-    void dateFilter;
-    return { success: true, data: [], summary: { USD: 0, TRY: 0, SYP: 0 } };
+
+    const isAdminUser = isAdmin(user);
+    const canViewExpenses = isAdminUser || Boolean(user?.permission?.viewExpenses);
+    if (!canViewExpenses) return { success: true, data: [], summary: { USD: 0, TRY: 0, SYP: 0 } };
+
+    const createdAtFilter = buildOrderDateWhere(dateFilter);
+    const allowedPaidOffices: Array<"SYRIA" | "TURKEY"> = [];
+    if (user?.permission?.accessSyria === true) allowedPaidOffices.push("SYRIA");
+    if (user?.permission?.accessTurkey === true) allowedPaidOffices.push("TURKEY");
+
+    const whereClause: any = {
+      type: "DAILY",
+      ...(createdAtFilter ? { createdAt: createdAtFilter } : {}),
+    };
+
+    if (!isAdminUser) {
+      if (allowedPaidOffices.length === 0) {
+        return { success: true, data: [], summary: { USD: 0, TRY: 0, SYP: 0 } };
+      }
+
+      whereClause.paidFromOffice = { in: allowedPaidOffices };
+    }
+
+    const expenses = await prisma.expense.findMany({
+      where: whereClause,
+      select: {
+        amount: true,
+        currency: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    const grouped = expenses.reduce((acc, expense) => {
+      const date = new Date(expense.createdAt).toISOString().split("T")[0];
+      const currency = String(expense.currency || "USD").toUpperCase();
+      const amount = Number(expense.amount || 0);
+
+      if (!acc[date]) {
+        acc[date] = { date, count: 0, USD: 0, TRY: 0, SYP: 0 };
+      }
+
+      acc[date].count += 1;
+      if (currency === "TRY") acc[date].TRY += amount;
+      else if (currency === "SYP") acc[date].SYP += amount;
+      else acc[date].USD += amount;
+
+      return acc;
+    }, {} as Record<string, { date: string; count: number; USD: number; TRY: number; SYP: number }>);
+
+    const data = Object.values(grouped);
+    const summary = data.reduce(
+      (acc, row) => {
+        acc.USD += Number(row.USD || 0);
+        acc.TRY += Number(row.TRY || 0);
+        acc.SYP += Number(row.SYP || 0);
+        return acc;
+      },
+      { USD: 0, TRY: 0, SYP: 0 }
+    );
+
+    return { success: true, data, summary };
   } catch (error) {
     console.error("Error in GetDailyExpensesAnalytics:", error);
     return { success: false, data: [], summary: { USD: 0, TRY: 0, SYP: 0 } };

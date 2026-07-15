@@ -37,6 +37,11 @@ export interface Permission {
   editEmployees: boolean;
   deleteEmployees: boolean;
 
+  viewExpenses: boolean;
+  addExpenses: boolean;
+  editExpenses: boolean;
+  deleteExpenses: boolean;
+
   viewAnalytics: boolean;
 
   viewCategories: boolean;
@@ -53,6 +58,9 @@ export interface Permission {
   addPages: boolean;
   editPages: boolean;
   deletePages: boolean;
+
+  accessSyria: boolean;
+  accessTurkey: boolean;
 
   users?: User[]; // optional to avoid circular reference issues
 }
