@@ -1,19 +1,10 @@
 'use server';
 
 import { decrypt } from '@/lib/auth';
-import { buildAffiliateFullUrl, isAffiliateAccount, normalizeAccountType } from '@/lib/affiliate';
+import { buildAffiliateFullUrl, isAffiliateAccount, normalizeAccountType, resolveAffiliateCommissionConfig } from '@/lib/affiliate';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 const DELIVERED_ORDER_STATUSES = new Set(['تم تسليم الطلب', 'تم التسليم', 'مدفوعة', 'تم البيع']);
-
-function resolveAffiliateCommissionRate(productRate?: number | null, linkRate?: number | null) {
-  const normalizedProductRate = Number(productRate || 0);
-  if (normalizedProductRate > 0) {
-    return normalizedProductRate;
-  }
-
-  return Number(linkRate || 0);
-}
 
 function getEffectiveCommissionStatus(commission: {
   status?: 'PENDING' | 'PAID' | 'CANCELLED' | string | null;
@@ -324,10 +315,18 @@ export async function getAffiliateUserDashboard(targetUserId: string) {
         return {
           ...link,
           fullUrl: buildAffiliateFullUrl(link.product?.seoSlug, link.uniqueCode, link.product?.id),
-          effectiveCommissionRate: resolveAffiliateCommissionRate(
-            link?.product?.affiliateCommissionRate,
-            link?.commissionRate
-          ),
+          ...(() => {
+            const commissionConfig = resolveAffiliateCommissionConfig(
+              link?.product?.affiliatePrice,
+              link?.product?.affiliateCommissionRate,
+              link?.commissionRate
+            );
+
+            return {
+              effectiveCommissionRate: commissionConfig.value,
+              effectiveCommissionType: commissionConfig.mode,
+            };
+          })(),
           commissions: normalizedCommissions,
           totalCommissions,
           pendingCommissions,

@@ -96,6 +96,7 @@ const DashboardPage: React.FunctionComponent = () => {
       clicks: number;
       conversions: number;
       effectiveCommissionRate: number;
+      effectiveCommissionType: 'flat' | 'percentage';
       totalCommissions: number;
       pendingCommissions: number;
       paidCommissions: number;
@@ -779,7 +780,7 @@ const DashboardPage: React.FunctionComponent = () => {
                   <tr>
                     <th className="px-3 py-3">المنتج</th>
                     <th className="px-3 py-3">الرابط</th>
-                    <th className="px-3 py-3">النسبة</th>
+                    <th className="px-3 py-3">العمولة</th>
                     <th className="px-3 py-3">النفرات</th>
                     <th className="px-3 py-3">التحويلات</th>
                     <th className="px-3 py-3">معلقة</th>
@@ -801,7 +802,9 @@ const DashboardPage: React.FunctionComponent = () => {
                           {link.fullUrl}
                         </a>
                       </td>
-                      <td className="px-3 py-3 font-bold text-emerald-600">{Number(link.effectiveCommissionRate || 0).toFixed(2)}%</td>
+                      <td className="px-3 py-3 font-bold text-emerald-600">
+                        {Number(link.effectiveCommissionRate || 0).toFixed(2)}{link.effectiveCommissionType === 'percentage' ? '%' : ''}
+                      </td>
                       <td className="px-3 py-3">{Number(link.clicks || 0).toLocaleString()}</td>
                       <td className="px-3 py-3">{Number(link.conversions || 0).toLocaleString()}</td>
                       <td className="px-3 py-3 font-bold text-orange-600">{Number(link.pendingCommissions || 0).toFixed(2)}</td>

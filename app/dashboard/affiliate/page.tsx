@@ -60,6 +60,8 @@ export default function AffiliateDashboardPage() {
 
   const selectedProduct = data.products.find((item) => String(item.id) === form.productId);
   const selectedEditProduct = data.products.find((item) => String(item.id) === editLinkForm.productId);
+  const selectedProductUsesFlatCommission = Number(selectedProduct?.affiliatePrice || 0) > 0;
+  const selectedEditProductUsesFlatCommission = Number(selectedEditProduct?.affiliatePrice || 0) > 0;
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -235,12 +237,14 @@ export default function AffiliateDashboardPage() {
         <div className="space-y-2">
           <label className="text-sm font-bold text-slate-700 dark:text-slate-200">المنتج</label>
           <select className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-950" value={form.productId} onChange={(e) => setForm((prev) => {
-            const selectedRate = Number(data.products.find((item) => String(item.id) === e.target.value)?.affiliateCommissionRate || 0);
+            const nextProduct = data.products.find((item) => String(item.id) === e.target.value);
+            const selectedRate = Number(nextProduct?.affiliateCommissionRate || 0);
+            const usesFlatCommission = Number(nextProduct?.affiliatePrice || 0) > 0;
 
             return {
               ...prev,
               productId: e.target.value,
-              commissionRate: selectedRate > 0 ? String(selectedRate) : prev.commissionRate,
+              commissionRate: !usesFlatCommission && selectedRate > 0 ? String(selectedRate) : prev.commissionRate,
             };
           })}>
             <option value="">اختر المنتج</option>
@@ -251,13 +255,15 @@ export default function AffiliateDashboardPage() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700 dark:text-slate-200">نسبة العمولة</label>
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-200">{selectedProductUsesFlatCommission ? 'قيمة العمولة' : 'نسبة العمولة'}</label>
           <input className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-950" value={form.commissionRate} onChange={(e) => setForm((prev) => ({ ...prev, commissionRate: e.target.value }))} />
           {selectedProduct ? (
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {Number(selectedProduct.affiliateCommissionRate || 0) > 0
-                ? 'سيتم استخدام نسبة المنتج عند إنشاء العمولة.'
-                : 'إذا كانت نسبة المنتج فارغة أو 0 فسيتم استخدام نسبة الرابط.'}
+              {selectedProductUsesFlatCommission
+                ? 'عند وجود سعر أفلييت للمنتج سيتم استخدام قيمة الرابط كعمولة ثابتة لكل قطعة.'
+                : Number(selectedProduct.affiliateCommissionRate || 0) > 0
+                  ? 'سيتم استخدام نسبة المنتج عند إنشاء العمولة.'
+                  : 'إذا كانت نسبة المنتج فارغة أو 0 فسيتم استخدام نسبة الرابط.'}
             </p>
           ) : null}
         </div>
@@ -315,7 +321,11 @@ export default function AffiliateDashboardPage() {
                 <div className="mt-3 grid grid-cols-3 gap-3 text-center text-xs font-bold text-slate-600 dark:text-slate-300">
                   <div className="rounded-xl bg-white p-2 dark:bg-slate-900">Clicks: {link.clicks}</div>
                   <div className="rounded-xl bg-white p-2 dark:bg-slate-900">Conversions: {link.conversions}</div>
-                  <div className="rounded-xl bg-white p-2 dark:bg-slate-900">Rate: {Number(link.commissionRate || 0).toFixed(2)}%</div>
+                  <div className="rounded-xl bg-white p-2 dark:bg-slate-900">
+                    {Number(link.product?.affiliatePrice || 0) > 0
+                      ? `Commission: ${Number(link.commissionRate || 0).toFixed(2)}`
+                      : `Rate: ${Number(link.commissionRate || 0).toFixed(2)}%`}
+                  </div>
                 </div>
               </div>
             ))}
@@ -451,12 +461,14 @@ export default function AffiliateDashboardPage() {
               value={editLinkForm.productId}
               onChange={(e) => setEditLinkForm((prev) => {
                 const nextProductId = e.target.value;
-                const nextRate = Number(data.products.find((item) => String(item.id) === nextProductId)?.affiliateCommissionRate || 0);
+                const nextProduct = data.products.find((item) => String(item.id) === nextProductId);
+                const nextRate = Number(nextProduct?.affiliateCommissionRate || 0);
+                const usesFlatCommission = Number(nextProduct?.affiliatePrice || 0) > 0;
 
                 return {
                   ...prev,
                   productId: nextProductId,
-                  commissionRate: nextRate > 0 ? String(nextRate) : prev.commissionRate,
+                  commissionRate: !usesFlatCommission && nextRate > 0 ? String(nextRate) : prev.commissionRate,
                 };
               })}
               disabled={updatingLink}
@@ -469,7 +481,7 @@ export default function AffiliateDashboardPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700 dark:text-slate-200">نسبة العمولة</label>
+            <label className="text-sm font-bold text-slate-700 dark:text-slate-200">{selectedEditProductUsesFlatCommission ? 'قيمة العمولة' : 'نسبة العمولة'}</label>
             <input
               className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-950"
               value={editLinkForm.commissionRate}
@@ -478,9 +490,11 @@ export default function AffiliateDashboardPage() {
             />
             {selectedEditProduct ? (
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {Number(selectedEditProduct.affiliateCommissionRate || 0) > 0
-                  ? 'سيتم استخدام نسبة المنتج عند إنشاء العمولة الجديدة.'
-                  : 'إذا كانت نسبة المنتج فارغة أو 0 فسيتم استخدام نسبة الرابط.'}
+                {selectedEditProductUsesFlatCommission
+                  ? 'عند وجود سعر أفلييت للمنتج سيتم استخدام قيمة الرابط كعمولة ثابتة لكل قطعة.'
+                  : Number(selectedEditProduct.affiliateCommissionRate || 0) > 0
+                    ? 'سيتم استخدام نسبة المنتج عند إنشاء العمولة الجديدة.'
+                    : 'إذا كانت نسبة المنتج فارغة أو 0 فسيتم استخدام نسبة الرابط.'}
               </p>
             ) : null}
           </div>

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { buildAffiliateFullUrl, isAffiliateAccount } from "@/lib/affiliate";
+import { buildAffiliateFullUrl, isAffiliateAccount, resolveAffiliateCommissionConfig } from "@/lib/affiliate";
 import { AccountType, Prisma } from "@/generated/prisma";
 import bcrypt from "bcryptjs"; //
 import { NextRequest } from 'next/server';
@@ -59,6 +59,7 @@ export async function GET(req :NextRequest) {
                 id: true,
                 name: true,
                 seoSlug: true,
+                affiliatePrice: true,
                 affiliateCommissionRate: true,
               },
             },
@@ -89,10 +90,18 @@ export async function GET(req :NextRequest) {
         ? userRow.affiliateLinks.map((link: any) => ({
             ...link,
             fullUrl: buildAffiliateFullUrl(link.product?.seoSlug, link.uniqueCode, link.product?.id),
-            effectiveCommissionRate:
-              Number(link?.product?.affiliateCommissionRate || 0) > 0
-                ? Number(link.product.affiliateCommissionRate || 0)
-                : Number(link.commissionRate || 0),
+            ...(() => {
+              const commissionConfig = resolveAffiliateCommissionConfig(
+                link?.product?.affiliatePrice,
+                link?.product?.affiliateCommissionRate,
+                link?.commissionRate
+              );
+
+              return {
+                effectiveCommissionRate: commissionConfig.value,
+                effectiveCommissionType: commissionConfig.mode,
+              };
+            })(),
           }))
         : [],
       totalAffiliateClicks: Array.isArray(userRow.affiliateLinks)
