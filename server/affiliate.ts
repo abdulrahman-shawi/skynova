@@ -4,7 +4,7 @@ import { decrypt } from '@/lib/auth';
 import { buildAffiliateFullUrl, isAffiliateAccount, normalizeAccountType, resolveAffiliateCommissionConfig } from '@/lib/affiliate';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
-const DELIVERED_ORDER_STATUSES = new Set(['تم تسليم الطلب', 'تم التسليم', 'مدفوعة', 'تم البيع']);
+const DELIVERED_ORDER_STATUSES = new Set(['تم استلام الطلب', 'تم تسليم الطلب', 'تم التسليم', 'مدفوعة', 'تم البيع']);
 
 function getEffectiveCommissionStatus(commission: {
   status?: 'PENDING' | 'PAID' | 'CANCELLED' | string | null;

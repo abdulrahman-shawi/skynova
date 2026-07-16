@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
 const AFFILIATE_COOKIE_NAME = 'affiliate-code';
 
 const SOLD_ORDER_STATUSES = new Set(["تم تسليم الطلب", "تم التسليم", "مدفوعة"]);
-const PAID_COMMISSION_ORDER_STATUSES = new Set(["تم تسليم الطلب", "تم التسليم", "مدفوعة", "تم البيع"]);
+const PAID_COMMISSION_ORDER_STATUSES = new Set(["تم استلام الطلب", "تم تسليم الطلب", "تم التسليم", "مدفوعة", "تم البيع"]);
 const STOCK_RETURN_STATUSES = new Set(["فشل التسليم مرتجع", "تم الغاء الطلب"]);
 const DEFAULT_TURKEY_EXCHANGE_RATE = 44;
 
