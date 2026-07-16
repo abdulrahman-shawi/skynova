@@ -176,6 +176,12 @@ export default function AffiliateDashboardPage() {
     return 'معلقة';
   };
 
+  const canMarkCommissionPaid = (orderStatus: string) => {
+    return ['تم استلام الطلب', 'تم تسليم الطلب', 'تم التسليم', 'مدفوعة', 'تم البيع'].includes(
+      String(orderStatus || '').trim()
+    );
+  };
+
   const affiliateOrders = React.useMemo(() => {
     return data.commissions.map((commission) => ({
       id: String(commission.id),
@@ -338,7 +344,10 @@ export default function AffiliateDashboardPage() {
             <h2 className="text-xl font-black text-slate-900 dark:text-white">قائمة العمولات</h2>
           </div>
           <div className="space-y-3">
-            {data.commissions.map((commission) => (
+            {data.commissions.map((commission) => {
+              const canMarkPaid = canMarkCommissionPaid(String(commission.order?.status || ''));
+
+              return (
               <div key={commission.id} className="rounded-2xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -365,7 +374,9 @@ export default function AffiliateDashboardPage() {
                   <button
                     type="button"
                     onClick={() => handleCommissionStatusChange(String(commission.id), 'PAID')}
-                    className="rounded-xl border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-50"
+                    disabled={!canMarkPaid}
+                    title={canMarkPaid ? undefined : 'لا يمكن اعتمادها كمدفوعة قبل وصول الطلب إلى حالة مؤهلة'}
+                    className="rounded-xl border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     اعتماد كمدفوعة
                   </button>
@@ -378,7 +389,8 @@ export default function AffiliateDashboardPage() {
                   </button>
                 </div>
               </div>
-            ))}
+              );
+            })}
             {data.commissions.length === 0 ? <p className="text-sm text-slate-500 dark:text-slate-400">لا توجد عمولات حتى الآن.</p> : null}
           </div>
         </section>

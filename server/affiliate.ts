@@ -1025,6 +1025,27 @@ export async function updateAffiliateCommissionStatus(
     return { success: false, error: 'حالة العمولة غير صالحة' };
   }
 
+  const existingCommission = await prisma.commission.findUnique({
+    where: { id: normalizedCommissionId },
+    select: {
+      id: true,
+      order: {
+        select: {
+          status: true,
+        },
+      },
+    },
+  });
+
+  if (!existingCommission) {
+    return { success: false, error: 'العمولة المطلوبة غير موجودة' };
+  }
+
+  const orderStatus = String(existingCommission.order?.status || '').trim();
+  if (normalizedStatus === 'PAID' && !DELIVERED_ORDER_STATUSES.has(orderStatus)) {
+    return { success: false, error: 'لا يمكن اعتماد العمولة كمدفوعة قبل وصول الطلب إلى حالة مؤهلة' };
+  }
+
   const updatedCommission = await prisma.commission.update({
     where: { id: normalizedCommissionId },
     data: {
