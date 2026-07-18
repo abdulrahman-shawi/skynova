@@ -220,6 +220,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
             { icon: Ticket, label: "سفراء skynova", href: "/dashboard/affiliate" },
             (user && isAdmin(user)) &&
             { icon: Users2, label: "مستخدمو سفراء skynova", href: "/dashboard/affiliate/users" },
+            (user && isAdmin(user)) &&
+            { icon: Ticket, label: "تحويلات المحفظة", href: "/dashboard/affiliate/transfers" },
           ].filter(Boolean) as MenuItem[],
         },
       ].filter(Boolean)

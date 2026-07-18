@@ -206,12 +206,20 @@ export default function AffiliateDashboardPage() {
           <h1 className="text-3xl font-black text-slate-900 dark:text-white">Affiliate Dashboard</h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">إدارة روابط الإحالة والعمولات من نفس الـ Workflow الحالي.</p>
         </div>
-        <Link
-          href="/dashboard/affiliate/users"
-          className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-        >
-          إدارة مستخدمي الأفلييت
-        </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/dashboard/affiliate/transfers"
+              className="rounded-2xl border border-sky-200 px-4 py-3 text-sm font-black text-sky-700 hover:bg-sky-50 dark:border-sky-900/50 dark:text-sky-300 dark:hover:bg-sky-950/30"
+            >
+              تحويلات المحفظة
+            </Link>
+            <Link
+              href="/dashboard/affiliate/users"
+              className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              إدارة مستخدمي الأفلييت
+            </Link>
+          </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-5">

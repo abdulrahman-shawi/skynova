@@ -818,6 +818,207 @@ export async function getAffiliateUsersAdminList() {
   };
 }
 
+export async function getAffiliateWalletTransfersAdminList() {
+  const currentUser = await getCurrentSessionUser();
+  if (!currentUser || currentUser.accountType !== 'ADMIN') {
+    return { success: false, error: 'غير مصرح لك بعرض تحويلات محفظة الأفلييت' };
+  }
+
+  const [users, transfers] = await Promise.all([
+    prisma.user.findMany({
+      where: {
+        AND: [
+          {
+            OR: [
+              { isAffiliate: true },
+              { accountType: 'AFFILIATE' },
+            ],
+          },
+          {
+            accountType: { not: 'STAFF' },
+          },
+        ],
+      },
+      orderBy: { username: 'asc' },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        affiliateApproved: true,
+      },
+    }),
+    prisma.affiliateWalletTransfer.findMany({
+      orderBy: [
+        { transferredAt: 'desc' },
+        { createdAt: 'desc' },
+      ],
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            affiliateApproved: true,
+          },
+        },
+      },
+    }),
+  ]);
+
+  const summary = transfers.reduce(
+    (acc, transfer) => {
+      acc.total += 1;
+      acc.totalAmount += Number(transfer.amount || 0);
+      if (transfer.status === 'RECEIVED') {
+        acc.received += 1;
+      } else {
+        acc.pending += 1;
+      }
+      return acc;
+    },
+    {
+      total: 0,
+      pending: 0,
+      received: 0,
+      totalAmount: 0,
+    }
+  );
+
+  return {
+    success: true,
+    data: {
+      summary: {
+        ...summary,
+        totalAmount: Number(summary.totalAmount.toFixed(2)),
+      },
+      users,
+      transfers,
+    },
+  };
+}
+
+export async function updateAffiliateWalletTransferByAdmin(input: {
+  id: string;
+  userId: string;
+  amount: number;
+  status: 'PENDING' | 'RECEIVED';
+  reference?: string | null;
+  notes?: string | null;
+  transferredAt: string | Date;
+  receivedAt?: string | Date | null;
+}) {
+  const currentUser = await getCurrentSessionUser();
+  if (!currentUser || currentUser.accountType !== 'ADMIN') {
+    return { success: false, error: 'غير مصرح لك بتعديل تحويلات محفظة الأفلييت' };
+  }
+
+  const transferId = String(input?.id || '').trim();
+  const userId = String(input?.userId || '').trim();
+  const amount = Number(input?.amount || 0);
+  const status = input?.status === 'RECEIVED' ? 'RECEIVED' : 'PENDING';
+  const transferredAt = new Date(input.transferredAt);
+  const receivedAtInput = input.receivedAt ? new Date(input.receivedAt) : null;
+
+  if (!transferId) {
+    return { success: false, error: 'معرف التحويلة غير صالح' };
+  }
+
+  if (!userId) {
+    return { success: false, error: 'يرجى اختيار مستخدم أفلييت' };
+  }
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return { success: false, error: 'قيمة التحويل يجب أن تكون أكبر من صفر' };
+  }
+
+  if (Number.isNaN(transferredAt.getTime())) {
+    return { success: false, error: 'تاريخ التحويل غير صالح' };
+  }
+
+  if (receivedAtInput && Number.isNaN(receivedAtInput.getTime())) {
+    return { success: false, error: 'تاريخ الاستلام غير صالح' };
+  }
+
+  const [existingTransfer, affiliateUser] = await Promise.all([
+    prisma.affiliateWalletTransfer.findUnique({
+      where: { id: transferId },
+      select: { id: true },
+    }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        accountType: true,
+        isAffiliate: true,
+      },
+    }),
+  ]);
+
+  if (!existingTransfer) {
+    return { success: false, error: 'التحويلة المطلوبة غير موجودة' };
+  }
+
+  if (!isAffiliateUser(affiliateUser)) {
+    return { success: false, error: 'المستخدم المحدد ليس حساب أفلييت' };
+  }
+
+  const nextReceivedAt =
+    status === 'RECEIVED'
+      ? receivedAtInput || transferredAt
+      : null;
+
+  const updatedTransfer = await prisma.affiliateWalletTransfer.update({
+    where: { id: transferId },
+    data: {
+      userId,
+      amount,
+      status,
+      reference: String(input.reference || '').trim() || null,
+      notes: String(input.notes || '').trim() || null,
+      transferredAt,
+      receivedAt: nextReceivedAt,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          affiliateApproved: true,
+        },
+      },
+    },
+  });
+
+  return {
+    success: true,
+    data: updatedTransfer,
+  };
+}
+
+export async function deleteAffiliateWalletTransferByAdmin(transferId: string) {
+  const currentUser = await getCurrentSessionUser();
+  if (!currentUser || currentUser.accountType !== 'ADMIN') {
+    return { success: false, error: 'غير مصرح لك بحذف تحويلات محفظة الأفلييت' };
+  }
+
+  const normalizedTransferId = String(transferId || '').trim();
+  if (!normalizedTransferId) {
+    return { success: false, error: 'معرف التحويلة غير صالح' };
+  }
+
+  try {
+    await prisma.affiliateWalletTransfer.delete({
+      where: { id: normalizedTransferId },
+    });
+
+    return { success: true };
+  } catch {
+    return { success: false, error: 'تعذر حذف التحويلة المطلوبة' };
+  }
+}
+
 export async function transferAffiliateDeliveredCommissions(userId: string) {
   const currentUser = await getCurrentSessionUser();
   if (!currentUser || currentUser.accountType !== 'ADMIN') {

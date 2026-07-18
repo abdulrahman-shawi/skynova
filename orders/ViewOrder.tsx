@@ -21,6 +21,12 @@ export default function ViewOrder({
 }) {
   const componentRef = React.useRef<HTMLDivElement>(null);
   const currencySymbol = getOrderCurrencySymbol(data);
+  const normalizedMapLink = React.useMemo(() => {
+    const rawValue = String(data?.googleMapsLink || '').trim();
+    if (!rawValue) return '';
+    if (/^https?:\/\//i.test(rawValue)) return rawValue;
+    return `https://${rawValue}`;
+  }, [data?.googleMapsLink]);
 
   const getEffectivePrice = (price: number, discount: number) => {
     return Math.max(0, Number(price || 0) - Number(discount || 0));
@@ -121,10 +127,15 @@ export default function ViewOrder({
                       : formatPhoneForDisplay(data?.receiverPhone) || 'لم يسجل'}
                   </span>
                 </p>
-                {data.googleMapsLink && (
-                  <div className="">
-                    <a target="_blank" href={`${data.googleMapsLink}`} rel="noreferrer">
-                      رابط الخريطة
+                {normalizedMapLink && (
+                  <div className="pt-2">
+                    <a
+                      target="_blank"
+                      href={normalizedMapLink}
+                      rel="noreferrer"
+                      className="inline-flex items-center rounded-xl bg-sky-50 px-3 py-2 text-xs font-black text-sky-700 underline-offset-4 transition hover:bg-sky-100 hover:underline dark:bg-sky-950/40 dark:text-sky-300"
+                    >
+                      فتح رابط الخريطة
                     </a>
                   </div>
                 )}
