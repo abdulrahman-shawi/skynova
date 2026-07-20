@@ -1264,7 +1264,7 @@ export default function WholesaleCustomersPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full text-right text-sm">
+            <table className="min-w-full text-right text-sm whitespace-nowrap">
               <thead className="bg-slate-50 text-slate-600 dark:bg-slate-900/70 dark:text-slate-300">
                 <tr>
                   <th className="px-4 py-3 font-bold">العميل</th>
