@@ -265,8 +265,10 @@ function hasWholesaleAccess(user: any) {
 }
 
 function getAllowedWholesaleCountries(user: any) {
-  void user;
-  return ["سوريا", "تركيا"];
+  const countries: string[] = [];
+  if (user?.permission?.accessSyria === true) countries.push("سوريا");
+  if (user?.permission?.accessTurkey === true) countries.push("تركيا");
+  return countries;
 }
 
 function getScopedWholesaleCountryWhere(user: any) {
@@ -336,6 +338,12 @@ async function getUserCountryScope(userId: string | null | undefined) {
     select: {
       id: true,
       accountType: true,
+      permission: {
+        select: {
+          accessSyria: true,
+          accessTurkey: true,
+        },
+      },
     },
   });
 }
@@ -416,6 +424,10 @@ export async function getWholesaleSalesReps() {
           email: currentUser.email,
           avatar: currentUser.avatar,
           accountType: currentUser.accountType,
+          permission: {
+            accessSyria: Boolean(currentUser.permission?.accessSyria),
+            accessTurkey: Boolean(currentUser.permission?.accessTurkey),
+          },
         }],
       };
     }
@@ -433,6 +445,12 @@ export async function getWholesaleSalesReps() {
         email: true,
         avatar: true,
         accountType: true,
+        permission: {
+          select: {
+            accessSyria: true,
+            accessTurkey: true,
+          },
+        },
       },
     });
 

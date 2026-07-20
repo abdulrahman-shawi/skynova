@@ -156,6 +156,7 @@ model User {
   reviews                    Review[]
   assignedWholesaleCustomers WholesaleCustomer[] @relation("WholesaleCustomerAssignedUser")
   wholesaleVisits            WholesaleVisit[]    @relation("WholesaleVisitUser")
+  wholesaleOrders            WholesaleOrder[]
 }
 
 // ============================================
@@ -279,10 +280,12 @@ model Product {
   adPageVisits        AdPageVisit[]
 
   // ─── NEW: E-commerce Affiliate Relations ───
-  affiliateLinks AffiliateLink[]
-  reviews        Review[]
-  landingPage    ProductLandingPage?
-  offerDiscounts OfferDiscount[]
+  affiliateLinks      AffiliateLink[]
+  reviews             Review[]
+  landingPage         ProductLandingPage?
+  offerDiscounts      OfferDiscount[]
+  wholesalePriceTiers ProductWholesalePriceTier[]
+  wholesaleOrderItems WholesaleOrderItem[]
 }
 
 model AdPageVisit {
@@ -374,15 +377,16 @@ model Review {
 // ============================================
 
 model Warehouse {
-  id         Int             @id @default(autoincrement())
-  name       String          @unique
-  location   String
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-  stocks     ProductStock[]
-  orders     Order[]
-  movements  StockMovement[]
-  warranties Warranty[]
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  location        String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  stocks          ProductStock[]
+  orders          Order[]
+  wholesaleOrders WholesaleOrder[]
+  movements       StockMovement[]
+  warranties      Warranty[]
 }
 
 // ============================================
@@ -545,11 +549,97 @@ model WholesaleCustomer {
 
   assignedUser User?            @relation("WholesaleCustomerAssignedUser", fields: [assignedUserId], references: [id], onDelete: SetNull)
   visits       WholesaleVisit[]
+  orders       WholesaleOrder[]
 
   @@index([assignedUserId])
   @@index([city, area])
   @@index([visitStatus])
   @@index([nextFollowUpAt])
+}
+
+model ProductWholesalePriceTier {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  minQuantity Int
+  maxQuantity Int?
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  product             Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  wholesaleOrderItems WholesaleOrderItem[]
+
+  @@unique([productId, minQuantity])
+  @@index([productId])
+  @@index([productId, minQuantity])
+}
+
+model WholesaleOrder {
+  id                              Int       @id @default(autoincrement())
+  orderNumber                     String    @unique
+  usdToTryRateAtOrder             Float?
+  shippingPrice                   Float?
+  moneyTransferCommission         Float?    @default(0)
+  otherCommissions                Float?    @default(0)
+  carrierCollectionReceivedAt     DateTime?
+  carrierCollectionReceivedAmount Float?
+  carrierCollectionNotes          String?
+  totalAmount                     Float
+  discount                        Float     @default(0)
+  finalAmount                     Float
+  paymentMethod                   String
+  pay                             String?
+  receiverName                    String?
+  receiverPhone                   String[]
+  country                         String?
+  city                            String?
+  invoiceImage                    String?
+  municipality                    String?
+  fullAddress                     String?
+  deliveryNotes                   String?
+  googleMapsLink                  String?
+  amount                          String?
+  amountBank                      String?
+  deliveryMethod                  String?
+  additionalNotes                 String?
+  status                          String    @default("PENDING")
+  wholesaleCustomerId             String
+  userId                          String?
+  warehouseId                     Int?
+  shippingId                      Int?
+  manualCreatedAt                 DateTime?
+  createdAt                       DateTime  @default(now())
+  updatedAt                       DateTime  @updatedAt
+
+  wholesaleCustomer WholesaleCustomer    @relation(fields: [wholesaleCustomerId], references: [id], onDelete: Cascade)
+  user              User?                @relation(fields: [userId], references: [id])
+  items             WholesaleOrderItem[]
+  warehouse         Warehouse?           @relation(fields: [warehouseId], references: [id])
+  shipping          shipping?            @relation(fields: [shippingId], references: [id])
+
+  @@index([createdAt])
+  @@index([wholesaleCustomerId, createdAt])
+  @@index([status, createdAt])
+  @@index([userId, createdAt])
+  @@index([warehouseId, createdAt])
+}
+
+model WholesaleOrderItem {
+  id                   Int   @id @default(autoincrement())
+  quantity             Int   @default(1)
+  price                Float
+  discount             Float @default(0)
+  orderId              Int
+  productId            Int
+  wholesalePriceTierId Int?
+
+  order              WholesaleOrder             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product            Product                    @relation(fields: [productId], references: [id])
+  wholesalePriceTier ProductWholesalePriceTier? @relation(fields: [wholesalePriceTierId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([wholesalePriceTierId])
 }
 
 model WholesaleVisit {
@@ -707,12 +797,13 @@ model Expense {
 // ============================================
 
 model shipping {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  price     Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  price           Float
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  orders          Order[]
+  wholesaleOrders WholesaleOrder[]
 }
 
 // ============================================

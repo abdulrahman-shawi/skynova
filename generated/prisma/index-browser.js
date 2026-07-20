@@ -384,6 +384,64 @@ exports.Prisma.WholesaleCustomerScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ProductWholesalePriceTierScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  minQuantity: 'minQuantity',
+  maxQuantity: 'maxQuantity',
+  price: 'price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WholesaleOrderScalarFieldEnum = {
+  id: 'id',
+  orderNumber: 'orderNumber',
+  usdToTryRateAtOrder: 'usdToTryRateAtOrder',
+  shippingPrice: 'shippingPrice',
+  moneyTransferCommission: 'moneyTransferCommission',
+  otherCommissions: 'otherCommissions',
+  carrierCollectionReceivedAt: 'carrierCollectionReceivedAt',
+  carrierCollectionReceivedAmount: 'carrierCollectionReceivedAmount',
+  carrierCollectionNotes: 'carrierCollectionNotes',
+  totalAmount: 'totalAmount',
+  discount: 'discount',
+  finalAmount: 'finalAmount',
+  paymentMethod: 'paymentMethod',
+  pay: 'pay',
+  receiverName: 'receiverName',
+  receiverPhone: 'receiverPhone',
+  country: 'country',
+  city: 'city',
+  invoiceImage: 'invoiceImage',
+  municipality: 'municipality',
+  fullAddress: 'fullAddress',
+  deliveryNotes: 'deliveryNotes',
+  googleMapsLink: 'googleMapsLink',
+  amount: 'amount',
+  amountBank: 'amountBank',
+  deliveryMethod: 'deliveryMethod',
+  additionalNotes: 'additionalNotes',
+  status: 'status',
+  wholesaleCustomerId: 'wholesaleCustomerId',
+  userId: 'userId',
+  warehouseId: 'warehouseId',
+  shippingId: 'shippingId',
+  manualCreatedAt: 'manualCreatedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WholesaleOrderItemScalarFieldEnum = {
+  id: 'id',
+  quantity: 'quantity',
+  price: 'price',
+  discount: 'discount',
+  orderId: 'orderId',
+  productId: 'productId',
+  wholesalePriceTierId: 'wholesalePriceTierId'
+};
+
 exports.Prisma.WholesaleVisitScalarFieldEnum = {
   id: 'id',
   wholesaleCustomerId: 'wholesaleCustomerId',
@@ -769,6 +827,9 @@ exports.Prisma.ModelName = {
   ProductImage: 'ProductImage',
   Customer: 'Customer',
   WholesaleCustomer: 'WholesaleCustomer',
+  ProductWholesalePriceTier: 'ProductWholesalePriceTier',
+  WholesaleOrder: 'WholesaleOrder',
+  WholesaleOrderItem: 'WholesaleOrderItem',
   WholesaleVisit: 'WholesaleVisit',
   Warranty: 'Warranty',
   Message: 'Message',
