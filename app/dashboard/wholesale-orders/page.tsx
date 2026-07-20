@@ -25,8 +25,6 @@ import { StatusCards } from '@/orders/StatusCards';
 import {
   getWholesaleEffectivePrice,
   getWholesaleDisplayDate,
-  statusToDbValue,
-  dbValueToStatus,
   getApplicableWholesalePriceTier,
 } from '@/wholesale-orders/wholesaleHelpers';
 
@@ -46,7 +44,7 @@ export default function WholesaleOrdersPage() {
   const [editId, setEditId] = React.useState<string | number | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const [status, setStatus] = React.useState("PENDING");
+  const [status, setStatus] = React.useState("طلب جديد");
   const [wholesaleCustomerId, setWholesaleCustomerId] = React.useState("");
   const [customerSearchQuery, setCustomerSearchQuery] = React.useState("");
   const [showCustomerDropdown, setShowCustomerDropdown] = React.useState(false);
@@ -214,7 +212,7 @@ export default function WholesaleOrdersPage() {
 
     setWholesaleCustomerId(String(orderDetails?.wholesaleCustomerId || ""));
     setCustomerSearchQuery(orderDetails?.wholesaleCustomer?.name || "");
-    setStatus(orderDetails?.status || "PENDING");
+    setStatus(orderDetails?.status || "طلب جديد");
     setPaymentMethod(orderDetails?.paymentMethod || "عند الاستلام");
     setAmount(String(orderDetails?.amount ?? ""));
     setStockCountry(orderDetails?.warehouse?.location || "");
@@ -798,11 +796,11 @@ export default function WholesaleOrdersPage() {
             <div>
               <label className="block text-sm font-bold mb-1">حالة الطلب</label>
               <select
-                value={dbValueToStatus[status] || "طلب جديد"}
-                onChange={(e) => setStatus(statusToDbValue[e.target.value] || "PENDING")}
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
                 className="block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-slate-950 dark:text-white text-sm"
               >
-                {Object.keys(statusToDbValue).map((label) => (
+                {statusOptions.filter((s) => s !== "الكل").map((label) => (
                   <option key={label} value={label}>
                     {label}
                   </option>
