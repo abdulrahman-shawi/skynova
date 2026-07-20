@@ -135,6 +135,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
   const menuGroups: MenuGroup[] = user ? [
     {
       group: "الرئيسية",
+      icon: Home,
       collapsible: true,
       items: [
         { icon: Home, label: "لوحة التحكم", href: "/dashboard" },
@@ -143,6 +144,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
       ].filter(Boolean) as MenuItem[]
     },
     {
+      icon: Box,
+      collapsible: true,
       group: "الأقسام الرئيسية",
       items : [
         (user && hasAnyPermission(user, ["viewCategories", "addCategories", "editCategories", "deleteCategories"])) &&
@@ -188,6 +191,19 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
       ].filter(Boolean) as MenuItem[],
     },
     {
+      group: "السفراء",
+      icon: Ticket,
+      collapsible: true,
+      items: [
+        (user && isAdmin(user)) &&
+        { icon: Ticket, label: "سفراء skynova", href: "/dashboard/affiliate" },
+        (user && isAdmin(user)) &&
+        { icon: Users2, label: "مستخدمو سفراء skynova", href: "/dashboard/affiliate/users" },
+        (user && isAdmin(user)) &&
+        { icon: Ticket, label: "تحويلات المحفظة", href: "/dashboard/affiliate/transfers" },
+      ].filter(Boolean) as MenuItem[],
+    },
+    {
       group: "إعدادات النظام",
       icon: Settings2,
       collapsible: true,
@@ -206,18 +222,6 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
         ].filter(Boolean) as MenuItem[]),
         (user && hasAnyPermission(user, ["viewPages", "addPages", "editPages", "deletePages"])) &&
         { icon: FileText, label: "الصفحات", href: "/dashboard/pages" },
-        {
-          icon: Ticket,
-          label: "السفراء",
-          children: [
-            (user && isAdmin(user)) &&
-            { icon: Ticket, label: "سفراء skynova", href: "/dashboard/affiliate" },
-            (user && isAdmin(user)) &&
-            { icon: Users2, label: "مستخدمو سفراء skynova", href: "/dashboard/affiliate/users" },
-            (user && isAdmin(user)) &&
-            { icon: Ticket, label: "تحويلات المحفظة", href: "/dashboard/affiliate/transfers" },
-          ].filter(Boolean) as MenuItem[],
-        },
       ].filter(Boolean)
         .filter((item) => item.children ? item.children.length > 0 : true)
     },
