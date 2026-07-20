@@ -309,7 +309,7 @@ export default function WholesaleOrdersPage() {
         await refreshOrders();
         resetForm();
       } else {
-        toast.error(res.error || "فشل في معالجة الطلب");
+        toast.error((res as any).error || "فشل في معالجة الطلب");
       }
     } catch (error) {
       console.error("Submit Error:", error);
@@ -328,7 +328,7 @@ export default function WholesaleOrdersPage() {
         await refreshOrders();
         toast.success("تم تحديث الحالة");
       } else {
-        toast.error(res.error || "فشل تحديث الحالة");
+        toast.error((res as any).error || "فشل تحديث الحالة");
       }
     } catch (error) {
       toast.error("فشل تحديث الحالة");
@@ -347,7 +347,7 @@ export default function WholesaleOrdersPage() {
           toast.success("تم حذف الطلب بنجاح");
           await refreshOrders();
         } else {
-          toast.error(res.error || "خطأ");
+          toast.error((res as any).error || "خطأ");
         }
       } catch (err) {
         toast.error("حدث خطأ غير متوقع");

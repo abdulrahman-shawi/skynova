@@ -70,22 +70,27 @@ export const useWholesaleOrderData = (user?: User) => {
     const hasShippingCompanies = shippingCompanies.length > 0;
 
     if (hasProducts && hasCustomers && hasShippingCompanies) {
-      return;
+      return true;
     }
 
     if (supportingDataPromiseRef.current) {
-      return supportingDataPromiseRef.current;
+      await supportingDataPromiseRef.current;
+      return true;
     }
 
     setIsSupportingDataLoading(true);
 
     supportingDataPromiseRef.current = (async () => {
       try {
-        const [productsData, customersRes, shippingRes] = await Promise.all([
-          hasProducts ? Promise.resolve(products) : getWholesaleProductCatalog(),
-          hasCustomers ? Promise.resolve({ success: true, data: customers }) : getWholesaleCustomerList(),
-          hasShippingCompanies ? Promise.resolve({ success: true, data: shippingCompanies }) : getshipping(),
-        ]);
+        const productsData = hasProducts
+          ? { success: true, data: products }
+          : await getWholesaleProductCatalog();
+        const customersRes = hasCustomers
+          ? { success: true, data: customers }
+          : await getWholesaleCustomerList();
+        const shippingRes = hasShippingCompanies
+          ? { success: true, data: shippingCompanies }
+          : await getshipping();
 
         if (!hasProducts) {
           setProducts(productsData?.success ? (Array.isArray(productsData.data) ? productsData.data : []) : []);
@@ -104,7 +109,8 @@ export const useWholesaleOrderData = (user?: User) => {
       }
     })();
 
-    return supportingDataPromiseRef.current;
+    await supportingDataPromiseRef.current;
+    return true;
   };
 
   React.useEffect(() => {
