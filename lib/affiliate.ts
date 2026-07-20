@@ -49,6 +49,14 @@ export function resolveAffiliateCommissionConfig(
     };
   }
 
+  const normalizedLinkRate = Number(linkRate || 0);
+  if (normalizedLinkRate > 0) {
+    return {
+      mode: 'percentage' as AffiliateCommissionMode,
+      value: normalizedLinkRate,
+    };
+  }
+
   const normalizedProductRate = Number(productRate || 0);
   if (normalizedProductRate > 0) {
     return {
@@ -59,7 +67,7 @@ export function resolveAffiliateCommissionConfig(
 
   return {
     mode: 'percentage' as AffiliateCommissionMode,
-    value: Number(linkRate || 0),
+    value: normalizedProductRate,
   };
 }
 

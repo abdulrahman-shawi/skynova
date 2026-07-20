@@ -188,22 +188,18 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
     {
       group: "إعدادات النظام",
       items: [
-        {
-          icon: Settings,
-          label: "الإعدادات",
-          children: [
-            (user && isAdmin(user)) &&
-            { icon: Settings, label: "الإعدادات العامة", href: "/dashboard/settings" },
-            (user && isAdmin(user)) &&
-            { icon: MessageCircle, label: "التعليقات", href: "/dashboard/comments" },
-            (user && isAdmin(user)) &&
-            { icon: ImageIcon, label: "سلايدر الرئيسية", href: "/dashboard/hero-slides" },
-            (user && isAdmin(user)) &&
-            { icon: Ticket, label: "العروض", href: "/dashboard/offers" },
-            (user && isAdmin(user)) &&
-            { icon: BadgePercent, label: "خصومات العروض", href: "/dashboard/offer-discounts" },
-          ].filter(Boolean) as MenuItem[],
-        },
+        ...([
+          (user && isAdmin(user)) &&
+          { icon: Settings, label: "الإعدادات العامة", href: "/dashboard/settings" },
+          (user && isAdmin(user)) &&
+          { icon: MessageCircle, label: "التعليقات", href: "/dashboard/comments" },
+          (user && isAdmin(user)) &&
+          { icon: ImageIcon, label: "سلايدر الرئيسية", href: "/dashboard/hero-slides" },
+          (user && isAdmin(user)) &&
+          { icon: Ticket, label: "العروض", href: "/dashboard/offers" },
+          (user && isAdmin(user)) &&
+          { icon: BadgePercent, label: "خصومات العروض", href: "/dashboard/offer-discounts" },
+        ].filter(Boolean) as MenuItem[]),
         {
           icon: FileText,
           label: "صفحات الموقع",

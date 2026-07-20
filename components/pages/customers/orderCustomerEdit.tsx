@@ -237,6 +237,7 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
     }
     setMunicipality(initialData.municipality || "");
     setFullAddress(initialData.fullAddress || "");
+    setGoogleMapsLink(initialData.googleMapsLink || "");
     setPaymentMethod(initialData.paymentMethod || "عند الاستلام");
     setOverallDiscount(Number(initialData?.discount ?? initialData?.overallDiscount ?? 0));
     setStatus(initialData.status || "طلب جديد");
