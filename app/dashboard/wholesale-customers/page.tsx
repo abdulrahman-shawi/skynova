@@ -523,6 +523,8 @@ export default function WholesaleCustomersPage() {
   const [isOpenOrder, setisOpenOrder] = React.useState(false);
   const [wholesaleCustomerId, setWholesaleCustomerId] = React.useState<string>("");
   const [products, setProducts] = React.useState<any[]>([]);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = React.useState(false);
+  const [detailsCustomer, setDetailsCustomer] = React.useState<WholesaleCustomer | null>(null);
   const [customerForm, setCustomerForm] = React.useState<CustomerFormState>(createEmptyCustomerForm());
   const [visitForm, setVisitForm] = React.useState<VisitFormState>(createEmptyVisitForm());
   const [isPending, startTransition] = React.useTransition();
@@ -862,6 +864,16 @@ export default function WholesaleCustomersPage() {
     }
   }, [loadProducts]);
 
+  const openDetailsModal = (customer: WholesaleCustomer) => {
+    setDetailsCustomer(customer);
+    setIsDetailsModalOpen(true);
+  };
+
+  const closeDetailsModal = () => {
+    setIsDetailsModalOpen(false);
+    setDetailsCustomer(null);
+  };
+
   function openVisitModalForCustomerData(customer: Pick<WholesaleCustomer, "id" | "assignedUserId" | "nextFollowUpAt">) {
     setSelectedCustomerId(customer.id);
     setVisitForm({
@@ -1134,9 +1146,6 @@ export default function WholesaleCustomersPage() {
           <div className="flex flex-wrap gap-3">
             <Button variant="secondary" size="md" onClick={() => selectedCustomer && openVisitModal(selectedCustomer)} leftIcon={<ClipboardList className="h-4 w-4" />} disabled={!selectedCustomer}>
               تسجيل زيارة
-            </Button>
-            <Button variant="secondary" size="md" onClick={() => selectedCustomer && openWholesaleOrderModal(selectedCustomer.id)} leftIcon={<ShoppingBag className="h-4 w-4" />} disabled={!selectedCustomer}>
-              إضافة طلب
             </Button>
             <Button variant="primary" size="md" onClick={openCreateCustomerModal} leftIcon={<Plus className="h-4 w-4" />} className="bg-white text-blue-700 hover:bg-blue-50" disabled={!canAddWholesale}>
               إضافة عميل جديد

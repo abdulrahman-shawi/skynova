@@ -201,7 +201,6 @@ export default function WholesaleOrderCustomer({
 
   React.useEffect(() => {
     if (!isOpenOrder) {
-      resetForm();
       return;
     }
 
