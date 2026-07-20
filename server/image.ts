@@ -110,6 +110,24 @@ export async function saveProductWithFiles(formData: FormData) {
             }
         }
 
+        const wholesalePriceTiersRaw = formData.get('wholesalePriceTiers') as string | null;
+        let wholesalePriceTiers: Array<{ minQuantity: number; maxQuantity: number | null; price: number }> = [];
+
+        if (wholesalePriceTiersRaw) {
+            try {
+                const parsed = JSON.parse(wholesalePriceTiersRaw);
+                if (Array.isArray(parsed)) {
+                    wholesalePriceTiers = parsed.map((item: any) => ({
+                        minQuantity: Number(item?.minQuantity),
+                        maxQuantity: item?.maxQuantity === '' || item?.maxQuantity == null ? null : Number(item.maxQuantity),
+                        price: Number(item?.price ?? 0),
+                    }));
+                }
+            } catch {
+                return { success: false, error: "تنسيق بيانات شرائح أسعار الجملة غير صالح" };
+            }
+        }
+
         if (!warehouseStocks.length) {
             const warehouseId = parseInt(formData.get('warehouseId') as string);
             const quantity = parseInt(formData.get('quantity') as string) || 0;
@@ -128,6 +146,23 @@ export async function saveProductWithFiles(formData: FormData) {
 
         if (hasInvalidWarehouseStock) {
             return { success: false, error: "تحقق من بيانات المستودعات والكمية والسعر" };
+        }
+
+        const hasInvalidWholesaleTier = wholesalePriceTiers.some(
+            (item) => !Number.isInteger(item.minQuantity) || item.minQuantity < 1 || item.price < 0 || (item.maxQuantity != null && (!Number.isInteger(item.maxQuantity) || item.maxQuantity < item.minQuantity))
+        );
+
+        if (hasInvalidWholesaleTier) {
+            return { success: false, error: "تحقق من شرائح أسعار الجملة (الكمية والسعر)" };
+        }
+
+        const sortedTiers = [...wholesalePriceTiers].sort((a, b) => a.minQuantity - b.minQuantity);
+        for (let i = 1; i < sortedTiers.length; i += 1) {
+            const previous = sortedTiers[i - 1];
+            const current = sortedTiers[i];
+            if (previous.maxQuantity != null && current.minQuantity <= previous.maxQuantity) {
+                return { success: false, error: "شرائح أسعار الجملة متداخلة، يرجى مراجعة النطاقات" };
+            }
         }
 
         if (Number.isNaN(affiliatePrice) || affiliatePrice < 0) {
@@ -199,6 +234,13 @@ export async function saveProductWithFiles(formData: FormData) {
                         discount: item.stockDiscount,
                     }))
                 },
+                wholesalePriceTiers: {
+                    create: wholesalePriceTiers.map((item) => ({
+                        minQuantity: item.minQuantity,
+                        maxQuantity: item.maxQuantity,
+                        price: item.price,
+                    }))
+                },
                 images: {
                     create: fileDataArray.map(file => ({
                         url: file.url,
@@ -255,6 +297,24 @@ export async function updateProductWithFiles(productId: number, formData: FormDa
             }
         }
 
+        const wholesalePriceTiersRaw = formData.get('wholesalePriceTiers') as string | null;
+        let wholesalePriceTiers: Array<{ minQuantity: number; maxQuantity: number | null; price: number }> = [];
+
+        if (wholesalePriceTiersRaw) {
+            try {
+                const parsed = JSON.parse(wholesalePriceTiersRaw);
+                if (Array.isArray(parsed)) {
+                    wholesalePriceTiers = parsed.map((item: any) => ({
+                        minQuantity: Number(item?.minQuantity),
+                        maxQuantity: item?.maxQuantity === '' || item?.maxQuantity == null ? null : Number(item.maxQuantity),
+                        price: Number(item?.price ?? 0),
+                    }));
+                }
+            } catch {
+                return { success: false, error: "تنسيق بيانات شرائح أسعار الجملة غير صالح" };
+            }
+        }
+
         if (!warehouseStocks.length) {
             const warehouseId = parseInt(formData.get('warehouseId') as string);
             const quantity = parseInt(formData.get('quantity') as string) || 0;
@@ -273,6 +333,23 @@ export async function updateProductWithFiles(productId: number, formData: FormDa
 
         if (hasInvalidWarehouseStock) {
             return { success: false, error: "تحقق من بيانات المستودعات والكمية والسعر" };
+        }
+
+        const hasInvalidWholesaleTier = wholesalePriceTiers.some(
+            (item) => !Number.isInteger(item.minQuantity) || item.minQuantity < 1 || item.price < 0 || (item.maxQuantity != null && (!Number.isInteger(item.maxQuantity) || item.maxQuantity < item.minQuantity))
+        );
+
+        if (hasInvalidWholesaleTier) {
+            return { success: false, error: "تحقق من شرائح أسعار الجملة (الكمية والسعر)" };
+        }
+
+        const sortedTiers = [...wholesalePriceTiers].sort((a, b) => a.minQuantity - b.minQuantity);
+        for (let i = 1; i < sortedTiers.length; i += 1) {
+            const previous = sortedTiers[i - 1];
+            const current = sortedTiers[i];
+            if (previous.maxQuantity != null && current.minQuantity <= previous.maxQuantity) {
+                return { success: false, error: "شرائح أسعار الجملة متداخلة، يرجى مراجعة النطاقات" };
+            }
         }
 
         if (Number.isNaN(affiliatePrice) || affiliatePrice < 0) {
@@ -406,6 +483,14 @@ export async function updateProductWithFiles(productId: number, formData: FormDa
                         quantity: item.quantity,
                         price: item.stockPrice,
                         discount: item.stockDiscount,
+                    })),
+                },
+                wholesalePriceTiers: {
+                    deleteMany: {},
+                    create: wholesalePriceTiers.map((item) => ({
+                        minQuantity: item.minQuantity,
+                        maxQuantity: item.maxQuantity,
+                        price: item.price,
                     })),
                 },
                 images: {
