@@ -1312,18 +1312,14 @@ export default function WholesaleCustomersPage() {
                         <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">{formatDateLabel(customer.nextFollowUpAt)}</div>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex items-center justify-center gap-2">
                           <Button variant="outline" size="sm" onClick={() => openEditCustomerModal(customer)} leftIcon={<Pencil className="h-3.5 w-3.5" />} disabled={!canEditWholesale}>
-                            تعديل
                           </Button>
                           <Button variant="secondary" size="sm" onClick={() => openVisitModal(customer)} leftIcon={<Plus className="h-3.5 w-3.5" />} disabled={!canRegisterVisit}>
-                            زيارة
                           </Button>
                           <Button variant="secondary" size="sm" onClick={() => openWholesaleOrderModal(customer.id)} leftIcon={<ShoppingBag className="h-3.5 w-3.5" />}>
-                            طلب
                           </Button>
                           <Button variant="danger" size="sm" onClick={() => handleDeleteCustomer(customer)} leftIcon={<Trash2 className="h-3.5 w-3.5" />} disabled={!canDeleteWholesale}>
-                            حذف
                           </Button>
                         </div>
                       </td>
