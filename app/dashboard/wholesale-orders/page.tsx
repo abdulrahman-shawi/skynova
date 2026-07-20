@@ -12,7 +12,7 @@ import {
   updateWholesaleOrder,
   updateWholesaleOrderStatus,
 } from '@/server/wholesale-order';
-import { Download, Pencil, Plus, Trash } from 'lucide-react';
+import { Download, Pencil, Trash } from 'lucide-react';
 import * as React from 'react';
 import toast from 'react-hot-toast';
 import { TableAction } from '@/components/shared/DataTable';
@@ -391,12 +391,6 @@ export default function WholesaleOrdersPage() {
     XLSX.writeFile(workbook, `Skynova_Wholesale_Orders_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
-  const canManage = React.useMemo(() => {
-    if (!user) return false;
-    if (isAdmin(user)) return true;
-    return user?.permission?.addWholesaleCustomers || user?.permission?.editWholesaleCustomers || user?.permission?.deleteWholesaleCustomers;
-  }, [user]);
-
   const canDelete = React.useMemo(() => {
     if (!user) return false;
     if (isAdmin(user)) return true;
@@ -459,18 +453,6 @@ export default function WholesaleOrdersPage() {
           >
             <Download size={20} />
           </button>
-          {canManage && (
-            <button
-              onClick={() => {
-                resetForm();
-                setIsOpen(true);
-              }}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-200 dark:shadow-none"
-            >
-              <Plus size={20} />
-              طلب جملة جديد
-            </button>
-          )}
         </div>
       </div>
 
