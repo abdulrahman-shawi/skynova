@@ -34,6 +34,7 @@ type MenuGroup = {
   group: string;
   items: MenuItem[];
   collapsible?: boolean;
+  icon?: any;
 };
 
 export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean; setIsCollapsed: (val: boolean) => void }) => {
@@ -120,7 +121,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
 
   const isGroupExpanded = (group: MenuGroup) => {
     if (!group.collapsible) return true;
-    return expandedGroups[group.group] ?? false;
+    return expandedGroups[group.group] ?? group.items.some(isItemActive);
   };
 
   const toggleGroup = (groupName: string) => {
@@ -175,6 +176,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
     },
     {
       group: "المستخدمين و الأدوار",
+      icon: Users2,
       collapsible: true,
       items: [
         (user && hasAnyPermission(user, ["viewEmployees", "addEmployees", "editEmployees", "deleteEmployees"])) &&
@@ -278,21 +280,42 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
             {menuGroups.map((group, idx) => (
               <div key={idx} className="space-y-2">
                 {group.collapsible ? (
-                  <button
-                    type="button"
-                    onClick={() => toggleGroup(group.group)}
-                    className={`flex w-full items-center px-4 text-[11px] font-bold text-slate-400 transition-opacity duration-300 dark:text-slate-500 uppercase tracking-[2px] ${isCollapsed ? "md:opacity-0" : "opacity-100"}`}
-                  >
-                    <span>{group.group}</span>
-                    <ChevronDown size={14} className={`mr-auto transition-transform duration-300 ${isGroupExpanded(group) ? "rotate-180" : ""}`} />
-                  </button>
+                  group.icon ? (
+                    <button
+                      type="button"
+                      onClick={() => toggleGroup(group.group)}
+                      className={`
+                        relative flex w-full items-center gap-4 h-12 px-4 rounded-xl transition-all duration-300 group
+                        ${group.items.some(isItemActive)
+                          ? "bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300"
+                          : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900"}
+                      `}
+                    >
+                      <group.icon size={22} className="shrink-0" />
+                      <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isCollapsed ? "md:opacity-0 md:translate-x-10" : "opacity-100"}`}>
+                        {group.group}
+                      </span>
+                      {!isCollapsed && (
+                        <ChevronDown size={18} className={`mr-auto transition-transform duration-300 ${isGroupExpanded(group) ? "rotate-180" : ""}`} />
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => toggleGroup(group.group)}
+                      className={`flex w-full items-center px-4 text-[11px] font-bold text-slate-400 transition-opacity duration-300 dark:text-slate-500 uppercase tracking-[2px] ${isCollapsed ? "md:opacity-0" : "opacity-100"}`}
+                    >
+                      <span>{group.group}</span>
+                      <ChevronDown size={14} className={`mr-auto transition-transform duration-300 ${isGroupExpanded(group) ? "rotate-180" : ""}`} />
+                    </button>
+                  )
                 ) : (
                   <p className={`px-4 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[2px] transition-opacity duration-300 ${isCollapsed ? "md:opacity-0" : "opacity-100"}`}>
                     {group.group}
                   </p>
                 )}
                 
-                <div className={`space-y-1 ${group.collapsible && !isGroupExpanded(group) ? "hidden" : ""}`}>
+                <div className={`space-y-1 ${group.collapsible && !isGroupExpanded(group) ? "hidden" : ""} ${group.icon && !isCollapsed ? "mr-4 border-r border-slate-200 pr-3 dark:border-slate-800" : ""}`}>
                   {group.items.map((item) => {
                     const isActive = pathname === item.href;
                     const isExpanded = isItemExpanded(item);
