@@ -189,6 +189,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
     },
     {
       group: "إعدادات النظام",
+      icon: Settings2,
+      collapsible: true,
       items: [
         ...([
           (user && isAdmin(user)) &&
@@ -202,14 +204,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
           (user && isAdmin(user)) &&
           { icon: BadgePercent, label: "خصومات العروض", href: "/dashboard/offer-discounts" },
         ].filter(Boolean) as MenuItem[]),
-        {
-          icon: FileText,
-          label: "صفحات الموقع",
-          children: [
-            (user && hasAnyPermission(user, ["viewPages", "addPages", "editPages", "deletePages"])) &&
-            { icon: FileText, label: "الصفحات", href: "/dashboard/pages" },
-          ].filter(Boolean) as MenuItem[],
-        },
+        (user && hasAnyPermission(user, ["viewPages", "addPages", "editPages", "deletePages"])) &&
+        { icon: FileText, label: "الصفحات", href: "/dashboard/pages" },
         {
           icon: Ticket,
           label: "السفراء",
