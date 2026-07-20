@@ -14,6 +14,7 @@ import {
   Trash2,
   UserRound,
   ClipboardList,
+  ShoppingBag,
 } from "lucide-react";
 import { AppModal } from "@/components/ui/app-modal";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,8 @@ import {
   getWholesaleSalesReps,
   updateWholesaleCustomer,
 } from "@/server/wholesale-customer";
+import { getWholesaleProductCatalog } from "@/server/wholesale-order";
+import WholesaleOrderCustomer from "@/components/pages/wholesale-customers/wholesaleOrderCustomer";
 
 type SalesRep = {
   id: string;
@@ -517,6 +520,9 @@ export default function WholesaleCustomersPage() {
   const [isCustomerModalOpen, setIsCustomerModalOpen] = React.useState(false);
   const [isVisitModalOpen, setIsVisitModalOpen] = React.useState(false);
   const [editingCustomerId, setEditingCustomerId] = React.useState<string | null>(null);
+  const [isOpenOrder, setisOpenOrder] = React.useState(false);
+  const [wholesaleCustomerId, setWholesaleCustomerId] = React.useState<string>("");
+  const [products, setProducts] = React.useState<any[]>([]);
   const [customerForm, setCustomerForm] = React.useState<CustomerFormState>(createEmptyCustomerForm());
   const [visitForm, setVisitForm] = React.useState<VisitFormState>(createEmptyVisitForm());
   const [isPending, startTransition] = React.useTransition();
@@ -831,6 +837,31 @@ export default function WholesaleCustomersPage() {
     setIsVisitModalOpen(true);
   }
 
+  const loadProducts = React.useCallback(async () => {
+    try {
+      const res = await getWholesaleProductCatalog();
+      if (res.success) {
+        setProducts(Array.isArray(res.data) ? res.data : []);
+      } else {
+        toast.error(res.error || "تعذر تحميل المنتجات");
+      }
+    } catch (error) {
+      console.error("Error loading wholesale products:", error);
+      toast.error("تعذر تحميل المنتجات");
+    }
+  }, []);
+
+  const openWholesaleOrderModal = React.useCallback(async (customerId: string) => {
+    const loadingToast = toast.loading("جاري تحميل المنتجات...");
+    try {
+      await loadProducts();
+      setWholesaleCustomerId(customerId);
+      setisOpenOrder(true);
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  }, [loadProducts]);
+
   function openVisitModalForCustomerData(customer: Pick<WholesaleCustomer, "id" | "assignedUserId" | "nextFollowUpAt">) {
     setSelectedCustomerId(customer.id);
     setVisitForm({
@@ -1104,6 +1135,9 @@ export default function WholesaleCustomersPage() {
             <Button variant="secondary" size="md" onClick={() => selectedCustomer && openVisitModal(selectedCustomer)} leftIcon={<ClipboardList className="h-4 w-4" />} disabled={!selectedCustomer}>
               تسجيل زيارة
             </Button>
+            <Button variant="secondary" size="md" onClick={() => selectedCustomer && openWholesaleOrderModal(selectedCustomer.id)} leftIcon={<ShoppingBag className="h-4 w-4" />} disabled={!selectedCustomer}>
+              إضافة طلب
+            </Button>
             <Button variant="primary" size="md" onClick={openCreateCustomerModal} leftIcon={<Plus className="h-4 w-4" />} className="bg-white text-blue-700 hover:bg-blue-50" disabled={!canAddWholesale}>
               إضافة عميل جديد
             </Button>
@@ -1276,6 +1310,9 @@ export default function WholesaleCustomersPage() {
                           <Button variant="secondary" size="sm" onClick={() => openVisitModal(customer)} leftIcon={<Plus className="h-3.5 w-3.5" />} disabled={!canRegisterVisit}>
                             زيارة
                           </Button>
+                          <Button variant="secondary" size="sm" onClick={() => openWholesaleOrderModal(customer.id)} leftIcon={<ShoppingBag className="h-3.5 w-3.5" />}>
+                            طلب
+                          </Button>
                           <Button variant="danger" size="sm" onClick={() => handleDeleteCustomer(customer)} leftIcon={<Trash2 className="h-3.5 w-3.5" />} disabled={!canDeleteWholesale}>
                             حذف
                           </Button>
@@ -1325,9 +1362,14 @@ export default function WholesaleCustomersPage() {
 
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">سجل الزيارات</h3>
-                <Button variant="outline" size="sm" onClick={() => openVisitModal(selectedCustomer)} leftIcon={<Plus className="h-3.5 w-3.5" />} disabled={!canRegisterVisit}>
-                  إضافة زيارة
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => openWholesaleOrderModal(selectedCustomer.id)} leftIcon={<ShoppingBag className="h-3.5 w-3.5" />}>
+                    إضافة طلب
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => openVisitModal(selectedCustomer)} leftIcon={<Plus className="h-3.5 w-3.5" />} disabled={!canRegisterVisit}>
+                    إضافة زيارة
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-3">
@@ -1716,6 +1758,16 @@ export default function WholesaleCustomersPage() {
           )}
         </div>
       </AppModal>
+
+      <WholesaleOrderCustomer
+        customers={customers}
+        wholesaleCustomerId={wholesaleCustomerId}
+        products={products}
+        isOpenOrder={isOpenOrder}
+        setisOpenOrder={setisOpenOrder}
+        setWholesaleCustomerId={setWholesaleCustomerId}
+        getData={loadData}
+      />
 
       <style jsx>{`
         .field-input {
