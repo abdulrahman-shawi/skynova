@@ -130,7 +130,7 @@ export default function WholesaleOrderCustomer({
     if (tier) {
       return {
         price: convertUsdToOrderCurrency(Number(tier?.price || 0)),
-        discount: convertUsdToOrderCurrency(Number(matchedStock?.discount || 0)),
+        discount: 0,
         wholesalePriceTierId: tier?.id ?? null,
       };
     }
