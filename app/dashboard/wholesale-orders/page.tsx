@@ -70,6 +70,27 @@ export default function WholesaleOrdersPage() {
   const [searchQueries, setSearchQueries] = React.useState<Record<number, string>>({});
   const [showDropdown, setShowDropdown] = React.useState<Record<number, boolean>>({});
 
+  // إعادة حساب أسعار البنود التي ليس لها شريحة سعرية عند تغيير بلد المخزون
+  React.useEffect(() => {
+    if (!stockCountry) return;
+
+    setItems((currentItems) => {
+      if (currentItems.length === 0) return currentItems;
+      const needsUpdate = currentItems.some((item) => item.productId && !item.wholesalePriceTierId);
+      if (!needsUpdate) return currentItems;
+
+      return currentItems.map((item) => {
+        if (!item.productId) return item;
+        const pricing = resolveItemPricing(item.productId, item.quantity, stockCountry);
+        if (item.wholesalePriceTierId) {
+          return { ...item, discount: pricing.discount };
+        }
+        return { ...item, price: pricing.price, discount: pricing.discount };
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stockCountry]);
+
   const subTotal = items.reduce((sum, i) => sum + i.total, 0);
   const grandTotal = subTotal - overallDiscount;
   const remainingAmount = Math.max(0, Number(grandTotal) - Number(amount || 0));
@@ -78,10 +99,25 @@ export default function WholesaleOrdersPage() {
     return products.find((p) => Number(p.id) === Number(productId));
   };
 
-  const resolveTierForItem = (productId: string | number, quantity: number) => {
+  const getStockForCountry = (productId: string | number, country: string) => {
     const product = getProductById(productId);
-    if (!product) return null;
-    return getApplicableWholesalePriceTier(product.wholesalePriceTiers || [], quantity);
+    if (!product || !Array.isArray(product.stocks)) return null;
+    return product.stocks.find((stock: any) => String(stock?.warehouse?.location || '') === country) || null;
+  };
+
+  const resolveItemPricing = (productId: string | number, quantity: number, country: string) => {
+    const product = getProductById(productId);
+    if (!product) {
+      return { price: 0, discount: 0, wholesalePriceTierId: "" };
+    }
+
+    const tier = getApplicableWholesalePriceTier(product.wholesalePriceTiers || [], quantity);
+    if (tier) {
+      return { price: Number(tier.price), discount: 0, wholesalePriceTierId: String(tier.id) };
+    }
+
+    const stock = getStockForCountry(productId, country);
+    return { price: Number(stock?.price || 0), discount: Number(stock?.discount || 0), wholesalePriceTierId: "" };
   };
 
   const updateItem = async (index: number, field: string, value: any) => {
@@ -90,23 +126,21 @@ export default function WholesaleOrdersPage() {
 
     if (field === "productId") {
       const product = getProductById(value);
-      const firstStock = Array.isArray(product?.stocks) ? product.stocks[0] : null;
       item.productId = value;
       item.name = product?.name || "";
-      const tier = resolveTierForItem(value, item.quantity);
-      item.wholesalePriceTierId = tier ? String(tier.id) : "";
-      item.price = tier ? Number(tier.price) : Number(firstStock?.price || 0);
-      item.discount = Number(firstStock?.discount || 0);
+      const pricing = resolveItemPricing(value, item.quantity, stockCountry);
+      item.wholesalePriceTierId = pricing.wholesalePriceTierId;
+      item.price = pricing.price;
+      item.discount = pricing.discount;
       setSearchQueries({ ...searchQueries, [index]: item.name });
       setShowDropdown({ ...showDropdown, [index]: false });
     } else if (field === "quantity") {
       item.quantity = Number(value || 1);
       if (item.productId) {
-        const tier = resolveTierForItem(item.productId, item.quantity);
-        if (tier) {
-          item.wholesalePriceTierId = String(tier.id);
-          item.price = Number(tier.price);
-        }
+        const pricing = resolveItemPricing(item.productId, item.quantity, stockCountry);
+        item.wholesalePriceTierId = pricing.wholesalePriceTierId;
+        item.price = pricing.price;
+        item.discount = pricing.discount;
       }
     } else {
       (item as any)[field] = value;
