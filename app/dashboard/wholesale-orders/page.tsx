@@ -12,7 +12,7 @@ import {
   updateWholesaleOrder,
   updateWholesaleOrderStatus,
 } from '@/server/wholesale-order';
-import { Download, Pencil, Trash } from 'lucide-react';
+import { Download, Eye, Pencil, Trash } from 'lucide-react';
 import * as React from 'react';
 import toast from 'react-hot-toast';
 import { TableAction } from '@/components/shared/DataTable';
@@ -27,6 +27,8 @@ import {
   getWholesaleDisplayDate,
   getApplicableWholesalePriceTier,
 } from '@/wholesale-orders/wholesaleHelpers';
+import ViewWholesaleOrder from '@/wholesale-orders/ViewWholesaleOrder';
+import { shareWholesaleOrderPdfToCustomerWhatsApp } from '@/wholesale-orders/wholesaleOrderPdf';
 
 export default function WholesaleOrdersPage() {
   const { user } = useAuth();
@@ -43,6 +45,8 @@ export default function WholesaleOrdersPage() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [editId, setEditId] = React.useState<string | number | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isViewOpen, setIsViewOpen] = React.useState(false);
+  const [viewOrder, setViewOrder] = React.useState<any>(null);
 
   const [status, setStatus] = React.useState("طلب جديد");
   const [wholesaleCustomerId, setWholesaleCustomerId] = React.useState("");
@@ -163,8 +167,8 @@ export default function WholesaleOrdersPage() {
     }
   };
 
-  const loadOrderDetails = async (orderId: string | number) => {
-    const loadingToast = toast.loading("جاري تحميل تفاصيل الطلب...");
+  const loadOrderDetails = async (orderId: string | number, loadingMessage = "جاري تحميل تفاصيل الطلب...") => {
+    const loadingToast = toast.loading(loadingMessage);
     try {
       const response = await getWholesaleOrderById(orderId);
       if (!response?.success || !response.data) {
@@ -433,9 +437,28 @@ export default function WholesaleOrdersPage() {
 
   const tableActions: TableAction<any>[] = [
     {
+      label: "عرض",
+      icon: <Eye size={14} />,
+      onClick: async (data: any) => {
+        const details = await loadOrderDetails(data.id, "جاري تحميل تفاصيل الطلب...");
+        if (!details) return;
+        setViewOrder(details);
+        setIsViewOpen(true);
+      },
+    },
+    {
       label: "تعديل",
       icon: <Pencil size={14} />,
       onClick: (data: any) => handleEditOrder(data),
+    },
+    {
+      label: "مشاركة PDF",
+      icon: <Download size={14} />,
+      onClick: async (data: any) => {
+        const details = await loadOrderDetails(data.id, "جاري تجهيز ملف الطلب...");
+        if (!details) return;
+        await shareWholesaleOrderPdfToCustomerWhatsApp(details);
+      },
     },
     canDelete && {
       label: "حذف",
@@ -867,6 +890,9 @@ export default function WholesaleOrdersPage() {
             </Button>
           </div>
         </div>
+      </AppModal>
+      <AppModal size='full' isOpen={isViewOpen} onClose={() => setIsViewOpen(false)} title='تفاصيل فاتورة الجملة'>
+        <ViewWholesaleOrder data={viewOrder} products={products} />
       </AppModal>
     </div>
   );
