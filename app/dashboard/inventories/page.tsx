@@ -161,8 +161,8 @@ const CategoriesLayout: React.FunctionComponent<ICategoriesLayoutProps> = () => 
 
     React.useEffect(() => { setPage(1); }, [activeTab]);
 
-    const detailCounts = React.useMemo(() => {
-        if (!details) return {};
+    const detailCounts = React.useMemo<Record<string, number>>(() => {
+        if (!details) return {} as Record<string, number>;
         return {
             products: details.stocks?.length || 0,
             orders: details.orders?.length || 0,
