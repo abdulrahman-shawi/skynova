@@ -59,3 +59,67 @@ export const deleteWarehouse = async (id: string) => {
         return { success: false, error: "فشل في حذف المستودع، قد يكون مرتبطًا بسجلات أخرى" };
     }   
 }
+
+export const getWarehouseDetails = async (id: number) => {
+    try {
+        const warehouse = await prisma.warehouse.findUnique({
+            where: { id: Number(id) },
+            include: {
+                stocks: {
+                    orderBy: { id: 'desc' },
+                    include: {
+                        product: {
+                            select: { id: true, name: true, description: true }
+                        },
+                    },
+                },
+                orders: {
+                    orderBy: { createdAt: 'desc' },
+                    include: {
+                        customer: { select: { id: true, name: true } },
+                        items: {
+                            include: {
+                                product: { select: { id: true, name: true } }
+                            }
+                        },
+                    },
+                },
+                wholesaleOrders: {
+                    orderBy: { createdAt: 'desc' },
+                    include: {
+                        wholesaleCustomer: { select: { id: true, name: true } },
+                        items: {
+                            include: {
+                                product: { select: { id: true, name: true } }
+                            }
+                        },
+                    },
+                },
+                movements: {
+                    orderBy: { createdAt: 'desc' },
+                    include: {
+                        product: { select: { id: true, name: true } },
+                        user: { select: { id: true, username: true } },
+                    },
+                },
+                warranties: {
+                    orderBy: { createdAt: 'desc' },
+                    include: {
+                        product: { select: { id: true, name: true } },
+                        customer: { select: { id: true, name: true } },
+                        order: { select: { id: true, orderNumber: true } },
+                    },
+                },
+            },
+        });
+
+        if (!warehouse) {
+            return { success: false, error: "المستودع غير موجود" };
+        }
+
+        return { success: true, data: JSON.parse(JSON.stringify(warehouse)) };
+    } catch (error: any) {
+        console.error("Prisma Error:", error);
+        return { success: false, error: "فشل في جلب تفاصيل المستودع" };
+    }
+}
