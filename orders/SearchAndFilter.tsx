@@ -2,6 +2,11 @@ import React from 'react';
 import { Search, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+interface WarehouseOption {
+  id: string | number;
+  name: string;
+}
+
 interface SearchAndFilterProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
@@ -14,7 +19,7 @@ interface SearchAndFilterProps {
   onMonthFilterChange: (type: string) => void;
   customMonth: string;
   onCustomMonthChange: (month: string) => void;
-  warehouseOptions?: string[];
+  warehouseOptions?: WarehouseOption[];
   onExport?: () => void;
   onImport?: () => void;
   isExporting?: boolean;
@@ -59,9 +64,9 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
           className="w-full md:w-48 p-2 border border-gray-300 dark:border-gray-950 rounded-lg text-sm bg-white dark:bg-slate-950 dark:text-slate-100"
         >
           <option value="">كل المستودعات</option>
-          {warehouseOptions.map((location) => (
-            <option key={location} value={location}>
-              {location}
+          {warehouseOptions.map((warehouse) => (
+            <option key={warehouse.id} value={String(warehouse.id)}>
+              {warehouse.name}
             </option>
           ))}
         </select>

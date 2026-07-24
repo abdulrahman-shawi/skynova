@@ -13,7 +13,7 @@ import PhoneInput from 'react-phone-number-input'
 // سعر صرف الدولار مقابل الليرة التركية (يتم تحديثه من المستخدم عند اختيار تركيا)
 const DEFAULT_TURKEY_EXCHANGE_RATE = 44;
 
-export default function OrderCustomer({ customers, customerId, products, isOpenOrder, setEditId, setCustomerId, setisOpenOrder, editId, getData }: { customers: any, customerId: any, products: any, isOpenOrder: any, setEditId: any, setCustomerId: any, setisOpenOrder: any, editId: any, getData: any }) {
+export default function OrderCustomer({ customers, customerId, products, warehouses, isOpenOrder, setEditId, setCustomerId, setisOpenOrder, editId, getData }: { customers: any, customerId: any, products: any, warehouses: any[], isOpenOrder: any, setEditId: any, setCustomerId: any, setisOpenOrder: any, editId: any, getData: any }) {
   // ...existing code...
   const [items, setItems] = React.useState([
     { productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "" }
@@ -64,7 +64,7 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
   // بيانات المستلم والعنوان
   const [receiverName, setReceiverName] = React.useState("");
   const [receiverPhone, setReceiverPhone] = React.useState<(string | undefined)[]>([""]);
-  const [stockCountry, setStockCountry] = React.useState<"سوريا" | "تركيا" | "">("");
+  const [warehouseId, setWarehouseId] = React.useState<string>("");
   const [country, setCountry] = React.useState("");
   const [city, setCity] = React.useState("");
     const countries = [
@@ -172,7 +172,8 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
   const [showDropdown, setShowDropdown] = React.useState<Record<number, boolean>>({});
   const { user } = useAuth()
 
-  const isTurkeyStock = stockCountry === "تركيا";
+  const selectedWarehouse = warehouses.find((w: any) => String(w.id) === warehouseId);
+  const isTurkeyStock = selectedWarehouse?.location === "تركيا";
   const currencySymbol = isTurkeyStock ? "₺" : "$";
   // استخدم سعر الصرف المدخل بدل الثابت
   const convertUsdToOrderCurrency = (value: number) => {
@@ -180,20 +181,20 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
     return isTurkeyStock ? normalized * turkeyExchangeRate : normalized;
   };
 
-  const getProductAvailableStockByCountry = (product: any, selectedCountry: string) => {
-    if (!Array.isArray(product?.stocks)) return 0;
+  const getProductAvailableStockByWarehouse = (product: any, selectedWarehouseId: string) => {
+    if (!Array.isArray(product?.stocks) || !selectedWarehouseId) return 0;
     return product.stocks
-      .filter((stock: any) => String(stock?.warehouse?.location || "") === selectedCountry)
+      .filter((stock: any) => String(stock?.warehouseId) === selectedWarehouseId || String(stock?.warehouse?.id) === selectedWarehouseId)
       .reduce((sum: number, stock: any) => sum + (Number(stock?.quantity) || 0), 0);
   };
 
-  const getProductPricingByCountry = (product: any, selectedCountry: string) => {
-    if (!Array.isArray(product?.stocks) || !selectedCountry) {
+  const getProductPricingByWarehouse = (product: any, selectedWarehouseId: string) => {
+    if (!Array.isArray(product?.stocks) || !selectedWarehouseId) {
       return { price: 0, discount: 0 };
     }
 
     const matchedStock = product.stocks.find((stock: any) =>
-      String(stock?.warehouse?.location || "") === selectedCountry && Number(stock?.quantity || 0) > 0
+      (String(stock?.warehouseId) === selectedWarehouseId || String(stock?.warehouse?.id) === selectedWarehouseId) && Number(stock?.quantity || 0) > 0
     );
 
     if (!matchedStock) {
@@ -227,7 +228,7 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
 
     if (field === "productId") {
       const product = products.find(p => p.id === Number(value));
-      const pricing = getProductPricingByCountry(product, stockCountry);
+      const pricing = getProductPricingByWarehouse(product, warehouseId);
       item.productId = value;
       item.name = product?.name || "";
       item.modelNumber = product?.modelNumber || "";
@@ -273,7 +274,7 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
     // إعادة بيانات المستلم والعنوان
     setReceiverName("");
     setReceiverPhone([""]);
-    setStockCountry("");
+    setWarehouseId("");
     setCountry("");
     setCity("");
     setMunicipality("");
@@ -300,8 +301,8 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
       return;
     }
 
-    if (!stockCountry) {
-      toast.error("يرجى اختيار بلد المخزون (سوريا أو تركيا)");
+    if (!warehouseId) {
+      toast.error("يرجى اختيار المستودع");
       return;
     }
 
@@ -348,8 +349,9 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
       status,
       receiverName,
       receiverPhone,
-      stockCountry,
-      usdToTryRateAtOrder: stockCountry === "تركيا" ? Number(turkeyExchangeRate) : null,
+      stockCountry: selectedWarehouse?.location || "",
+      warehouseId: selectedWarehouse?.id,
+      usdToTryRateAtOrder: selectedWarehouse?.location === "تركيا" ? Number(turkeyExchangeRate) : null,
       country,
       city,
       municipality,
@@ -452,24 +454,27 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-slate-500 mr-2">بلد المخزون</label>
+                <label className="text-xs font-bold text-slate-500 mr-2">المستودع</label>
                 <select
-                  value={stockCountry}
+                  value={warehouseId}
                   onChange={(e) => {
-                    setStockCountry(e.target.value as "سوريا" | "تركيا" | "");
+                    setWarehouseId(e.target.value);
                     setItems([{ productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "" }]);
                     setSearchQueries({});
                     setShowDropdown({});
                   }}
                   className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold"
                 >
-                  <option value="">اختر بلد المخزون</option>
-                  <option value="سوريا">سوريا</option>
-                  <option value="تركيا">تركيا</option>
+                  <option value="">اختر المستودع</option>
+                  {warehouses.map((warehouse: any) => (
+                    <option key={warehouse.id} value={String(warehouse.id)}>
+                      {warehouse.name} - {warehouse.location}
+                    </option>
+                  ))}
                 </select>
               </div>
-              {/* حقل سعر الصرف يظهر فقط إذا البلد تركيا */}
-              {stockCountry === "تركيا" && (
+              {/* حقل سعر الصرف يظهر فقط إذا المستودع في تركيا */}
+              {selectedWarehouse?.location === "تركيا" && (
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-slate-500 mr-2">سعر صرف الدولار مقابل الليرة التركية</label>
                   <input
@@ -503,10 +508,10 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
                     {showDropdown[index] && (
                       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute z-[210] w-full mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-48 overflow-y-auto">
                         {products?.filter((p: any) => {
-                          const currentStock = stockCountry ? getProductAvailableStockByCountry(p, stockCountry) : 0;
+                          const currentStock = warehouseId ? getProductAvailableStockByWarehouse(p, warehouseId) : 0;
                           const isAvailable = currentStock > 0;
-                          const matchesCountry = stockCountry
-                            ? Array.isArray(p?.stocks) && p.stocks.some((s: any) => String(s?.warehouse?.location || "") === stockCountry)
+                          const matchesWarehouse = warehouseId
+                            ? Array.isArray(p?.stocks) && p.stocks.some((s: any) => String(s?.warehouseId) === warehouseId || String(s?.warehouse?.id) === warehouseId)
                             : false;
 
                           // شرط البحث (الاسم أو الموديل)
@@ -515,10 +520,10 @@ export default function OrderCustomer({ customers, customerId, products, isOpenO
                             String(p?.name || "").toLowerCase().includes(query) ||
                             String(p?.modelNumber || "").toLowerCase().includes(query);
 
-                          return isAvailable && matchesSearch && matchesCountry;
+                          return isAvailable && matchesSearch && matchesWarehouse;
                         }
                         ).map((product: any) => {
-                          const pricing = getProductPricingByCountry(product, stockCountry);
+                          const pricing = getProductPricingByWarehouse(product, warehouseId);
                           return (
                           <div
                             key={product.id}

@@ -29,6 +29,7 @@ import {
   updateWholesaleCustomer,
 } from "@/server/wholesale-customer";
 import { getWholesaleProductCatalog } from "@/server/wholesale-order";
+import { getWarehouse } from "@/server/warehouse";
 import WholesaleOrderCustomer from "@/components/pages/wholesale-customers/wholesaleOrderCustomer";
 
 type SalesRep = {
@@ -523,6 +524,7 @@ export default function WholesaleCustomersPage() {
   const [isOpenOrder, setisOpenOrder] = React.useState(false);
   const [wholesaleCustomerId, setWholesaleCustomerId] = React.useState<string>("");
   const [products, setProducts] = React.useState<any[]>([]);
+  const [warehouses, setWarehouses] = React.useState<any[]>([]);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = React.useState(false);
   const [detailsCustomer, setDetailsCustomer] = React.useState<WholesaleCustomer | null>(null);
   const [customerForm, setCustomerForm] = React.useState<CustomerFormState>(createEmptyCustomerForm());
@@ -853,16 +855,26 @@ export default function WholesaleCustomersPage() {
     }
   }, []);
 
+  const loadWarehouses = React.useCallback(async () => {
+    try {
+      const data = await getWarehouse();
+      setWarehouses(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error loading warehouses:", error);
+      toast.error("تعذر تحميل المستودعات");
+    }
+  }, []);
+
   const openWholesaleOrderModal = React.useCallback(async (customerId: string) => {
     const loadingToast = toast.loading("جاري تحميل المنتجات...");
     try {
-      await loadProducts();
+      await Promise.all([loadProducts(), loadWarehouses()]);
       setWholesaleCustomerId(customerId);
       setisOpenOrder(true);
     } finally {
       toast.dismiss(loadingToast);
     }
-  }, [loadProducts]);
+  }, [loadProducts, loadWarehouses]);
 
   const openDetailsModal = (customer: WholesaleCustomer) => {
     setDetailsCustomer(customer);
@@ -1748,6 +1760,7 @@ export default function WholesaleCustomersPage() {
         customers={customers}
         wholesaleCustomerId={wholesaleCustomerId}
         products={products}
+        warehouses={warehouses}
         isOpenOrder={isOpenOrder}
         setisOpenOrder={setisOpenOrder}
         setWholesaleCustomerId={setWholesaleCustomerId}

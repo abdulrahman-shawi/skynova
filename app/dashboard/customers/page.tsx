@@ -13,6 +13,7 @@ import { formatPhoneForDisplay, hasPermission, isAdmin } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { getProductCatalog } from "@/server/product";
 import { getOrdersByUser } from "@/server/order";
+import { getWarehouse } from "@/server/warehouse";
 import { Controller, useFieldArray } from "react-hook-form";
 import ViewOrderCustomer from "@/components/pages/customers/viewOrder";
 import AssignUserModal from "@/components/pages/customers/assignuser";
@@ -102,10 +103,12 @@ const CustomrLayout: React.FC = () => {
   const [createdTo, setCreatedTo] = React.useState("");
   const [alluser, setUsers] = React.useState<any[]>([])
   const [products, setProduct] = React.useState<any[]>([])
+  const [warehouses, setWarehouses] = React.useState<any[]>([])
   const importInputRef = React.useRef<HTMLInputElement | null>(null);
   const { user, loading } = useAuth()
   const usersLoadPromiseRef = React.useRef<Promise<any[]> | null>(null);
   const productsLoadPromiseRef = React.useRef<Promise<any[]> | null>(null);
+  const warehousesLoadPromiseRef = React.useRef<Promise<any[]> | null>(null);
   const customerDetailsRequestRef = React.useRef(0);
 
   const filterCustomer = useCustomerFilters(customers, search, dateFilter, genderFilter, createdPreset, createdFrom, createdTo);
@@ -220,6 +223,33 @@ const CustomrLayout: React.FC = () => {
     }
   }, [products]);
 
+  const loadWarehouses = React.useCallback(async () => {
+    if (warehouses.length > 0) {
+      return warehouses;
+    }
+
+    if (warehousesLoadPromiseRef.current) {
+      return warehousesLoadPromiseRef.current;
+    }
+
+    try {
+      warehousesLoadPromiseRef.current = getWarehouse()
+        .then((data) => {
+          const nextWarehouses = Array.isArray(data) ? data : [];
+          setWarehouses(nextWarehouses);
+          return nextWarehouses;
+        })
+        .finally(() => {
+          warehousesLoadPromiseRef.current = null;
+        });
+
+      return await warehousesLoadPromiseRef.current;
+    } catch (error) {
+      warehousesLoadPromiseRef.current = null;
+      return [];
+    }
+  }, [warehouses]);
+
   const openAssignModal = React.useCallback(async (selectedCustomer: any) => {
     setCustomer(selectedCustomer);
     const loadingToast = toast.loading("جاري تحميل المستخدمين...");
@@ -247,13 +277,13 @@ const CustomrLayout: React.FC = () => {
     const loadingToast = toast.loading("جاري تحميل المنتجات...");
 
     try {
-      await loadProducts();
+      await Promise.all([loadProducts(), loadWarehouses()]);
       setCustomerId(selectedCustomerId);
       setisOpenOrder(true);
     } finally {
       toast.dismiss(loadingToast);
     }
-  }, [loadProducts]);
+  }, [loadProducts, loadWarehouses]);
 
   const { handleBulkAssignUsers, handleBulkDelete } = useCustomerBulkActions({
     selectedCustomers,
@@ -1315,7 +1345,7 @@ const CustomrLayout: React.FC = () => {
 
       <OrderCustomer customerId={customerId} customers={customers}
        editId={editId} getData={getData}
-        isOpenOrder={isOpenOrder} products={products}
+        isOpenOrder={isOpenOrder} products={products} warehouses={warehouses}
       setEditId={setEditId} setCustomerId={setCustomerId} setisOpenOrder={setisOpenOrder} />
 
 

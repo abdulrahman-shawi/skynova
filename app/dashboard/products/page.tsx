@@ -390,26 +390,25 @@ const ProductLayout = () => {
 
     }, []);
 
-    const locationOptions = React.useMemo(() => {
-        const visibleLocations = products.flatMap((product: any) => {
-            const stocks = Array.isArray(product?.stocks) ? product.stocks : [];
-            return stocks
-                .map((stock: any) => String(stock?.warehouse?.location || '').trim())
-                .filter((location: string) => location.length > 0 && hasLocationAccess(location));
-        });
-
-        return Array.from(new Set(visibleLocations));
-    }, [products, hasLocationAccess]);
+    const warehouseOptions = React.useMemo(() => {
+        return warehouses
+            .filter((warehouse: any) => hasLocationAccess(String(warehouse?.location || '').trim()))
+            .map((warehouse: any) => ({
+                id: String(warehouse.id),
+                name: String(warehouse.name || '').trim(),
+                location: String(warehouse.location || '').trim(),
+            }));
+    }, [warehouses, hasLocationAccess]);
 
     const visibleWarehouses = React.useMemo(() => {
         return warehouses.filter((warehouse: any) => hasLocationAccess(String(warehouse?.location || '').trim()));
     }, [warehouses, hasLocationAccess]);
 
     React.useEffect(() => {
-        if (selectedWarehouseFilter !== 'all' && !locationOptions.includes(selectedWarehouseFilter)) {
+        if (selectedWarehouseFilter !== 'all' && !warehouseOptions.some((w: any) => w.id === selectedWarehouseFilter)) {
             setSelectedWarehouseFilter('all');
         }
-    }, [selectedWarehouseFilter, locationOptions]);
+    }, [selectedWarehouseFilter, warehouseOptions]);
 
     const handleClose = () => {
         setIsOpen(false);
@@ -594,17 +593,18 @@ const ProductLayout = () => {
             return stocks
                 .filter((stock: any) => {
                     const stockLocation = String(stock?.warehouse?.location || '').trim();
+                    const warehouseId = String(stock?.warehouseId || stock?.warehouse?.id || '').trim();
 
                     if (!hasLocationAccess(stockLocation)) {
                         return false;
                     }
 
-                    return selectedWarehouseFilter === 'all' || stockLocation === selectedWarehouseFilter;
+                    return selectedWarehouseFilter === 'all' || warehouseId === selectedWarehouseFilter;
                 })
                 .map((stock: any) => ({
                     ...product,
                     __stock: stock,
-                    __rowId: `${product.id}-${stock.warehouseId}`,
+                    __rowId: `${product.id}-${stock.warehouseId || stock.warehouse?.id}`,
                 }));
         });
     }, [products, selectedWarehouseFilter, nameFilter, categoryFilter, hasLocationAccess]);
@@ -750,8 +750,8 @@ const ProductLayout = () => {
                         className="h-10 w-full border rounded-md px-3 bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                     >
                         <option value="all">كل المستودعات</option>
-                        {locationOptions.map((location) => (
-                            <option key={location} value={location}>{location}</option>
+                        {warehouseOptions.map((warehouse) => (
+                            <option key={warehouse.id} value={warehouse.id}>{warehouse.name}</option>
                         ))}
                     </select>
                 </div>

@@ -5,6 +5,7 @@ import {
   getWholesaleProductCatalog,
 } from '@/server/wholesale-order';
 import { getshipping } from '@/server/shipping';
+import { getWarehouse } from '@/server/warehouse';
 
 interface User {
   id: string;
@@ -17,6 +18,7 @@ export const useWholesaleOrderData = (user?: User) => {
   const [customers, setCustomers] = React.useState<any[]>([]);
   const [orders, setOrders] = React.useState<any[]>([]);
   const [shippingCompanies, setShippingCompanies] = React.useState<any[]>([]);
+  const [warehouses, setWarehouses] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSupportingDataLoading, setIsSupportingDataLoading] = React.useState(false);
   const supportingDataPromiseRef = React.useRef<Promise<void> | null>(null);
@@ -55,6 +57,15 @@ export const useWholesaleOrderData = (user?: User) => {
     }
   };
 
+  const refreshWarehouses = async () => {
+    try {
+      const warehousesRes = await getWarehouse();
+      setWarehouses(Array.isArray(warehousesRes) ? warehousesRes : []);
+    } catch (error) {
+      console.error("Error refreshing warehouses:", error);
+    }
+  };
+
   const refreshProducts = async () => {
     try {
       const productsRes = await getWholesaleProductCatalog();
@@ -68,8 +79,9 @@ export const useWholesaleOrderData = (user?: User) => {
     const hasProducts = products.length > 0;
     const hasCustomers = customers.length > 0;
     const hasShippingCompanies = shippingCompanies.length > 0;
+    const hasWarehouses = warehouses.length > 0;
 
-    if (hasProducts && hasCustomers && hasShippingCompanies) {
+    if (hasProducts && hasCustomers && hasShippingCompanies && hasWarehouses) {
       return true;
     }
 
@@ -91,6 +103,9 @@ export const useWholesaleOrderData = (user?: User) => {
         const shippingRes = hasShippingCompanies
           ? { success: true, data: shippingCompanies }
           : await getshipping();
+        const warehousesRes = hasWarehouses
+          ? warehouses
+          : await getWarehouse();
 
         if (!hasProducts) {
           setProducts(productsData?.success ? (Array.isArray(productsData.data) ? productsData.data : []) : []);
@@ -102,6 +117,10 @@ export const useWholesaleOrderData = (user?: User) => {
 
         if (!hasShippingCompanies) {
           setShippingCompanies(shippingRes?.success ? (Array.isArray(shippingRes.data) ? shippingRes.data : []) : []);
+        }
+
+        if (!hasWarehouses) {
+          setWarehouses(Array.isArray(warehousesRes) ? warehousesRes : []);
         }
       } finally {
         supportingDataPromiseRef.current = null;
@@ -118,6 +137,10 @@ export const useWholesaleOrderData = (user?: User) => {
   }, []);
 
   React.useEffect(() => {
+    refreshWarehouses();
+  }, []);
+
+  React.useEffect(() => {
     refreshShippingCompanies();
   }, []);
 
@@ -130,12 +153,15 @@ export const useWholesaleOrderData = (user?: User) => {
     setOrders,
     shippingCompanies,
     setShippingCompanies,
+    warehouses,
+    setWarehouses,
     isLoading,
     isSupportingDataLoading,
     loadData,
     refreshOrders,
     refreshCustomers,
     refreshShippingCompanies,
+    refreshWarehouses,
     refreshProducts,
     ensureSupportingDataLoaded,
   };

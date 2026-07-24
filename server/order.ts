@@ -49,28 +49,32 @@ async function applyOrderStockChange(
     order: { warehouseId?: number | null; warehouse?: { location?: string | null } | null; items: Array<{ productId: number; quantity: number }> },
     direction: "restore" | "reserve"
 ) {
-    const stockCountry = String(order.warehouse?.location || "").trim();
+    const warehouseId = order.warehouseId ? Number(order.warehouseId) : null;
 
     for (const item of order.items) {
         const quantity = Number(item.quantity || 0);
         if (quantity <= 0) continue;
 
-        const stock = order.warehouseId
-            ? await tx.productStock.findFirst({
+        let stock = null;
+        if (warehouseId && !Number.isNaN(warehouseId)) {
+            stock = await tx.productStock.findFirst({
                 where: {
                     productId: item.productId,
-                    warehouseId: order.warehouseId,
+                    warehouseId,
                 },
-            })
-            : stockCountry
-                ? await tx.productStock.findFirst({
-                    where: {
-                        productId: item.productId,
-                        warehouse: { location: stockCountry },
-                    },
-                    orderBy: { quantity: "desc" },
-                })
-                : null;
+            });
+        }
+
+        if (!stock && order.warehouse?.location) {
+            const stockCountry = String(order.warehouse.location).trim();
+            stock = await tx.productStock.findFirst({
+                where: {
+                    productId: item.productId,
+                    warehouse: { location: stockCountry },
+                },
+                orderBy: { quantity: "desc" },
+            });
+        }
 
         if (direction === "restore") {
             if (stock) {
@@ -81,11 +85,11 @@ async function applyOrderStockChange(
                 continue;
             }
 
-            if (order.warehouseId) {
+            if (warehouseId && !Number.isNaN(warehouseId)) {
                 await tx.productStock.create({
                     data: {
                         productId: item.productId,
-                        warehouseId: order.warehouseId,
+                        warehouseId,
                         quantity,
                     },
                 });
@@ -337,6 +341,7 @@ const orderBaseSelect = {
     warehouse: {
         select: {
             id: true,
+            name: true,
             location: true,
         },
     },
@@ -560,25 +565,37 @@ export async function createOrder(data: any, items: any[], user: any) {
                 where: { customerId: data.customerId }
             });
 
-            const stockCountry = String(data.stockCountry || "").trim();
-            if (!stockCountry) {
-                throw new Error("يرجى اختيار بلد المخزون");
+            const inputWarehouseId = Number(data.warehouseId || 0);
+            const orderWarehouse = inputWarehouseId > 0
+                ? await tx.warehouse.findUnique({ where: { id: inputWarehouseId }, select: { id: true, location: true } })
+                : null;
+
+            const stockCountry = String(data.stockCountry || orderWarehouse?.location || "").trim();
+
+            if (!orderWarehouse && !stockCountry) {
+                throw new Error("يرجى اختيار مستودع أو بلد المخزون");
+            }
+
+            const fallbackWarehouse = orderWarehouse || (stockCountry
+                ? await tx.warehouse.findFirst({
+                    where: { location: stockCountry },
+                    orderBy: { id: "asc" },
+                    select: { id: true, location: true }
+                })
+                : null);
+
+            if (!fallbackWarehouse) {
+                throw new Error("لم يتم العثور على مستودع مطابق");
             }
 
             const inputExchangeRate = Number(data.usdToTryRateAtOrder || 0);
-            const usdToTryRateAtOrder = stockCountry === "تركيا"
+            const usdToTryRateAtOrder = fallbackWarehouse.location === "تركيا"
                 ? (inputExchangeRate > 0 ? inputExchangeRate : DEFAULT_TURKEY_EXCHANGE_RATE)
                 : null;
             const shippingId = Number(data.shippingId || 0);
             const selectedShipping = shippingId > 0
                 ? await tx.shipping.findUnique({ where: { id: shippingId }, select: { price: true } })
                 : null;
-
-            const orderWarehouse = await tx.warehouse.findFirst({
-                where: { location: stockCountry },
-                orderBy: { id: "asc" },
-                select: { id: true }
-            });
             
             // 1. إنشاء الطلب
             const newOrder = await tx.order.create({
@@ -609,7 +626,7 @@ export async function createOrder(data: any, items: any[], user: any) {
                     user: { connect: { id: user } },
                     shippingPrice: selectedShipping ? Number(selectedShipping.price || 0) : null,
                     ...(shippingId > 0 ? { shipping: { connect: { id: shippingId } } } : {}),
-                    ...(orderWarehouse ? { warehouse: { connect: { id: orderWarehouse.id } } } : {}),
+                    warehouse: { connect: { id: fallbackWarehouse.id } },
                     items: {
                         create: items.map((item: any) => ({
                             productId: parseInt(item.productId),
@@ -626,30 +643,28 @@ export async function createOrder(data: any, items: any[], user: any) {
                 const productId = parseInt(item.productId);
                 let remaining = parseInt(item.quantity);
 
-                const stocks = await tx.productStock.findMany({
+                const stock = await tx.productStock.findUnique({
                     where: {
-                        productId,
-                        warehouse: { location: stockCountry }
-                    },
-                    orderBy: { quantity: "desc" }
+                        productId_warehouseId: {
+                            productId,
+                            warehouseId: fallbackWarehouse.id,
+                        }
+                    }
                 });
 
-                const totalAvailable = stocks.reduce((sum, stock) => sum + (Number(stock.quantity) || 0), 0);
-                if (totalAvailable < remaining) {
-                    throw new Error(`الكمية المطلوبة للمنتج رقم ${productId} غير متوفرة في ${stockCountry}`);
+                if (!stock) {
+                    throw new Error(`المنتج رقم ${productId} غير موجود في المستودع المختار`);
                 }
 
-                for (const stock of stocks) {
-                    if (remaining <= 0) break;
-                    const currentQty = Number(stock.quantity) || 0;
-                    const consumed = Math.min(currentQty, remaining);
-                    remaining -= consumed;
-
-                    await tx.productStock.update({
-                        where: { id: stock.id },
-                        data: { quantity: currentQty - consumed }
-                    });
+                const currentQty = Number(stock.quantity) || 0;
+                if (currentQty < remaining) {
+                    throw new Error(`الكمية المطلوبة للمنتج رقم ${productId} غير متوفرة في المستودع المختار`);
                 }
+
+                await tx.productStock.update({
+                    where: { id: stock.id },
+                    data: { quantity: currentQty - remaining }
+                });
             }
 
             await tx.customer.update({
@@ -680,10 +695,15 @@ export async function updateOrder(data: any, id: any, items: any) {
         if (!oldOrder) return { success: false, error: "الطلب غير موجود" };
 
         return await prisma.$transaction(async (tx) => {
-            const stockCountry = String(data.stockCountry || oldOrder.warehouse?.location || "").trim();
+            const inputWarehouseId = Number(data.warehouseId || oldOrder.warehouseId || 0);
+            const orderWarehouse = inputWarehouseId > 0
+                ? await tx.warehouse.findUnique({ where: { id: inputWarehouseId }, select: { id: true, location: true } })
+                : null;
+
+            const stockCountry = String(data.stockCountry || orderWarehouse?.location || oldOrder.warehouse?.location || "").trim();
             const oldOrderSavedRate = Number((oldOrder as any)?.usdToTryRateAtOrder || 0);
             const inputExchangeRate = Number(data.usdToTryRateAtOrder || 0);
-            const usdToTryRateAtOrder = stockCountry === "تركيا"
+            const usdToTryRateAtOrder = orderWarehouse?.location === "تركيا" || (!orderWarehouse && stockCountry === "تركيا")
                 ? (inputExchangeRate > 0
                     ? inputExchangeRate
                     : (oldOrderSavedRate > 0
@@ -696,22 +716,27 @@ export async function updateOrder(data: any, id: any, items: any) {
                 : null;
             const manualCreatedAt = parseOptionalDate(data?.manualCreatedAt);
 
-            const orderWarehouse = stockCountry
+            const fallbackWarehouse = orderWarehouse || (stockCountry
                 ? await tx.warehouse.findFirst({
                     where: { location: stockCountry },
                     orderBy: { id: "asc" },
-                    select: { id: true }
+                    select: { id: true, location: true }
                 })
-                : null;
+                : null);
 
-            if (stockCountry) {
+            if (!fallbackWarehouse) {
+                throw new Error("لم يتم العثور على مستودع مطابق");
+            }
+
+            if (fallbackWarehouse) {
                 for (const oldItem of oldOrder.items) {
-                    const stock = await tx.productStock.findFirst({
+                    const stock = await tx.productStock.findUnique({
                         where: {
-                            productId: oldItem.productId,
-                            warehouse: { location: stockCountry }
-                        },
-                        orderBy: { quantity: "desc" }
+                            productId_warehouseId: {
+                                productId: oldItem.productId,
+                                warehouseId: fallbackWarehouse.id,
+                            }
+                        }
                     });
 
                     if (stock) {
@@ -750,7 +775,7 @@ export async function updateOrder(data: any, id: any, items: any) {
                     shipping: shippingId > 0
                         ? { connect: { id: shippingId } }
                         : { disconnect: true },
-                    ...(orderWarehouse ? { warehouse: { connect: { id: orderWarehouse.id } } } : {}),
+                    warehouse: { connect: { id: fallbackWarehouse.id } },
                     items: {
                         deleteMany: {}, // حذف العناصر السابقة
                         create: items.map((item: any) => ({
@@ -771,35 +796,33 @@ export async function updateOrder(data: any, id: any, items: any) {
             }
 
             // ج - خصم المخزون الجديد
-            if (stockCountry) {
+            if (fallbackWarehouse) {
                 for (const newItem of items) {
                     const productId = parseInt(newItem.productId);
-                    let remaining = parseInt(newItem.quantity);
+                    const remaining = parseInt(newItem.quantity);
 
-                    const stocks = await tx.productStock.findMany({
+                    const stock = await tx.productStock.findUnique({
                         where: {
-                            productId,
-                            warehouse: { location: stockCountry }
-                        },
-                        orderBy: { quantity: "desc" }
+                            productId_warehouseId: {
+                                productId,
+                                warehouseId: fallbackWarehouse.id,
+                            }
+                        }
                     });
 
-                    const totalAvailable = stocks.reduce((sum, stock) => sum + (Number(stock.quantity) || 0), 0);
-                    if (totalAvailable < remaining) {
-                        throw new Error(`الكمية المطلوبة للمنتج رقم ${productId} غير متوفرة في ${stockCountry}`);
+                    if (!stock) {
+                        throw new Error(`المنتج رقم ${productId} غير موجود في المستودع المختار`);
                     }
 
-                    for (const stock of stocks) {
-                        if (remaining <= 0) break;
-                        const currentQty = Number(stock.quantity) || 0;
-                        const consumed = Math.min(currentQty, remaining);
-                        remaining -= consumed;
-
-                        await tx.productStock.update({
-                            where: { id: stock.id },
-                            data: { quantity: currentQty - consumed }
-                        });
+                    const currentQty = Number(stock.quantity) || 0;
+                    if (currentQty < remaining) {
+                        throw new Error(`الكمية المطلوبة للمنتج رقم ${productId} غير متوفرة في المستودع المختار`);
                     }
+
+                    await tx.productStock.update({
+                        where: { id: stock.id },
+                        data: { quantity: currentQty - remaining }
+                    });
                 }
             }
 
@@ -826,16 +849,17 @@ export async function deleteOrder(id: any) {
         if (!oldOrder) return { success: false, error: "الطلب غير موجود" };
 
         return await prisma.$transaction(async (tx) => {
-            const stockCountry = String(oldOrder.warehouse?.location || "").trim();
+            const warehouseId = oldOrder.warehouseId ? Number(oldOrder.warehouseId) : null;
 
-            if (stockCountry) {
+            if (warehouseId && !Number.isNaN(warehouseId)) {
                 for (const item of oldOrder.items) {
-                    const stock = await tx.productStock.findFirst({
+                    const stock = await tx.productStock.findUnique({
                         where: {
-                            productId: item.productId,
-                            warehouse: { location: stockCountry }
-                        },
-                        orderBy: { quantity: "desc" }
+                            productId_warehouseId: {
+                                productId: item.productId,
+                                warehouseId,
+                            }
+                        }
                     });
 
                     if (stock) {
@@ -843,6 +867,27 @@ export async function deleteOrder(id: any) {
                             where: { id: stock.id },
                             data: { quantity: (Number(stock.quantity) || 0) + item.quantity }
                         });
+                    }
+                }
+            } else {
+                const stockCountry = String(oldOrder.warehouse?.location || "").trim();
+
+                if (stockCountry) {
+                    for (const item of oldOrder.items) {
+                        const stock = await tx.productStock.findFirst({
+                            where: {
+                                productId: item.productId,
+                                warehouse: { location: stockCountry }
+                            },
+                            orderBy: { quantity: "desc" }
+                        });
+
+                        if (stock) {
+                            await tx.productStock.update({
+                                where: { id: stock.id },
+                                data: { quantity: (Number(stock.quantity) || 0) + item.quantity }
+                            });
+                        }
                     }
                 }
             }

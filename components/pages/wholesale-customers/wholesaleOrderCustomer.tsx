@@ -15,6 +15,7 @@ export default function WholesaleOrderCustomer({
   customers,
   wholesaleCustomerId,
   products,
+  warehouses,
   isOpenOrder,
   setisOpenOrder,
   setWholesaleCustomerId,
@@ -23,6 +24,7 @@ export default function WholesaleOrderCustomer({
   customers: any;
   wholesaleCustomerId: any;
   products: any;
+  warehouses: any[];
   isOpenOrder: any;
   setisOpenOrder: any;
   setWholesaleCustomerId: any;
@@ -57,7 +59,7 @@ export default function WholesaleOrderCustomer({
 
   const [receiverName, setReceiverName] = React.useState("");
   const [receiverPhone, setReceiverPhone] = React.useState<(string | undefined)[]>([""]);
-  const [stockCountry, setStockCountry] = React.useState<"سوريا" | "تركيا" | "">("");
+  const [warehouseId, setWarehouseId] = React.useState<string>("");
   const [country, setCountry] = React.useState("");
   const [city, setCity] = React.useState("");
 
@@ -88,7 +90,8 @@ export default function WholesaleOrderCustomer({
   const [showDropdown, setShowDropdown] = React.useState<Record<number, boolean>>({});
   const { user } = useAuth();
 
-  const isTurkeyStock = stockCountry === "تركيا";
+  const selectedWarehouse = warehouses.find((w: any) => String(w.id) === warehouseId);
+  const isTurkeyStock = selectedWarehouse?.location === "تركيا";
   const currencySymbol = isTurkeyStock ? "₺" : "$";
 
   const convertUsdToOrderCurrency = (value: number) => {
@@ -96,10 +99,10 @@ export default function WholesaleOrderCustomer({
     return isTurkeyStock ? normalized * turkeyExchangeRate : normalized;
   };
 
-  const getProductAvailableStockByCountry = (product: any, selectedCountry: string) => {
-    if (!Array.isArray(product?.stocks)) return 0;
+  const getProductAvailableStockByWarehouse = (product: any, selectedWarehouseId: string) => {
+    if (!Array.isArray(product?.stocks) || !selectedWarehouseId) return 0;
     return product.stocks
-      .filter((stock: any) => String(stock?.warehouse?.location || "") === selectedCountry)
+      .filter((stock: any) => String(stock?.warehouseId) === selectedWarehouseId || String(stock?.warehouse?.id) === selectedWarehouseId)
       .reduce((sum: number, stock: any) => sum + (Number(stock?.quantity) || 0), 0);
   };
 
@@ -112,13 +115,13 @@ export default function WholesaleOrderCustomer({
     });
   };
 
-  const getProductPricingByCountry = (product: any, selectedCountry: string, quantity: number) => {
-    if (!Array.isArray(product?.stocks) || !selectedCountry) {
+  const getProductPricingByWarehouse = (product: any, selectedWarehouseId: string, quantity: number) => {
+    if (!Array.isArray(product?.stocks) || !selectedWarehouseId) {
       return { price: 0, discount: 0, wholesalePriceTierId: null };
     }
 
     const matchedStock = product.stocks.find((stock: any) =>
-      String(stock?.warehouse?.location || "") === selectedCountry && Number(stock?.quantity || 0) > 0
+      (String(stock?.warehouseId) === selectedWarehouseId || String(stock?.warehouse?.id) === selectedWarehouseId) && Number(stock?.quantity || 0) > 0
     );
 
     if (!matchedStock) {
@@ -163,7 +166,7 @@ export default function WholesaleOrderCustomer({
 
     if (field === "productId") {
       const product = productsList.find((p: any) => p.id === Number(value));
-      const pricing = getProductPricingByCountry(product, stockCountry, item.quantity);
+      const pricing = getProductPricingByWarehouse(product, warehouseId, item.quantity);
       item.productId = value;
       item.name = product?.name || "";
       item.modelNumber = product?.modelNumber || "";
@@ -177,7 +180,7 @@ export default function WholesaleOrderCustomer({
       item.quantity = quantity;
       if (item.productId) {
         const product = productsList.find((p: any) => p.id === Number(item.productId));
-        const pricing = getProductPricingByCountry(product, stockCountry, quantity);
+        const pricing = getProductPricingByWarehouse(product, warehouseId, quantity);
         item.price = pricing.price;
         item.discount = pricing.discount;
         item.wholesalePriceTierId = pricing.wholesalePriceTierId ? String(pricing.wholesalePriceTierId) : "";
@@ -231,7 +234,7 @@ export default function WholesaleOrderCustomer({
 
     setReceiverName("");
     setReceiverPhone([""]);
-    setStockCountry("");
+    setWarehouseId("");
     setCountry("");
     setCity("");
     setMunicipality("");
@@ -256,8 +259,8 @@ export default function WholesaleOrderCustomer({
       return;
     }
 
-    if (!stockCountry) {
-      toast.error("يرجى اختيار بلد المخزون (سوريا أو تركيا)");
+    if (!warehouseId) {
+      toast.error("يرجى اختيار المستودع");
       return;
     }
 
@@ -300,8 +303,9 @@ export default function WholesaleOrderCustomer({
       status,
       receiverName,
       receiverPhone,
-      stockCountry,
-      usdToTryRateAtOrder: stockCountry === "تركيا" ? Number(turkeyExchangeRate) : null,
+      stockCountry: selectedWarehouse?.location || "",
+      warehouseId: selectedWarehouse?.id,
+      usdToTryRateAtOrder: selectedWarehouse?.location === "تركيا" ? Number(turkeyExchangeRate) : null,
       country,
       city,
       municipality,
@@ -388,23 +392,26 @@ export default function WholesaleOrderCustomer({
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-slate-500 mr-2">بلد المخزون</label>
+                <label className="text-xs font-bold text-slate-500 mr-2">المستودع</label>
                 <select
-                  value={stockCountry}
+                  value={warehouseId}
                   onChange={(e) => {
-                    setStockCountry(e.target.value as "سوريا" | "تركيا" | "");
+                    setWarehouseId(e.target.value);
                     setItems([{ productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "", wholesalePriceTierId: "" }]);
                     setSearchQueries({});
                     setShowDropdown({});
                   }}
                   className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold"
                 >
-                  <option value="">اختر بلد المخزون</option>
-                  <option value="سوريا">سوريا</option>
-                  <option value="تركيا">تركيا</option>
+                  <option value="">اختر المستودع</option>
+                  {warehouses.map((warehouse: any) => (
+                    <option key={warehouse.id} value={String(warehouse.id)}>
+                      {warehouse.name} - {warehouse.location}
+                    </option>
+                  ))}
                 </select>
               </div>
-              {stockCountry === "تركيا" && (
+              {selectedWarehouse?.location === "تركيا" && (
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-slate-500 mr-2">سعر صرف الدولار مقابل الليرة التركية</label>
                   <input
@@ -438,10 +445,10 @@ export default function WholesaleOrderCustomer({
                     {showDropdown[index] && (
                       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="absolute z-[210] w-full mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-48 overflow-y-auto">
                         {products?.filter((p: any) => {
-                          const currentStock = stockCountry ? getProductAvailableStockByCountry(p, stockCountry) : 0;
+                          const currentStock = warehouseId ? getProductAvailableStockByWarehouse(p, warehouseId) : 0;
                           const isAvailable = currentStock > 0;
-                          const matchesCountry = stockCountry
-                            ? Array.isArray(p?.stocks) && p.stocks.some((s: any) => String(s?.warehouse?.location || "") === stockCountry)
+                          const matchesWarehouse = warehouseId
+                            ? Array.isArray(p?.stocks) && p.stocks.some((s: any) => String(s?.warehouseId) === warehouseId || String(s?.warehouse?.id) === warehouseId)
                             : false;
 
                           const query = (searchQueries[index] || "").toLowerCase();
@@ -449,9 +456,9 @@ export default function WholesaleOrderCustomer({
                             String(p?.name || "").toLowerCase().includes(query) ||
                             String(p?.modelNumber || "").toLowerCase().includes(query);
 
-                          return isAvailable && matchesSearch && matchesCountry;
+                          return isAvailable && matchesSearch && matchesWarehouse;
                         }).map((product: any) => {
-                          const pricing = getProductPricingByCountry(product, stockCountry, 1);
+                          const pricing = getProductPricingByWarehouse(product, warehouseId, 1);
                           return (
                             <div
                               key={product.id}

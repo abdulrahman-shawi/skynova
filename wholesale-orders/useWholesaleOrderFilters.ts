@@ -19,7 +19,7 @@ interface User {
   };
 }
 
-export const useWholesaleOrderFilters = (orders: any[], user?: User) => {
+export const useWholesaleOrderFilters = (orders: any[], user?: User, warehouses: any[] = []) => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [warehouseLocation, setWarehouseLocation] = React.useState("");
   const [shippingCompany, setShippingCompany] = React.useState("");
@@ -35,27 +35,24 @@ export const useWholesaleOrderFilters = (orders: any[], user?: User) => {
     const isWarehouseUser = String(user?.permission?.roleName || "").trim().includes("مستودع");
     const canViewOrders = !user || isAdminUser || isWarehouseUser || user?.permission?.viewWholesaleCustomers === true;
 
-    const normalizeWarehouseLocation = (location?: string | null) => {
-      const normalized = String(location || "").trim().toLowerCase();
-      if (normalized === "syria" || normalized === "سوريا") return "سوريا";
-      if (normalized === "turkey" || normalized === "تركيا") return "تركيا";
-      return String(location || "").trim();
-    };
+    const allowedWarehouseIds = warehouses
+      .filter((warehouse: any) => {
+        const location = String(warehouse?.location || "").trim().toLowerCase();
+        if (location === "سوريا" || location === "syria") return user?.permission?.accessSyria === true;
+        if (location === "تركيا" || location === "turkey") return user?.permission?.accessTurkey === true;
+        return false;
+      })
+      .map((warehouse: any) => String(warehouse.id));
 
-    const allowedWarehouseLocations = [
-      user?.permission?.accessSyria === true ? "سوريا" : null,
-      user?.permission?.accessTurkey === true ? "تركيا" : null,
-    ].filter(Boolean) as string[];
-
-    const shouldRestrictByLocation = !isAdminUser && allowedWarehouseLocations.length > 0;
+    const shouldRestrictByWarehouse = !isAdminUser && allowedWarehouseIds.length > 0;
 
     return orders.filter((order: any) => {
       if (!canViewOrders) return false;
 
       if (user && !isAdminUser) {
-        if (shouldRestrictByLocation) {
-          const orderLocation = normalizeWarehouseLocation(order?.warehouse?.location);
-          if (!allowedWarehouseLocations.includes(orderLocation)) return false;
+        if (shouldRestrictByWarehouse) {
+          const orderWarehouseId = String(order?.warehouse?.id || "").trim();
+          if (!allowedWarehouseIds.includes(orderWarehouseId)) return false;
         }
 
         if (!isWarehouseUser) {
@@ -73,8 +70,9 @@ export const useWholesaleOrderFilters = (orders: any[], user?: User) => {
 
       if (!matchesText) return false;
 
-      const matchesLocation = !warehouseLocation || order.warehouse?.location === warehouseLocation;
-      if (!matchesLocation) return false;
+      const selectedWarehouseId = String(warehouseLocation || "").trim();
+      const orderWarehouseId = String(order?.warehouse?.id || "").trim();
+      if (selectedWarehouseId && orderWarehouseId !== selectedWarehouseId) return false;
 
       const normalizedShippingFilter = String(shippingCompany || "").trim().toLowerCase();
       const orderShippingName = String(order?.shipping?.name || "").trim().toLowerCase();
@@ -93,7 +91,7 @@ export const useWholesaleOrderFilters = (orders: any[], user?: User) => {
 
       return true;
     });
-  }, [orders, user, searchQuery, warehouseLocation, shippingCompany, monthFilterType, customMonth]);
+  }, [orders, user, warehouses, searchQuery, warehouseLocation, shippingCompany, monthFilterType, customMonth]);
 
   const statusCounts = React.useMemo(() => {
     const counts: Record<string, number> = { الكل: filterOrder.length };

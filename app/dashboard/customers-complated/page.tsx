@@ -16,6 +16,7 @@ import { CheckSquare, Download, Eye, LayoutGrid, MapPin, MessageCircle, Pencil, 
 import { AnimatePresence, motion } from "framer-motion";
 import { getProduct } from "@/server/product";
 import { createOrder } from "@/server/order";
+import { getWarehouse } from "@/server/warehouse";
 import { Controller, useFieldArray } from "react-hook-form";
 import ViewOrderCustomer from "@/components/pages/customers/viewOrder";
 import AssignUserModal from "@/components/pages/customers/assignuser";
@@ -427,6 +428,7 @@ const CustomrLayout: React.FC = () => {
     }
   }
   const [products, setProduct] = React.useState<any[]>([])
+  const [warehouses, setWarehouses] = React.useState<any[]>([])
   React.useEffect(() => {
     if (loading) {
       return;
@@ -436,6 +438,9 @@ const CustomrLayout: React.FC = () => {
     getAlluser();
     getProduct().then((products) => {
       setProduct(products);
+    }).catch(console.error);
+    getWarehouse().then((data) => {
+      setWarehouses(Array.isArray(data) ? data : []);
     }).catch(console.error);
   }, [loading, user])
   const [isPending, setIsPending] = React.useState(false);
@@ -1590,7 +1595,7 @@ const CustomrLayout: React.FC = () => {
 
       <OrderCustomer customerId={customerId} customers={customers}
        editId={editId} getData={getData}
-        isOpenOrder={isOpenOrder} products={products}
+        isOpenOrder={isOpenOrder} products={products} warehouses={warehouses}
       setEditId={setEditId} setCustomerId={setCustomerId} setisOpenOrder={setisOpenOrder} />
 
 

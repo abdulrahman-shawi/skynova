@@ -37,6 +37,7 @@ export default function WholesaleOrdersPage() {
     customers,
     orders,
     shippingCompanies,
+    warehouses,
     refreshOrders,
     ensureSupportingDataLoaded,
     isLoading,
@@ -54,7 +55,7 @@ export default function WholesaleOrdersPage() {
   const [showCustomerDropdown, setShowCustomerDropdown] = React.useState(false);
   const [paymentMethod, setPaymentMethod] = React.useState("عند الاستلام");
   const [amount, setAmount] = React.useState("");
-  const [stockCountry, setStockCountry] = React.useState("");
+  const [warehouseId, setWarehouseId] = React.useState("");
 
   const [receiverName, setReceiverName] = React.useState("");
   const [receiverPhone, setReceiverPhone] = React.useState<(string | undefined)[]>([""]);
@@ -67,6 +68,7 @@ export default function WholesaleOrdersPage() {
   const [additionalNotes, setAdditionalNotes] = React.useState("");
   const [manualCreatedAt, setManualCreatedAt] = React.useState("");
   const [overallDiscount, setOverallDiscount] = React.useState(0);
+  const selectedWarehouse = React.useMemo(() => warehouses.find((w: any) => String(w.id) === warehouseId), [warehouses, warehouseId]);
 
   const [items, setItems] = React.useState([
     { productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, wholesalePriceTierId: "" }
@@ -74,9 +76,9 @@ export default function WholesaleOrdersPage() {
   const [searchQueries, setSearchQueries] = React.useState<Record<number, string>>({});
   const [showDropdown, setShowDropdown] = React.useState<Record<number, boolean>>({});
 
-  // إعادة حساب أسعار البنود التي ليس لها شريحة سعرية عند تغيير بلد المخزون
+  // إعادة حساب أسعار البنود التي ليس لها شريحة سعرية عند تغيير المستودع
   React.useEffect(() => {
-    if (!stockCountry) return;
+    if (!warehouseId) return;
 
     setItems((currentItems) => {
       if (currentItems.length === 0) return currentItems;
@@ -85,7 +87,7 @@ export default function WholesaleOrdersPage() {
 
       return currentItems.map((item) => {
         if (!item.productId) return item;
-        const pricing = resolveItemPricing(item.productId, item.quantity, stockCountry);
+        const pricing = resolveItemPricing(item.productId, item.quantity, warehouseId);
         if (item.wholesalePriceTierId) {
           return { ...item, discount: pricing.discount };
         }
@@ -93,7 +95,7 @@ export default function WholesaleOrdersPage() {
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stockCountry]);
+  }, [warehouseId]);
 
   const subTotal = items.reduce((sum, i) => sum + i.total, 0);
   const grandTotal = subTotal - overallDiscount;
@@ -103,13 +105,16 @@ export default function WholesaleOrdersPage() {
     return products.find((p) => Number(p.id) === Number(productId));
   };
 
-  const getStockForCountry = (productId: string | number, country: string) => {
+  const getStockForWarehouse = (productId: string | number, warehouseId: string) => {
     const product = getProductById(productId);
     if (!product || !Array.isArray(product.stocks)) return null;
-    return product.stocks.find((stock: any) => String(stock?.warehouse?.location || '') === country) || null;
+    return product.stocks.find((stock: any) =>
+      String(stock?.warehouseId || '') === warehouseId ||
+      String(stock?.warehouse?.id || '') === warehouseId
+    ) || null;
   };
 
-  const resolveItemPricing = (productId: string | number, quantity: number, country: string) => {
+  const resolveItemPricing = (productId: string | number, quantity: number, warehouseId: string) => {
     const product = getProductById(productId);
     if (!product) {
       return { price: 0, discount: 0, wholesalePriceTierId: "" };
@@ -120,7 +125,7 @@ export default function WholesaleOrdersPage() {
       return { price: Number(tier.price), discount: 0, wholesalePriceTierId: String(tier.id) };
     }
 
-    const stock = getStockForCountry(productId, country);
+    const stock = getStockForWarehouse(productId, warehouseId);
     return { price: Number(stock?.price || 0), discount: Number(stock?.discount || 0), wholesalePriceTierId: "" };
   };
 
@@ -132,7 +137,7 @@ export default function WholesaleOrdersPage() {
       const product = getProductById(value);
       item.productId = value;
       item.name = product?.name || "";
-      const pricing = resolveItemPricing(value, item.quantity, stockCountry);
+      const pricing = resolveItemPricing(value, item.quantity, warehouseId);
       item.wholesalePriceTierId = pricing.wholesalePriceTierId;
       item.price = pricing.price;
       item.discount = pricing.discount;
@@ -141,7 +146,7 @@ export default function WholesaleOrdersPage() {
     } else if (field === "quantity") {
       item.quantity = Number(value || 1);
       if (item.productId) {
-        const pricing = resolveItemPricing(item.productId, item.quantity, stockCountry);
+        const pricing = resolveItemPricing(item.productId, item.quantity, warehouseId);
         item.wholesalePriceTierId = pricing.wholesalePriceTierId;
         item.price = pricing.price;
         item.discount = pricing.discount;
@@ -193,7 +198,7 @@ export default function WholesaleOrdersPage() {
     setShowCustomerDropdown(false);
     setPaymentMethod("عند الاستلام");
     setAmount("");
-    setStockCountry("");
+    setWarehouseId("");
     setReceiverName("");
     setReceiverPhone([""]);
     setCountry("");
@@ -253,7 +258,7 @@ export default function WholesaleOrdersPage() {
     setStatus(orderDetails?.status || "طلب جديد");
     setPaymentMethod(orderDetails?.paymentMethod || "عند الاستلام");
     setAmount(String(orderDetails?.amount ?? ""));
-    setStockCountry(orderDetails?.warehouse?.location || "");
+    setWarehouseId(String(orderDetails?.warehouse?.id || ""));
 
     setReceiverName(orderDetails?.receiverName || "");
     const receiverPhoneValues = Array.isArray(orderDetails?.receiverPhone)
@@ -290,8 +295,8 @@ export default function WholesaleOrdersPage() {
       return;
     }
 
-    if (!stockCountry) {
-      toast.error("يرجى اختيار بلد المخزون");
+    if (!warehouseId) {
+      toast.error("يرجى اختيار المستودع");
       return;
     }
 
@@ -330,7 +335,8 @@ export default function WholesaleOrdersPage() {
       grandTotal: Number(grandTotal),
       overallDiscount: Number(overallDiscount),
       subTotal: Number(subTotal),
-      stockCountry,
+      warehouseId: selectedWarehouse?.id,
+      stockCountry: selectedWarehouse?.location,
       manualCreatedAt: manualCreatedAt || null,
     };
 
@@ -487,7 +493,7 @@ export default function WholesaleOrdersPage() {
     statusCounts,
     statusOptions,
     PAGE_SIZE,
-  } = useWholesaleOrderFilters(orders, user);
+  } = useWholesaleOrderFilters(orders, user, warehouses);
 
   const filteredCustomers = React.useMemo(() => {
     const query = customerSearchQuery.trim().toLowerCase();
@@ -525,7 +531,7 @@ export default function WholesaleOrdersPage() {
         onMonthFilterChange={(type) => setMonthFilterType(type as any)}
         customMonth={customMonth}
         onCustomMonthChange={setCustomMonth}
-        warehouseOptions={["سوريا", "تركيا"]}
+        warehouseOptions={warehouses.map((w: any) => ({ id: String(w.id), name: String(w.name || "").trim() }))}
       />
 
       <StatusCards
@@ -587,15 +593,23 @@ export default function WholesaleOrdersPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold mb-1">بلد المخزون</label>
+              <label className="block text-sm font-bold mb-1">المستودع</label>
               <select
-                value={stockCountry}
-                onChange={(e) => setStockCountry(e.target.value)}
+                value={warehouseId}
+                onChange={(e) => {
+                  setWarehouseId(e.target.value);
+                  setItems([{ productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, wholesalePriceTierId: "" }]);
+                  setSearchQueries({});
+                  setShowDropdown({});
+                }}
                 className="block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-slate-950 dark:text-white text-sm"
               >
-                <option value="">اختر بلد المخزون</option>
-                <option value="سوريا">سوريا</option>
-                <option value="تركيا">تركيا</option>
+                <option value="">اختر المستودع</option>
+                {warehouses.map((warehouse: any) => (
+                  <option key={warehouse.id} value={String(warehouse.id)}>
+                    {warehouse.name} - {warehouse.location}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

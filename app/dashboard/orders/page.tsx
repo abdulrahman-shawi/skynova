@@ -94,6 +94,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         customers,
         orders,
         shippingCompanies,
+        warehouses,
         refreshOrders: Order,
         ensureSupportingDataLoaded,
         isLoading,
@@ -614,7 +615,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         statusCounts,
         statusOptions,
         PAGE_SIZE,
-    } = useOrderFilters(orders, user);
+    } = useOrderFilters(orders, user, warehouses);
 
     // 1. تأكد من وجود حالة للتحميل في المكون الخاص بك
     // const [isSubmitting, setIsSubmitting] = useState(false);
@@ -963,7 +964,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                 onMonthFilterChange={(type) => setMonthFilterType(type as "all" | "previous" | "current" | "custom")}
                 customMonth={customMonth}
                 onCustomMonthChange={setCustomMonth}
-                warehouseOptions={["سوريا", "تركيا"]}
+                warehouseOptions={warehouses.map((w: any) => ({ id: String(w.id), name: String(w.name || "").trim() }))}
             />
             <StatusCards
                 statusOptions={statusOptions}
@@ -1013,12 +1014,13 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
       setisOpenOrder={setIsOpen}
       editId={editId}
       setEditId={setEditId}
-      initialData={order} // هنا نمرر كائن الطلب بالكامل
+      initialData={order}
       customers={customers}
       customerId={customerId}
       setCustomerId={setCustomerId}
       products={products}
-      getData={Order} // تأكد من أن هذه الدالة تقوم بتحديث قائمة الطلبات بعد التعديل أو الإنشاء
+      warehouses={warehouses}
+      getData={Order}
     />
 )}
         </div>
