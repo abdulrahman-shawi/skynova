@@ -162,6 +162,8 @@ Connection is configured via `DATABASE_URL` in `.env`. A `prisma.config.ts` file
 
 **Important models:** `User`, `Permission`, `Order`, `OrderItem`, `Product`, `ProductStock`, `Warehouse`, `Customer`, `Expense`, `Shipping`, `Warranty`, `Page`, `AffiliateLink`, `Commission`.
 
+**Warehouse access control:** The `User` ↔ `Warehouse` many-to-many relation (`allowedWarehouses` / `allowedUsers`, join table `_UserWarehouseAccess`) restricts which warehouses a user may access. Schema is in place; enforcement logic is applied in server actions (admins bypass all checks).
+
 ---
 
 ## Authentication & Authorization
