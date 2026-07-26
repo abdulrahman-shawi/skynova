@@ -368,7 +368,7 @@ export async function getWholesaleOrderById(orderId: string | number) {
 
         if (shouldRestrictOrdersByWarehouse(currentUser)) {
             const allowedWarehouseIds = getAllowedWarehouseIds(currentUser);
-            if (!allowedWarehouseIds.includes(Number(order.warehouseId))) {
+            if (!allowedWarehouseIds.includes(Number(order.warehouse?.id))) {
                 return { success: false, error: "غير مصرح لك بعرض هذا الطلب" };
             }
         }
