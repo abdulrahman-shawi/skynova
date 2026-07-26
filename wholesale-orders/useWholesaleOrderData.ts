@@ -5,7 +5,7 @@ import {
   getWholesaleProductCatalog,
 } from '@/server/wholesale-order';
 import { getshipping } from '@/server/shipping';
-import { getWarehouse } from '@/server/warehouse';
+import { getAllowedWarehouses } from '@/server/warehouse';
 
 interface User {
   id: string;
@@ -59,7 +59,7 @@ export const useWholesaleOrderData = (user?: User) => {
 
   const refreshWarehouses = async () => {
     try {
-      const warehousesRes = await getWarehouse();
+      const warehousesRes = await getAllowedWarehouses();
       setWarehouses(Array.isArray(warehousesRes) ? warehousesRes : []);
     } catch (error) {
       console.error("Error refreshing warehouses:", error);
@@ -105,7 +105,7 @@ export const useWholesaleOrderData = (user?: User) => {
           : await getshipping();
         const warehousesRes = hasWarehouses
           ? warehouses
-          : await getWarehouse();
+          : await getAllowedWarehouses();
 
         if (!hasProducts) {
           setProducts(productsData?.success ? (Array.isArray(productsData.data) ? productsData.data : []) : []);

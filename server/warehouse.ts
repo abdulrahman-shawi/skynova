@@ -1,6 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
+import { decrypt } from "@/lib/auth";
 
 export const getWarehouse  = async () => {
     // من هنا يمكنك إضافة منطق الحصول على بيانات المستودع
@@ -15,6 +17,47 @@ export const getWarehouse  = async () => {
         },
     });
     return JSON.parse(JSON.stringify(warehouses));
+}
+
+// المستودعات المسموح بها للمستخدم الحالي فقط
+// (المدير أو دور بدون تحديد مستودعات = كل المستودعات)
+export const getAllowedWarehouses = async () => {
+    try {
+        const session = cookies().get("skynova")?.value;
+        if (!session) return [];
+
+        const decoded = await decrypt(session);
+        if (!decoded?.userId) return [];
+
+        const user = await prisma.user.findUnique({
+            where: { id: String(decoded.userId) },
+            include: { permission: { include: { allowedWarehouses: true } } },
+        });
+
+        const allowedIds = Array.isArray(user?.permission?.allowedWarehouses)
+            ? user.permission.allowedWarehouses
+                .map((warehouse: any) => Number(warehouse?.id))
+                .filter((id: number) => !Number.isNaN(id))
+            : [];
+
+        const restrictToAllowed = user?.accountType !== "ADMIN" && allowedIds.length > 0;
+
+        const warehouses = await prisma.warehouse.findMany({
+            where: restrictToAllowed ? { id: { in: allowedIds } } : undefined,
+            orderBy: { createdAt: 'desc' },
+            include: {
+                _count: {
+                    select: {
+                        stocks: true,
+                    },
+                },
+            },
+        });
+        return JSON.parse(JSON.stringify(warehouses));
+    } catch (error) {
+        console.error("getAllowedWarehouses Error:", error);
+        return [];
+    }
 }
 
 export const createWarehouse = async (data: any) => {

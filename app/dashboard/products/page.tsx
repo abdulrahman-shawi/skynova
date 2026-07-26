@@ -13,7 +13,7 @@ import { buildAdFullUrl } from '@/lib/affiliate';
 import { getallcategory } from '@/server/category';
 import { deleteProductFromWarehouse, saveProductWithFiles, updateProductWithFiles } from '@/server/image';
 import { getProduct, toggleProductActive, toggleProductShowInAds, upsertProductLandingPage, LandingPageInput } from '@/server/product';
-import { getWarehouse } from '@/server/warehouse';
+import { getAllowedWarehouses } from '@/server/warehouse';
 import { error } from 'console';
 import { image } from 'framer-motion/client';
 import { FileDown, Mail, Plus, Warehouse, FileText } from 'lucide-react';
@@ -401,7 +401,7 @@ const ProductLayout = () => {
             setProducts(products);
             console.log("Products loaded:", products);
         }).catch(console.error);
-        getWarehouse().then(setWarehouses).catch(console.error);
+        getAllowedWarehouses().then(setWarehouses).catch(console.error);
 
     }, []);
 

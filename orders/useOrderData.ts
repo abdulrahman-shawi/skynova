@@ -3,7 +3,7 @@ import { getOrders, getOrdersByUser } from '@/server/order';
 import { getCustomerList } from '@/server/customer';
 import { getProductCatalog } from '@/server/product';
 import { getshipping } from '@/server/shipping';
-import { getWarehouse } from '@/server/warehouse';
+import { getAllowedWarehouses } from '@/server/warehouse';
 
 interface User {
   id: string;
@@ -71,7 +71,7 @@ export const useOrderData = (user?: User) => {
 
   const refreshWarehouses = async () => {
     try {
-      const warehousesRes = await getWarehouse();
+      const warehousesRes = await getAllowedWarehouses();
       setWarehouses(Array.isArray(warehousesRes) ? warehousesRes : []);
     } catch (error) {
       console.error("Error refreshing warehouses:", error);
@@ -109,7 +109,7 @@ export const useOrderData = (user?: User) => {
           hasProducts ? Promise.resolve(products) : getProductCatalog(),
           hasCustomers ? Promise.resolve({ success: true, data: customers }) : getCustomerList(),
           hasShippingCompanies ? Promise.resolve({ success: true, data: shippingCompanies }) : getshipping(),
-          hasWarehouses ? Promise.resolve(warehouses) : getWarehouse(),
+          hasWarehouses ? Promise.resolve(warehouses) : getAllowedWarehouses(),
         ]);
 
         if (!hasProducts) {
