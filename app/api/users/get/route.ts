@@ -36,7 +36,9 @@ export async function GET() {
                  affiliateApproved: true,
                  affiliateRequestedAt: true,
                  affiliateApprovedAt: true,
-                 permission: true,
+                 permission: {
+                   include: { allowedWarehouses: true },
+                 },
                }
            });
 

@@ -132,6 +132,20 @@ function shouldRestrictOrdersByWarehouseLocation(user: any) {
     return getAllowedWarehouseLocations(user).length > 0;
 }
 
+// المستودعات المسموح بها للدور (قائمة فارغة = كل المستودعات)
+function getAllowedWarehouseIds(user: any): number[] {
+    const warehouses = user?.permission?.allowedWarehouses;
+    if (!Array.isArray(warehouses)) return [];
+    return warehouses
+        .map((warehouse: any) => Number(warehouse?.id))
+        .filter((id: number) => !Number.isNaN(id));
+}
+
+function shouldRestrictOrdersByWarehouse(user: any) {
+    if (!user || user.accountType === "ADMIN") return false;
+    return getAllowedWarehouseIds(user).length > 0;
+}
+
 export async function getCurrentSessionUser() {
     try {
         const session = cookies().get("skynova")?.value;
@@ -142,7 +156,7 @@ export async function getCurrentSessionUser() {
 
         return await prisma.user.findUnique({
             where: { id: String(decoded.userId) },
-            include: { permission: true },
+            include: { permission: { include: { allowedWarehouses: true } } },
         });
     } catch {
         return null;
@@ -288,6 +302,12 @@ export async function getWholesaleOrders() {
             };
         }
 
+        if (shouldRestrictOrdersByWarehouse(currentUser)) {
+            where.warehouseId = {
+                in: getAllowedWarehouseIds(currentUser),
+            };
+        }
+
         if (!isWarehouseRole(currentUser)) {
             const scopedUserIds = await getScopedUserIds(currentUser.id);
             where.userId = {
@@ -342,6 +362,13 @@ export async function getWholesaleOrderById(orderId: string | number) {
                 .includes(orderWarehouseLocation);
 
             if (!canAccessWarehouse) {
+                return { success: false, error: "غير مصرح لك بعرض هذا الطلب" };
+            }
+        }
+
+        if (shouldRestrictOrdersByWarehouse(currentUser)) {
+            const allowedWarehouseIds = getAllowedWarehouseIds(currentUser);
+            if (!allowedWarehouseIds.includes(Number(order.warehouseId))) {
                 return { success: false, error: "غير مصرح لك بعرض هذا الطلب" };
             }
         }
@@ -405,6 +432,8 @@ export async function getWholesaleProductCatalog() {
         return { success: false, error: "غير مصرح لك" };
     }
 
+    const restrictByWarehouse = shouldRestrictOrdersByWarehouse(currentUser);
+
     const products = await prisma.product.findMany({
         where: { isActive: true },
         orderBy: { name: "asc" },
@@ -412,6 +441,9 @@ export async function getWholesaleProductCatalog() {
             id: true,
             name: true,
             stocks: {
+                ...(restrictByWarehouse
+                    ? { where: { warehouseId: { in: getAllowedWarehouseIds(currentUser) } } }
+                    : {}),
                 select: {
                     id: true,
                     quantity: true,

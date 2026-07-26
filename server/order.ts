@@ -145,6 +145,20 @@ function shouldRestrictOrdersByWarehouseLocation(user: any) {
     return getAllowedWarehouseLocations(user).length > 0;
 }
 
+// المستودعات المسموح بها للدور (قائمة فارغة = كل المستودعات)
+function getAllowedWarehouseIds(user: any): number[] {
+    const warehouses = user?.permission?.allowedWarehouses;
+    if (!Array.isArray(warehouses)) return [];
+    return warehouses
+        .map((warehouse: any) => Number(warehouse?.id))
+        .filter((id: number) => !Number.isNaN(id));
+}
+
+function shouldRestrictOrdersByWarehouse(user: any) {
+    if (!user || user.accountType === "ADMIN") return false;
+    return getAllowedWarehouseIds(user).length > 0;
+}
+
 export async function getCurrentSessionUser() {
     try {
         const session = cookies().get("skynova")?.value;
@@ -155,7 +169,7 @@ export async function getCurrentSessionUser() {
 
         return await prisma.user.findUnique({
             where: { id: String(decoded.userId) },
-            include: { permission: true },
+            include: { permission: { include: { allowedWarehouses: true } } },
         });
     } catch {
         return null;
@@ -393,6 +407,8 @@ export async function getOrders() {
     const isAdminUser = currentUser.accountType === "ADMIN";
     const allowedWarehouseLocations = getAllowedWarehouseLocations(currentUser);
     const shouldRestrictByLocation = shouldRestrictOrdersByWarehouseLocation(currentUser);
+    const allowedWarehouseIds = getAllowedWarehouseIds(currentUser);
+    const shouldRestrictByWarehouse = shouldRestrictOrdersByWarehouse(currentUser);
 
     const where: any = {};
 
@@ -406,6 +422,12 @@ export async function getOrders() {
                 location: {
                     in: allowedWarehouseLocations,
                 },
+            };
+        }
+
+        if (shouldRestrictByWarehouse) {
+            where.warehouseId = {
+                in: allowedWarehouseIds,
             };
         }
 
@@ -479,6 +501,13 @@ export async function getOrderById(orderId: string | number) {
             }
         }
 
+        if (shouldRestrictOrdersByWarehouse(currentUser)) {
+            const allowedWarehouseIds = getAllowedWarehouseIds(currentUser);
+            if (!allowedWarehouseIds.includes(Number(order.warehouseId))) {
+                return { success: false, error: "غير مصرح لك بعرض هذا الطلب" };
+            }
+        }
+
         if (!isWarehouseUser) {
             const scopedUserIds = await getScopedUserIds(currentUser.id);
             const allowedUserIds = scopedUserIds.length > 0 ? scopedUserIds : [currentUser.id];
@@ -533,6 +562,12 @@ export async function getOrdersByIds(orderIds: Array<string | number>) {
                 location: {
                     in: allowedWarehouseLocations,
                 },
+            };
+        }
+
+        if (shouldRestrictOrdersByWarehouse(currentUser)) {
+            where.warehouseId = {
+                in: getAllowedWarehouseIds(currentUser),
             };
         }
 

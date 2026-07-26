@@ -38,7 +38,7 @@ export async function GET(_: Request, context: RouteContext) {
 
     const targetUser = await prisma.user.findUnique({
       where: { id: targetId },
-      include: { permission: true },
+      include: { permission: { include: { allowedWarehouses: true } } },
     });
 
     if (!targetUser) {

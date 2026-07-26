@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
     try {
         const permissions = await prisma.permission.findMany({
-            include: { users: true },
+            include: { users: true, allowedWarehouses: { select: { id: true, name: true, location: true } } },
             orderBy: { roleName: 'asc' }
         });
         return NextResponse.json({ success: true, data: permissions.map((permission) => decoratePermission(permission)) }, { status: 200 });

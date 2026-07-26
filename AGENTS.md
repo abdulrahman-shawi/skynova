@@ -162,7 +162,7 @@ Connection is configured via `DATABASE_URL` in `.env`. A `prisma.config.ts` file
 
 **Important models:** `User`, `Permission`, `Order`, `OrderItem`, `Product`, `ProductStock`, `Warehouse`, `Customer`, `Expense`, `Shipping`, `Warranty`, `Page`, `AffiliateLink`, `Commission`.
 
-**Warehouse access control:** The `User` ↔ `Warehouse` many-to-many relation (`allowedWarehouses` / `allowedUsers`, join table `_UserWarehouseAccess`) restricts which warehouses a user may access. Schema is in place; enforcement logic is applied in server actions (admins bypass all checks).
+**Warehouse access control:** The `Permission` ↔ `Warehouse` many-to-many relation (`allowedWarehouses` / `allowedPermissions`, join table `_PermissionWarehouseAccess`) restricts which warehouses a role may access. An empty list means access to all warehouses. Managed from the permissions page (`app/dashboard/permissions/page.tsx`) via `/api/permissions`; enforced for orders (`server/order.ts`), wholesale orders (`server/wholesale-order.ts`), and the products page (`app/dashboard/products/page.tsx`) — admins bypass all checks. The client user payload (`/api/users/get`, `/api/users/impersonate/[id]`) includes `permission.allowedWarehouses`.
 
 ---
 

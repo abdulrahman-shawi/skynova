@@ -151,7 +151,6 @@ model User {
   salaryAdjustments      EmployeeSalaryAdjustment[]
   expenses               Expense[]
   stockMovements         StockMovement[]
-  allowedWarehouses      Warehouse[]     @relation("UserWarehouseAccess")
 
   // ─── NEW: E-commerce Affiliate Relations ───
   affiliateLinks         AffiliateLink[]
@@ -229,6 +228,9 @@ model Permission {
   accessSyria  Boolean @default(false)
   accessTurkey Boolean @default(false)
   users        User[]
+
+  // المستودعات المسموح الوصول إليها لهذا الدور (قائمة فارغة = كل المستودعات)
+  allowedWarehouses Warehouse[] @relation("PermissionWarehouseAccess")
 }
 
 // ============================================
@@ -391,7 +393,7 @@ model Warehouse {
   wholesaleOrders WholesaleOrder[]
   movements StockMovement[]
   warranties Warranty[]
-  allowedUsers User[] @relation("UserWarehouseAccess")
+  allowedPermissions Permission[] @relation("PermissionWarehouseAccess")
 }
 
 // ============================================

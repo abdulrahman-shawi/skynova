@@ -4265,7 +4265,6 @@ export namespace Prisma {
     salaryAdjustments: number
     expenses: number
     stockMovements: number
-    allowedWarehouses: number
     affiliateLinks: number
     reviews: number
     assignedWholesaleCustomers: number
@@ -4284,7 +4283,6 @@ export namespace Prisma {
     salaryAdjustments?: boolean | UserCountOutputTypeCountSalaryAdjustmentsArgs
     expenses?: boolean | UserCountOutputTypeCountExpensesArgs
     stockMovements?: boolean | UserCountOutputTypeCountStockMovementsArgs
-    allowedWarehouses?: boolean | UserCountOutputTypeCountAllowedWarehousesArgs
     affiliateLinks?: boolean | UserCountOutputTypeCountAffiliateLinksArgs
     reviews?: boolean | UserCountOutputTypeCountReviewsArgs
     assignedWholesaleCustomers?: boolean | UserCountOutputTypeCountAssignedWholesaleCustomersArgs
@@ -4376,13 +4374,6 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountAllowedWarehousesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: WarehouseWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
   export type UserCountOutputTypeCountAffiliateLinksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AffiliateLinkWhereInput
   }
@@ -4422,10 +4413,12 @@ export namespace Prisma {
 
   export type PermissionCountOutputType = {
     users: number
+    allowedWarehouses: number
   }
 
   export type PermissionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | PermissionCountOutputTypeCountUsersArgs
+    allowedWarehouses?: boolean | PermissionCountOutputTypeCountAllowedWarehousesArgs
   }
 
   // Custom InputTypes
@@ -4444,6 +4437,13 @@ export namespace Prisma {
    */
   export type PermissionCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserWhereInput
+  }
+
+  /**
+   * PermissionCountOutputType without action
+   */
+  export type PermissionCountOutputTypeCountAllowedWarehousesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WarehouseWhereInput
   }
 
 
@@ -4627,7 +4627,7 @@ export namespace Prisma {
     wholesaleOrders: number
     movements: number
     warranties: number
-    allowedUsers: number
+    allowedPermissions: number
   }
 
   export type WarehouseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4636,7 +4636,7 @@ export namespace Prisma {
     wholesaleOrders?: boolean | WarehouseCountOutputTypeCountWholesaleOrdersArgs
     movements?: boolean | WarehouseCountOutputTypeCountMovementsArgs
     warranties?: boolean | WarehouseCountOutputTypeCountWarrantiesArgs
-    allowedUsers?: boolean | WarehouseCountOutputTypeCountAllowedUsersArgs
+    allowedPermissions?: boolean | WarehouseCountOutputTypeCountAllowedPermissionsArgs
   }
 
   // Custom InputTypes
@@ -4688,8 +4688,8 @@ export namespace Prisma {
   /**
    * WarehouseCountOutputType without action
    */
-  export type WarehouseCountOutputTypeCountAllowedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
+  export type WarehouseCountOutputTypeCountAllowedPermissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PermissionWhereInput
   }
 
 
@@ -5382,7 +5382,6 @@ export namespace Prisma {
     salaryAdjustments?: boolean | User$salaryAdjustmentsArgs<ExtArgs>
     expenses?: boolean | User$expensesArgs<ExtArgs>
     stockMovements?: boolean | User$stockMovementsArgs<ExtArgs>
-    allowedWarehouses?: boolean | User$allowedWarehousesArgs<ExtArgs>
     affiliateLinks?: boolean | User$affiliateLinksArgs<ExtArgs>
     reviews?: boolean | User$reviewsArgs<ExtArgs>
     assignedWholesaleCustomers?: boolean | User$assignedWholesaleCustomersArgs<ExtArgs>
@@ -5478,7 +5477,6 @@ export namespace Prisma {
     salaryAdjustments?: boolean | User$salaryAdjustmentsArgs<ExtArgs>
     expenses?: boolean | User$expensesArgs<ExtArgs>
     stockMovements?: boolean | User$stockMovementsArgs<ExtArgs>
-    allowedWarehouses?: boolean | User$allowedWarehousesArgs<ExtArgs>
     affiliateLinks?: boolean | User$affiliateLinksArgs<ExtArgs>
     reviews?: boolean | User$reviewsArgs<ExtArgs>
     assignedWholesaleCustomers?: boolean | User$assignedWholesaleCustomersArgs<ExtArgs>
@@ -5510,7 +5508,6 @@ export namespace Prisma {
       salaryAdjustments: Prisma.$EmployeeSalaryAdjustmentPayload<ExtArgs>[]
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
       stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
-      allowedWarehouses: Prisma.$WarehousePayload<ExtArgs>[]
       affiliateLinks: Prisma.$AffiliateLinkPayload<ExtArgs>[]
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
       assignedWholesaleCustomers: Prisma.$WholesaleCustomerPayload<ExtArgs>[]
@@ -5944,7 +5941,6 @@ export namespace Prisma {
     salaryAdjustments<T extends User$salaryAdjustmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$salaryAdjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeSalaryAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     expenses<T extends User$expensesArgs<ExtArgs> = {}>(args?: Subset<T, User$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     stockMovements<T extends User$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, User$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    allowedWarehouses<T extends User$allowedWarehousesArgs<ExtArgs> = {}>(args?: Subset<T, User$allowedWarehousesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     affiliateLinks<T extends User$affiliateLinksArgs<ExtArgs> = {}>(args?: Subset<T, User$affiliateLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AffiliateLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviews<T extends User$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedWholesaleCustomers<T extends User$assignedWholesaleCustomersArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedWholesaleCustomersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WholesaleCustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6673,30 +6669,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.allowedWarehouses
-   */
-  export type User$allowedWarehousesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Warehouse
-     */
-    select?: WarehouseSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Warehouse
-     */
-    omit?: WarehouseOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WarehouseInclude<ExtArgs> | null
-    where?: WarehouseWhereInput
-    orderBy?: WarehouseOrderByWithRelationInput | WarehouseOrderByWithRelationInput[]
-    cursor?: WarehouseWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: WarehouseScalarFieldEnum | WarehouseScalarFieldEnum[]
-  }
-
-  /**
    * User.affiliateLinks
    */
   export type User$affiliateLinksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7352,6 +7324,7 @@ export namespace Prisma {
     accessSyria?: boolean
     accessTurkey?: boolean
     users?: boolean | Permission$usersArgs<ExtArgs>
+    allowedWarehouses?: boolean | Permission$allowedWarehousesArgs<ExtArgs>
     _count?: boolean | PermissionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["permission"]>
 
@@ -7514,6 +7487,7 @@ export namespace Prisma {
   export type PermissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "roleName" | "viewProducts" | "addProducts" | "editProducts" | "deleteProducts" | "viewReports" | "addReports" | "editReports" | "deleteReports" | "viewOrders" | "addOrders" | "editOrders" | "deleteOrders" | "viewWarranty" | "addWarranty" | "editWarranty" | "deleteWarranty" | "viewCustomers" | "addCustomers" | "editCustomers" | "deleteCustomers" | "viewWholesaleCustomers" | "addWholesaleCustomers" | "editWholesaleCustomers" | "deleteWholesaleCustomers" | "viewEmployees" | "addEmployees" | "editEmployees" | "deleteEmployees" | "viewExpenses" | "addExpenses" | "editExpenses" | "deleteExpenses" | "viewAnalytics" | "viewCategories" | "addCategories" | "editCategories" | "deleteCategories" | "viewPermissions" | "editPermissions" | "addPermissions" | "deletePermissions" | "viewPages" | "addPages" | "editPages" | "deletePages" | "accessSyria" | "accessTurkey", ExtArgs["result"]["permission"]>
   export type PermissionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Permission$usersArgs<ExtArgs>
+    allowedWarehouses?: boolean | Permission$allowedWarehousesArgs<ExtArgs>
     _count?: boolean | PermissionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PermissionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -7523,6 +7497,7 @@ export namespace Prisma {
     name: "Permission"
     objects: {
       users: Prisma.$UserPayload<ExtArgs>[]
+      allowedWarehouses: Prisma.$WarehousePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7969,6 +7944,7 @@ export namespace Prisma {
   export interface Prisma__PermissionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     users<T extends Permission$usersArgs<ExtArgs> = {}>(args?: Subset<T, Permission$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    allowedWarehouses<T extends Permission$allowedWarehousesArgs<ExtArgs> = {}>(args?: Subset<T, Permission$allowedWarehousesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8456,6 +8432,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Permission.allowedWarehouses
+   */
+  export type Permission$allowedWarehousesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Warehouse
+     */
+    select?: WarehouseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Warehouse
+     */
+    omit?: WarehouseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WarehouseInclude<ExtArgs> | null
+    where?: WarehouseWhereInput
+    orderBy?: WarehouseOrderByWithRelationInput | WarehouseOrderByWithRelationInput[]
+    cursor?: WarehouseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WarehouseScalarFieldEnum | WarehouseScalarFieldEnum[]
   }
 
   /**
@@ -15015,7 +15015,7 @@ export namespace Prisma {
     wholesaleOrders?: boolean | Warehouse$wholesaleOrdersArgs<ExtArgs>
     movements?: boolean | Warehouse$movementsArgs<ExtArgs>
     warranties?: boolean | Warehouse$warrantiesArgs<ExtArgs>
-    allowedUsers?: boolean | Warehouse$allowedUsersArgs<ExtArgs>
+    allowedPermissions?: boolean | Warehouse$allowedPermissionsArgs<ExtArgs>
     _count?: boolean | WarehouseCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["warehouse"]>
 
@@ -15050,7 +15050,7 @@ export namespace Prisma {
     wholesaleOrders?: boolean | Warehouse$wholesaleOrdersArgs<ExtArgs>
     movements?: boolean | Warehouse$movementsArgs<ExtArgs>
     warranties?: boolean | Warehouse$warrantiesArgs<ExtArgs>
-    allowedUsers?: boolean | Warehouse$allowedUsersArgs<ExtArgs>
+    allowedPermissions?: boolean | Warehouse$allowedPermissionsArgs<ExtArgs>
     _count?: boolean | WarehouseCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type WarehouseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -15064,7 +15064,7 @@ export namespace Prisma {
       wholesaleOrders: Prisma.$WholesaleOrderPayload<ExtArgs>[]
       movements: Prisma.$StockMovementPayload<ExtArgs>[]
       warranties: Prisma.$WarrantyPayload<ExtArgs>[]
-      allowedUsers: Prisma.$UserPayload<ExtArgs>[]
+      allowedPermissions: Prisma.$PermissionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -15471,7 +15471,7 @@ export namespace Prisma {
     wholesaleOrders<T extends Warehouse$wholesaleOrdersArgs<ExtArgs> = {}>(args?: Subset<T, Warehouse$wholesaleOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WholesaleOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     movements<T extends Warehouse$movementsArgs<ExtArgs> = {}>(args?: Subset<T, Warehouse$movementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     warranties<T extends Warehouse$warrantiesArgs<ExtArgs> = {}>(args?: Subset<T, Warehouse$warrantiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WarrantyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    allowedUsers<T extends Warehouse$allowedUsersArgs<ExtArgs> = {}>(args?: Subset<T, Warehouse$allowedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    allowedPermissions<T extends Warehouse$allowedPermissionsArgs<ExtArgs> = {}>(args?: Subset<T, Warehouse$allowedPermissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16014,27 +16014,27 @@ export namespace Prisma {
   }
 
   /**
-   * Warehouse.allowedUsers
+   * Warehouse.allowedPermissions
    */
-  export type Warehouse$allowedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Warehouse$allowedPermissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the User
+     * Select specific fields to fetch from the Permission
      */
-    select?: UserSelect<ExtArgs> | null
+    select?: PermissionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the User
+     * Omit specific fields from the Permission
      */
-    omit?: UserOmit<ExtArgs> | null
+    omit?: PermissionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
-    cursor?: UserWhereUniqueInput
+    include?: PermissionInclude<ExtArgs> | null
+    where?: PermissionWhereInput
+    orderBy?: PermissionOrderByWithRelationInput | PermissionOrderByWithRelationInput[]
+    cursor?: PermissionWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+    distinct?: PermissionScalarFieldEnum | PermissionScalarFieldEnum[]
   }
 
   /**
@@ -51098,7 +51098,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentListRelationFilter
     expenses?: ExpenseListRelationFilter
     stockMovements?: StockMovementListRelationFilter
-    allowedWarehouses?: WarehouseListRelationFilter
     affiliateLinks?: AffiliateLinkListRelationFilter
     reviews?: ReviewListRelationFilter
     assignedWholesaleCustomers?: WholesaleCustomerListRelationFilter
@@ -51139,7 +51138,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentOrderByRelationAggregateInput
     expenses?: ExpenseOrderByRelationAggregateInput
     stockMovements?: StockMovementOrderByRelationAggregateInput
-    allowedWarehouses?: WarehouseOrderByRelationAggregateInput
     affiliateLinks?: AffiliateLinkOrderByRelationAggregateInput
     reviews?: ReviewOrderByRelationAggregateInput
     assignedWholesaleCustomers?: WholesaleCustomerOrderByRelationAggregateInput
@@ -51183,7 +51181,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentListRelationFilter
     expenses?: ExpenseListRelationFilter
     stockMovements?: StockMovementListRelationFilter
-    allowedWarehouses?: WarehouseListRelationFilter
     affiliateLinks?: AffiliateLinkListRelationFilter
     reviews?: ReviewListRelationFilter
     assignedWholesaleCustomers?: WholesaleCustomerListRelationFilter
@@ -51299,6 +51296,7 @@ export namespace Prisma {
     accessSyria?: BoolFilter<"Permission"> | boolean
     accessTurkey?: BoolFilter<"Permission"> | boolean
     users?: UserListRelationFilter
+    allowedWarehouses?: WarehouseListRelationFilter
   }
 
   export type PermissionOrderByWithRelationInput = {
@@ -51352,6 +51350,7 @@ export namespace Prisma {
     accessSyria?: SortOrder
     accessTurkey?: SortOrder
     users?: UserOrderByRelationAggregateInput
+    allowedWarehouses?: WarehouseOrderByRelationAggregateInput
   }
 
   export type PermissionWhereUniqueInput = Prisma.AtLeast<{
@@ -51408,6 +51407,7 @@ export namespace Prisma {
     accessSyria?: BoolFilter<"Permission"> | boolean
     accessTurkey?: BoolFilter<"Permission"> | boolean
     users?: UserListRelationFilter
+    allowedWarehouses?: WarehouseListRelationFilter
   }, "id">
 
   export type PermissionOrderByWithAggregationInput = {
@@ -52024,7 +52024,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderListRelationFilter
     movements?: StockMovementListRelationFilter
     warranties?: WarrantyListRelationFilter
-    allowedUsers?: UserListRelationFilter
+    allowedPermissions?: PermissionListRelationFilter
   }
 
   export type WarehouseOrderByWithRelationInput = {
@@ -52038,7 +52038,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderOrderByRelationAggregateInput
     movements?: StockMovementOrderByRelationAggregateInput
     warranties?: WarrantyOrderByRelationAggregateInput
-    allowedUsers?: UserOrderByRelationAggregateInput
+    allowedPermissions?: PermissionOrderByRelationAggregateInput
   }
 
   export type WarehouseWhereUniqueInput = Prisma.AtLeast<{
@@ -52055,7 +52055,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderListRelationFilter
     movements?: StockMovementListRelationFilter
     warranties?: WarrantyListRelationFilter
-    allowedUsers?: UserListRelationFilter
+    allowedPermissions?: PermissionListRelationFilter
   }, "id" | "name">
 
   export type WarehouseOrderByWithAggregationInput = {
@@ -54778,7 +54778,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -54817,7 +54816,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -54856,7 +54854,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -54895,7 +54892,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -55021,6 +55017,7 @@ export namespace Prisma {
     accessSyria?: boolean
     accessTurkey?: boolean
     users?: UserCreateNestedManyWithoutPermissionInput
+    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedPermissionsInput
   }
 
   export type PermissionUncheckedCreateInput = {
@@ -55074,6 +55071,7 @@ export namespace Prisma {
     accessSyria?: boolean
     accessTurkey?: boolean
     users?: UserUncheckedCreateNestedManyWithoutPermissionInput
+    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedPermissionsInput
   }
 
   export type PermissionUpdateInput = {
@@ -55127,6 +55125,7 @@ export namespace Prisma {
     accessSyria?: BoolFieldUpdateOperationsInput | boolean
     accessTurkey?: BoolFieldUpdateOperationsInput | boolean
     users?: UserUpdateManyWithoutPermissionNestedInput
+    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedPermissionsNestedInput
   }
 
   export type PermissionUncheckedUpdateInput = {
@@ -55180,6 +55179,7 @@ export namespace Prisma {
     accessSyria?: BoolFieldUpdateOperationsInput | boolean
     accessTurkey?: BoolFieldUpdateOperationsInput | boolean
     users?: UserUncheckedUpdateManyWithoutPermissionNestedInput
+    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedPermissionsNestedInput
   }
 
   export type PermissionCreateManyInput = {
@@ -55901,7 +55901,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseUncheckedCreateInput = {
@@ -55915,7 +55915,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserUncheckedCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionUncheckedCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseUpdateInput = {
@@ -55928,7 +55928,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type WarehouseUncheckedUpdateInput = {
@@ -55942,7 +55942,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type WarehouseCreateManyInput = {
@@ -59044,12 +59044,6 @@ export namespace Prisma {
     none?: StockMovementWhereInput
   }
 
-  export type WarehouseListRelationFilter = {
-    every?: WarehouseWhereInput
-    some?: WarehouseWhereInput
-    none?: WarehouseWhereInput
-  }
-
   export type AffiliateLinkListRelationFilter = {
     every?: AffiliateLinkWhereInput
     some?: AffiliateLinkWhereInput
@@ -59122,10 +59116,6 @@ export namespace Prisma {
   }
 
   export type StockMovementOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type WarehouseOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -59340,6 +59330,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type WarehouseListRelationFilter = {
+    every?: WarehouseWhereInput
+    some?: WarehouseWhereInput
+    none?: WarehouseWhereInput
+  }
+
+  export type WarehouseOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type PermissionCountOrderByAggregateInput = {
@@ -59976,6 +59976,16 @@ export namespace Prisma {
   export type ReviewSumOrderByAggregateInput = {
     productId?: SortOrder
     rating?: SortOrder
+  }
+
+  export type PermissionListRelationFilter = {
+    every?: PermissionWhereInput
+    some?: PermissionWhereInput
+    none?: PermissionWhereInput
+  }
+
+  export type PermissionOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type WarehouseCountOrderByAggregateInput = {
@@ -62040,12 +62050,6 @@ export namespace Prisma {
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
   }
 
-  export type WarehouseCreateNestedManyWithoutAllowedUsersInput = {
-    create?: XOR<WarehouseCreateWithoutAllowedUsersInput, WarehouseUncheckedCreateWithoutAllowedUsersInput> | WarehouseCreateWithoutAllowedUsersInput[] | WarehouseUncheckedCreateWithoutAllowedUsersInput[]
-    connectOrCreate?: WarehouseCreateOrConnectWithoutAllowedUsersInput | WarehouseCreateOrConnectWithoutAllowedUsersInput[]
-    connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-  }
-
   export type AffiliateLinkCreateNestedManyWithoutUserInput = {
     create?: XOR<AffiliateLinkCreateWithoutUserInput, AffiliateLinkUncheckedCreateWithoutUserInput> | AffiliateLinkCreateWithoutUserInput[] | AffiliateLinkUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AffiliateLinkCreateOrConnectWithoutUserInput | AffiliateLinkCreateOrConnectWithoutUserInput[]
@@ -62148,12 +62152,6 @@ export namespace Prisma {
     connectOrCreate?: StockMovementCreateOrConnectWithoutUserInput | StockMovementCreateOrConnectWithoutUserInput[]
     createMany?: StockMovementCreateManyUserInputEnvelope
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
-  }
-
-  export type WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput = {
-    create?: XOR<WarehouseCreateWithoutAllowedUsersInput, WarehouseUncheckedCreateWithoutAllowedUsersInput> | WarehouseCreateWithoutAllowedUsersInput[] | WarehouseUncheckedCreateWithoutAllowedUsersInput[]
-    connectOrCreate?: WarehouseCreateOrConnectWithoutAllowedUsersInput | WarehouseCreateOrConnectWithoutAllowedUsersInput[]
-    connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
   }
 
   export type AffiliateLinkUncheckedCreateNestedManyWithoutUserInput = {
@@ -62390,19 +62388,6 @@ export namespace Prisma {
     deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
-  export type WarehouseUpdateManyWithoutAllowedUsersNestedInput = {
-    create?: XOR<WarehouseCreateWithoutAllowedUsersInput, WarehouseUncheckedCreateWithoutAllowedUsersInput> | WarehouseCreateWithoutAllowedUsersInput[] | WarehouseUncheckedCreateWithoutAllowedUsersInput[]
-    connectOrCreate?: WarehouseCreateOrConnectWithoutAllowedUsersInput | WarehouseCreateOrConnectWithoutAllowedUsersInput[]
-    upsert?: WarehouseUpsertWithWhereUniqueWithoutAllowedUsersInput | WarehouseUpsertWithWhereUniqueWithoutAllowedUsersInput[]
-    set?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-    disconnect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-    delete?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-    connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-    update?: WarehouseUpdateWithWhereUniqueWithoutAllowedUsersInput | WarehouseUpdateWithWhereUniqueWithoutAllowedUsersInput[]
-    updateMany?: WarehouseUpdateManyWithWhereWithoutAllowedUsersInput | WarehouseUpdateManyWithWhereWithoutAllowedUsersInput[]
-    deleteMany?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
-  }
-
   export type AffiliateLinkUpdateManyWithoutUserNestedInput = {
     create?: XOR<AffiliateLinkCreateWithoutUserInput, AffiliateLinkUncheckedCreateWithoutUserInput> | AffiliateLinkCreateWithoutUserInput[] | AffiliateLinkUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AffiliateLinkCreateOrConnectWithoutUserInput | AffiliateLinkCreateOrConnectWithoutUserInput[]
@@ -62612,19 +62597,6 @@ export namespace Prisma {
     deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
-  export type WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput = {
-    create?: XOR<WarehouseCreateWithoutAllowedUsersInput, WarehouseUncheckedCreateWithoutAllowedUsersInput> | WarehouseCreateWithoutAllowedUsersInput[] | WarehouseUncheckedCreateWithoutAllowedUsersInput[]
-    connectOrCreate?: WarehouseCreateOrConnectWithoutAllowedUsersInput | WarehouseCreateOrConnectWithoutAllowedUsersInput[]
-    upsert?: WarehouseUpsertWithWhereUniqueWithoutAllowedUsersInput | WarehouseUpsertWithWhereUniqueWithoutAllowedUsersInput[]
-    set?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-    disconnect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-    delete?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-    connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
-    update?: WarehouseUpdateWithWhereUniqueWithoutAllowedUsersInput | WarehouseUpdateWithWhereUniqueWithoutAllowedUsersInput[]
-    updateMany?: WarehouseUpdateManyWithWhereWithoutAllowedUsersInput | WarehouseUpdateManyWithWhereWithoutAllowedUsersInput[]
-    deleteMany?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
-  }
-
   export type AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AffiliateLinkCreateWithoutUserInput, AffiliateLinkUncheckedCreateWithoutUserInput> | AffiliateLinkCreateWithoutUserInput[] | AffiliateLinkUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AffiliateLinkCreateOrConnectWithoutUserInput | AffiliateLinkCreateOrConnectWithoutUserInput[]
@@ -62702,11 +62674,23 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
+  export type WarehouseCreateNestedManyWithoutAllowedPermissionsInput = {
+    create?: XOR<WarehouseCreateWithoutAllowedPermissionsInput, WarehouseUncheckedCreateWithoutAllowedPermissionsInput> | WarehouseCreateWithoutAllowedPermissionsInput[] | WarehouseUncheckedCreateWithoutAllowedPermissionsInput[]
+    connectOrCreate?: WarehouseCreateOrConnectWithoutAllowedPermissionsInput | WarehouseCreateOrConnectWithoutAllowedPermissionsInput[]
+    connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutPermissionInput = {
     create?: XOR<UserCreateWithoutPermissionInput, UserUncheckedCreateWithoutPermissionInput> | UserCreateWithoutPermissionInput[] | UserUncheckedCreateWithoutPermissionInput[]
     connectOrCreate?: UserCreateOrConnectWithoutPermissionInput | UserCreateOrConnectWithoutPermissionInput[]
     createMany?: UserCreateManyPermissionInputEnvelope
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type WarehouseUncheckedCreateNestedManyWithoutAllowedPermissionsInput = {
+    create?: XOR<WarehouseCreateWithoutAllowedPermissionsInput, WarehouseUncheckedCreateWithoutAllowedPermissionsInput> | WarehouseCreateWithoutAllowedPermissionsInput[] | WarehouseUncheckedCreateWithoutAllowedPermissionsInput[]
+    connectOrCreate?: WarehouseCreateOrConnectWithoutAllowedPermissionsInput | WarehouseCreateOrConnectWithoutAllowedPermissionsInput[]
+    connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
   }
 
   export type UserUpdateManyWithoutPermissionNestedInput = {
@@ -62723,6 +62707,19 @@ export namespace Prisma {
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
+  export type WarehouseUpdateManyWithoutAllowedPermissionsNestedInput = {
+    create?: XOR<WarehouseCreateWithoutAllowedPermissionsInput, WarehouseUncheckedCreateWithoutAllowedPermissionsInput> | WarehouseCreateWithoutAllowedPermissionsInput[] | WarehouseUncheckedCreateWithoutAllowedPermissionsInput[]
+    connectOrCreate?: WarehouseCreateOrConnectWithoutAllowedPermissionsInput | WarehouseCreateOrConnectWithoutAllowedPermissionsInput[]
+    upsert?: WarehouseUpsertWithWhereUniqueWithoutAllowedPermissionsInput | WarehouseUpsertWithWhereUniqueWithoutAllowedPermissionsInput[]
+    set?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+    disconnect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+    delete?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+    connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+    update?: WarehouseUpdateWithWhereUniqueWithoutAllowedPermissionsInput | WarehouseUpdateWithWhereUniqueWithoutAllowedPermissionsInput[]
+    updateMany?: WarehouseUpdateManyWithWhereWithoutAllowedPermissionsInput | WarehouseUpdateManyWithWhereWithoutAllowedPermissionsInput[]
+    deleteMany?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutPermissionNestedInput = {
     create?: XOR<UserCreateWithoutPermissionInput, UserUncheckedCreateWithoutPermissionInput> | UserCreateWithoutPermissionInput[] | UserUncheckedCreateWithoutPermissionInput[]
     connectOrCreate?: UserCreateOrConnectWithoutPermissionInput | UserCreateOrConnectWithoutPermissionInput[]
@@ -62735,6 +62732,19 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutPermissionInput | UserUpdateWithWhereUniqueWithoutPermissionInput[]
     updateMany?: UserUpdateManyWithWhereWithoutPermissionInput | UserUpdateManyWithWhereWithoutPermissionInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type WarehouseUncheckedUpdateManyWithoutAllowedPermissionsNestedInput = {
+    create?: XOR<WarehouseCreateWithoutAllowedPermissionsInput, WarehouseUncheckedCreateWithoutAllowedPermissionsInput> | WarehouseCreateWithoutAllowedPermissionsInput[] | WarehouseUncheckedCreateWithoutAllowedPermissionsInput[]
+    connectOrCreate?: WarehouseCreateOrConnectWithoutAllowedPermissionsInput | WarehouseCreateOrConnectWithoutAllowedPermissionsInput[]
+    upsert?: WarehouseUpsertWithWhereUniqueWithoutAllowedPermissionsInput | WarehouseUpsertWithWhereUniqueWithoutAllowedPermissionsInput[]
+    set?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+    disconnect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+    delete?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+    connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+    update?: WarehouseUpdateWithWhereUniqueWithoutAllowedPermissionsInput | WarehouseUpdateWithWhereUniqueWithoutAllowedPermissionsInput[]
+    updateMany?: WarehouseUpdateManyWithWhereWithoutAllowedPermissionsInput | WarehouseUpdateManyWithWhereWithoutAllowedPermissionsInput[]
+    deleteMany?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
   }
 
   export type ProductCreateNestedManyWithoutCategoryInput = {
@@ -63482,10 +63492,10 @@ export namespace Prisma {
     connect?: WarrantyWhereUniqueInput | WarrantyWhereUniqueInput[]
   }
 
-  export type UserCreateNestedManyWithoutAllowedWarehousesInput = {
-    create?: XOR<UserCreateWithoutAllowedWarehousesInput, UserUncheckedCreateWithoutAllowedWarehousesInput> | UserCreateWithoutAllowedWarehousesInput[] | UserUncheckedCreateWithoutAllowedWarehousesInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutAllowedWarehousesInput | UserCreateOrConnectWithoutAllowedWarehousesInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  export type PermissionCreateNestedManyWithoutAllowedWarehousesInput = {
+    create?: XOR<PermissionCreateWithoutAllowedWarehousesInput, PermissionUncheckedCreateWithoutAllowedWarehousesInput> | PermissionCreateWithoutAllowedWarehousesInput[] | PermissionUncheckedCreateWithoutAllowedWarehousesInput[]
+    connectOrCreate?: PermissionCreateOrConnectWithoutAllowedWarehousesInput | PermissionCreateOrConnectWithoutAllowedWarehousesInput[]
+    connect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
   }
 
   export type ProductStockUncheckedCreateNestedManyWithoutWarehouseInput = {
@@ -63523,10 +63533,10 @@ export namespace Prisma {
     connect?: WarrantyWhereUniqueInput | WarrantyWhereUniqueInput[]
   }
 
-  export type UserUncheckedCreateNestedManyWithoutAllowedWarehousesInput = {
-    create?: XOR<UserCreateWithoutAllowedWarehousesInput, UserUncheckedCreateWithoutAllowedWarehousesInput> | UserCreateWithoutAllowedWarehousesInput[] | UserUncheckedCreateWithoutAllowedWarehousesInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutAllowedWarehousesInput | UserCreateOrConnectWithoutAllowedWarehousesInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  export type PermissionUncheckedCreateNestedManyWithoutAllowedWarehousesInput = {
+    create?: XOR<PermissionCreateWithoutAllowedWarehousesInput, PermissionUncheckedCreateWithoutAllowedWarehousesInput> | PermissionCreateWithoutAllowedWarehousesInput[] | PermissionUncheckedCreateWithoutAllowedWarehousesInput[]
+    connectOrCreate?: PermissionCreateOrConnectWithoutAllowedWarehousesInput | PermissionCreateOrConnectWithoutAllowedWarehousesInput[]
+    connect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
   }
 
   export type ProductStockUpdateManyWithoutWarehouseNestedInput = {
@@ -63599,17 +63609,17 @@ export namespace Prisma {
     deleteMany?: WarrantyScalarWhereInput | WarrantyScalarWhereInput[]
   }
 
-  export type UserUpdateManyWithoutAllowedWarehousesNestedInput = {
-    create?: XOR<UserCreateWithoutAllowedWarehousesInput, UserUncheckedCreateWithoutAllowedWarehousesInput> | UserCreateWithoutAllowedWarehousesInput[] | UserUncheckedCreateWithoutAllowedWarehousesInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutAllowedWarehousesInput | UserCreateOrConnectWithoutAllowedWarehousesInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutAllowedWarehousesInput | UserUpsertWithWhereUniqueWithoutAllowedWarehousesInput[]
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutAllowedWarehousesInput | UserUpdateWithWhereUniqueWithoutAllowedWarehousesInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutAllowedWarehousesInput | UserUpdateManyWithWhereWithoutAllowedWarehousesInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  export type PermissionUpdateManyWithoutAllowedWarehousesNestedInput = {
+    create?: XOR<PermissionCreateWithoutAllowedWarehousesInput, PermissionUncheckedCreateWithoutAllowedWarehousesInput> | PermissionCreateWithoutAllowedWarehousesInput[] | PermissionUncheckedCreateWithoutAllowedWarehousesInput[]
+    connectOrCreate?: PermissionCreateOrConnectWithoutAllowedWarehousesInput | PermissionCreateOrConnectWithoutAllowedWarehousesInput[]
+    upsert?: PermissionUpsertWithWhereUniqueWithoutAllowedWarehousesInput | PermissionUpsertWithWhereUniqueWithoutAllowedWarehousesInput[]
+    set?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    disconnect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    delete?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    connect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    update?: PermissionUpdateWithWhereUniqueWithoutAllowedWarehousesInput | PermissionUpdateWithWhereUniqueWithoutAllowedWarehousesInput[]
+    updateMany?: PermissionUpdateManyWithWhereWithoutAllowedWarehousesInput | PermissionUpdateManyWithWhereWithoutAllowedWarehousesInput[]
+    deleteMany?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
   }
 
   export type ProductStockUncheckedUpdateManyWithoutWarehouseNestedInput = {
@@ -63682,17 +63692,17 @@ export namespace Prisma {
     deleteMany?: WarrantyScalarWhereInput | WarrantyScalarWhereInput[]
   }
 
-  export type UserUncheckedUpdateManyWithoutAllowedWarehousesNestedInput = {
-    create?: XOR<UserCreateWithoutAllowedWarehousesInput, UserUncheckedCreateWithoutAllowedWarehousesInput> | UserCreateWithoutAllowedWarehousesInput[] | UserUncheckedCreateWithoutAllowedWarehousesInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutAllowedWarehousesInput | UserCreateOrConnectWithoutAllowedWarehousesInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutAllowedWarehousesInput | UserUpsertWithWhereUniqueWithoutAllowedWarehousesInput[]
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutAllowedWarehousesInput | UserUpdateWithWhereUniqueWithoutAllowedWarehousesInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutAllowedWarehousesInput | UserUpdateManyWithWhereWithoutAllowedWarehousesInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  export type PermissionUncheckedUpdateManyWithoutAllowedWarehousesNestedInput = {
+    create?: XOR<PermissionCreateWithoutAllowedWarehousesInput, PermissionUncheckedCreateWithoutAllowedWarehousesInput> | PermissionCreateWithoutAllowedWarehousesInput[] | PermissionUncheckedCreateWithoutAllowedWarehousesInput[]
+    connectOrCreate?: PermissionCreateOrConnectWithoutAllowedWarehousesInput | PermissionCreateOrConnectWithoutAllowedWarehousesInput[]
+    upsert?: PermissionUpsertWithWhereUniqueWithoutAllowedWarehousesInput | PermissionUpsertWithWhereUniqueWithoutAllowedWarehousesInput[]
+    set?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    disconnect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    delete?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    connect?: PermissionWhereUniqueInput | PermissionWhereUniqueInput[]
+    update?: PermissionUpdateWithWhereUniqueWithoutAllowedWarehousesInput | PermissionUpdateWithWhereUniqueWithoutAllowedWarehousesInput[]
+    updateMany?: PermissionUpdateManyWithWhereWithoutAllowedWarehousesInput | PermissionUpdateManyWithWhereWithoutAllowedWarehousesInput[]
+    deleteMany?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
   }
 
   export type ProductCreateNestedOneWithoutStocksInput = {
@@ -65721,7 +65731,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -65759,7 +65768,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -65802,7 +65810,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -65840,7 +65847,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -66031,6 +66037,7 @@ export namespace Prisma {
     deletePages?: boolean
     accessSyria?: boolean
     accessTurkey?: boolean
+    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedPermissionsInput
   }
 
   export type PermissionUncheckedCreateWithoutUsersInput = {
@@ -66083,6 +66090,7 @@ export namespace Prisma {
     deletePages?: boolean
     accessSyria?: boolean
     accessTurkey?: boolean
+    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedPermissionsInput
   }
 
   export type PermissionCreateOrConnectWithoutUsersInput = {
@@ -66328,36 +66336,6 @@ export namespace Prisma {
   export type StockMovementCreateManyUserInputEnvelope = {
     data: StockMovementCreateManyUserInput | StockMovementCreateManyUserInput[]
     skipDuplicates?: boolean
-  }
-
-  export type WarehouseCreateWithoutAllowedUsersInput = {
-    name: string
-    location: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    stocks?: ProductStockCreateNestedManyWithoutWarehouseInput
-    orders?: OrderCreateNestedManyWithoutWarehouseInput
-    wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutWarehouseInput
-    movements?: StockMovementCreateNestedManyWithoutWarehouseInput
-    warranties?: WarrantyCreateNestedManyWithoutWarehouseInput
-  }
-
-  export type WarehouseUncheckedCreateWithoutAllowedUsersInput = {
-    id?: number
-    name: string
-    location: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    stocks?: ProductStockUncheckedCreateNestedManyWithoutWarehouseInput
-    orders?: OrderUncheckedCreateNestedManyWithoutWarehouseInput
-    wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutWarehouseInput
-    movements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
-    warranties?: WarrantyUncheckedCreateNestedManyWithoutWarehouseInput
-  }
-
-  export type WarehouseCreateOrConnectWithoutAllowedUsersInput = {
-    where: WarehouseWhereUniqueInput
-    create: XOR<WarehouseCreateWithoutAllowedUsersInput, WarehouseUncheckedCreateWithoutAllowedUsersInput>
   }
 
   export type AffiliateLinkCreateWithoutUserInput = {
@@ -66670,7 +66648,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -66708,7 +66685,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -66908,6 +66884,7 @@ export namespace Prisma {
     deletePages?: BoolFieldUpdateOperationsInput | boolean
     accessSyria?: BoolFieldUpdateOperationsInput | boolean
     accessTurkey?: BoolFieldUpdateOperationsInput | boolean
+    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedPermissionsNestedInput
   }
 
   export type PermissionUncheckedUpdateWithoutUsersInput = {
@@ -66960,6 +66937,7 @@ export namespace Prisma {
     deletePages?: BoolFieldUpdateOperationsInput | boolean
     accessSyria?: BoolFieldUpdateOperationsInput | boolean
     accessTurkey?: BoolFieldUpdateOperationsInput | boolean
+    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedPermissionsNestedInput
   }
 
   export type CustomerUpsertWithWhereUniqueWithoutUsersInput = {
@@ -67183,33 +67161,6 @@ export namespace Prisma {
     type?: EnumMovementTypeFilter<"StockMovement"> | $Enums.MovementType
     reason?: StringNullableFilter<"StockMovement"> | string | null
     createdAt?: DateTimeFilter<"StockMovement"> | Date | string
-  }
-
-  export type WarehouseUpsertWithWhereUniqueWithoutAllowedUsersInput = {
-    where: WarehouseWhereUniqueInput
-    update: XOR<WarehouseUpdateWithoutAllowedUsersInput, WarehouseUncheckedUpdateWithoutAllowedUsersInput>
-    create: XOR<WarehouseCreateWithoutAllowedUsersInput, WarehouseUncheckedCreateWithoutAllowedUsersInput>
-  }
-
-  export type WarehouseUpdateWithWhereUniqueWithoutAllowedUsersInput = {
-    where: WarehouseWhereUniqueInput
-    data: XOR<WarehouseUpdateWithoutAllowedUsersInput, WarehouseUncheckedUpdateWithoutAllowedUsersInput>
-  }
-
-  export type WarehouseUpdateManyWithWhereWithoutAllowedUsersInput = {
-    where: WarehouseScalarWhereInput
-    data: XOR<WarehouseUpdateManyMutationInput, WarehouseUncheckedUpdateManyWithoutAllowedUsersInput>
-  }
-
-  export type WarehouseScalarWhereInput = {
-    AND?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
-    OR?: WarehouseScalarWhereInput[]
-    NOT?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
-    id?: IntFilter<"Warehouse"> | number
-    name?: StringFilter<"Warehouse"> | string
-    location?: StringFilter<"Warehouse"> | string
-    createdAt?: DateTimeFilter<"Warehouse"> | Date | string
-    updatedAt?: DateTimeFilter<"Warehouse"> | Date | string
   }
 
   export type AffiliateLinkUpsertWithWhereUniqueWithoutUserInput = {
@@ -67447,7 +67398,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -67485,7 +67435,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -67503,6 +67452,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type WarehouseCreateWithoutAllowedPermissionsInput = {
+    name: string
+    location: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stocks?: ProductStockCreateNestedManyWithoutWarehouseInput
+    orders?: OrderCreateNestedManyWithoutWarehouseInput
+    wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutWarehouseInput
+    movements?: StockMovementCreateNestedManyWithoutWarehouseInput
+    warranties?: WarrantyCreateNestedManyWithoutWarehouseInput
+  }
+
+  export type WarehouseUncheckedCreateWithoutAllowedPermissionsInput = {
+    id?: number
+    name: string
+    location: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stocks?: ProductStockUncheckedCreateNestedManyWithoutWarehouseInput
+    orders?: OrderUncheckedCreateNestedManyWithoutWarehouseInput
+    wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutWarehouseInput
+    movements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
+    warranties?: WarrantyUncheckedCreateNestedManyWithoutWarehouseInput
+  }
+
+  export type WarehouseCreateOrConnectWithoutAllowedPermissionsInput = {
+    where: WarehouseWhereUniqueInput
+    create: XOR<WarehouseCreateWithoutAllowedPermissionsInput, WarehouseUncheckedCreateWithoutAllowedPermissionsInput>
+  }
+
   export type UserUpsertWithWhereUniqueWithoutPermissionInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutPermissionInput, UserUncheckedUpdateWithoutPermissionInput>
@@ -67517,6 +67496,33 @@ export namespace Prisma {
   export type UserUpdateManyWithWhereWithoutPermissionInput = {
     where: UserScalarWhereInput
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutPermissionInput>
+  }
+
+  export type WarehouseUpsertWithWhereUniqueWithoutAllowedPermissionsInput = {
+    where: WarehouseWhereUniqueInput
+    update: XOR<WarehouseUpdateWithoutAllowedPermissionsInput, WarehouseUncheckedUpdateWithoutAllowedPermissionsInput>
+    create: XOR<WarehouseCreateWithoutAllowedPermissionsInput, WarehouseUncheckedCreateWithoutAllowedPermissionsInput>
+  }
+
+  export type WarehouseUpdateWithWhereUniqueWithoutAllowedPermissionsInput = {
+    where: WarehouseWhereUniqueInput
+    data: XOR<WarehouseUpdateWithoutAllowedPermissionsInput, WarehouseUncheckedUpdateWithoutAllowedPermissionsInput>
+  }
+
+  export type WarehouseUpdateManyWithWhereWithoutAllowedPermissionsInput = {
+    where: WarehouseScalarWhereInput
+    data: XOR<WarehouseUpdateManyMutationInput, WarehouseUncheckedUpdateManyWithoutAllowedPermissionsInput>
+  }
+
+  export type WarehouseScalarWhereInput = {
+    AND?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
+    OR?: WarehouseScalarWhereInput[]
+    NOT?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
+    id?: IntFilter<"Warehouse"> | number
+    name?: StringFilter<"Warehouse"> | string
+    location?: StringFilter<"Warehouse"> | string
+    createdAt?: DateTimeFilter<"Warehouse"> | Date | string
+    updatedAt?: DateTimeFilter<"Warehouse"> | Date | string
   }
 
   export type ProductCreateWithoutCategoryInput = {
@@ -68868,7 +68874,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
     wholesaleVisits?: WholesaleVisitCreateNestedManyWithoutUserInput
@@ -68906,7 +68911,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
     wholesaleVisits?: WholesaleVisitUncheckedCreateNestedManyWithoutUserInput
@@ -69028,7 +69032,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
     wholesaleVisits?: WholesaleVisitUpdateManyWithoutUserNestedInput
@@ -69066,7 +69069,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
     wholesaleVisits?: WholesaleVisitUncheckedUpdateManyWithoutUserNestedInput
@@ -69340,85 +69342,115 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserCreateWithoutAllowedWarehousesInput = {
+  export type PermissionCreateWithoutAllowedWarehousesInput = {
     id?: string
-    username: string
-    email: string
-    phone?: string | null
-    notes?: string | null
-    jobTitle?: string | null
-    avatar?: string | null
-    accountType?: $Enums.AccountType
-    password: string
-    salesCommissionPercent?: number
-    wage?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    isAffiliate?: boolean
-    affiliateApproved?: boolean
-    affiliateCode?: string | null
-    affiliateRequestedAt?: Date | string | null
-    affiliateApprovedAt?: Date | string | null
-    parent?: UserCreateNestedOneWithoutSubordinatesInput
-    subordinates?: UserCreateNestedManyWithoutParentInput
-    orders?: OrderCreateNestedManyWithoutUserInput
-    walletTransfers?: AffiliateWalletTransferCreateNestedManyWithoutUserInput
-    permission?: PermissionCreateNestedOneWithoutUsersInput
-    customers?: CustomerCreateNestedManyWithoutUsersInput
-    message?: MessageCreateNestedManyWithoutUserInput
-    targets?: UserTargetCreateNestedManyWithoutUserInput
-    activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
-    salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
-    expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
-    stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
-    reviews?: ReviewCreateNestedManyWithoutUserInput
-    assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
-    wholesaleVisits?: WholesaleVisitCreateNestedManyWithoutUserInput
-    wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutUserInput
+    roleName: string
+    viewProducts?: boolean
+    addProducts?: boolean
+    editProducts?: boolean
+    deleteProducts?: boolean
+    viewReports?: boolean
+    addReports?: boolean
+    editReports?: boolean
+    deleteReports?: boolean
+    viewOrders?: boolean
+    addOrders?: boolean
+    editOrders?: boolean
+    deleteOrders?: boolean
+    viewWarranty?: boolean
+    addWarranty?: boolean
+    editWarranty?: boolean
+    deleteWarranty?: boolean
+    viewCustomers?: boolean
+    addCustomers?: boolean
+    editCustomers?: boolean
+    deleteCustomers?: boolean
+    viewWholesaleCustomers?: boolean
+    addWholesaleCustomers?: boolean
+    editWholesaleCustomers?: boolean
+    deleteWholesaleCustomers?: boolean
+    viewEmployees?: boolean
+    addEmployees?: boolean
+    editEmployees?: boolean
+    deleteEmployees?: boolean
+    viewExpenses?: boolean
+    addExpenses?: boolean
+    editExpenses?: boolean
+    deleteExpenses?: boolean
+    viewAnalytics?: boolean
+    viewCategories?: boolean
+    addCategories?: boolean
+    editCategories?: boolean
+    deleteCategories?: boolean
+    viewPermissions?: boolean
+    editPermissions?: boolean
+    addPermissions?: boolean
+    deletePermissions?: boolean
+    viewPages?: boolean
+    addPages?: boolean
+    editPages?: boolean
+    deletePages?: boolean
+    accessSyria?: boolean
+    accessTurkey?: boolean
+    users?: UserCreateNestedManyWithoutPermissionInput
   }
 
-  export type UserUncheckedCreateWithoutAllowedWarehousesInput = {
+  export type PermissionUncheckedCreateWithoutAllowedWarehousesInput = {
     id?: string
-    username: string
-    email: string
-    phone?: string | null
-    notes?: string | null
-    jobTitle?: string | null
-    avatar?: string | null
-    accountType?: $Enums.AccountType
-    password: string
-    salesCommissionPercent?: number
-    wage?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    permissionId?: string | null
-    parentId?: string | null
-    isAffiliate?: boolean
-    affiliateApproved?: boolean
-    affiliateCode?: string | null
-    affiliateRequestedAt?: Date | string | null
-    affiliateApprovedAt?: Date | string | null
-    subordinates?: UserUncheckedCreateNestedManyWithoutParentInput
-    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
-    walletTransfers?: AffiliateWalletTransferUncheckedCreateNestedManyWithoutUserInput
-    customers?: CustomerUncheckedCreateNestedManyWithoutUsersInput
-    message?: MessageUncheckedCreateNestedManyWithoutUserInput
-    targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
-    activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
-    salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
-    expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
-    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
-    assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
-    wholesaleVisits?: WholesaleVisitUncheckedCreateNestedManyWithoutUserInput
-    wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutUserInput
+    roleName: string
+    viewProducts?: boolean
+    addProducts?: boolean
+    editProducts?: boolean
+    deleteProducts?: boolean
+    viewReports?: boolean
+    addReports?: boolean
+    editReports?: boolean
+    deleteReports?: boolean
+    viewOrders?: boolean
+    addOrders?: boolean
+    editOrders?: boolean
+    deleteOrders?: boolean
+    viewWarranty?: boolean
+    addWarranty?: boolean
+    editWarranty?: boolean
+    deleteWarranty?: boolean
+    viewCustomers?: boolean
+    addCustomers?: boolean
+    editCustomers?: boolean
+    deleteCustomers?: boolean
+    viewWholesaleCustomers?: boolean
+    addWholesaleCustomers?: boolean
+    editWholesaleCustomers?: boolean
+    deleteWholesaleCustomers?: boolean
+    viewEmployees?: boolean
+    addEmployees?: boolean
+    editEmployees?: boolean
+    deleteEmployees?: boolean
+    viewExpenses?: boolean
+    addExpenses?: boolean
+    editExpenses?: boolean
+    deleteExpenses?: boolean
+    viewAnalytics?: boolean
+    viewCategories?: boolean
+    addCategories?: boolean
+    editCategories?: boolean
+    deleteCategories?: boolean
+    viewPermissions?: boolean
+    editPermissions?: boolean
+    addPermissions?: boolean
+    deletePermissions?: boolean
+    viewPages?: boolean
+    addPages?: boolean
+    editPages?: boolean
+    deletePages?: boolean
+    accessSyria?: boolean
+    accessTurkey?: boolean
+    users?: UserUncheckedCreateNestedManyWithoutPermissionInput
   }
 
-  export type UserCreateOrConnectWithoutAllowedWarehousesInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutAllowedWarehousesInput, UserUncheckedCreateWithoutAllowedWarehousesInput>
+  export type PermissionCreateOrConnectWithoutAllowedWarehousesInput = {
+    where: PermissionWhereUniqueInput
+    create: XOR<PermissionCreateWithoutAllowedWarehousesInput, PermissionUncheckedCreateWithoutAllowedWarehousesInput>
   }
 
   export type ProductStockUpsertWithWhereUniqueWithoutWarehouseInput = {
@@ -69501,20 +69533,75 @@ export namespace Prisma {
     data: XOR<WarrantyUpdateManyMutationInput, WarrantyUncheckedUpdateManyWithoutWarehouseInput>
   }
 
-  export type UserUpsertWithWhereUniqueWithoutAllowedWarehousesInput = {
-    where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutAllowedWarehousesInput, UserUncheckedUpdateWithoutAllowedWarehousesInput>
-    create: XOR<UserCreateWithoutAllowedWarehousesInput, UserUncheckedCreateWithoutAllowedWarehousesInput>
+  export type PermissionUpsertWithWhereUniqueWithoutAllowedWarehousesInput = {
+    where: PermissionWhereUniqueInput
+    update: XOR<PermissionUpdateWithoutAllowedWarehousesInput, PermissionUncheckedUpdateWithoutAllowedWarehousesInput>
+    create: XOR<PermissionCreateWithoutAllowedWarehousesInput, PermissionUncheckedCreateWithoutAllowedWarehousesInput>
   }
 
-  export type UserUpdateWithWhereUniqueWithoutAllowedWarehousesInput = {
-    where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutAllowedWarehousesInput, UserUncheckedUpdateWithoutAllowedWarehousesInput>
+  export type PermissionUpdateWithWhereUniqueWithoutAllowedWarehousesInput = {
+    where: PermissionWhereUniqueInput
+    data: XOR<PermissionUpdateWithoutAllowedWarehousesInput, PermissionUncheckedUpdateWithoutAllowedWarehousesInput>
   }
 
-  export type UserUpdateManyWithWhereWithoutAllowedWarehousesInput = {
-    where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutAllowedWarehousesInput>
+  export type PermissionUpdateManyWithWhereWithoutAllowedWarehousesInput = {
+    where: PermissionScalarWhereInput
+    data: XOR<PermissionUpdateManyMutationInput, PermissionUncheckedUpdateManyWithoutAllowedWarehousesInput>
+  }
+
+  export type PermissionScalarWhereInput = {
+    AND?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
+    OR?: PermissionScalarWhereInput[]
+    NOT?: PermissionScalarWhereInput | PermissionScalarWhereInput[]
+    id?: StringFilter<"Permission"> | string
+    roleName?: StringFilter<"Permission"> | string
+    viewProducts?: BoolFilter<"Permission"> | boolean
+    addProducts?: BoolFilter<"Permission"> | boolean
+    editProducts?: BoolFilter<"Permission"> | boolean
+    deleteProducts?: BoolFilter<"Permission"> | boolean
+    viewReports?: BoolFilter<"Permission"> | boolean
+    addReports?: BoolFilter<"Permission"> | boolean
+    editReports?: BoolFilter<"Permission"> | boolean
+    deleteReports?: BoolFilter<"Permission"> | boolean
+    viewOrders?: BoolFilter<"Permission"> | boolean
+    addOrders?: BoolFilter<"Permission"> | boolean
+    editOrders?: BoolFilter<"Permission"> | boolean
+    deleteOrders?: BoolFilter<"Permission"> | boolean
+    viewWarranty?: BoolFilter<"Permission"> | boolean
+    addWarranty?: BoolFilter<"Permission"> | boolean
+    editWarranty?: BoolFilter<"Permission"> | boolean
+    deleteWarranty?: BoolFilter<"Permission"> | boolean
+    viewCustomers?: BoolFilter<"Permission"> | boolean
+    addCustomers?: BoolFilter<"Permission"> | boolean
+    editCustomers?: BoolFilter<"Permission"> | boolean
+    deleteCustomers?: BoolFilter<"Permission"> | boolean
+    viewWholesaleCustomers?: BoolFilter<"Permission"> | boolean
+    addWholesaleCustomers?: BoolFilter<"Permission"> | boolean
+    editWholesaleCustomers?: BoolFilter<"Permission"> | boolean
+    deleteWholesaleCustomers?: BoolFilter<"Permission"> | boolean
+    viewEmployees?: BoolFilter<"Permission"> | boolean
+    addEmployees?: BoolFilter<"Permission"> | boolean
+    editEmployees?: BoolFilter<"Permission"> | boolean
+    deleteEmployees?: BoolFilter<"Permission"> | boolean
+    viewExpenses?: BoolFilter<"Permission"> | boolean
+    addExpenses?: BoolFilter<"Permission"> | boolean
+    editExpenses?: BoolFilter<"Permission"> | boolean
+    deleteExpenses?: BoolFilter<"Permission"> | boolean
+    viewAnalytics?: BoolFilter<"Permission"> | boolean
+    viewCategories?: BoolFilter<"Permission"> | boolean
+    addCategories?: BoolFilter<"Permission"> | boolean
+    editCategories?: BoolFilter<"Permission"> | boolean
+    deleteCategories?: BoolFilter<"Permission"> | boolean
+    viewPermissions?: BoolFilter<"Permission"> | boolean
+    editPermissions?: BoolFilter<"Permission"> | boolean
+    addPermissions?: BoolFilter<"Permission"> | boolean
+    deletePermissions?: BoolFilter<"Permission"> | boolean
+    viewPages?: BoolFilter<"Permission"> | boolean
+    addPages?: BoolFilter<"Permission"> | boolean
+    editPages?: BoolFilter<"Permission"> | boolean
+    deletePages?: BoolFilter<"Permission"> | boolean
+    accessSyria?: BoolFilter<"Permission"> | boolean
+    accessTurkey?: BoolFilter<"Permission"> | boolean
   }
 
   export type ProductCreateWithoutStocksInput = {
@@ -69588,7 +69675,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseUncheckedCreateWithoutStocksInput = {
@@ -69601,7 +69688,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserUncheckedCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionUncheckedCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseCreateOrConnectWithoutStocksInput = {
@@ -69697,7 +69784,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type WarehouseUncheckedUpdateWithoutStocksInput = {
@@ -69710,7 +69797,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type ProductCreateWithoutStockMovementsInput = {
@@ -69784,7 +69871,7 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutWarehouseInput
     wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseUncheckedCreateWithoutMovementsInput = {
@@ -69797,7 +69884,7 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutWarehouseInput
     wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserUncheckedCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionUncheckedCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseCreateOrConnectWithoutMovementsInput = {
@@ -69835,7 +69922,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -69873,7 +69959,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -69974,7 +70059,7 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutWarehouseNestedInput
     wholesaleOrders?: WholesaleOrderUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type WarehouseUncheckedUpdateWithoutMovementsInput = {
@@ -69987,7 +70072,7 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutWarehouseNestedInput
     wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type UserUpsertWithoutStockMovementsInput = {
@@ -70031,7 +70116,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -70069,7 +70153,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -70107,7 +70190,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -70145,7 +70227,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -70223,7 +70304,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -70261,7 +70341,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -70315,7 +70394,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -70353,7 +70431,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -70407,7 +70484,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -70445,7 +70521,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -70892,7 +70967,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -70930,7 +71004,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -71102,7 +71175,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     wholesaleVisits?: WholesaleVisitCreateNestedManyWithoutUserInput
@@ -71140,7 +71212,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     wholesaleVisits?: WholesaleVisitUncheckedCreateNestedManyWithoutUserInput
@@ -71329,7 +71400,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     wholesaleVisits?: WholesaleVisitUpdateManyWithoutUserNestedInput
@@ -71367,7 +71437,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     wholesaleVisits?: WholesaleVisitUncheckedUpdateManyWithoutUserNestedInput
@@ -71673,7 +71742,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -71711,7 +71779,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -71759,7 +71826,7 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseUncheckedCreateWithoutWholesaleOrdersInput = {
@@ -71772,7 +71839,7 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserUncheckedCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionUncheckedCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseCreateOrConnectWithoutWholesaleOrdersInput = {
@@ -71913,7 +71980,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -71951,7 +72017,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -71994,7 +72059,7 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type WarehouseUncheckedUpdateWithoutWholesaleOrdersInput = {
@@ -72007,7 +72072,7 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type shippingUpsertWithoutWholesaleOrdersInput = {
@@ -72482,7 +72547,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -72520,7 +72584,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -72643,7 +72706,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -72681,7 +72743,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -72804,7 +72865,7 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutWarehouseInput
     wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseUncheckedCreateWithoutWarrantiesInput = {
@@ -72817,7 +72878,7 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutWarehouseInput
     wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserUncheckedCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionUncheckedCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseCreateOrConnectWithoutWarrantiesInput = {
@@ -73048,7 +73109,7 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutWarehouseNestedInput
     wholesaleOrders?: WholesaleOrderUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type WarehouseUncheckedUpdateWithoutWarrantiesInput = {
@@ -73061,7 +73122,7 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutWarehouseNestedInput
     wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type OrderUpsertWithoutWarrantiesInput = {
@@ -73229,7 +73290,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -73267,7 +73327,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -73372,7 +73431,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -73410,7 +73468,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -73493,7 +73550,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -73531,7 +73587,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -73580,7 +73635,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseUncheckedCreateWithoutOrdersInput = {
@@ -73593,7 +73648,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutWarehouseInput
     movements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutWarehouseInput
-    allowedUsers?: UserUncheckedCreateNestedManyWithoutAllowedWarehousesInput
+    allowedPermissions?: PermissionUncheckedCreateNestedManyWithoutAllowedWarehousesInput
   }
 
   export type WarehouseCreateOrConnectWithoutOrdersInput = {
@@ -73781,7 +73836,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -73819,7 +73873,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -73863,7 +73916,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type WarehouseUncheckedUpdateWithoutOrdersInput = {
@@ -73876,7 +73929,7 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutWarehouseNestedInput
     movements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutWarehouseNestedInput
-    allowedUsers?: UserUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
+    allowedPermissions?: PermissionUncheckedUpdateManyWithoutAllowedWarehousesNestedInput
   }
 
   export type shippingUpsertWithoutOrdersInput = {
@@ -73982,7 +74035,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -74020,7 +74072,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -74074,7 +74125,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -74112,7 +74162,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -74724,7 +74773,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -74762,7 +74810,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -74816,7 +74863,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -74854,7 +74900,6 @@ export namespace Prisma {
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -74893,7 +74938,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
     wholesaleVisits?: WholesaleVisitCreateNestedManyWithoutUserInput
@@ -74931,7 +74975,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
     wholesaleVisits?: WholesaleVisitUncheckedCreateNestedManyWithoutUserInput
@@ -75102,7 +75145,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
     wholesaleVisits?: WholesaleVisitUpdateManyWithoutUserNestedInput
@@ -75140,7 +75182,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
     wholesaleVisits?: WholesaleVisitUncheckedUpdateManyWithoutUserNestedInput
@@ -75847,7 +75888,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
@@ -75885,7 +75925,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
-    allowedWarehouses?: WarehouseUncheckedCreateNestedManyWithoutAllowedUsersInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
@@ -75939,7 +75978,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -75977,7 +76015,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -76258,7 +76295,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -76296,7 +76332,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -76737,39 +76772,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type WarehouseUpdateWithoutAllowedUsersInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    location?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stocks?: ProductStockUpdateManyWithoutWarehouseNestedInput
-    orders?: OrderUpdateManyWithoutWarehouseNestedInput
-    wholesaleOrders?: WholesaleOrderUpdateManyWithoutWarehouseNestedInput
-    movements?: StockMovementUpdateManyWithoutWarehouseNestedInput
-    warranties?: WarrantyUpdateManyWithoutWarehouseNestedInput
-  }
-
-  export type WarehouseUncheckedUpdateWithoutAllowedUsersInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    location?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    stocks?: ProductStockUncheckedUpdateManyWithoutWarehouseNestedInput
-    orders?: OrderUncheckedUpdateManyWithoutWarehouseNestedInput
-    wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutWarehouseNestedInput
-    movements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
-    warranties?: WarrantyUncheckedUpdateManyWithoutWarehouseNestedInput
-  }
-
-  export type WarehouseUncheckedUpdateManyWithoutAllowedUsersInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    location?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type AffiliateLinkUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     uniqueCode?: StringFieldUpdateOperationsInput | string
@@ -77146,7 +77148,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -77184,7 +77185,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
@@ -77212,6 +77212,39 @@ export namespace Prisma {
     affiliateCode?: NullableStringFieldUpdateOperationsInput | string | null
     affiliateRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     affiliateApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type WarehouseUpdateWithoutAllowedPermissionsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stocks?: ProductStockUpdateManyWithoutWarehouseNestedInput
+    orders?: OrderUpdateManyWithoutWarehouseNestedInput
+    wholesaleOrders?: WholesaleOrderUpdateManyWithoutWarehouseNestedInput
+    movements?: StockMovementUpdateManyWithoutWarehouseNestedInput
+    warranties?: WarrantyUpdateManyWithoutWarehouseNestedInput
+  }
+
+  export type WarehouseUncheckedUpdateWithoutAllowedPermissionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stocks?: ProductStockUncheckedUpdateManyWithoutWarehouseNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutWarehouseNestedInput
+    wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutWarehouseNestedInput
+    movements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
+    warranties?: WarrantyUncheckedUpdateManyWithoutWarehouseNestedInput
+  }
+
+  export type WarehouseUncheckedUpdateManyWithoutAllowedPermissionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProductCreateManyCategoryInput = {
@@ -78293,103 +78326,162 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserUpdateWithoutAllowedWarehousesInput = {
+  export type PermissionUpdateWithoutAllowedWarehousesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    accountType?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    password?: StringFieldUpdateOperationsInput | string
-    salesCommissionPercent?: FloatFieldUpdateOperationsInput | number
-    wage?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    isAffiliate?: BoolFieldUpdateOperationsInput | boolean
-    affiliateApproved?: BoolFieldUpdateOperationsInput | boolean
-    affiliateCode?: NullableStringFieldUpdateOperationsInput | string | null
-    affiliateRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    affiliateApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    parent?: UserUpdateOneWithoutSubordinatesNestedInput
-    subordinates?: UserUpdateManyWithoutParentNestedInput
-    orders?: OrderUpdateManyWithoutUserNestedInput
-    walletTransfers?: AffiliateWalletTransferUpdateManyWithoutUserNestedInput
-    permission?: PermissionUpdateOneWithoutUsersNestedInput
-    customers?: CustomerUpdateManyWithoutUsersNestedInput
-    message?: MessageUpdateManyWithoutUserNestedInput
-    targets?: UserTargetUpdateManyWithoutUserNestedInput
-    activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
-    salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
-    expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
-    stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
-    reviews?: ReviewUpdateManyWithoutUserNestedInput
-    assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
-    wholesaleVisits?: WholesaleVisitUpdateManyWithoutUserNestedInput
-    wholesaleOrders?: WholesaleOrderUpdateManyWithoutUserNestedInput
+    roleName?: StringFieldUpdateOperationsInput | string
+    viewProducts?: BoolFieldUpdateOperationsInput | boolean
+    addProducts?: BoolFieldUpdateOperationsInput | boolean
+    editProducts?: BoolFieldUpdateOperationsInput | boolean
+    deleteProducts?: BoolFieldUpdateOperationsInput | boolean
+    viewReports?: BoolFieldUpdateOperationsInput | boolean
+    addReports?: BoolFieldUpdateOperationsInput | boolean
+    editReports?: BoolFieldUpdateOperationsInput | boolean
+    deleteReports?: BoolFieldUpdateOperationsInput | boolean
+    viewOrders?: BoolFieldUpdateOperationsInput | boolean
+    addOrders?: BoolFieldUpdateOperationsInput | boolean
+    editOrders?: BoolFieldUpdateOperationsInput | boolean
+    deleteOrders?: BoolFieldUpdateOperationsInput | boolean
+    viewWarranty?: BoolFieldUpdateOperationsInput | boolean
+    addWarranty?: BoolFieldUpdateOperationsInput | boolean
+    editWarranty?: BoolFieldUpdateOperationsInput | boolean
+    deleteWarranty?: BoolFieldUpdateOperationsInput | boolean
+    viewCustomers?: BoolFieldUpdateOperationsInput | boolean
+    addCustomers?: BoolFieldUpdateOperationsInput | boolean
+    editCustomers?: BoolFieldUpdateOperationsInput | boolean
+    deleteCustomers?: BoolFieldUpdateOperationsInput | boolean
+    viewWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    addWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    editWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    deleteWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    viewEmployees?: BoolFieldUpdateOperationsInput | boolean
+    addEmployees?: BoolFieldUpdateOperationsInput | boolean
+    editEmployees?: BoolFieldUpdateOperationsInput | boolean
+    deleteEmployees?: BoolFieldUpdateOperationsInput | boolean
+    viewExpenses?: BoolFieldUpdateOperationsInput | boolean
+    addExpenses?: BoolFieldUpdateOperationsInput | boolean
+    editExpenses?: BoolFieldUpdateOperationsInput | boolean
+    deleteExpenses?: BoolFieldUpdateOperationsInput | boolean
+    viewAnalytics?: BoolFieldUpdateOperationsInput | boolean
+    viewCategories?: BoolFieldUpdateOperationsInput | boolean
+    addCategories?: BoolFieldUpdateOperationsInput | boolean
+    editCategories?: BoolFieldUpdateOperationsInput | boolean
+    deleteCategories?: BoolFieldUpdateOperationsInput | boolean
+    viewPermissions?: BoolFieldUpdateOperationsInput | boolean
+    editPermissions?: BoolFieldUpdateOperationsInput | boolean
+    addPermissions?: BoolFieldUpdateOperationsInput | boolean
+    deletePermissions?: BoolFieldUpdateOperationsInput | boolean
+    viewPages?: BoolFieldUpdateOperationsInput | boolean
+    addPages?: BoolFieldUpdateOperationsInput | boolean
+    editPages?: BoolFieldUpdateOperationsInput | boolean
+    deletePages?: BoolFieldUpdateOperationsInput | boolean
+    accessSyria?: BoolFieldUpdateOperationsInput | boolean
+    accessTurkey?: BoolFieldUpdateOperationsInput | boolean
+    users?: UserUpdateManyWithoutPermissionNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutAllowedWarehousesInput = {
+  export type PermissionUncheckedUpdateWithoutAllowedWarehousesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    accountType?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    password?: StringFieldUpdateOperationsInput | string
-    salesCommissionPercent?: FloatFieldUpdateOperationsInput | number
-    wage?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    permissionId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    isAffiliate?: BoolFieldUpdateOperationsInput | boolean
-    affiliateApproved?: BoolFieldUpdateOperationsInput | boolean
-    affiliateCode?: NullableStringFieldUpdateOperationsInput | string | null
-    affiliateRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    affiliateApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    subordinates?: UserUncheckedUpdateManyWithoutParentNestedInput
-    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
-    walletTransfers?: AffiliateWalletTransferUncheckedUpdateManyWithoutUserNestedInput
-    customers?: CustomerUncheckedUpdateManyWithoutUsersNestedInput
-    message?: MessageUncheckedUpdateManyWithoutUserNestedInput
-    targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
-    activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
-    salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
-    expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
-    stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
-    assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
-    wholesaleVisits?: WholesaleVisitUncheckedUpdateManyWithoutUserNestedInput
-    wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutUserNestedInput
+    roleName?: StringFieldUpdateOperationsInput | string
+    viewProducts?: BoolFieldUpdateOperationsInput | boolean
+    addProducts?: BoolFieldUpdateOperationsInput | boolean
+    editProducts?: BoolFieldUpdateOperationsInput | boolean
+    deleteProducts?: BoolFieldUpdateOperationsInput | boolean
+    viewReports?: BoolFieldUpdateOperationsInput | boolean
+    addReports?: BoolFieldUpdateOperationsInput | boolean
+    editReports?: BoolFieldUpdateOperationsInput | boolean
+    deleteReports?: BoolFieldUpdateOperationsInput | boolean
+    viewOrders?: BoolFieldUpdateOperationsInput | boolean
+    addOrders?: BoolFieldUpdateOperationsInput | boolean
+    editOrders?: BoolFieldUpdateOperationsInput | boolean
+    deleteOrders?: BoolFieldUpdateOperationsInput | boolean
+    viewWarranty?: BoolFieldUpdateOperationsInput | boolean
+    addWarranty?: BoolFieldUpdateOperationsInput | boolean
+    editWarranty?: BoolFieldUpdateOperationsInput | boolean
+    deleteWarranty?: BoolFieldUpdateOperationsInput | boolean
+    viewCustomers?: BoolFieldUpdateOperationsInput | boolean
+    addCustomers?: BoolFieldUpdateOperationsInput | boolean
+    editCustomers?: BoolFieldUpdateOperationsInput | boolean
+    deleteCustomers?: BoolFieldUpdateOperationsInput | boolean
+    viewWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    addWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    editWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    deleteWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    viewEmployees?: BoolFieldUpdateOperationsInput | boolean
+    addEmployees?: BoolFieldUpdateOperationsInput | boolean
+    editEmployees?: BoolFieldUpdateOperationsInput | boolean
+    deleteEmployees?: BoolFieldUpdateOperationsInput | boolean
+    viewExpenses?: BoolFieldUpdateOperationsInput | boolean
+    addExpenses?: BoolFieldUpdateOperationsInput | boolean
+    editExpenses?: BoolFieldUpdateOperationsInput | boolean
+    deleteExpenses?: BoolFieldUpdateOperationsInput | boolean
+    viewAnalytics?: BoolFieldUpdateOperationsInput | boolean
+    viewCategories?: BoolFieldUpdateOperationsInput | boolean
+    addCategories?: BoolFieldUpdateOperationsInput | boolean
+    editCategories?: BoolFieldUpdateOperationsInput | boolean
+    deleteCategories?: BoolFieldUpdateOperationsInput | boolean
+    viewPermissions?: BoolFieldUpdateOperationsInput | boolean
+    editPermissions?: BoolFieldUpdateOperationsInput | boolean
+    addPermissions?: BoolFieldUpdateOperationsInput | boolean
+    deletePermissions?: BoolFieldUpdateOperationsInput | boolean
+    viewPages?: BoolFieldUpdateOperationsInput | boolean
+    addPages?: BoolFieldUpdateOperationsInput | boolean
+    editPages?: BoolFieldUpdateOperationsInput | boolean
+    deletePages?: BoolFieldUpdateOperationsInput | boolean
+    accessSyria?: BoolFieldUpdateOperationsInput | boolean
+    accessTurkey?: BoolFieldUpdateOperationsInput | boolean
+    users?: UserUncheckedUpdateManyWithoutPermissionNestedInput
   }
 
-  export type UserUncheckedUpdateManyWithoutAllowedWarehousesInput = {
+  export type PermissionUncheckedUpdateManyWithoutAllowedWarehousesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
-    avatar?: NullableStringFieldUpdateOperationsInput | string | null
-    accountType?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    password?: StringFieldUpdateOperationsInput | string
-    salesCommissionPercent?: FloatFieldUpdateOperationsInput | number
-    wage?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    permissionId?: NullableStringFieldUpdateOperationsInput | string | null
-    parentId?: NullableStringFieldUpdateOperationsInput | string | null
-    isAffiliate?: BoolFieldUpdateOperationsInput | boolean
-    affiliateApproved?: BoolFieldUpdateOperationsInput | boolean
-    affiliateCode?: NullableStringFieldUpdateOperationsInput | string | null
-    affiliateRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    affiliateApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    roleName?: StringFieldUpdateOperationsInput | string
+    viewProducts?: BoolFieldUpdateOperationsInput | boolean
+    addProducts?: BoolFieldUpdateOperationsInput | boolean
+    editProducts?: BoolFieldUpdateOperationsInput | boolean
+    deleteProducts?: BoolFieldUpdateOperationsInput | boolean
+    viewReports?: BoolFieldUpdateOperationsInput | boolean
+    addReports?: BoolFieldUpdateOperationsInput | boolean
+    editReports?: BoolFieldUpdateOperationsInput | boolean
+    deleteReports?: BoolFieldUpdateOperationsInput | boolean
+    viewOrders?: BoolFieldUpdateOperationsInput | boolean
+    addOrders?: BoolFieldUpdateOperationsInput | boolean
+    editOrders?: BoolFieldUpdateOperationsInput | boolean
+    deleteOrders?: BoolFieldUpdateOperationsInput | boolean
+    viewWarranty?: BoolFieldUpdateOperationsInput | boolean
+    addWarranty?: BoolFieldUpdateOperationsInput | boolean
+    editWarranty?: BoolFieldUpdateOperationsInput | boolean
+    deleteWarranty?: BoolFieldUpdateOperationsInput | boolean
+    viewCustomers?: BoolFieldUpdateOperationsInput | boolean
+    addCustomers?: BoolFieldUpdateOperationsInput | boolean
+    editCustomers?: BoolFieldUpdateOperationsInput | boolean
+    deleteCustomers?: BoolFieldUpdateOperationsInput | boolean
+    viewWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    addWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    editWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    deleteWholesaleCustomers?: BoolFieldUpdateOperationsInput | boolean
+    viewEmployees?: BoolFieldUpdateOperationsInput | boolean
+    addEmployees?: BoolFieldUpdateOperationsInput | boolean
+    editEmployees?: BoolFieldUpdateOperationsInput | boolean
+    deleteEmployees?: BoolFieldUpdateOperationsInput | boolean
+    viewExpenses?: BoolFieldUpdateOperationsInput | boolean
+    addExpenses?: BoolFieldUpdateOperationsInput | boolean
+    editExpenses?: BoolFieldUpdateOperationsInput | boolean
+    deleteExpenses?: BoolFieldUpdateOperationsInput | boolean
+    viewAnalytics?: BoolFieldUpdateOperationsInput | boolean
+    viewCategories?: BoolFieldUpdateOperationsInput | boolean
+    addCategories?: BoolFieldUpdateOperationsInput | boolean
+    editCategories?: BoolFieldUpdateOperationsInput | boolean
+    deleteCategories?: BoolFieldUpdateOperationsInput | boolean
+    viewPermissions?: BoolFieldUpdateOperationsInput | boolean
+    editPermissions?: BoolFieldUpdateOperationsInput | boolean
+    addPermissions?: BoolFieldUpdateOperationsInput | boolean
+    deletePermissions?: BoolFieldUpdateOperationsInput | boolean
+    viewPages?: BoolFieldUpdateOperationsInput | boolean
+    addPages?: BoolFieldUpdateOperationsInput | boolean
+    editPages?: BoolFieldUpdateOperationsInput | boolean
+    deletePages?: BoolFieldUpdateOperationsInput | boolean
+    accessSyria?: BoolFieldUpdateOperationsInput | boolean
+    accessTurkey?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type TargetProductCreateManyTargetInput = {
@@ -78625,7 +78717,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
@@ -78663,7 +78754,6 @@ export namespace Prisma {
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
-    allowedWarehouses?: WarehouseUncheckedUpdateManyWithoutAllowedUsersNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput

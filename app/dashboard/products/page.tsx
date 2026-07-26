@@ -380,6 +380,21 @@ const ProductLayout = () => {
         return false;
     }, [isAdminUser, canAccessSyria, canAccessTurkey]);
 
+    // المستودعات المسموح بها للدور (قائمة فارغة = كل المستودعات)
+    const allowedWarehouseIds = React.useMemo(() => {
+        const list = user?.permission?.allowedWarehouses;
+        if (!Array.isArray(list)) return [];
+        return list
+            .map((warehouse: any) => Number(warehouse?.id))
+            .filter((id: number) => !Number.isNaN(id));
+    }, [user]);
+
+    const hasWarehouseAccess = React.useCallback((warehouseId: any) => {
+        if (isAdminUser) return true;
+        if (allowedWarehouseIds.length === 0) return true;
+        return allowedWarehouseIds.includes(Number(warehouseId));
+    }, [isAdminUser, allowedWarehouseIds]);
+
     React.useEffect(() => {
         getallcategory().then(setCategories).catch(console.error);
         getProduct().then((products) => {
@@ -392,17 +407,19 @@ const ProductLayout = () => {
 
     const warehouseOptions = React.useMemo(() => {
         return warehouses
-            .filter((warehouse: any) => hasLocationAccess(String(warehouse?.location || '').trim()))
+            .filter((warehouse: any) =>
+                hasLocationAccess(String(warehouse?.location || '').trim()) && hasWarehouseAccess(warehouse?.id))
             .map((warehouse: any) => ({
                 id: String(warehouse.id),
                 name: String(warehouse.name || '').trim(),
                 location: String(warehouse.location || '').trim(),
             }));
-    }, [warehouses, hasLocationAccess]);
+    }, [warehouses, hasLocationAccess, hasWarehouseAccess]);
 
     const visibleWarehouses = React.useMemo(() => {
-        return warehouses.filter((warehouse: any) => hasLocationAccess(String(warehouse?.location || '').trim()));
-    }, [warehouses, hasLocationAccess]);
+        return warehouses.filter((warehouse: any) =>
+            hasLocationAccess(String(warehouse?.location || '').trim()) && hasWarehouseAccess(warehouse?.id));
+    }, [warehouses, hasLocationAccess, hasWarehouseAccess]);
 
     React.useEffect(() => {
         if (selectedWarehouseFilter !== 'all' && !warehouseOptions.some((w: any) => w.id === selectedWarehouseFilter)) {
@@ -599,6 +616,10 @@ const ProductLayout = () => {
                         return false;
                     }
 
+                    if (!hasWarehouseAccess(stock?.warehouseId || stock?.warehouse?.id)) {
+                        return false;
+                    }
+
                     return selectedWarehouseFilter === 'all' || warehouseId === selectedWarehouseFilter;
                 })
                 .map((stock: any) => ({
@@ -607,7 +628,7 @@ const ProductLayout = () => {
                     __rowId: `${product.id}-${stock.warehouseId || stock.warehouse?.id}`,
                 }));
         });
-    }, [products, selectedWarehouseFilter, nameFilter, categoryFilter, hasLocationAccess]);
+    }, [products, selectedWarehouseFilter, nameFilter, categoryFilter, hasLocationAccess, hasWarehouseAccess]);
 
     const ExportToExcel = () => {
         // تجهيز البيانات بشكل مقروء

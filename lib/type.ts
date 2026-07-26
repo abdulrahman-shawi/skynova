@@ -62,10 +62,13 @@ export interface Permission {
   accessSyria: boolean;
   accessTurkey: boolean;
 
+  // المستودعات المسموح الوصول إليها (قائمة فارغة = كل المستودعات)
+  allowedWarehouses?: { id: number; name: string; location: string }[];
+
   users?: User[]; // optional to avoid circular reference issues
 }
 
-export type PermissionKey = Exclude<keyof Permission, "id" | "roleName" | "users">;
+export type PermissionKey = Exclude<keyof Permission, "id" | "roleName" | "users" | "allowedWarehouses">;
 
 export interface User {
   id: string;

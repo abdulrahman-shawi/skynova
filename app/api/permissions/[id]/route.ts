@@ -81,9 +81,17 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
                 accessSyria: Boolean(data.accessSyria),
                 accessTurkey: Boolean(data.accessTurkey),
 
+                // المستودعات المسموح الوصول إليها (قائمة فارغة = كل المستودعات)
+                allowedWarehouses: {
+                    set: Array.isArray(data.warehouseIds)
+                        ? data.warehouseIds.map((id: any) => ({ id: Number(id) }))
+                        : [],
+                },
+
                 // إحصائيات النظام (حقل واحد فقط)
                 viewAnalytics: Boolean(data.viewAnalytics),
-            }
+            },
+            include: { allowedWarehouses: { select: { id: true, name: true, location: true } } }
         });
 
         return NextResponse.json({ success: true, data: decoratePermission(updatedPermission) });

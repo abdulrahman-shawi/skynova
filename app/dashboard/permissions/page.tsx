@@ -7,6 +7,7 @@ import {
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { hasPermission } from '@/lib/utils';
+import { getWarehouse } from '@/server/warehouse';
 
 
 export default function PermissionsPage() {
@@ -14,6 +15,7 @@ export default function PermissionsPage() {
     const [selectedRole, setSelectedRole] = useState<any>(null);
     const [isAddRoleModalOpen, setIsAddRoleModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [warehouses, setWarehouses] = useState<any[]>([]);
 
     const { user } = useAuth()
 
@@ -45,6 +47,12 @@ export default function PermissionsPage() {
     useEffect(() => {
         fetchRoles();
     }, [fetchRoles]);
+
+    useEffect(() => {
+        getWarehouse()
+            .then((data: any[]) => setWarehouses(Array.isArray(data) ? data : []))
+            .catch(() => toast.error("خطأ في جلب المستودعات"));
+    }, []);
 
     const handleAddNewRole = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -90,6 +98,27 @@ export default function PermissionsPage() {
         });
     };
 
+    const toggleWarehouse = (warehouse: any) => {
+        if (!selectedRole) return;
+
+        setSelectedRole((prevRole: any) => {
+            const current: any[] = Array.isArray(prevRole.allowedWarehouses) ? prevRole.allowedWarehouses : [];
+            const exists = current.some((w: any) => w.id === warehouse.id);
+            const updated = {
+                ...prevRole,
+                allowedWarehouses: exists
+                    ? current.filter((w: any) => w.id !== warehouse.id)
+                    : [...current, { id: warehouse.id, name: warehouse.name, location: warehouse.location }],
+            };
+
+            setRoles((prevRoles) =>
+                prevRoles.map(r => r.id === prevRole.id ? updated : r)
+            );
+
+            return updated;
+        });
+    };
+
     const handleSave = async () => {
         if (!selectedRole) return;
         setLoading(true);
@@ -97,7 +126,12 @@ export default function PermissionsPage() {
             const result = await fetch(`/api/permissions/${selectedRole.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(selectedRole)
+                body: JSON.stringify({
+                    ...selectedRole,
+                    warehouseIds: Array.isArray(selectedRole.allowedWarehouses)
+                        ? selectedRole.allowedWarehouses.map((w: any) => w.id)
+                        : [],
+                })
             });
             const response = await result.json();
             if (response.success) toast.success("تم حفظ التغييرات بنجاح");
@@ -241,6 +275,44 @@ export default function PermissionsPage() {
                                             </div>
                                             <p className="text-xs text-slate-400 mt-2 px-2 italic">
                                                 * سيتمكن المستخدم من رؤية الطلبات المرتبطة بمستودعات هذا الموقع فقط.
+                                            </p>
+                                        </div>
+
+                                        {/* المستودعات المسموح الوصول إليها */}
+                                        <div className="border-b dark:border-slate-800 last:border-0 pb-8 mt-10">
+                                            <h4 className="font-black mb-4 flex items-center gap-2 text-slate-800 dark:text-slate-200">
+                                                <div className="w-2 h-2 rounded-full bg-amber-500" /> المستودعات المسموح الوصول إليها
+                                            </h4>
+                                            {warehouses.length > 0 ? (
+                                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                                    {warehouses.map((warehouse: any) => {
+                                                        const isActive = Array.isArray(selectedRole.allowedWarehouses)
+                                                            && selectedRole.allowedWarehouses.some((w: any) => w.id === warehouse.id);
+                                                        return (
+                                                            <div key={warehouse.id} onClick={() => toggleWarehouse(warehouse)}
+                                                                className={`p-4 rounded-2xl border-2 flex items-center justify-between cursor-pointer transition-all duration-300 ${isActive
+                                                                    ? 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-500 shadow-inner'
+                                                                    : 'border-slate-100 dark:border-slate-800 opacity-60 hover:opacity-100 hover:border-slate-300'
+                                                                    }`}>
+                                                                <div className="flex flex-col">
+                                                                    <span className={`text-sm font-bold ${isActive ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-500'}`}>
+                                                                        {warehouse.name}
+                                                                    </span>
+                                                                    <span className="text-xs text-slate-400">{warehouse.location}</span>
+                                                                </div>
+                                                                <div className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-colors ${isActive ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-200 dark:border-slate-700'
+                                                                    }`}>
+                                                                    {isActive && <CheckCircle2 size={14} />}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            ) : (
+                                                <p className="text-sm text-slate-400 px-2">لا توجد مستودعات مسجلة بعد.</p>
+                                            )}
+                                            <p className="text-xs text-slate-400 mt-2 px-2 italic">
+                                                * إذا لم يتم اختيار أي مستودع، سيتمكن الدور من الوصول إلى جميع المستودعات.
                                             </p>
                                         </div>
                                     </div>
