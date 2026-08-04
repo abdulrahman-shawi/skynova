@@ -16,6 +16,7 @@ import { FormInput } from "@/components/ui/form-input";
 const shippingSchema = z.object({
     name: z.string().min(3, "اسم شركة الشحن مطلوب"),
     price: z.number().min(0, "السعر لا يمكن أن يكون سالب"),
+    password: z.string().optional(),
 });
 export default function ShippingPage() {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -235,6 +236,13 @@ export default function ShippingPage() {
                                         step="0.01"
                                         {...register("price", { valueAsNumber: true })}
                                         error={errors.price?.message as string}
+                                    />
+                                    <FormInput
+                                        className='text-gray-800 dark:text-white'
+                                        label={editId ? "كلمة السر (اتركها فارغة لعدم التغيير)" : "كلمة السر (الافتراضية 1234567)"}
+                                        type="text"
+                                        {...register("password")}
+                                        error={errors.password?.message as string}
                                     />
                                 </div>
                             )}

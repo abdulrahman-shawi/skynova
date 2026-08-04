@@ -36213,6 +36213,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     price: number | null
+    password: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -36221,6 +36222,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     price: number | null
+    password: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -36229,6 +36231,7 @@ export namespace Prisma {
     id: number
     name: number
     price: number
+    password: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -36249,6 +36252,7 @@ export namespace Prisma {
     id?: true
     name?: true
     price?: true
+    password?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -36257,6 +36261,7 @@ export namespace Prisma {
     id?: true
     name?: true
     price?: true
+    password?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -36265,6 +36270,7 @@ export namespace Prisma {
     id?: true
     name?: true
     price?: true
+    password?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -36360,6 +36366,7 @@ export namespace Prisma {
     id: number
     name: string
     price: number
+    password: string
     createdAt: Date
     updatedAt: Date
     _count: ShippingCountAggregateOutputType | null
@@ -36387,6 +36394,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     price?: boolean
+    password?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     orders?: boolean | shipping$ordersArgs<ExtArgs>
@@ -36398,6 +36406,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     price?: boolean
+    password?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["shipping"]>
@@ -36406,6 +36415,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     price?: boolean
+    password?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["shipping"]>
@@ -36414,11 +36424,12 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     price?: boolean
+    password?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type shippingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "price" | "createdAt" | "updatedAt", ExtArgs["result"]["shipping"]>
+  export type shippingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "price" | "password" | "createdAt" | "updatedAt", ExtArgs["result"]["shipping"]>
   export type shippingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | shipping$ordersArgs<ExtArgs>
     wholesaleOrders?: boolean | shipping$wholesaleOrdersArgs<ExtArgs>
@@ -36437,6 +36448,7 @@ export namespace Prisma {
       id: number
       name: string
       price: number
+      password: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["shipping"]>
@@ -36867,6 +36879,7 @@ export namespace Prisma {
     readonly id: FieldRef<"shipping", 'Int'>
     readonly name: FieldRef<"shipping", 'String'>
     readonly price: FieldRef<"shipping", 'Float'>
+    readonly password: FieldRef<"shipping", 'String'>
     readonly createdAt: FieldRef<"shipping", 'DateTime'>
     readonly updatedAt: FieldRef<"shipping", 'DateTime'>
   }
@@ -50555,6 +50568,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     price: 'price',
+    password: 'password',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -53771,6 +53785,7 @@ export namespace Prisma {
     id?: IntFilter<"shipping"> | number
     name?: StringFilter<"shipping"> | string
     price?: FloatFilter<"shipping"> | number
+    password?: StringFilter<"shipping"> | string
     createdAt?: DateTimeFilter<"shipping"> | Date | string
     updatedAt?: DateTimeFilter<"shipping"> | Date | string
     orders?: OrderListRelationFilter
@@ -53781,6 +53796,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    password?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     orders?: OrderOrderByRelationAggregateInput
@@ -53794,6 +53810,7 @@ export namespace Prisma {
     OR?: shippingWhereInput[]
     NOT?: shippingWhereInput | shippingWhereInput[]
     price?: FloatFilter<"shipping"> | number
+    password?: StringFilter<"shipping"> | string
     createdAt?: DateTimeFilter<"shipping"> | Date | string
     updatedAt?: DateTimeFilter<"shipping"> | Date | string
     orders?: OrderListRelationFilter
@@ -53804,6 +53821,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    password?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: shippingCountOrderByAggregateInput
@@ -53820,6 +53838,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"shipping"> | number
     name?: StringWithAggregatesFilter<"shipping"> | string
     price?: FloatWithAggregatesFilter<"shipping"> | number
+    password?: StringWithAggregatesFilter<"shipping"> | string
     createdAt?: DateTimeWithAggregatesFilter<"shipping"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"shipping"> | Date | string
   }
@@ -57821,6 +57840,7 @@ export namespace Prisma {
   export type shippingCreateInput = {
     name: string
     price: number
+    password?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderCreateNestedManyWithoutShippingInput
@@ -57831,6 +57851,7 @@ export namespace Prisma {
     id?: number
     name: string
     price: number
+    password?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutShippingInput
@@ -57840,6 +57861,7 @@ export namespace Prisma {
   export type shippingUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+    password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUpdateManyWithoutShippingNestedInput
@@ -57850,6 +57872,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+    password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutShippingNestedInput
@@ -57860,6 +57883,7 @@ export namespace Prisma {
     id?: number
     name: string
     price: number
+    password?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -57867,6 +57891,7 @@ export namespace Prisma {
   export type shippingUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+    password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57875,6 +57900,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+    password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -61303,6 +61329,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    password?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -61316,6 +61343,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    password?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -61324,6 +61352,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     price?: SortOrder
+    password?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -71850,6 +71879,7 @@ export namespace Prisma {
   export type shippingCreateWithoutWholesaleOrdersInput = {
     name: string
     price: number
+    password?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderCreateNestedManyWithoutShippingInput
@@ -71859,6 +71889,7 @@ export namespace Prisma {
     id?: number
     name: string
     price: number
+    password?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutShippingInput
@@ -72089,6 +72120,7 @@ export namespace Prisma {
   export type shippingUpdateWithoutWholesaleOrdersInput = {
     name?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+    password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUpdateManyWithoutShippingNestedInput
@@ -72098,6 +72130,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+    password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutShippingNestedInput
@@ -73659,6 +73692,7 @@ export namespace Prisma {
   export type shippingCreateWithoutOrdersInput = {
     name: string
     price: number
+    password?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutShippingInput
@@ -73668,6 +73702,7 @@ export namespace Prisma {
     id?: number
     name: string
     price: number
+    password?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutShippingInput
@@ -73946,6 +73981,7 @@ export namespace Prisma {
   export type shippingUpdateWithoutOrdersInput = {
     name?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+    password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     wholesaleOrders?: WholesaleOrderUpdateManyWithoutShippingNestedInput
@@ -73955,6 +73991,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     price?: FloatFieldUpdateOperationsInput | number
+    password?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutShippingNestedInput

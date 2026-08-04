@@ -807,6 +807,7 @@ model shipping {
   id          Int       @id @default(autoincrement())
   name        String    @unique
   price       Float
+  password    String    @default("1234567")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   orders      Order[]
