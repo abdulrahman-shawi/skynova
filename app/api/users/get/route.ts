@@ -28,6 +28,7 @@ export async function GET() {
                  avatar: true,
                  accountType: true,
                  password: true,
+                 wage: true,
                  createdAt: true,
                  updatedAt: true,
                  permissionId: true,

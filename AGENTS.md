@@ -223,6 +223,9 @@ Warranty records (`server/warranty.ts`) now require a **warehouse** and **quanti
 ### Cron Jobs
 `lib/cron.ts` runs a monthly job (1st of month at 00:00 UTC) that deactivates active `UserTarget` records. It is imported in the root layout so it initializes once per server process.
 
+### Shipping Company Portal
+The `shipping` model has a `password` column (default `"1234567"`), settable from the shipping dashboard page (`app/dashboard/shipping/page.tsx`). Shipping companies log in at `/shipping-login` (company name + password) via the `shippingLogin` server action in `server/shipping.ts`, which sets an HTTP-only JWT cookie `skynova_shipping`. `/shipping-orders` shows only that company's orders via `getMyShippingOrders()` (validates the cookie server-side). Both pages are public standalone routes outside `/dashboard`, so `middleware.ts` does not guard them — auth is enforced inside the server actions. Passwords are stored in plaintext (matches the requested default value).
+
 ---
 
 ## Deployment Notes

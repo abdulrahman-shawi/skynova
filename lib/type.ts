@@ -78,6 +78,7 @@ export interface User {
   jobTitle?: string | null;
   avatar?: string | null;
   accountType: "ADMIN" | "MANAGER" | "STAFF" | "AFFILIATE";
+  wage?: number;
   isAffiliate?: boolean;
   affiliateApproved?: boolean;
   affiliateRequestedAt?: Date | null;
