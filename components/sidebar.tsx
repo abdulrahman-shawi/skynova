@@ -175,6 +175,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
   { icon: Wallet, label: "التحصيلات", href: "/dashboard/collections" },
   (user && hasPermission(user, "viewWarranty")) &&
   { icon: ShieldCheck, label: "الكفالة", href: "/dashboard/warranty" },
+  (user && hasPermission(user, "viewWarranty")) &&
+  { icon: ShieldCheck, label: "كفالة الجملة", href: "/dashboard/wholesale-warranty" },
   (user && isAdmin(user)) &&
   { icon: Truck, label: "شركات الشحن", href: "/dashboard/shipping" },
 ].filter(Boolean) // هذا السطر هو الأهم: يقوم بحذف أي قيمة false من المصفوفة

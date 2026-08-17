@@ -273,14 +273,15 @@ model Product {
   affiliateCommissionRate Float?  @default(10.00)
 
   // ─── Existing Relations ───
-  orderItems          OrderItem[]
-  category            Category?       @relation(fields: [categoryId], references: [id])
-  images              ProductImage[]
-  targetProducts      TargetProduct[]
-  stocks              ProductStock[]
-  stockMovements      StockMovement[]
-  warrantiesAsProduct Warranty[]      @relation("WarrantyOriginalProduct")
-  adPageVisits        AdPageVisit[]
+  orderItems                   OrderItem[]
+  category                     Category?           @relation(fields: [categoryId], references: [id])
+  images                       ProductImage[]
+  targetProducts               TargetProduct[]
+  stocks                       ProductStock[]
+  stockMovements               StockMovement[]
+  warrantiesAsProduct          Warranty[]          @relation("WarrantyOriginalProduct")
+  wholesaleWarrantiesAsProduct WholesaleWarranty[] @relation("WholesaleWarrantyOriginalProduct")
+  adPageVisits                 AdPageVisit[]
 
   // ─── NEW: E-commerce Affiliate Relations ───
   affiliateLinks      AffiliateLink[]
@@ -380,17 +381,18 @@ model Review {
 // ============================================
 
 model Warehouse {
-  id                 Int              @id @default(autoincrement())
-  name               String           @unique
-  location           String
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-  stocks             ProductStock[]
-  orders             Order[]
-  wholesaleOrders    WholesaleOrder[]
-  movements          StockMovement[]
-  warranties         Warranty[]
-  allowedPermissions Permission[]     @relation("PermissionWarehouseAccess")
+  id                  Int                 @id @default(autoincrement())
+  name                String              @unique
+  location            String
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  stocks              ProductStock[]
+  orders              Order[]
+  wholesaleOrders     WholesaleOrder[]
+  movements           StockMovement[]
+  warranties          Warranty[]
+  wholesaleWarranties WholesaleWarranty[]
+  allowedPermissions  Permission[]        @relation("PermissionWarehouseAccess")
 }
 
 // ============================================
@@ -551,9 +553,10 @@ model WholesaleCustomer {
   createdAt        DateTime                  @default(now())
   updatedAt        DateTime                  @updatedAt
 
-  assignedUser User?            @relation("WholesaleCustomerAssignedUser", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  assignedUser User?               @relation("WholesaleCustomerAssignedUser", fields: [assignedUserId], references: [id], onDelete: SetNull)
   visits       WholesaleVisit[]
   orders       WholesaleOrder[]
+  warranties   WholesaleWarranty[]
 
   @@index([assignedUserId])
   @@index([city, area])
@@ -620,6 +623,7 @@ model WholesaleOrder {
   items             WholesaleOrderItem[]
   warehouse         Warehouse?           @relation(fields: [warehouseId], references: [id])
   shipping          shipping?            @relation(fields: [shippingId], references: [id])
+  warranties        WholesaleWarranty[]
 
   @@index([createdAt])
   @@index([wholesaleCustomerId, createdAt])
@@ -700,6 +704,28 @@ model Warranty {
   order     Order?     @relation(fields: [orderId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
+}
+
+model WholesaleWarranty {
+  id                   String       @id @default(uuid())
+  type                 WarrantyType
+  productId            Int
+  wholesaleCustomerId  String?
+  warehouseId          Int?
+  wholesaleOrderId     Int?
+  quantity             Int          @default(1)
+  maintenanceLaborCost Float?
+  shippingCost         Float?
+  notes                String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  product           Product            @relation("WholesaleWarrantyOriginalProduct", fields: [productId], references: [id], onDelete: Cascade)
+  wholesaleCustomer WholesaleCustomer? @relation(fields: [wholesaleCustomerId], references: [id], onDelete: Cascade)
+  warehouse         Warehouse?         @relation(fields: [warehouseId], references: [id], onDelete: SetNull)
+  wholesaleOrder    WholesaleOrder?    @relation(fields: [wholesaleOrderId], references: [id], onDelete: SetNull)
+
+  @@index([wholesaleOrderId])
 }
 
 // ============================================

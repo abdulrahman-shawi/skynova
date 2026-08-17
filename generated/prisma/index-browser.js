@@ -478,6 +478,21 @@ exports.Prisma.WarrantyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.WholesaleWarrantyScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  productId: 'productId',
+  wholesaleCustomerId: 'wholesaleCustomerId',
+  warehouseId: 'warehouseId',
+  wholesaleOrderId: 'wholesaleOrderId',
+  quantity: 'quantity',
+  maintenanceLaborCost: 'maintenanceLaborCost',
+  shippingCost: 'shippingCost',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   message: 'message',
@@ -833,6 +848,7 @@ exports.Prisma.ModelName = {
   WholesaleOrderItem: 'WholesaleOrderItem',
   WholesaleVisit: 'WholesaleVisit',
   Warranty: 'Warranty',
+  WholesaleWarranty: 'WholesaleWarranty',
   Message: 'Message',
   Order: 'Order',
   Expense: 'Expense',

@@ -160,7 +160,7 @@ npx prisma migrate deploy
 
 Connection is configured via `DATABASE_URL` in `.env`. A `prisma.config.ts` file is also present for Prisma's new configuration format.
 
-**Important models:** `User`, `Permission`, `Order`, `OrderItem`, `Product`, `ProductStock`, `Warehouse`, `Customer`, `Expense`, `Shipping`, `Warranty`, `Page`, `AffiliateLink`, `Commission`.
+**Important models:** `User`, `Permission`, `Order`, `OrderItem`, `Product`, `ProductStock`, `Warehouse`, `Customer`, `Expense`, `Shipping`, `Warranty`, `WholesaleWarranty`, `Page`, `AffiliateLink`, `Commission`.
 
 **Warehouse access control:** The `Permission` ↔ `Warehouse` many-to-many relation (`allowedWarehouses` / `allowedPermissions`, join table `_PermissionWarehouseAccess`) restricts which warehouses a role may access. An empty list means access to all warehouses. Managed from the permissions page (`app/dashboard/permissions/page.tsx`) via `/api/permissions`; enforced for orders (`server/order.ts`), wholesale orders (`server/wholesale-order.ts`), and the products page (`app/dashboard/products/page.tsx`) — admins bypass all checks. The client user payload (`/api/users/get`, `/api/users/impersonate/[id]`) includes `permission.allowedWarehouses`. Warehouse **lists shown to end users** (orders, wholesale orders, products pages) must come from `getAllowedWarehouses()` in `server/warehouse.ts`, which filters by the session user's `allowedWarehouses`; the unfiltered `getWarehouse()` is reserved for admin screens (permissions, inventories).
 
@@ -219,6 +219,13 @@ Warranty records (`server/warranty.ts`) now require a **warehouse** and **quanti
 - `REPLACEMENT` warranties create a matching `Order` record and store its id on the warranty.
 - Deleting a warranty restores the quantity to the linked warehouse. For replacements, the linked order is deleted first; for `DAMAGED`/`MAINTENANCE`, a `StockMovement` of type `RETURN` is also logged.
 - `customerId` is optional. The customer field is hidden for `DAMAGED` and optional for `MAINTENANCE`, but it is still required for `REPLACEMENT` because an order must be linked to a customer.
+
+### Wholesale Warranty
+The wholesale warranty (`server/wholesale-warranty.ts`, page `app/dashboard/wholesale-warranty/page.tsx`, model `WholesaleWarranty`) mirrors the retail warranty but for wholesale customers:
+- It selects from `WholesaleCustomer` records and links to `WholesaleOrder` instead of `Order`.
+- `REPLACEMENT` warranties create a `WholesaleOrder` (order number `WHL-...`, status `PENDING`, fully discounted so `finalAmount = 0`), which appears under "طلب جديد" on the wholesale orders page (`/dashboard/wholesale-orders`).
+- Stock effects, `StockMovement` logging, and edit/delete restore logic are identical to the retail warranty (reasons are suffixed with "كفالة جملة").
+- It reuses the retail warranty permissions (`viewWarranty` / `addWarranty` / `editWarranty` / `deleteWarranty`); the sidebar entry "كفالة الجملة" is gated by `viewWarranty`.
 
 ### Cron Jobs
 `lib/cron.ts` runs a monthly job (1st of month at 00:00 UTC) that deactivates active `UserTarget` records. It is imported in the root layout so it initializes once per server process.
