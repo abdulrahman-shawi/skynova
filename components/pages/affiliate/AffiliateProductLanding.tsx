@@ -20,6 +20,7 @@ type ProductView = {
     guaranteeTitle?: string | null;
     guaranteeText?: string | null;
     showReviews?: boolean | null;
+    showPrice?: boolean | null;
     discountPercent?: number | null;
     ctaText?: string | null;
     features?: Array<{ title?: string | null; description?: string | null }>;
@@ -107,12 +108,14 @@ export default function AffiliateProductLanding({ product, affiliateCode = '', p
             )}
             <div className="space-y-3 p-6">
               <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-bold text-slate-500">السعر المعتمد للأفلييت</p>
-                  <p className="text-3xl font-black text-slate-900">
-                    {(Number(product.affiliatePrice || 0) > 0 ? Number(product.affiliatePrice) : Number(product.stocks?.[0]?.price || 0)).toFixed(2)}
-                  </p>
-                </div>
+                {product.landingPage?.showPrice !== false ? (
+                  <div>
+                    <p className="text-sm font-bold text-slate-500">السعر المعتمد للأفلييت</p>
+                    <p className="text-3xl font-black text-slate-900">
+                      {(Number(product.affiliatePrice || 0) > 0 ? Number(product.affiliatePrice) : Number(product.stocks?.[0]?.price || 0)).toFixed(2)}
+                    </p>
+                  </div>
+                ) : null}
                 {product.landingPage?.discountPercent ? (
                   <div className="rounded-2xl bg-rose-100 px-4 py-2 text-sm font-black text-rose-700">
                     خصم {product.landingPage.discountPercent}%

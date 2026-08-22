@@ -16,6 +16,7 @@ type ProductLike = {
   }>;
   landingPage?: {
     ctaText?: string | null;
+    showPrice?: boolean | null;
     quantityDiscountTiers?: Array<{ minQuantity?: number | null; discountPercent?: number | null }> | null;
   } | null;
 };
@@ -56,6 +57,8 @@ export default function AffiliateProductOrderForm({
     () => normalizeQuantityDiscountTiers(product.landingPage?.quantityDiscountTiers),
     [product.landingPage?.quantityDiscountTiers]
   );
+
+  const showPrice = product.landingPage?.showPrice !== false;
 
   React.useEffect(() => {
     const normalizedCode = String(affiliateCode || '').trim();
@@ -160,10 +163,12 @@ export default function AffiliateProductOrderForm({
           <h2 className="text-2xl font-black text-slate-900">اطلب الآن</h2>
           <p className="text-sm text-slate-500">{product.landingPage?.ctaText || 'املأ النموذج وسيتم تأكيد الطلب معك.'}</p>
         </div>
-        <div className="rounded-2xl bg-amber-50 px-4 py-2 text-right">
-          <div className="text-xs font-bold text-amber-700">الإجمالي</div>
-          <div className="text-2xl font-black text-amber-900">{pricing.finalAmount.toFixed(2)}</div>
-        </div>
+        {showPrice ? (
+          <div className="rounded-2xl bg-amber-50 px-4 py-2 text-right">
+            <div className="text-xs font-bold text-amber-700">الإجمالي</div>
+            <div className="text-2xl font-black text-amber-900">{pricing.finalAmount.toFixed(2)}</div>
+          </div>
+        ) : null}
       </div>
 
       {quantityDiscountTiers.length > 0 ? (
@@ -178,7 +183,7 @@ export default function AffiliateProductOrderForm({
           </div>
           {pricing.appliedTier ? (
             <div className="mt-3 text-sm font-bold text-emerald-700">
-              تم تطبيق خصم {pricing.appliedDiscountPercent}% على هذه الكمية. وفرت {pricing.totalDiscountAmount.toFixed(2)}
+              تم تطبيق خصم {pricing.appliedDiscountPercent}% على هذه الكمية.{showPrice ? ` وفرت ${pricing.totalDiscountAmount.toFixed(2)}` : ''}
             </div>
           ) : (
             <div className="mt-3 text-sm text-slate-600">اختر كمية أعلى لتطبيق خصم تلقائي إذا كان متاحًا.</div>
@@ -186,7 +191,7 @@ export default function AffiliateProductOrderForm({
         </div>
       ) : null}
 
-      {pricing.totalDiscountAmount > 0 ? (
+      {showPrice && pricing.totalDiscountAmount > 0 ? (
         <div className="mb-5 grid gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 text-sm md:grid-cols-3">
           <div>
             <div className="text-slate-500">السعر قبل الخصم</div>

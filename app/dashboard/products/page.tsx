@@ -88,6 +88,7 @@ const landingPageSchema = z.object({
     ).optional().default([]),
     showReviews: z.boolean().optional().default(true),
     showGuarantee: z.boolean().optional().default(true),
+    showPrice: z.boolean().optional().default(true),
     guaranteeTitle: z.string().optional().nullable(),
     guaranteeText: z.string().optional().nullable(),
     ctaText: z.string().optional().nullable(),
@@ -1368,6 +1369,7 @@ const ProductLayout = () => {
                                 : [],
                             showReviews: landingProduct.landingPage.showReviews ?? true,
                             showGuarantee: landingProduct.landingPage.showGuarantee ?? true,
+                            showPrice: landingProduct.landingPage.showPrice ?? true,
                             guaranteeTitle: landingProduct.landingPage.guaranteeTitle || '',
                             guaranteeText: landingProduct.landingPage.guaranteeText || '',
                             ctaText: landingProduct.landingPage.ctaText || '',
@@ -1377,6 +1379,7 @@ const ProductLayout = () => {
                             features: [],
                             showReviews: true,
                             showGuarantee: true,
+                            showPrice: true,
                             isActive: true,
                         }}
                         submitLabel="حفظ صفحة الهبوط"
@@ -1435,6 +1438,21 @@ const ProductLayout = () => {
                                                     className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                                                 />
                                                 <span className="text-sm font-medium text-slate-800 dark:text-slate-200">عرض الضمان</span>
+                                            </label>
+                                        )}
+                                    />
+                                    <Controller
+                                        name="showPrice"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={field.value}
+                                                    onChange={(e) => field.onChange(e.target.checked)}
+                                                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                />
+                                                <span className="text-sm font-medium text-slate-800 dark:text-slate-200">عرض السعر في صفحة الهبوط</span>
                                             </label>
                                         )}
                                     />

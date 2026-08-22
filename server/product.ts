@@ -699,6 +699,7 @@ export interface LandingPageInput {
     features?: Array<{ title: string; description: string }>;
     showReviews?: boolean;
     showGuarantee?: boolean;
+    showPrice?: boolean;
     guaranteeTitle?: string | null;
     guaranteeText?: string | null;
     ctaText?: string | null;
@@ -728,6 +729,7 @@ export async function upsertProductLandingPage(productId: number, data: LandingP
                     features: features as any,
                     showReviews: data.showReviews ?? true,
                     showGuarantee: data.showGuarantee ?? true,
+                    showPrice: data.showPrice ?? true,
                     guaranteeTitle: data.guaranteeTitle || null,
                     guaranteeText: data.guaranteeText || null,
                     ctaText: data.ctaText || null,
@@ -743,6 +745,7 @@ export async function upsertProductLandingPage(productId: number, data: LandingP
                     features: features as any,
                     showReviews: data.showReviews ?? true,
                     showGuarantee: data.showGuarantee ?? true,
+                    showPrice: data.showPrice ?? true,
                     guaranteeTitle: data.guaranteeTitle || null,
                     guaranteeText: data.guaranteeText || null,
                     ctaText: data.ctaText || null,
