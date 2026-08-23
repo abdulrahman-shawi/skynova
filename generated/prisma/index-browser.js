@@ -710,6 +710,19 @@ exports.Prisma.AffiliateWalletTransferScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CouponScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  discountType: 'discountType',
+  discountValue: 'discountValue',
+  usageLimit: 'usageLimit',
+  usedCount: 'usedCount',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -864,7 +877,8 @@ exports.Prisma.ModelName = {
   Offer: 'Offer',
   OfferDiscount: 'OfferDiscount',
   Commission: 'Commission',
-  AffiliateWalletTransfer: 'AffiliateWalletTransfer'
+  AffiliateWalletTransfer: 'AffiliateWalletTransfer',
+  Coupon: 'Coupon'
 };
 
 /**

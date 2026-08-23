@@ -45,6 +45,7 @@ app/                    # Next.js App Router
     categories/
     collections/
     customers/
+    coupons/
     employee-salaries/
     expenses/
     inventories/
@@ -72,6 +73,7 @@ server/                 # Server Actions (`'use server'`)
   analytics.ts
   image.ts              # Vercel Blob image upload
   collections.ts
+  coupon.ts             # Coupon CRUD (name, code, discount, usage limit)
   employee-salaries.ts
   warranty.ts
   move.ts

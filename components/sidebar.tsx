@@ -223,6 +223,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
           { icon: Ticket, label: "العروض", href: "/dashboard/offers" },
           (user && isAdmin(user)) &&
           { icon: BadgePercent, label: "خصومات العروض", href: "/dashboard/offer-discounts" },
+          (user && isAdmin(user)) &&
+          { icon: Ticket, label: "الكوبونات", href: "/dashboard/coupons" },
         ].filter(Boolean) as MenuItem[]),
         (user && hasAnyPermission(user, ["viewPages", "addPages", "editPages", "deletePages"])) &&
         { icon: FileText, label: "الصفحات", href: "/dashboard/pages" },

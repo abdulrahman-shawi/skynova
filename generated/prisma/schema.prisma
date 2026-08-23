@@ -1093,3 +1093,22 @@ model AffiliateWalletTransfer {
   @@index([transferredAt])
   @@map("affiliate_wallet_transfers")
 }
+
+// ============================================
+// Coupon (Discount Coupons)
+// ============================================
+
+model Coupon {
+  id            String       @id @default(cuid())
+  name          String
+  code          String       @unique
+  discountType  DiscountType @default(PERCENTAGE)
+  discountValue Float
+  usageLimit    Int
+  usedCount     Int          @default(0)
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@map("coupons")
+}
