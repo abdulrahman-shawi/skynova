@@ -805,6 +805,7 @@ export async function updateOrder(data: any, id: any, items: any) {
                     deliveryMethod: data.deliveryMethod,
                     deliveryNotes: data.deliveryNotes,
                     customer: { connect: { id: data.customerId } },
+                    user: data.userId ? { connect: { id: data.userId } } : oldOrder.userId ? { connect: { id: oldOrder.userId } } : undefined,
                     shippingPrice: selectedShipping ? Number(selectedShipping.price || 0) : null,
                     manualCreatedAt,
                     shipping: shippingId > 0

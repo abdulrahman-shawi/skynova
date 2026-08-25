@@ -728,6 +728,7 @@ export async function updateWholesaleOrder(data: any, id: any, items: any) {
                     deliveryNotes: data.deliveryNotes,
                     additionalNotes: data.additionalNotes,
                     wholesaleCustomer: { connect: { id: data.wholesaleCustomerId } },
+                    user: data.userId ? { connect: { id: data.userId } } : oldOrder.userId ? { connect: { id: oldOrder.userId } } : undefined,
                     manualCreatedAt,
                     warehouse: { connect: { id: fallbackWarehouse.id } },
                     items: {

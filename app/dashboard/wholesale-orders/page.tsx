@@ -56,6 +56,8 @@ export default function WholesaleOrdersPage() {
   const [paymentMethod, setPaymentMethod] = React.useState("عند الاستلام");
   const [amount, setAmount] = React.useState("");
   const [warehouseId, setWarehouseId] = React.useState("");
+  const [assignedUserId, setAssignedUserId] = React.useState("");
+  const [usersList, setUsersList] = React.useState<any[]>([]);
 
   const [receiverName, setReceiverName] = React.useState("");
   const [receiverPhone, setReceiverPhone] = React.useState<(string | undefined)[]>([""]);
@@ -69,6 +71,16 @@ export default function WholesaleOrdersPage() {
   const [manualCreatedAt, setManualCreatedAt] = React.useState("");
   const [overallDiscount, setOverallDiscount] = React.useState(0);
   const selectedWarehouse = React.useMemo(() => warehouses.find((w: any) => String(w.id) === warehouseId), [warehouses, warehouseId]);
+
+  React.useEffect(() => {
+    fetch("/api/users", { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const payload = await response.json();
+        setUsersList(Array.isArray(payload?.data) ? payload.data : []);
+      })
+      .catch(() => setUsersList([]));
+  }, []);
 
   const [items, setItems] = React.useState([
     { productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, wholesalePriceTierId: "" }
@@ -209,6 +221,7 @@ export default function WholesaleOrdersPage() {
     setDeliveryNotes("");
     setAdditionalNotes("");
     setManualCreatedAt("");
+    setAssignedUserId(String(user?.id || ""));
     setOverallDiscount(0);
     setItems([{ productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, wholesalePriceTierId: "" }]);
     setSearchQueries({});
@@ -273,6 +286,7 @@ export default function WholesaleOrdersPage() {
     setGoogleMapsLink(orderDetails?.googleMapsLink || "");
     setDeliveryNotes(orderDetails?.deliveryNotes || "");
     setAdditionalNotes(orderDetails?.additionalNotes || "");
+    setAssignedUserId(String(orderDetails?.userId || user?.id || ""));
     setOverallDiscount(Number(orderDetails?.discount || 0));
     setManualCreatedAt(orderDetails?.manualCreatedAt ? new Date(orderDetails.manualCreatedAt).toISOString().slice(0, 16) : "");
 
@@ -337,6 +351,7 @@ export default function WholesaleOrdersPage() {
       subTotal: Number(subTotal),
       warehouseId: selectedWarehouse?.id,
       stockCountry: selectedWarehouse?.location,
+      userId: assignedUserId || user?.id || "",
       manualCreatedAt: manualCreatedAt || null,
     };
 
@@ -608,6 +623,22 @@ export default function WholesaleOrdersPage() {
                 {warehouses.map((warehouse: any) => (
                   <option key={warehouse.id} value={String(warehouse.id)}>
                     {warehouse.name} - {warehouse.location}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold mb-1">الموظف / البائع</label>
+              <select
+                value={assignedUserId}
+                onChange={(e) => setAssignedUserId(e.target.value)}
+                className="block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-slate-950 dark:text-white text-sm"
+              >
+                <option value="">اختر الموظف</option>
+                {usersList.map((row: any) => (
+                  <option key={row.id} value={row.id}>
+                    {row.username || row.name || row.email || row.id}
                   </option>
                 ))}
               </select>

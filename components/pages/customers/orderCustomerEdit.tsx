@@ -169,6 +169,8 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
   const [shipping, setShipping] = React.useState<any[]>([]);
   const [shippingId, setShippingId] = React.useState<string>("");
   const [deliveryMethod, setDeliveryMethod] = React.useState("");
+  const [usersList, setUsersList] = React.useState<any[]>([]);
+  const [assignedUserId, setAssignedUserId] = React.useState<string>("");
 
   const [customerSearchQuery, setCustomerSearchQuery] = React.useState("");
   const [showCustomerDropdown, setShowCustomerDropdown] = React.useState(false);
@@ -218,6 +220,20 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
   };
 
   React.useEffect(() => {
+    fetch("/api/users", { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const payload = await response.json();
+        const rows = Array.isArray(payload?.data) ? payload.data : [];
+        setUsersList(rows);
+        if (!assignedUserId && rows.length > 0) {
+          setAssignedUserId(String(user?.id || rows[0]?.id || ""));
+        }
+      })
+      .catch(() => setUsersList([]));
+  }, [user?.id]);
+
+  React.useEffect(() => {
   if (initialData && isOpenOrder) {
     console.log("Initial Data:", initialData)
     // تعبئة البيانات عند التعديل
@@ -242,12 +258,14 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
     setPaymentMethod(initialData.paymentMethod || "عند الاستلام");
     setOverallDiscount(Number(initialData?.discount ?? initialData?.overallDiscount ?? 0));
     setStatus(initialData.status || "طلب جديد");
+    setAssignedUserId(String(initialData?.userId || user?.id || ""));
     setManualCreatedAt(formatDateForInput(initialData?.manualCreatedAt || initialData?.createdAt));
   } else if (!initialData && isOpenOrder) {
     // تصفير الحقول عند إضافة طلب جديد
+    setAssignedUserId(String(user?.id || ""));
     resetForm();
   }
-}, [initialData, isOpenOrder]);
+}, [initialData, isOpenOrder, user?.id]);
   const addNewItem = () => {
     setItems([...items, { productId: "", name: "", price: 0, quantity: 1, discount: 0, note: "", total: 0, modelNumber: "" }]);
   };
@@ -409,6 +427,7 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
       grandTotal: Number(grandTotal),
       overallDiscount: Number(overallDiscount),
       subTotal: Number(subTotal),
+      userId: assignedUserId || user?.id || "",
       ...(isAdminUser && isEditMode ? { manualCreatedAt: manualCreatedAt || null } : {})
     };
 
@@ -530,6 +549,21 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
                   />
                 </div>
               )}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-slate-500 mr-2">الموظف / البائع</label>
+                <select
+                  value={assignedUserId}
+                  onChange={(e) => setAssignedUserId(e.target.value)}
+                  className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold"
+                >
+                  <option value="">اختر الموظف</option>
+                  {usersList.map((row: any) => (
+                    <option key={row.id} value={row.id}>
+                      {row.username || row.name || row.email || row.id}
+                    </option>
+                  ))}
+                </select>
+              </div>
               {isAdminUser && isEditMode && (
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-slate-500 mr-2">تاريخ الإنشاء (اختياري)</label>
