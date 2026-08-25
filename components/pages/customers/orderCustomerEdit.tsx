@@ -226,17 +226,22 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
         const payload = await response.json();
         const rows = Array.isArray(payload?.data) ? payload.data : [];
         setUsersList(rows);
+
+        if (initialData?.userId || initialData?.user?.id) {
+          setAssignedUserId(String(initialData.userId || initialData.user.id));
+          return;
+        }
+
         if (!assignedUserId && rows.length > 0) {
           setAssignedUserId(String(user?.id || rows[0]?.id || ""));
         }
       })
       .catch(() => setUsersList([]));
-  }, [user?.id]);
+  }, [initialData?.userId, initialData?.user?.id, user?.id]);
 
   React.useEffect(() => {
   if (initialData && isOpenOrder) {
-    console.log("Initial Data:", initialData)
-    // تعبئة البيانات عند التعديل
+    const nextAssignedUserId = String(initialData?.userId || initialData?.user?.id || user?.id || "");
     setItems(initialData.items || []);
     setCustomerId(initialData.customerId || "");
     setReceiverName(initialData.receiverName || "");
@@ -258,10 +263,9 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
     setPaymentMethod(initialData.paymentMethod || "عند الاستلام");
     setOverallDiscount(Number(initialData?.discount ?? initialData?.overallDiscount ?? 0));
     setStatus(initialData.status || "طلب جديد");
-    setAssignedUserId(String(initialData?.userId || user?.id || ""));
+    setAssignedUserId(nextAssignedUserId);
     setManualCreatedAt(formatDateForInput(initialData?.manualCreatedAt || initialData?.createdAt));
   } else if (!initialData && isOpenOrder) {
-    // تصفير الحقول عند إضافة طلب جديد
     setAssignedUserId(String(user?.id || ""));
     resetForm();
   }
@@ -427,7 +431,7 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
       grandTotal: Number(grandTotal),
       overallDiscount: Number(overallDiscount),
       subTotal: Number(subTotal),
-      userId: assignedUserId || user?.id || "",
+      userId: assignedUserId && assignedUserId !== "" ? assignedUserId : (initialData?.userId || initialData?.user?.id || user?.id || ""),
       ...(isAdminUser && isEditMode ? { manualCreatedAt: manualCreatedAt || null } : {})
     };
 
