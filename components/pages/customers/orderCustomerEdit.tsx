@@ -182,6 +182,7 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
   const [showDropdown, setShowDropdown] = React.useState<Record<number, boolean>>({});
   const { user } = useAuth()
   const isAdminUser = user?.accountType === "ADMIN";
+  const canManageAssignedUser = Boolean(isAdminUser);
   const isEditMode = Boolean(editId);
 
   const selectedWarehouse = warehouses.find((w: any) => String(w.id) === warehouseId);
@@ -431,7 +432,9 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
       grandTotal: Number(grandTotal),
       overallDiscount: Number(overallDiscount),
       subTotal: Number(subTotal),
-      userId: assignedUserId && assignedUserId !== "" ? assignedUserId : (initialData?.userId || initialData?.user?.id || user?.id || ""),
+      userId: isAdminUser
+        ? (assignedUserId && assignedUserId !== "" ? assignedUserId : (initialData?.userId || initialData?.user?.id || user?.id || ""))
+        : (initialData?.userId || initialData?.user?.id || user?.id || ""),
       ...(isAdminUser && isEditMode ? { manualCreatedAt: manualCreatedAt || null } : {})
     };
 
@@ -553,21 +556,23 @@ export default function OrderCustomerEdit({ initialData, customers, customerId, 
                   />
                 </div>
               )}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-slate-500 mr-2">الموظف / البائع</label>
-                <select
-                  value={assignedUserId}
-                  onChange={(e) => setAssignedUserId(e.target.value)}
-                  className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold"
-                >
-                  <option value="">اختر الموظف</option>
-                  {usersList.map((row: any) => (
-                    <option key={row.id} value={row.id}>
-                      {row.username || row.name || row.email || row.id}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {canManageAssignedUser && (
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold text-slate-500 mr-2">الموظف / البائع</label>
+                  <select
+                    value={assignedUserId}
+                    onChange={(e) => setAssignedUserId(e.target.value)}
+                    className="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 font-bold"
+                  >
+                    <option value="">اختر الموظف</option>
+                    {usersList.map((row: any) => (
+                      <option key={row.id} value={row.id}>
+                        {row.username || row.name || row.email || row.id}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               {isAdminUser && isEditMode && (
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-bold text-slate-500 mr-2">تاريخ الإنشاء (اختياري)</label>

@@ -58,6 +58,7 @@ export default function WholesaleOrdersPage() {
   const [warehouseId, setWarehouseId] = React.useState("");
   const [assignedUserId, setAssignedUserId] = React.useState("");
   const [usersList, setUsersList] = React.useState<any[]>([]);
+  const canManageAssignedUser = Boolean(user && user.accountType === "ADMIN");
 
   const [receiverName, setReceiverName] = React.useState("");
   const [receiverPhone, setReceiverPhone] = React.useState<(string | undefined)[]>([""]);
@@ -628,21 +629,23 @@ export default function WholesaleOrdersPage() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-bold mb-1">الموظف / البائع</label>
-              <select
-                value={assignedUserId}
-                onChange={(e) => setAssignedUserId(e.target.value)}
-                className="block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-slate-950 dark:text-white text-sm"
-              >
-                <option value="">اختر الموظف</option>
-                {usersList.map((row: any) => (
-                  <option key={row.id} value={row.id}>
-                    {row.username || row.name || row.email || row.id}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {canManageAssignedUser && (
+              <div>
+                <label className="block text-sm font-bold mb-1">الموظف / البائع</label>
+                <select
+                  value={assignedUserId}
+                  onChange={(e) => setAssignedUserId(e.target.value)}
+                  className="block w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-slate-950 dark:text-white text-sm"
+                >
+                  <option value="">اختر الموظف</option>
+                  {usersList.map((row: any) => (
+                    <option key={row.id} value={row.id}>
+                      {row.username || row.name || row.email || row.id}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           {/* المنتجات */}

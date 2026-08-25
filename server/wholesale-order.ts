@@ -627,12 +627,18 @@ export async function createWholesaleOrder(data: any, items: any[], userId: stri
 
 export async function updateWholesaleOrder(data: any, id: any, items: any) {
     try {
+        const currentUser = await getCurrentSessionUser();
+
         const oldOrder = await prisma.wholesaleOrder.findUnique({
             where: { id },
             include: { items: true, warehouse: true }
         });
 
         if (!oldOrder) return { success: false, error: "الطلب غير موجود" };
+
+        const nextUserId = currentUser?.accountType === "ADMIN"
+            ? (data.userId || oldOrder.userId || currentUser?.id)
+            : (oldOrder.userId || currentUser?.id);
 
         return await prisma.$transaction(async (tx) => {
             const inputWarehouseId = Number(data.warehouseId || oldOrder.warehouseId || 0);
@@ -728,7 +734,7 @@ export async function updateWholesaleOrder(data: any, id: any, items: any) {
                     deliveryNotes: data.deliveryNotes,
                     additionalNotes: data.additionalNotes,
                     wholesaleCustomer: { connect: { id: data.wholesaleCustomerId } },
-                    user: data.userId ? { connect: { id: data.userId } } : oldOrder.userId ? { connect: { id: oldOrder.userId } } : undefined,
+                    user: nextUserId ? { connect: { id: nextUserId } } : undefined,
                     manualCreatedAt,
                     warehouse: { connect: { id: fallbackWarehouse.id } },
                     items: {

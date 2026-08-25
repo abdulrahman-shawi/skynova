@@ -721,6 +721,8 @@ export async function createOrder(data: any, items: any[], user: any) {
 
 export async function updateOrder(data: any, id: any, items: any) {
     try {
+        const currentUser = await getCurrentSessionUser();
+
         // 1. جلب البيانات الأساسية خارج الـ Transaction لتقليل وقت القفل
         const oldOrder = await prisma.order.findUnique({
             where: { id },
@@ -728,6 +730,10 @@ export async function updateOrder(data: any, id: any, items: any) {
         });
 
         if (!oldOrder) return { success: false, error: "الطلب غير موجود" };
+
+        const nextUserId = currentUser?.accountType === "ADMIN"
+            ? (data.userId || oldOrder.userId || currentUser?.id)
+            : (oldOrder.userId || currentUser?.id);
 
         return await prisma.$transaction(async (tx) => {
             const inputWarehouseId = Number(data.warehouseId || oldOrder.warehouseId || 0);
@@ -805,7 +811,7 @@ export async function updateOrder(data: any, id: any, items: any) {
                     deliveryMethod: data.deliveryMethod,
                     deliveryNotes: data.deliveryNotes,
                     customer: { connect: { id: data.customerId } },
-                    user: data.userId ? { connect: { id: data.userId } } : oldOrder.userId ? { connect: { id: oldOrder.userId } } : undefined,
+                    user: nextUserId ? { connect: { id: nextUserId } } : undefined,
                     shippingPrice: selectedShipping ? Number(selectedShipping.price || 0) : null,
                     manualCreatedAt,
                     shipping: shippingId > 0
