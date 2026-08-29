@@ -4,7 +4,8 @@ import { decrypt } from "@/lib/auth";
 import { calculateAffiliateCommissionAmount } from "@/lib/affiliate";
 import { prisma } from "@/lib/prisma"
 import { cookies } from "next/headers";
-import { createFatihShipment, FATIH_COMPANY_NAME } from "@/server/shipping";
+import { createFatihShipment } from "@/server/shipping";
+import { FATIH_COMPANY_NAME } from "@/lib/fatih";
 
 const AFFILIATE_COOKIE_NAME = 'affiliate-code';
 

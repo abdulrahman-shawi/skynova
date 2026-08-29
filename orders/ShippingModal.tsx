@@ -1,7 +1,8 @@
 import React from 'react';
 import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
-import { getFatihFormOptions, FATIH_COMPANY_NAME } from '@/server/shipping';
+import { getFatihFormOptions } from '@/server/shipping';
+import { FATIH_COMPANY_NAME } from '@/lib/fatih';
 
 interface ShippingForm {
   shippingCompanyName: string;

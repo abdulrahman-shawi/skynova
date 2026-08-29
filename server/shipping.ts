@@ -232,8 +232,6 @@ export async function getMyShippingOrders() {
 // تكامل شركة الفاتح (API خارجي)
 // ============================================
 
-export const FATIH_COMPANY_NAME = "الفاتح";
-
 const FATIH_API_BASE = "https://fatihcargo.com/api/v1";
 
 async function fatihFetch(path: string, init?: RequestInit) {
