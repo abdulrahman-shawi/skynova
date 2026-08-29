@@ -227,3 +227,39 @@ export async function getMyShippingOrders() {
         return { success: false, data: null };
     }
 }
+
+// ============================================
+// تكامل شركة الفاتح (API خارجي)
+// ============================================
+
+export const FATIH_COMPANY_NAME = "الفاتح";
+
+// تجلب الطلبات المرتبطة بشركة الفاتح من نظامهم الخارجي
+export async function getFatihOrders(params?: { page?: number; status?: string; search?: string }) {
+    try {
+        const token = process.env.FATIH_API_TOKEN;
+        if (!token) {
+            return { success: false, error: "لم يتم ضبط توكن الفاتح (FATIH_API_TOKEN) في ملف .env" };
+        }
+        const query = new URLSearchParams();
+        query.set("per_page", "50");
+        if (params?.page) query.set("page", String(params.page));
+        if (params?.status) query.set("status", params.status);
+        if (params?.search) query.set("search", params.search);
+        const res = await fetch(`https://fatihcargo.com/api/v1/shipping/orders?${query.toString()}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+            cache: "no-store",
+        });
+        if (!res.ok) {
+            return { success: false, error: `فشل الاتصال بخدمة الفاتح (كود ${res.status})` };
+        }
+        const json = await res.json();
+        return { success: true, data: json };
+    } catch (error) {
+        console.error("Error fetching Fatih orders:", error);
+        return { success: false, error: "حدث خطأ أثناء جلب طلبات الفاتح" };
+    }
+}

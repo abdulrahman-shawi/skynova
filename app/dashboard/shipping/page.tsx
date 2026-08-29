@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { hasPermission } from "@/lib/utils";
 import { getOrderCurrencySymbol, getOrderDisplayDate, getOrderNetAmountAfterShipping, getOrderTotalShippingExpenses } from "@/orders/orderHelpers";
-import { createshipping, deletshipping, getshippingWithOrders, updateshipping } from "@/server/shipping";
+import { createshipping, deletshipping, getshippingWithOrders, updateshipping, getFatihOrders, FATIH_COMPANY_NAME } from "@/server/shipping";
 import { AnimatePresence, motion } from "framer-motion";
 import { Edit, Trash2 } from "lucide-react";
 import React from "react";
@@ -26,6 +26,36 @@ export default function ShippingPage() {
     const [shipping, setshipping] = React.useState<any[]>([]);
     const [selectedShipping, setSelectedShipping] = React.useState<any>(null);
     const { user } = useAuth()
+
+    // طلبات شركة الفاتح القادمة من الـ API الخارجي
+    const isFatihSelected = (selectedShipping?.name || "").trim() === FATIH_COMPANY_NAME;
+    const [fatihOrders, setFatihOrders] = React.useState<any[]>([]);
+    const [fatihPagination, setFatihPagination] = React.useState<any>(null);
+    const [fatihLoading, setFatihLoading] = React.useState(false);
+    const [fatihPage, setFatihPage] = React.useState(1);
+    const [fatihError, setFatihError] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        if (!isDetailsOpen || !isFatihSelected) return;
+        const fetchFatih = async () => {
+            setFatihLoading(true);
+            setFatihError(null);
+            try {
+                const res = await getFatihOrders({ page: fatihPage });
+                if (res.success) {
+                    setFatihOrders(Array.isArray(res.data?.orders) ? res.data.orders : []);
+                    setFatihPagination(res.data?.pagination || null);
+                } else {
+                    setFatihError(res.error || "حدث خطأ أثناء جلب طلبات الفاتح");
+                }
+            } catch (error) {
+                setFatihError("حدث خطأ غير متوقع أثناء جلب طلبات الفاتح");
+            } finally {
+                setFatihLoading(false);
+            }
+        };
+        fetchFatih();
+    }, [isDetailsOpen, isFatihSelected, fatihPage]);
 
     const selectedShippingOrders = React.useMemo(() => {
         return Array.isArray(selectedShipping?.orders) ? selectedShipping.orders : [];
@@ -82,6 +112,10 @@ export default function ShippingPage() {
 
     const openDetailsModal = (data: any) => {
         setSelectedShipping(data);
+        setFatihOrders([]);
+        setFatihPagination(null);
+        setFatihError(null);
+        setFatihPage(1);
         setIsDetailsOpen(true);
     };
 
@@ -347,6 +381,80 @@ export default function ShippingPage() {
                                         </div>
                                     )}
                                 </div>
+
+                                {isFatihSelected && (
+                                    <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                                        <div className="mb-3 font-black text-slate-800 dark:text-white">طلبات الفاتح (من نظام الشركة)</div>
+                                        {fatihLoading ? (
+                                            <div className="text-sm text-slate-500">جاري تحميل الطلبات...</div>
+                                        ) : fatihError ? (
+                                            <div className="text-sm text-red-500">{fatihError}</div>
+                                        ) : fatihOrders.length === 0 ? (
+                                            <div className="text-sm text-slate-500">لا توجد طلبات في نظام الفاتح.</div>
+                                        ) : (
+                                            <>
+                                                <div className="overflow-x-auto">
+                                                    <table className="min-w-full text-sm">
+                                                        <thead>
+                                                            <tr className="border-b border-slate-200 text-slate-500 dark:border-slate-800 dark:text-slate-300">
+                                                                <th className="px-3 py-2 text-right">رقم الشحنة</th>
+                                                                <th className="px-3 py-2 text-right">الحالة</th>
+                                                                <th className="px-3 py-2 text-right">المرسل</th>
+                                                                <th className="px-3 py-2 text-right">المستلم</th>
+                                                                <th className="px-3 py-2 text-right">من مدينة</th>
+                                                                <th className="px-3 py-2 text-right">إلى مدينة</th>
+                                                                <th className="px-3 py-2 text-right">التاريخ</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {fatihOrders.map((order: any) => (
+                                                                <tr key={order.id} className="border-b border-slate-100 dark:border-slate-800/70">
+                                                                    <td className="px-3 py-2 font-bold text-slate-800 dark:text-slate-100">{order.qr_code || order.code || order.id}</td>
+                                                                    <td className="px-3 py-2">
+                                                                        <span
+                                                                            className="rounded-full px-2 py-0.5 text-xs font-bold text-white"
+                                                                            style={{ backgroundColor: order.status?.color || "#64748b" }}
+                                                                        >
+                                                                            {order.status?.label || order.status?.value || "-"}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{order.sender?.name || "-"}</td>
+                                                                    <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{order.receiver?.name || "-"}</td>
+                                                                    <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{order.source?.city?.name || "-"}</td>
+                                                                    <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{order.target?.city?.name || "-"}</td>
+                                                                    <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{order.created_at ? new Date(order.created_at).toLocaleDateString("ar-EG") : "-"}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                {fatihPagination && fatihPagination.lastPage > 1 && (
+                                                    <div className="mt-3 flex items-center justify-between">
+                                                        <button
+                                                            type="button"
+                                                            disabled={fatihPage <= 1}
+                                                            onClick={() => setFatihPage((p) => Math.max(1, p - 1))}
+                                                            className="rounded-lg border border-slate-200 px-3 py-1 text-sm disabled:opacity-40 dark:border-slate-700"
+                                                        >
+                                                            السابق
+                                                        </button>
+                                                        <span className="text-sm text-slate-500">
+                                                            صفحة {fatihPagination.currentPage} من {fatihPagination.lastPage} (المجموع: {fatihPagination.total})
+                                                        </span>
+                                                        <button
+                                                            type="button"
+                                                            disabled={!fatihPagination.has_MorePages}
+                                                            onClick={() => setFatihPage((p) => p + 1)}
+                                                            className="rounded-lg border border-slate-200 px-3 py-1 text-sm disabled:opacity-40 dark:border-slate-700"
+                                                        >
+                                                            التالي
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
