@@ -234,32 +234,87 @@ export async function getMyShippingOrders() {
 
 export const FATIH_COMPANY_NAME = "الفاتح";
 
-// تجلب الطلبات المرتبطة بشركة الفاتح من نظامهم الخارجي
-export async function getFatihOrders(params?: { page?: number; status?: string; search?: string }) {
+const FATIH_API_BASE = "https://fatihcargo.com/api/v1";
+
+async function fatihFetch(path: string, init?: RequestInit) {
+    const token = process.env.FATIH_API_TOKEN;
+    if (!token) {
+        return { success: false as const, error: "لم يتم ضبط توكن الفاتح (FATIH_API_TOKEN) في ملف .env" };
+    }
     try {
-        const token = process.env.FATIH_API_TOKEN;
-        if (!token) {
-            return { success: false, error: "لم يتم ضبط توكن الفاتح (FATIH_API_TOKEN) في ملف .env" };
-        }
-        const query = new URLSearchParams();
-        query.set("per_page", "50");
-        if (params?.page) query.set("page", String(params.page));
-        if (params?.status) query.set("status", params.status);
-        if (params?.search) query.set("search", params.search);
-        const res = await fetch(`https://fatihcargo.com/api/v1/shipping/orders?${query.toString()}`, {
+        const res = await fetch(`${FATIH_API_BASE}${path}`, {
+            ...init,
             headers: {
                 Authorization: `Bearer ${token}`,
                 Accept: "application/json",
+                "Content-Type": "application/json",
+                ...(init?.headers || {}),
             },
             cache: "no-store",
         });
+        const json = await res.json().catch(() => null);
         if (!res.ok) {
-            return { success: false, error: `فشل الاتصال بخدمة الفاتح (كود ${res.status})` };
+            const msg = json?.message || `فشل الاتصال بخدمة الفاتح (كود ${res.status})`;
+            return { success: false as const, error: msg };
         }
-        const json = await res.json();
-        return { success: true, data: json };
+        return { success: true as const, data: json };
     } catch (error) {
-        console.error("Error fetching Fatih orders:", error);
-        return { success: false, error: "حدث خطأ أثناء جلب طلبات الفاتح" };
+        console.error("Fatih API error:", error);
+        return { success: false as const, error: "حدث خطأ أثناء الاتصال بخدمة الفاتح" };
     }
+}
+
+// تجلب الطلبات المرتبطة بشركة الفاتح من نظامهم الخارجي
+export async function getFatihOrders(params?: { page?: number; status?: string; search?: string }) {
+    const query = new URLSearchParams();
+    query.set("per_page", "50");
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.status) query.set("status", params.status);
+    if (params?.search) query.set("search", params.search);
+    return fatihFetch(`/shipping/orders?${query.toString()}`);
+}
+
+// تجلب قوائم الإدخال اللازمة لإنشاء شحنة (المدن، الوحدات، الأوزان، الأحجام)
+export async function getFatihFormOptions() {
+    const [citiesRes, unitsRes, weightsRes, sizesRes] = await Promise.all([
+        fatihFetch("/shipping/reference/cities"),
+        fatihFetch("/shipping/reference/units"),
+        fatihFetch("/shipping/reference/categories?type=weight"),
+        fatihFetch("/shipping/reference/categories?type=size"),
+    ]);
+    if (!citiesRes.success) return citiesRes;
+    const pickList = (res: any, key: string) => {
+        if (!res?.success) return [];
+        const d = res.data;
+        return Array.isArray(d?.[key]) ? d[key] : Array.isArray(d) ? d : [];
+    };
+    return {
+        success: true as const,
+        data: {
+            cities: pickList(citiesRes, "cities"),
+            units: pickList(unitsRes, "units"),
+            weights: pickList(weightsRes, "categories"),
+            sizes: pickList(sizesRes, "categories"),
+        },
+    };
+}
+
+// ينشئ شحنة في نظام الفاتح
+export async function createFatihShipment(payload: Record<string, any>) {
+    const res = await fatihFetch("/shipping/orders", {
+        method: "POST",
+        body: JSON.stringify(payload),
+    });
+    if (!res.success) return res;
+    const data = res.data?.data || {};
+    return {
+        success: true as const,
+        data: {
+            orderId: data.order_id ?? data.order?.id ?? null,
+            qrCode: data.qr_code ?? data.order?.qr_code ?? null,
+            code: data.code ?? data.order?.code ?? null,
+            merged: Boolean(data.merged),
+            warning: data.warning || null,
+        },
+    };
 }

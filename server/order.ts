@@ -4,6 +4,7 @@ import { decrypt } from "@/lib/auth";
 import { calculateAffiliateCommissionAmount } from "@/lib/affiliate";
 import { prisma } from "@/lib/prisma"
 import { cookies } from "next/headers";
+import { createFatihShipment, FATIH_COMPANY_NAME } from "@/server/shipping";
 
 const AFFILIATE_COOKIE_NAME = 'affiliate-code';
 
@@ -349,6 +350,14 @@ const orderBaseSelect = {
     shippingPrice: true,
     moneyTransferCommission: true,
     otherCommissions: true,
+    fatihOrderId: true,
+    fatihQrCode: true,
+    fatihCode: true,
+    fatihCitySourceId: true,
+    fatihCityTargetId: true,
+    fatihUnitId: true,
+    fatihWeightId: true,
+    fatihSizeId: true,
     createdAt: true,
     manualCreatedAt: true,
     updatedAt: true,
@@ -961,6 +970,13 @@ export async function updateOrderShippingFromTable(
     shippingPrice: number,
     moneyTransferCommission: number,
     otherCommissions: number,
+    fatihData?: {
+        citySourceId?: number | null;
+        cityTargetId?: number | null;
+        unitId?: number | null;
+        weightId?: number | null;
+        sizeId?: number | null;
+    } | null,
 ) {
     try {
         const user = await getCurrentSessionUser();
@@ -996,12 +1012,14 @@ export async function updateOrderShippingFromTable(
 
         const existingOrder = await prisma.order.findUnique({
             where: { id: parsedOrderId },
-            select: { id: true },
+            include: { items: true, customer: true, user: true, warehouse: true },
         });
 
         if (!existingOrder) {
             return { success: false, error: "الطلب غير موجود" };
         }
+
+        const isFatih = normalizedShippingCompanyName === FATIH_COMPANY_NAME;
 
         let shipping = await prisma.shipping.findFirst({
             where: { name: normalizedShippingCompanyName },
@@ -1030,9 +1048,89 @@ export async function updateOrderShippingFromTable(
                 shippingPrice: parsedShippingPrice,
                 moneyTransferCommission: parsedMoneyTransferCommission,
                 otherCommissions: parsedOtherCommissions,
+                ...(isFatih
+                    ? {
+                        fatihCitySourceId: fatihData?.citySourceId ?? null,
+                        fatihCityTargetId: fatihData?.cityTargetId ?? null,
+                        fatihUnitId: fatihData?.unitId ?? null,
+                        fatihWeightId: fatihData?.weightId ?? null,
+                        fatihSizeId: fatihData?.sizeId ?? null,
+                    }
+                    : {}),
             },
             include: { shipping: true, warehouse: true },
         });
+
+        // إنشاء الشحنة تلقائياً في نظام الفاتح عند اختيار شركة الفاتح
+        if (isFatih) {
+            const missing: string[] = [];
+            if (!fatihData?.citySourceId) missing.push("مدينة المصدر");
+            if (!fatihData?.cityTargetId) missing.push("مدينة الوجهة");
+            if (!fatihData?.unitId) missing.push("الوحدة");
+            if (!fatihData?.weightId) missing.push("الوزن");
+            if (!fatihData?.sizeId) missing.push("الحجم");
+
+            if (missing.length > 0) {
+                return {
+                    success: false,
+                    partiallySaved: true,
+                    error: `تم حفظ بيانات الشحن، لكن تعذر إنشاء شحنة الفاتح: حقول ناقصة (${missing.join("، ")})`,
+                };
+            }
+
+            const packageCount = existingOrder.items.reduce((sum: number, item: any) => sum + (Number(item.quantity) || 1), 0) || 1;
+            const payload: Record<string, any> = {
+                auto_generate_qr: true,
+                package_count: packageCount,
+                sender_phone: String(existingOrder.user?.phone || existingOrder.customer?.phone || "").slice(0, 20),
+                sender_address: String(existingOrder.warehouse?.location || existingOrder.country || "-").slice(0, 255),
+                global_name: String(existingOrder.receiverName || existingOrder.customer?.name || "-"),
+                receive_phone: String(existingOrder.receiverPhone?.[0] || existingOrder.customer?.phone || "").slice(0, 20),
+                receive_address: String(existingOrder.fullAddress || existingOrder.city || "-").slice(0, 500),
+                receive_at_branch: false,
+                city_source_id: fatihData?.citySourceId,
+                city_target_id: fatihData?.cityTargetId,
+                unit_id: fatihData?.unitId,
+                weight_id: fatihData?.weightId,
+                size_id: fatihData?.sizeId,
+                far: parsedShippingPrice,
+                price: 0,
+                far_tr: 0,
+                price_tr: 0,
+                far_syp: 0,
+                price_syp: 0,
+                order_value: Number(existingOrder.finalAmount || 0),
+                is_order_value_matches_collection: true,
+                insurance_against_breakage: false,
+                insurance_against_loss: false,
+                far_sender: false,
+                requires_custom_fee: parsedShippingPrice <= 0,
+            };
+
+            const fatihResult = await createFatihShipment(payload);
+            if (!fatihResult.success) {
+                return {
+                    success: false,
+                    partiallySaved: true,
+                    error: `تم حفظ بيانات الشحن، لكن تعذر إنشاء شحنة الفاتح: ${fatihResult.error}`,
+                };
+            }
+
+            await prisma.order.update({
+                where: { id: parsedOrderId },
+                data: {
+                    fatihOrderId: fatihResult.data.orderId ?? null,
+                    fatihQrCode: fatihResult.data.qrCode ?? null,
+                    fatihCode: fatihResult.data.code ?? null,
+                },
+            });
+
+            return {
+                success: true,
+                data: updatedOrder,
+                fatih: fatihResult.data,
+            };
+        }
 
         return { success: true, data: updatedOrder };
     } catch (error) {

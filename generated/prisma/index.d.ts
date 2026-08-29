@@ -34943,6 +34943,12 @@ export namespace Prisma {
     finalAmount: number | null
     warehouseId: number | null
     shippingId: number | null
+    fatihOrderId: number | null
+    fatihCitySourceId: number | null
+    fatihCityTargetId: number | null
+    fatihUnitId: number | null
+    fatihWeightId: number | null
+    fatihSizeId: number | null
   }
 
   export type OrderSumAggregateOutputType = {
@@ -34957,6 +34963,12 @@ export namespace Prisma {
     finalAmount: number | null
     warehouseId: number | null
     shippingId: number | null
+    fatihOrderId: number | null
+    fatihCitySourceId: number | null
+    fatihCityTargetId: number | null
+    fatihUnitId: number | null
+    fatihWeightId: number | null
+    fatihSizeId: number | null
   }
 
   export type OrderMinAggregateOutputType = {
@@ -34994,6 +35006,14 @@ export namespace Prisma {
     manualCreatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    fatihOrderId: number | null
+    fatihQrCode: string | null
+    fatihCode: string | null
+    fatihCitySourceId: number | null
+    fatihCityTargetId: number | null
+    fatihUnitId: number | null
+    fatihWeightId: number | null
+    fatihSizeId: number | null
   }
 
   export type OrderMaxAggregateOutputType = {
@@ -35031,6 +35051,14 @@ export namespace Prisma {
     manualCreatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    fatihOrderId: number | null
+    fatihQrCode: string | null
+    fatihCode: string | null
+    fatihCitySourceId: number | null
+    fatihCityTargetId: number | null
+    fatihUnitId: number | null
+    fatihWeightId: number | null
+    fatihSizeId: number | null
   }
 
   export type OrderCountAggregateOutputType = {
@@ -35069,6 +35097,14 @@ export namespace Prisma {
     manualCreatedAt: number
     createdAt: number
     updatedAt: number
+    fatihOrderId: number
+    fatihQrCode: number
+    fatihCode: number
+    fatihCitySourceId: number
+    fatihCityTargetId: number
+    fatihUnitId: number
+    fatihWeightId: number
+    fatihSizeId: number
     _all: number
   }
 
@@ -35085,6 +35121,12 @@ export namespace Prisma {
     finalAmount?: true
     warehouseId?: true
     shippingId?: true
+    fatihOrderId?: true
+    fatihCitySourceId?: true
+    fatihCityTargetId?: true
+    fatihUnitId?: true
+    fatihWeightId?: true
+    fatihSizeId?: true
   }
 
   export type OrderSumAggregateInputType = {
@@ -35099,6 +35141,12 @@ export namespace Prisma {
     finalAmount?: true
     warehouseId?: true
     shippingId?: true
+    fatihOrderId?: true
+    fatihCitySourceId?: true
+    fatihCityTargetId?: true
+    fatihUnitId?: true
+    fatihWeightId?: true
+    fatihSizeId?: true
   }
 
   export type OrderMinAggregateInputType = {
@@ -35136,6 +35184,14 @@ export namespace Prisma {
     manualCreatedAt?: true
     createdAt?: true
     updatedAt?: true
+    fatihOrderId?: true
+    fatihQrCode?: true
+    fatihCode?: true
+    fatihCitySourceId?: true
+    fatihCityTargetId?: true
+    fatihUnitId?: true
+    fatihWeightId?: true
+    fatihSizeId?: true
   }
 
   export type OrderMaxAggregateInputType = {
@@ -35173,6 +35229,14 @@ export namespace Prisma {
     manualCreatedAt?: true
     createdAt?: true
     updatedAt?: true
+    fatihOrderId?: true
+    fatihQrCode?: true
+    fatihCode?: true
+    fatihCitySourceId?: true
+    fatihCityTargetId?: true
+    fatihUnitId?: true
+    fatihWeightId?: true
+    fatihSizeId?: true
   }
 
   export type OrderCountAggregateInputType = {
@@ -35211,6 +35275,14 @@ export namespace Prisma {
     manualCreatedAt?: true
     createdAt?: true
     updatedAt?: true
+    fatihOrderId?: true
+    fatihQrCode?: true
+    fatihCode?: true
+    fatihCitySourceId?: true
+    fatihCityTargetId?: true
+    fatihUnitId?: true
+    fatihWeightId?: true
+    fatihSizeId?: true
     _all?: true
   }
 
@@ -35336,6 +35408,14 @@ export namespace Prisma {
     manualCreatedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    fatihOrderId: number | null
+    fatihQrCode: string | null
+    fatihCode: string | null
+    fatihCitySourceId: number | null
+    fatihCityTargetId: number | null
+    fatihUnitId: number | null
+    fatihWeightId: number | null
+    fatihSizeId: number | null
     _count: OrderCountAggregateOutputType | null
     _avg: OrderAvgAggregateOutputType | null
     _sum: OrderSumAggregateOutputType | null
@@ -35393,6 +35473,14 @@ export namespace Prisma {
     manualCreatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    fatihOrderId?: boolean
+    fatihQrCode?: boolean
+    fatihCode?: boolean
+    fatihCitySourceId?: boolean
+    fatihCityTargetId?: boolean
+    fatihUnitId?: boolean
+    fatihWeightId?: boolean
+    fatihSizeId?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
@@ -35439,6 +35527,14 @@ export namespace Prisma {
     manualCreatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    fatihOrderId?: boolean
+    fatihQrCode?: boolean
+    fatihCode?: boolean
+    fatihCitySourceId?: boolean
+    fatihCityTargetId?: boolean
+    fatihUnitId?: boolean
+    fatihWeightId?: boolean
+    fatihSizeId?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
     warehouse?: boolean | Order$warehouseArgs<ExtArgs>
@@ -35481,6 +35577,14 @@ export namespace Prisma {
     manualCreatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    fatihOrderId?: boolean
+    fatihQrCode?: boolean
+    fatihCode?: boolean
+    fatihCitySourceId?: boolean
+    fatihCityTargetId?: boolean
+    fatihUnitId?: boolean
+    fatihWeightId?: boolean
+    fatihSizeId?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
     warehouse?: boolean | Order$warehouseArgs<ExtArgs>
@@ -35523,9 +35627,17 @@ export namespace Prisma {
     manualCreatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    fatihOrderId?: boolean
+    fatihQrCode?: boolean
+    fatihCode?: boolean
+    fatihCitySourceId?: boolean
+    fatihCityTargetId?: boolean
+    fatihUnitId?: boolean
+    fatihWeightId?: boolean
+    fatihSizeId?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderNumber" | "usdToTryRateAtOrder" | "shippingPrice" | "moneyTransferCommission" | "otherCommissions" | "carrierCollectionReceivedAt" | "carrierCollectionReceivedAmount" | "carrierCollectionNotes" | "totalAmount" | "discount" | "finalAmount" | "paymentMethod" | "pay" | "receiverName" | "receiverPhone" | "country" | "city" | "invoiceImage" | "municipality" | "fullAddress" | "deliveryNotes" | "googleMapsLink" | "amount" | "amountBank" | "deliveryMethod" | "additionalNotes" | "status" | "customerId" | "userId" | "warehouseId" | "shippingId" | "manualCreatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderNumber" | "usdToTryRateAtOrder" | "shippingPrice" | "moneyTransferCommission" | "otherCommissions" | "carrierCollectionReceivedAt" | "carrierCollectionReceivedAmount" | "carrierCollectionNotes" | "totalAmount" | "discount" | "finalAmount" | "paymentMethod" | "pay" | "receiverName" | "receiverPhone" | "country" | "city" | "invoiceImage" | "municipality" | "fullAddress" | "deliveryNotes" | "googleMapsLink" | "amount" | "amountBank" | "deliveryMethod" | "additionalNotes" | "status" | "customerId" | "userId" | "warehouseId" | "shippingId" | "manualCreatedAt" | "createdAt" | "updatedAt" | "fatihOrderId" | "fatihQrCode" | "fatihCode" | "fatihCitySourceId" | "fatihCityTargetId" | "fatihUnitId" | "fatihWeightId" | "fatihSizeId", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
@@ -35596,6 +35708,14 @@ export namespace Prisma {
       manualCreatedAt: Date | null
       createdAt: Date
       updatedAt: Date
+      fatihOrderId: number | null
+      fatihQrCode: string | null
+      fatihCode: string | null
+      fatihCitySourceId: number | null
+      fatihCityTargetId: number | null
+      fatihUnitId: number | null
+      fatihWeightId: number | null
+      fatihSizeId: number | null
     }, ExtArgs["result"]["order"]>
     composites: {}
   }
@@ -36061,6 +36181,14 @@ export namespace Prisma {
     readonly manualCreatedAt: FieldRef<"Order", 'DateTime'>
     readonly createdAt: FieldRef<"Order", 'DateTime'>
     readonly updatedAt: FieldRef<"Order", 'DateTime'>
+    readonly fatihOrderId: FieldRef<"Order", 'Int'>
+    readonly fatihQrCode: FieldRef<"Order", 'String'>
+    readonly fatihCode: FieldRef<"Order", 'String'>
+    readonly fatihCitySourceId: FieldRef<"Order", 'Int'>
+    readonly fatihCityTargetId: FieldRef<"Order", 'Int'>
+    readonly fatihUnitId: FieldRef<"Order", 'Int'>
+    readonly fatihWeightId: FieldRef<"Order", 'Int'>
+    readonly fatihSizeId: FieldRef<"Order", 'Int'>
   }
     
 
@@ -53288,7 +53416,15 @@ export namespace Prisma {
     shippingId: 'shippingId',
     manualCreatedAt: 'manualCreatedAt',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    fatihOrderId: 'fatihOrderId',
+    fatihQrCode: 'fatihQrCode',
+    fatihCode: 'fatihCode',
+    fatihCitySourceId: 'fatihCitySourceId',
+    fatihCityTargetId: 'fatihCityTargetId',
+    fatihUnitId: 'fatihUnitId',
+    fatihWeightId: 'fatihWeightId',
+    fatihSizeId: 'fatihSizeId'
   };
 
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -56382,6 +56518,14 @@ export namespace Prisma {
     manualCreatedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    fatihOrderId?: IntNullableFilter<"Order"> | number | null
+    fatihQrCode?: StringNullableFilter<"Order"> | string | null
+    fatihCode?: StringNullableFilter<"Order"> | string | null
+    fatihCitySourceId?: IntNullableFilter<"Order"> | number | null
+    fatihCityTargetId?: IntNullableFilter<"Order"> | number | null
+    fatihUnitId?: IntNullableFilter<"Order"> | number | null
+    fatihWeightId?: IntNullableFilter<"Order"> | number | null
+    fatihSizeId?: IntNullableFilter<"Order"> | number | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: OrderItemListRelationFilter
@@ -56427,6 +56571,14 @@ export namespace Prisma {
     manualCreatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    fatihOrderId?: SortOrderInput | SortOrder
+    fatihQrCode?: SortOrderInput | SortOrder
+    fatihCode?: SortOrderInput | SortOrder
+    fatihCitySourceId?: SortOrderInput | SortOrder
+    fatihCityTargetId?: SortOrderInput | SortOrder
+    fatihUnitId?: SortOrderInput | SortOrder
+    fatihWeightId?: SortOrderInput | SortOrder
+    fatihSizeId?: SortOrderInput | SortOrder
     customer?: CustomerOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     items?: OrderItemOrderByRelationAggregateInput
@@ -56475,6 +56627,14 @@ export namespace Prisma {
     manualCreatedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    fatihOrderId?: IntNullableFilter<"Order"> | number | null
+    fatihQrCode?: StringNullableFilter<"Order"> | string | null
+    fatihCode?: StringNullableFilter<"Order"> | string | null
+    fatihCitySourceId?: IntNullableFilter<"Order"> | number | null
+    fatihCityTargetId?: IntNullableFilter<"Order"> | number | null
+    fatihUnitId?: IntNullableFilter<"Order"> | number | null
+    fatihWeightId?: IntNullableFilter<"Order"> | number | null
+    fatihSizeId?: IntNullableFilter<"Order"> | number | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: OrderItemListRelationFilter
@@ -56520,6 +56680,14 @@ export namespace Prisma {
     manualCreatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    fatihOrderId?: SortOrderInput | SortOrder
+    fatihQrCode?: SortOrderInput | SortOrder
+    fatihCode?: SortOrderInput | SortOrder
+    fatihCitySourceId?: SortOrderInput | SortOrder
+    fatihCityTargetId?: SortOrderInput | SortOrder
+    fatihUnitId?: SortOrderInput | SortOrder
+    fatihWeightId?: SortOrderInput | SortOrder
+    fatihSizeId?: SortOrderInput | SortOrder
     _count?: OrderCountOrderByAggregateInput
     _avg?: OrderAvgOrderByAggregateInput
     _max?: OrderMaxOrderByAggregateInput
@@ -56566,6 +56734,14 @@ export namespace Prisma {
     manualCreatedAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
+    fatihOrderId?: IntNullableWithAggregatesFilter<"Order"> | number | null
+    fatihQrCode?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    fatihCode?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    fatihCitySourceId?: IntNullableWithAggregatesFilter<"Order"> | number | null
+    fatihCityTargetId?: IntNullableWithAggregatesFilter<"Order"> | number | null
+    fatihUnitId?: IntNullableWithAggregatesFilter<"Order"> | number | null
+    fatihWeightId?: IntNullableWithAggregatesFilter<"Order"> | number | null
+    fatihSizeId?: IntNullableWithAggregatesFilter<"Order"> | number | null
   }
 
   export type ExpenseWhereInput = {
@@ -60581,6 +60757,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -60626,6 +60810,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -60662,6 +60854,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -60707,6 +60907,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -60748,6 +60956,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
   }
 
   export type OrderUpdateManyMutationInput = {
@@ -60781,6 +60997,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type OrderUncheckedUpdateManyInput = {
@@ -60819,6 +61043,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ExpenseCreateInput = {
@@ -64375,6 +64607,14 @@ export namespace Prisma {
     manualCreatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    fatihOrderId?: SortOrder
+    fatihQrCode?: SortOrder
+    fatihCode?: SortOrder
+    fatihCitySourceId?: SortOrder
+    fatihCityTargetId?: SortOrder
+    fatihUnitId?: SortOrder
+    fatihWeightId?: SortOrder
+    fatihSizeId?: SortOrder
   }
 
   export type OrderAvgOrderByAggregateInput = {
@@ -64389,6 +64629,12 @@ export namespace Prisma {
     finalAmount?: SortOrder
     warehouseId?: SortOrder
     shippingId?: SortOrder
+    fatihOrderId?: SortOrder
+    fatihCitySourceId?: SortOrder
+    fatihCityTargetId?: SortOrder
+    fatihUnitId?: SortOrder
+    fatihWeightId?: SortOrder
+    fatihSizeId?: SortOrder
   }
 
   export type OrderMaxOrderByAggregateInput = {
@@ -64426,6 +64672,14 @@ export namespace Prisma {
     manualCreatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    fatihOrderId?: SortOrder
+    fatihQrCode?: SortOrder
+    fatihCode?: SortOrder
+    fatihCitySourceId?: SortOrder
+    fatihCityTargetId?: SortOrder
+    fatihUnitId?: SortOrder
+    fatihWeightId?: SortOrder
+    fatihSizeId?: SortOrder
   }
 
   export type OrderMinOrderByAggregateInput = {
@@ -64463,6 +64717,14 @@ export namespace Prisma {
     manualCreatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    fatihOrderId?: SortOrder
+    fatihQrCode?: SortOrder
+    fatihCode?: SortOrder
+    fatihCitySourceId?: SortOrder
+    fatihCityTargetId?: SortOrder
+    fatihUnitId?: SortOrder
+    fatihWeightId?: SortOrder
+    fatihSizeId?: SortOrder
   }
 
   export type OrderSumOrderByAggregateInput = {
@@ -64477,6 +64739,12 @@ export namespace Prisma {
     finalAmount?: SortOrder
     warehouseId?: SortOrder
     shippingId?: SortOrder
+    fatihOrderId?: SortOrder
+    fatihCitySourceId?: SortOrder
+    fatihCityTargetId?: SortOrder
+    fatihUnitId?: SortOrder
+    fatihWeightId?: SortOrder
+    fatihSizeId?: SortOrder
   }
 
   export type EnumExpenseTypeFilter<$PrismaModel = never> = {
@@ -69467,6 +69735,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     warehouse?: WarehouseCreateNestedOneWithoutOrdersInput
@@ -69510,6 +69786,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -70365,6 +70649,14 @@ export namespace Prisma {
     manualCreatedAt?: DateTimeNullableFilter<"Order"> | Date | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    fatihOrderId?: IntNullableFilter<"Order"> | number | null
+    fatihQrCode?: StringNullableFilter<"Order"> | string | null
+    fatihCode?: StringNullableFilter<"Order"> | string | null
+    fatihCitySourceId?: IntNullableFilter<"Order"> | number | null
+    fatihCityTargetId?: IntNullableFilter<"Order"> | number | null
+    fatihUnitId?: IntNullableFilter<"Order"> | number | null
+    fatihWeightId?: IntNullableFilter<"Order"> | number | null
+    fatihSizeId?: IntNullableFilter<"Order"> | number | null
   }
 
   export type AffiliateWalletTransferUpsertWithWhereUniqueWithoutUserInput = {
@@ -72799,6 +73091,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -72842,6 +73142,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -74627,6 +74935,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     warehouse?: WarehouseCreateNestedOneWithoutOrdersInput
@@ -74670,6 +74986,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -76807,6 +77131,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -76851,6 +77183,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -77061,6 +77401,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -77105,6 +77453,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
   }
@@ -78612,6 +78968,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -78655,6 +79019,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -78820,6 +79192,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     warehouse?: WarehouseCreateNestedOneWithoutOrdersInput
@@ -78864,6 +79244,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -79008,6 +79396,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     warehouse?: WarehouseUpdateOneWithoutOrdersNestedInput
@@ -79052,6 +79448,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
   }
@@ -80106,6 +80510,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -80150,6 +80562,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -80236,6 +80656,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -80280,6 +80708,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
   }
@@ -80505,6 +80941,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
   }
 
   export type AffiliateWalletTransferCreateManyUserInput = {
@@ -80818,6 +81262,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     warehouse?: WarehouseUpdateOneWithoutOrdersNestedInput
@@ -80861,6 +81313,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -80901,6 +81361,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type AffiliateWalletTransferUpdateWithoutUserInput = {
@@ -82430,6 +82898,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
   }
 
   export type WholesaleOrderCreateManyWarehouseInput = {
@@ -82561,6 +83037,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -82604,6 +83088,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -82644,6 +83136,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type WholesaleOrderUpdateWithoutWarehouseInput = {
@@ -83095,6 +83595,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
   }
 
   export type MessageCreateManyCustomerInput = {
@@ -83150,6 +83658,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     warehouse?: WarehouseUpdateOneWithoutOrdersNestedInput
@@ -83193,6 +83709,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -83233,6 +83757,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type UserUpdateWithoutCustomersInput = {
@@ -83973,6 +84505,14 @@ export namespace Prisma {
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    fatihOrderId?: number | null
+    fatihQrCode?: string | null
+    fatihCode?: string | null
+    fatihCitySourceId?: number | null
+    fatihCityTargetId?: number | null
+    fatihUnitId?: number | null
+    fatihWeightId?: number | null
+    fatihSizeId?: number | null
   }
 
   export type WholesaleOrderCreateManyShippingInput = {
@@ -84043,6 +84583,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -84086,6 +84634,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -84126,6 +84682,14 @@ export namespace Prisma {
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fatihOrderId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihQrCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCode?: NullableStringFieldUpdateOperationsInput | string | null
+    fatihCitySourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihCityTargetId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
+    fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type WholesaleOrderUpdateWithoutShippingInput = {

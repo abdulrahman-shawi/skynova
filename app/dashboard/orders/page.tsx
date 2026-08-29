@@ -536,7 +536,13 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         setIsShippingModalOpen(true);
     };
 
-    const handleSaveShippingModal = async () => {
+    const handleSaveShippingModal = async (fatihData?: {
+        citySourceId: number | null;
+        cityTargetId: number | null;
+        unitId: number | null;
+        weightId: number | null;
+        sizeId: number | null;
+    }) => {
         const orderId = Number(shippingTargetOrder?.id || 0);
         if (!orderId) {
             toast.error("معرف الطلب غير صالح");
@@ -578,14 +584,19 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                 shippingPrice,
                 moneyTransferCommission,
                 otherCommissions,
+                fatihData ?? null,
             );
 
             if (result.success) {
-                toast.success("تم حفظ بيانات الشحن والعمولات");
+                const fatihQr = (result as any)?.fatih?.qrCode;
+                toast.success(fatihQr ? `تم حفظ بيانات الشحن وإنشاء شحنة الفاتح (${fatihQr})` : "تم حفظ بيانات الشحن والعمولات");
                 setIsShippingModalOpen(false);
                 setShippingTargetOrder(null);
                 await Order();
             } else {
+                if ((result as any)?.partiallySaved) {
+                    await Order();
+                }
                 toast.error(result.error || "تعذر حفظ بيانات الشحن والعمولات");
             }
         } catch {

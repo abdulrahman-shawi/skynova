@@ -538,7 +538,15 @@ exports.Prisma.OrderScalarFieldEnum = {
   shippingId: 'shippingId',
   manualCreatedAt: 'manualCreatedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  fatihOrderId: 'fatihOrderId',
+  fatihQrCode: 'fatihQrCode',
+  fatihCode: 'fatihCode',
+  fatihCitySourceId: 'fatihCitySourceId',
+  fatihCityTargetId: 'fatihCityTargetId',
+  fatihUnitId: 'fatihUnitId',
+  fatihWeightId: 'fatihWeightId',
+  fatihSizeId: 'fatihSizeId'
 };
 
 exports.Prisma.ExpenseScalarFieldEnum = {

@@ -785,6 +785,16 @@ model Order {
   createdAt                       DateTime  @default(now())
   updatedAt                       DateTime  @updatedAt
 
+  // ─── Fatih Cargo integration (nullable) ───
+  fatihOrderId      Int?
+  fatihQrCode       String?
+  fatihCode         String?
+  fatihCitySourceId Int?
+  fatihCityTargetId Int?
+  fatihUnitId       Int?
+  fatihWeightId     Int?
+  fatihSizeId       Int?
+
   // ─── Existing Relations ───
   customer   Customer    @relation(fields: [customerId], references: [id])
   user       User?       @relation(fields: [userId], references: [id])

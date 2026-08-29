@@ -235,6 +235,13 @@ The wholesale warranty (`server/wholesale-warranty.ts`, page `app/dashboard/whol
 ### Shipping Company Portal
 The `shipping` model has a `password` column (default `"1234567"`), settable from the shipping dashboard page (`app/dashboard/shipping/page.tsx`). Shipping companies log in at `/shipping-login` (company name + password) via the `shippingLogin` server action in `server/shipping.ts`, which sets an HTTP-only JWT cookie `skynova_shipping`. `/shipping-orders` shows only that company's orders via `getMyShippingOrders()` (validates the cookie server-side). Both pages are public standalone routes outside `/dashboard`, so `middleware.ts` does not guard them — auth is enforced inside the server actions. Passwords are stored in plaintext (matches the requested default value).
 
+### Fatih Cargo Integration
+The shipping company named exactly **"الفاتح"** (`FATIH_COMPANY_NAME` in `server/shipping.ts`) is linked to the external Fatih Cargo API (`https://fatihcargo.com/api/v1`). Auth is a Bearer token from `FATIH_API_TOKEN` in `.env` (server-side only).
+
+- Shipping details modal (`app/dashboard/shipping/page.tsx`) shows a "طلبات الفاتح" section for that company, fetched live from `GET /shipping/orders` via `getFatihOrders()`.
+- In the orders page shipping modal (`orders/ShippingModal.tsx`), selecting "الفاتح" loads dropdowns (cities, units, weights, sizes) via `getFatihFormOptions()` (`GET /shipping/reference/cities`, `/reference/units`, `/reference/categories?type=weight|size`) and, on save, `updateOrderShippingFromTable` in `server/order.ts` auto-creates the shipment via `createFatihShipment()` (`POST /shipping/orders`) using order-derived fields (receiver, phones, address, finalAmount).
+- `Order` has nullable Fatih columns (`fatihOrderId`, `fatihQrCode`, `fatihCode`, `fatihCitySourceId`, `fatihCityTargetId`, `fatihUnitId`, `fatihWeightId`, `fatihSizeId` — migration `20260829144206_add_fatih_fields_to_order`), included in `orderBaseSelect`. If the Fatih API call fails, the local shipping data is still saved and the response carries `partiallySaved: true`.
+
 ---
 
 ## Deployment Notes
