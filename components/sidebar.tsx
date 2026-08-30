@@ -144,42 +144,53 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
       ].filter(Boolean) as MenuItem[]
     },
     {
+      icon: Users,
+      collapsible: true,
+      group: "العملاء",
+      items : [
+        (user && hasAnyPermission(user, ["viewCustomers", "addCustomers", "editCustomers", "deleteCustomers"])) &&
+        { icon: Users, label: "العملاء", href: "/dashboard/customers-complated" },
+        (user && hasAnyPermission(user, ["viewCustomers", "addCustomers", "editCustomers", "deleteCustomers"])) &&
+        { icon: Users, label: "السجلات", href: "/dashboard/customers" },
+        (user && hasAnyPermission(user, ["viewOrders", "addOrders", "editOrders", "deleteOrders"])) &&
+        { icon: FileText, label: "الطلبات", href: "/dashboard/orders" },
+        (user && hasAnyPermission(user, ["viewWholesaleCustomers", "addWholesaleCustomers", "editWholesaleCustomers", "deleteWholesaleCustomers"])) &&
+        { icon: Users2, label: "عملاء الجملة", href: "/dashboard/wholesale-customers" },
+        (user && hasAnyPermission(user, ["viewWholesaleCustomers", "addWholesaleCustomers", "editWholesaleCustomers", "deleteWholesaleCustomers"])) &&
+        { icon: FileText, label: "طلبات الجملة", href: "/dashboard/wholesale-orders" },
+      ].filter(Boolean) as MenuItem[]
+    },
+    {
       icon: Box,
       collapsible: true,
-      group: "الأقسام الرئيسية",
+      group: "المنتجات و الأقسام",
       items : [
         (user && hasAnyPermission(user, ["viewCategories", "addCategories", "editCategories", "deleteCategories"])) &&
-        { icon: Receipt, label: "الأقسام", href: "/dashboard/categories" },
-        (user && hasAnyPermission(user, ["viewCategories", "addCategories", "editCategories", "deleteCategories"])) &&
         { icon: Warehouse, label: "المستودعات", href: "/dashboard/inventories" },
+        (user && hasAnyPermission(user, ["viewCategories", "addCategories", "editCategories", "deleteCategories"])) &&
+        { icon: Receipt, label: "الأقسام", href: "/dashboard/categories" },
         (user && hasAnyPermission(user, ["viewProducts", "addProducts", "editProducts", "deleteProducts"])) &&
         { icon: Box, label: "المنتجات", href: "/dashboard/products" },
         (user && isAdmin(user)) &&
         { icon: Box, label: "حركات المخزون", href: "/dashboard/move-product" },
-        (user && hasAnyPermission(user, ["viewCustomers", "addCustomers", "editCustomers", "deleteCustomers"])) &&
-        { icon: Users, label: "السجلات", href: "/dashboard/customers" },
-        (user && hasAnyPermission(user, ["viewCustomers", "addCustomers", "editCustomers", "deleteCustomers"])) &&
-  { icon: Users, label: "العملاء", href: "/dashboard/customers-complated" },
-          (user && hasAnyPermission(user, ["viewWholesaleCustomers", "addWholesaleCustomers", "editWholesaleCustomers", "deleteWholesaleCustomers"])) &&
-        { icon: Users2, label: "عملاء الجملة", href: "/dashboard/wholesale-customers" },
-          (user && hasAnyPermission(user, ["viewWholesaleCustomers", "addWholesaleCustomers", "editWholesaleCustomers", "deleteWholesaleCustomers"])) &&
-        { icon: FileText, label: "طلبات الجملة", href: "/dashboard/wholesale-orders" },
-            (user && hasAnyPermission(user, ["viewExpenses", "addExpenses", "editExpenses", "deleteExpenses"])) &&
-            { icon: PieChart, label: "المصاريف اليومية", href: "/dashboard/expenses" },
-  
-  // نستخدم الـ Optional Chaining (?.) لضمان عدم حدوث خطأ إذا كان الـ user غير موجود بعد
-  (user && hasAnyPermission(user, ["viewOrders", "addOrders", "editOrders", "deleteOrders"])) &&
-  { icon: FileText, label: "الطلبات", href: "/dashboard/orders" },
-  // 
-  (user && isAdmin(user)) &&
-  { icon: Wallet, label: "التحصيلات", href: "/dashboard/collections" },
-  (user && hasPermission(user, "viewWarranty")) &&
-  { icon: ShieldCheck, label: "الكفالة", href: "/dashboard/warranty" },
-  (user && hasPermission(user, "viewWarranty")) &&
-  { icon: ShieldCheck, label: "كفالة الجملة", href: "/dashboard/wholesale-warranty" },
-  (user && isAdmin(user)) &&
-  { icon: Truck, label: "شركات الشحن", href: "/dashboard/shipping" },
-].filter(Boolean) // هذا السطر هو الأهم: يقوم بحذف أي قيمة false من المصفوفة
+        (user && hasPermission(user, "viewWarranty")) &&
+        { icon: ShieldCheck, label: "الكفالة", href: "/dashboard/warranty" },
+        (user && hasPermission(user, "viewWarranty")) &&
+        { icon: ShieldCheck, label: "كفالة الجملة", href: "/dashboard/wholesale-warranty" },
+      ].filter(Boolean) as MenuItem[]
+    },
+    {
+      icon: Wallet,
+      collapsible: true,
+      group: "المالية",
+      items : [
+        (user && isAdmin(user)) &&
+        { icon: Wallet, label: "التحصيلات", href: "/dashboard/collections" },
+        (user && isAdmin(user)) &&
+        { icon: Users2, label: "رواتب الموظفين", href: "/dashboard/employee-salaries" },
+        (user && hasAnyPermission(user, ["viewExpenses", "addExpenses", "editExpenses", "deleteExpenses"])) &&
+        { icon: PieChart, label: "المصاريف اليومية", href: "/dashboard/expenses" },
+      ].filter(Boolean) as MenuItem[]
     },
     {
       group: "المستخدمين و الأدوار",
@@ -189,7 +200,7 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
         (user && hasAnyPermission(user, ["viewEmployees", "addEmployees", "editEmployees", "deleteEmployees"])) &&
         { icon: Users, label: "المستخدمين", href: "/dashboard/users" },
         (user && isAdmin(user)) &&
-        { icon: Users2, label: "رواتب الموظفين", href: "/dashboard/employee-salaries" },
+        { icon: Truck, label: "شركات الشحن", href: "/dashboard/shipping" },
         (user && hasAnyPermission(user, ["viewPermissions", "addPermissions", "editPermissions", "deletePermissions"])) &&
         { icon: RollerCoasterIcon, label: "الأدوار", href: "/dashboard/permissions" },
       ].filter(Boolean) as MenuItem[],
