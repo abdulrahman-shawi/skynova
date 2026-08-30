@@ -177,6 +177,8 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
         { icon: ShieldCheck, label: "الكفالة", href: "/dashboard/warranty" },
         (user && hasPermission(user, "viewWarranty")) &&
         { icon: ShieldCheck, label: "كفالة الجملة", href: "/dashboard/wholesale-warranty" },
+        (user && isAdmin(user)) &&
+        { icon: Truck, label: "شركات الشحن", href: "/dashboard/shipping" },
       ].filter(Boolean) as MenuItem[]
     },
     {
@@ -199,8 +201,6 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
       items: [
         (user && hasAnyPermission(user, ["viewEmployees", "addEmployees", "editEmployees", "deleteEmployees"])) &&
         { icon: Users, label: "المستخدمين", href: "/dashboard/users" },
-        (user && isAdmin(user)) &&
-        { icon: Truck, label: "شركات الشحن", href: "/dashboard/shipping" },
         (user && hasAnyPermission(user, ["viewPermissions", "addPermissions", "editPermissions", "deletePermissions"])) &&
         { icon: RollerCoasterIcon, label: "الأدوار", href: "/dashboard/permissions" },
       ].filter(Boolean) as MenuItem[],
