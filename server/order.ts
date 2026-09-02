@@ -977,6 +977,7 @@ export async function updateOrderShippingFromTable(
         unitId?: number | null;
         weightId?: number | null;
         sizeId?: number | null;
+        qrCode?: string | null;
     } | null,
 ) {
     try {
@@ -1080,8 +1081,16 @@ export async function updateOrderShippingFromTable(
             }
 
             const packageCount = existingOrder.items.reduce((sum: number, item: any) => sum + (Number(item.quantity) || 1), 0) || 1;
+            const manualQrCode = String(fatihData?.qrCode || "").trim();
+            if (manualQrCode && !/^\d{7}$/.test(manualQrCode)) {
+                return {
+                    success: false,
+                    partiallySaved: true,
+                    error: "تم حفظ بيانات الشحن، لكن رقم QR يجب أن يتكون من 7 أرقام",
+                };
+            }
             const payload: Record<string, any> = {
-                auto_generate_qr: true,
+                ...(manualQrCode ? { qr_code: manualQrCode } : { auto_generate_qr: true }),
                 package_count: packageCount,
                 sender_phone: String(existingOrder.user?.phone || existingOrder.customer?.phone || "").slice(0, 20),
                 sender_address: String(existingOrder.warehouse?.location || existingOrder.country || "-").slice(0, 255),

@@ -23,10 +23,90 @@ interface ShippingModalProps {
     unitId: number | null;
     weightId: number | null;
     sizeId: number | null;
+    qrCode: string | null;
   }) => Promise<void>;
   isSaving: boolean;
   targetOrder?: any;
 }
+
+// منتقي مدينة مع حقل بحث يفلتر القائمة أثناء الكتابة
+const FatihCityPicker = ({
+  label,
+  value,
+  onChange,
+  options,
+  disabled,
+  searchPlaceholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: any[];
+  disabled?: boolean;
+  searchPlaceholder: string;
+}) => {
+  const [query, setQuery] = React.useState("");
+  const selected = options.find((o) => String(o.id) === value);
+  const q = query.trim();
+  const filtered = q
+    ? options.filter(
+        (o) => (o.name || "").includes(q) || (o.parent_city_name || "").includes(q)
+      )
+    : options;
+
+  const cityLabel = (o: any) =>
+    o.parent_city_name ? `${o.parent_city_name} - ${o.name}` : o.name;
+
+  return (
+    <div>
+      <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
+        {label}
+      </label>
+      {selected && (
+        <div className="mb-2 flex items-center justify-between rounded-lg border border-blue-300 bg-blue-50 px-3 py-1.5 text-sm dark:border-blue-800 dark:bg-blue-950/50">
+          <span className="font-bold text-blue-700 dark:text-blue-300">{cityLabel(selected)}</span>
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            disabled={disabled}
+            className="text-xs text-red-500 hover:underline"
+          >
+            إزالة
+          </button>
+        </div>
+      )}
+      <input
+        type="text"
+        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
+        placeholder={searchPlaceholder}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        disabled={disabled}
+      />
+      <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+        {filtered.length === 0 ? (
+          <div className="px-3 py-2 text-sm text-slate-400">لا توجد مدن مطابقة</div>
+        ) : (
+          filtered.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => onChange(String(opt.id))}
+              disabled={disabled}
+              className={`block w-full px-3 py-2 text-right text-sm transition-colors ${
+                String(opt.id) === value
+                  ? "bg-blue-100 font-bold text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"
+                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+              }`}
+            >
+              {cityLabel(opt)}
+            </button>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const ShippingModal: React.FC<ShippingModalProps> = ({
   isOpen,
@@ -53,6 +133,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     unitId: "",
     weightId: "",
     sizeId: "",
+    qrCode: "",
   });
 
   React.useEffect(() => {
@@ -63,6 +144,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       unitId: targetOrder?.fatihUnitId ? String(targetOrder.fatihUnitId) : "",
       weightId: targetOrder?.fatihWeightId ? String(targetOrder.fatihWeightId) : "",
       sizeId: targetOrder?.fatihSizeId ? String(targetOrder.fatihSizeId) : "",
+      qrCode: "",
     });
   }, [isOpen, targetOrder]);
 
@@ -108,6 +190,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       unitId: toId(fatihForm.unitId),
       weightId: toId(fatihForm.weightId),
       sizeId: toId(fatihForm.sizeId),
+      qrCode: fatihForm.qrCode.trim() || null,
     });
   };
 
@@ -200,11 +283,42 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
               <div className="text-sm text-red-500">{fatihError}</div>
             ) : (
               <>
-                {renderFatihSelect("مدينة المصدر", fatihForm.citySourceId, "citySourceId", fatihOptions.cities, "اختر مدينة المصدر")}
-                {renderFatihSelect("مدينة الوجهة", fatihForm.cityTargetId, "cityTargetId", fatihOptions.cities, "اختر مدينة الوجهة")}
+                <FatihCityPicker
+                  label="مدينة المصدر"
+                  value={fatihForm.citySourceId}
+                  onChange={(v) => setFatihForm({ ...fatihForm, citySourceId: v })}
+                  options={fatihOptions.cities}
+                  disabled={isSaving || fatihLoading}
+                  searchPlaceholder="ابحث عن مدينة المصدر..."
+                />
+                <FatihCityPicker
+                  label="مدينة الوجهة"
+                  value={fatihForm.cityTargetId}
+                  onChange={(v) => setFatihForm({ ...fatihForm, cityTargetId: v })}
+                  options={fatihOptions.cities}
+                  disabled={isSaving || fatihLoading}
+                  searchPlaceholder="ابحث عن مدينة الوجهة..."
+                />
                 {renderFatihSelect("الوحدة", fatihForm.unitId, "unitId", fatihOptions.units, "اختر الوحدة")}
                 {renderFatihSelect("الوزن", fatihForm.weightId, "weightId", fatihOptions.weights, "اختر الوزن")}
                 {renderFatihSelect("الحجم", fatihForm.sizeId, "sizeId", fatihOptions.sizes, "اختر الحجم")}
+                <div>
+                  <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
+                    رقم الشحنة QR (اختياري — اتركه فارغاً للتوليد التلقائي)
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={7}
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
+                    placeholder="7 أرقام"
+                    value={fatihForm.qrCode}
+                    onChange={(e) =>
+                      setFatihForm({ ...fatihForm, qrCode: e.target.value.replace(/\D/g, "").slice(0, 7) })
+                    }
+                    disabled={isSaving}
+                  />
+                </div>
                 {targetOrder?.fatihQrCode && (
                   <div className="text-sm text-slate-600 dark:text-slate-300">
                     رقم الشحنة الحالي: <span className="font-bold">{targetOrder.fatihQrCode}</span>

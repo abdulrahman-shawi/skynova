@@ -542,6 +542,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         unitId: number | null;
         weightId: number | null;
         sizeId: number | null;
+        qrCode: string | null;
     }) => {
         const orderId = Number(shippingTargetOrder?.id || 0);
         if (!orderId) {
