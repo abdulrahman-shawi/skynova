@@ -297,6 +297,46 @@ export async function getFatihFormOptions() {
     };
 }
 
+// يقدّر أجور الشحن لمدينة الوجهة قبل إنشاء الشحنة
+export async function getFatihPricing(params: {
+    cityId: number;
+    weightId: number;
+    sizeId: number;
+    packageCount: number;
+    orderValue: number;
+    receiveAtBranch?: boolean;
+    insuranceAgainstLoss?: boolean;
+    insuranceAgainstBreakage?: boolean;
+    currency?: string;
+}) {
+    const res = await fatihFetch("/shipping/pricing", {
+        method: "POST",
+        body: JSON.stringify({
+            city_id: params.cityId,
+            receive_at_branch: params.receiveAtBranch ?? false,
+            order_value: params.orderValue,
+            order_value_currency: params.currency || "usd",
+            insurance_against_loss: params.insuranceAgainstLoss ?? false,
+            insurance_against_breakage: params.insuranceAgainstBreakage ?? false,
+            weight_id: params.weightId,
+            size_id: params.sizeId,
+            package_count: Math.max(1, Math.floor(params.packageCount) || 1),
+        }),
+    });
+    if (!res.success) return res;
+    const d = res.data || {};
+    return {
+        success: true as const,
+        data: {
+            far: Number(d.far ?? d.final_prices?.usd ?? 0),
+            farTr: Number(d.far_tr ?? d.final_prices?.try ?? 0),
+            farSyp: Number(d.far_syp ?? d.final_prices?.syp ?? 0),
+            requiresCustomFee: Boolean(d.requires_custom_fee),
+            customFeeMessage: d.custom_fee_required?.message || null,
+        },
+    };
+}
+
 // ينشئ شحنة في نظام الفاتح
 export async function createFatihShipment(payload: Record<string, any>) {
     const res = await fatihFetch("/shipping/orders", {

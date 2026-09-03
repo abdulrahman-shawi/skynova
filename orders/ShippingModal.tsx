@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
-import { getFatihFormOptions } from '@/server/shipping';
+import { getFatihFormOptions, getFatihPricing } from '@/server/shipping';
 import { FATIH_COMPANY_NAME } from '@/lib/fatih';
 
 interface ShippingForm {
@@ -145,6 +145,15 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
   }>({ cities: [], units: [], weights: [], sizes: [] });
   const [fatihLoading, setFatihLoading] = React.useState(false);
   const [fatihError, setFatihError] = React.useState<string | null>(null);
+  const [pricingLoading, setPricingLoading] = React.useState(false);
+  const [pricingError, setPricingError] = React.useState<string | null>(null);
+  const [pricingResult, setPricingResult] = React.useState<{
+    far: number;
+    farTr: number;
+    farSyp: number;
+    requiresCustomFee: boolean;
+    customFeeMessage: string | null;
+  } | null>(null);
   const [fatihForm, setFatihForm] = React.useState({
     citySourceId: "",
     cityTargetId: "",
@@ -194,6 +203,8 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       receiveAtBranch: false,
       note: "",
     });
+    setPricingResult(null);
+    setPricingError(null);
   }, [isOpen, targetOrder]);
 
   React.useEffect(() => {
@@ -222,6 +233,39 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       cancelled = true;
     };
   }, [isOpen, isFatih]);
+
+  const canEstimate = Boolean(fatihForm.cityTargetId && fatihForm.weightId && fatihForm.sizeId);
+
+  const handleEstimatePricing = async () => {
+    if (!canEstimate || pricingLoading) return;
+    setPricingLoading(true);
+    setPricingError(null);
+    setPricingResult(null);
+    try {
+      const res = await getFatihPricing({
+        cityId: Number(fatihForm.cityTargetId),
+        weightId: Number(fatihForm.weightId),
+        sizeId: Number(fatihForm.sizeId),
+        packageCount: Number(fatihForm.packageCount) || 1,
+        orderValue: Number(fatihForm.orderValue) || 0,
+        receiveAtBranch: fatihForm.receiveAtBranch,
+        insuranceAgainstLoss: fatihForm.insuranceLoss,
+        insuranceAgainstBreakage: fatihForm.insuranceBreakage,
+      });
+      if (res.success) {
+        setPricingResult(res.data);
+        if (res.data.requiresCustomFee) {
+          setFatihForm((f) => ({ ...f, requiresCustomFee: true }));
+        }
+      } else {
+        setPricingError(res.error || "تعذر تقدير أجور الشحن");
+      }
+    } catch {
+      setPricingError("تعذر تقدير أجور الشحن");
+    } finally {
+      setPricingLoading(false);
+    }
+  };
 
   const handleSave = () => {
     if (!isFatih) {
@@ -426,6 +470,45 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                   {renderFatihCheckbox("الاستلام من الفرع", "receiveAtBranch")}
                 </div>
                 {renderFatihInput("ملاحظة (اختياري)", "note")}
+                <div className="space-y-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleEstimatePricing}
+                    disabled={isSaving || fatihLoading || pricingLoading || !canEstimate}
+                  >
+                    {pricingLoading ? "جاري التقدير..." : "تقدير أجور الشحن"}
+                  </Button>
+                  {!canEstimate && (
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                      اختر مدينة الوجهة والوزن والحجم أولاً
+                    </div>
+                  )}
+                  {pricingError && (
+                    <div className="text-sm text-red-500">{pricingError}</div>
+                  )}
+                  {pricingResult && (
+                    <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm dark:border-emerald-900 dark:bg-emerald-950/40 space-y-1">
+                      <div className="font-bold text-emerald-700 dark:text-emerald-300">
+                        الأجور المقدرة: {pricingResult.far} $
+                        {pricingResult.farTr > 0 && ` — ${pricingResult.farTr} ₺`}
+                        {pricingResult.farSyp > 0 && ` — ${pricingResult.farSyp} ل.س`}
+                      </div>
+                      {pricingResult.customFeeMessage && (
+                        <div className="text-amber-600 dark:text-amber-400">{pricingResult.customFeeMessage}</div>
+                      )}
+                      <button
+                        type="button"
+                        className="text-xs font-bold text-blue-600 hover:underline dark:text-blue-400"
+                        onClick={() =>
+                          onFormChange({ ...shippingForm, shippingPrice: String(pricingResult.far) })
+                        }
+                      >
+                        اعتماد كسعر شحنة
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <div>
                   <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
                     رقم الشحنة QR (اختياري — اتركه فارغاً للتوليد التلقائي)
