@@ -18,7 +18,7 @@ import OrderCustomer from '@/components/pages/customers/orderCustomer';
 import OrderCustomerEdit from '@/components/pages/customers/orderCustomerEdit';
 import { StatusCards } from '@/orders/StatusCards';
 import { SearchAndFilter } from '@/orders/SearchAndFilter';
-import { ShippingModal } from '@/orders/ShippingModal';
+import { ShippingModal, FatihShipmentInput } from '@/orders/ShippingModal';
 import { OrderTable } from '@/orders/OrderTable';
 import { useOrderFilters } from '@/orders/useOrderFilters';
 import { useOrderData } from '@/orders/useOrderData';
@@ -536,14 +536,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         setIsShippingModalOpen(true);
     };
 
-    const handleSaveShippingModal = async (fatihData?: {
-        citySourceId: number | null;
-        cityTargetId: number | null;
-        unitId: number | null;
-        weightId: number | null;
-        sizeId: number | null;
-        qrCode: string | null;
-    }) => {
+    const handleSaveShippingModal = async (fatihData?: FatihShipmentInput) => {
         const orderId = Number(shippingTargetOrder?.id || 0);
         if (!orderId) {
             toast.error("معرف الطلب غير صالح");

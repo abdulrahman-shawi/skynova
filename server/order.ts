@@ -978,6 +978,21 @@ export async function updateOrderShippingFromTable(
         weightId?: number | null;
         sizeId?: number | null;
         qrCode?: string | null;
+        packageCount?: number | null;
+        senderPhone?: string | null;
+        senderAddress?: string | null;
+        globalName?: string | null;
+        receivePhone?: string | null;
+        receiveAddress?: string | null;
+        price?: number | null;
+        orderValue?: number | null;
+        isOrderValueMatchesCollection?: boolean | null;
+        insuranceBreakage?: boolean | null;
+        insuranceLoss?: boolean | null;
+        farSender?: boolean | null;
+        requiresCustomFee?: boolean | null;
+        receiveAtBranch?: boolean | null;
+        note?: string | null;
     } | null,
 ) {
     try {
@@ -1065,12 +1080,23 @@ export async function updateOrderShippingFromTable(
 
         // إنشاء الشحنة تلقائياً في نظام الفاتح عند اختيار شركة الفاتح
         if (isFatih) {
+            const senderPhone = String(fatihData?.senderPhone || existingOrder.user?.phone || existingOrder.customer?.phone || "").slice(0, 20);
+            const senderAddress = String(fatihData?.senderAddress || existingOrder.warehouse?.location || existingOrder.country || "").slice(0, 255);
+            const globalName = String(fatihData?.globalName || existingOrder.receiverName || existingOrder.customer?.name || "");
+            const receivePhone = String(fatihData?.receivePhone || existingOrder.receiverPhone?.[0] || existingOrder.customer?.phone || "").slice(0, 20);
+            const receiveAddress = String(fatihData?.receiveAddress || existingOrder.fullAddress || existingOrder.city || "").slice(0, 500);
+
             const missing: string[] = [];
             if (!fatihData?.citySourceId) missing.push("مدينة المصدر");
             if (!fatihData?.cityTargetId) missing.push("مدينة الوجهة");
             if (!fatihData?.unitId) missing.push("الوحدة");
             if (!fatihData?.weightId) missing.push("الوزن");
             if (!fatihData?.sizeId) missing.push("الحجم");
+            if (!senderPhone) missing.push("هاتف المرسل");
+            if (!senderAddress) missing.push("عنوان المرسل");
+            if (!globalName) missing.push("اسم المستلم");
+            if (!receivePhone) missing.push("هاتف المستلم");
+            if (!receiveAddress) missing.push("عنوان المستلم");
 
             if (missing.length > 0) {
                 return {
@@ -1080,7 +1106,21 @@ export async function updateOrderShippingFromTable(
                 };
             }
 
-            const packageCount = existingOrder.items.reduce((sum: number, item: any) => sum + (Number(item.quantity) || 1), 0) || 1;
+            const derivedPackageCount = existingOrder.items.reduce((sum: number, item: any) => sum + (Number(item.quantity) || 1), 0) || 1;
+            const packageCount = Number.isInteger(fatihData?.packageCount) && (fatihData?.packageCount as number) >= 1
+                ? Math.floor(fatihData!.packageCount as number)
+                : derivedPackageCount;
+            const fatihPrice = fatihData?.price != null && Number.isFinite(Number(fatihData.price)) ? Number(fatihData.price) : 0;
+            const orderValue = fatihData?.orderValue != null ? Number(fatihData.orderValue) : Number(existingOrder.finalAmount || 0);
+
+            if (Number.isNaN(orderValue) || orderValue < 0) {
+                return {
+                    success: false,
+                    partiallySaved: true,
+                    error: "تم حفظ بيانات الشحن، لكن قيمة الطلب غير صالحة",
+                };
+            }
+
             const manualQrCode = String(fatihData?.qrCode || "").trim();
             if (manualQrCode && !/^\d{7}$/.test(manualQrCode)) {
                 return {
@@ -1089,32 +1129,34 @@ export async function updateOrderShippingFromTable(
                     error: "تم حفظ بيانات الشحن، لكن رقم QR يجب أن يتكون من 7 أرقام",
                 };
             }
+            const note = String(fatihData?.note || "").trim();
             const payload: Record<string, any> = {
                 ...(manualQrCode ? { qr_code: manualQrCode } : { auto_generate_qr: true }),
                 package_count: packageCount,
-                sender_phone: String(existingOrder.user?.phone || existingOrder.customer?.phone || "").slice(0, 20),
-                sender_address: String(existingOrder.warehouse?.location || existingOrder.country || "-").slice(0, 255),
-                global_name: String(existingOrder.receiverName || existingOrder.customer?.name || "-"),
-                receive_phone: String(existingOrder.receiverPhone?.[0] || existingOrder.customer?.phone || "").slice(0, 20),
-                receive_address: String(existingOrder.fullAddress || existingOrder.city || "-").slice(0, 500),
-                receive_at_branch: false,
+                sender_phone: senderPhone,
+                sender_address: senderAddress,
+                global_name: globalName,
+                receive_phone: receivePhone,
+                receive_address: receiveAddress,
+                receive_at_branch: fatihData?.receiveAtBranch ?? false,
                 city_source_id: fatihData?.citySourceId,
                 city_target_id: fatihData?.cityTargetId,
                 unit_id: fatihData?.unitId,
                 weight_id: fatihData?.weightId,
                 size_id: fatihData?.sizeId,
                 far: parsedShippingPrice,
-                price: 0,
+                price: fatihPrice,
                 far_tr: 0,
                 price_tr: 0,
                 far_syp: 0,
                 price_syp: 0,
-                order_value: Number(existingOrder.finalAmount || 0),
-                is_order_value_matches_collection: true,
-                insurance_against_breakage: false,
-                insurance_against_loss: false,
-                far_sender: false,
-                requires_custom_fee: parsedShippingPrice <= 0,
+                order_value: orderValue,
+                is_order_value_matches_collection: fatihData?.isOrderValueMatchesCollection ?? true,
+                insurance_against_breakage: fatihData?.insuranceBreakage ?? false,
+                insurance_against_loss: fatihData?.insuranceLoss ?? false,
+                far_sender: fatihData?.farSender ?? false,
+                requires_custom_fee: fatihData?.requiresCustomFee ?? (parsedShippingPrice <= 0 && fatihPrice <= 0),
+                ...(note ? { note } : {}),
             };
 
             const fatihResult = await createFatihShipment(payload);

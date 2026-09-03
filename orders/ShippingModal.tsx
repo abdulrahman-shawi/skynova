@@ -11,20 +11,38 @@ interface ShippingForm {
   otherCommissions: string;
 }
 
+// بيانات شحنة الفاتح المطلوبة حسب واجهة إنشاء الشحنة في نظامهم
+export interface FatihShipmentInput {
+  citySourceId: number | null;
+  cityTargetId: number | null;
+  unitId: number | null;
+  weightId: number | null;
+  sizeId: number | null;
+  qrCode: string | null;
+  packageCount: number | null;
+  senderPhone: string | null;
+  senderAddress: string | null;
+  globalName: string | null;
+  receivePhone: string | null;
+  receiveAddress: string | null;
+  price: number | null;
+  orderValue: number | null;
+  isOrderValueMatchesCollection: boolean;
+  insuranceBreakage: boolean;
+  insuranceLoss: boolean;
+  farSender: boolean;
+  requiresCustomFee: boolean;
+  receiveAtBranch: boolean;
+  note: string | null;
+}
+
 interface ShippingModalProps {
   isOpen: boolean;
   onClose: () => void;
   shippingForm: ShippingForm;
   onFormChange: (form: ShippingForm) => void;
   shippingCompanyOptions: string[];
-  onSave: (fatihData?: {
-    citySourceId: number | null;
-    cityTargetId: number | null;
-    unitId: number | null;
-    weightId: number | null;
-    sizeId: number | null;
-    qrCode: string | null;
-  }) => Promise<void>;
+  onSave: (fatihData?: FatihShipmentInput) => Promise<void>;
   isSaving: boolean;
   targetOrder?: any;
 }
@@ -134,6 +152,21 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     weightId: "",
     sizeId: "",
     qrCode: "",
+    packageCount: "1",
+    senderPhone: "",
+    senderAddress: "",
+    globalName: "",
+    receivePhone: "",
+    receiveAddress: "",
+    price: "0",
+    orderValue: "",
+    isOrderValueMatchesCollection: true,
+    insuranceBreakage: false,
+    insuranceLoss: false,
+    farSender: false,
+    requiresCustomFee: false,
+    receiveAtBranch: false,
+    note: "",
   });
 
   React.useEffect(() => {
@@ -145,6 +178,21 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       weightId: targetOrder?.fatihWeightId ? String(targetOrder.fatihWeightId) : "",
       sizeId: targetOrder?.fatihSizeId ? String(targetOrder.fatihSizeId) : "",
       qrCode: "",
+      packageCount: "1",
+      senderPhone: String(targetOrder?.user?.phone || targetOrder?.customer?.phone || ""),
+      senderAddress: String(targetOrder?.warehouse?.location || targetOrder?.country || ""),
+      globalName: String(targetOrder?.receiverName || targetOrder?.customer?.name || ""),
+      receivePhone: String(targetOrder?.receiverPhone?.[0] || targetOrder?.customer?.phone || ""),
+      receiveAddress: String(targetOrder?.fullAddress || targetOrder?.city || ""),
+      price: "0",
+      orderValue: String(Number(targetOrder?.finalAmount || 0)),
+      isOrderValueMatchesCollection: true,
+      insuranceBreakage: false,
+      insuranceLoss: false,
+      farSender: false,
+      requiresCustomFee: false,
+      receiveAtBranch: false,
+      note: "",
     });
   }, [isOpen, targetOrder]);
 
@@ -184,6 +232,10 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       const n = Number(v);
       return Number.isInteger(n) && n > 0 ? n : null;
     };
+    const toAmount = (v: string) => {
+      const n = Number(v);
+      return Number.isFinite(n) && n >= 0 ? n : null;
+    };
     void onSave({
       citySourceId: toId(fatihForm.citySourceId),
       cityTargetId: toId(fatihForm.cityTargetId),
@@ -191,6 +243,21 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       weightId: toId(fatihForm.weightId),
       sizeId: toId(fatihForm.sizeId),
       qrCode: fatihForm.qrCode.trim() || null,
+      packageCount: toId(fatihForm.packageCount),
+      senderPhone: fatihForm.senderPhone.trim() || null,
+      senderAddress: fatihForm.senderAddress.trim() || null,
+      globalName: fatihForm.globalName.trim() || null,
+      receivePhone: fatihForm.receivePhone.trim() || null,
+      receiveAddress: fatihForm.receiveAddress.trim() || null,
+      price: toAmount(fatihForm.price),
+      orderValue: toAmount(fatihForm.orderValue),
+      isOrderValueMatchesCollection: fatihForm.isOrderValueMatchesCollection,
+      insuranceBreakage: fatihForm.insuranceBreakage,
+      insuranceLoss: fatihForm.insuranceLoss,
+      farSender: fatihForm.farSender,
+      requiresCustomFee: fatihForm.requiresCustomFee,
+      receiveAtBranch: fatihForm.receiveAtBranch,
+      note: fatihForm.note.trim() || null,
     });
   };
 
@@ -221,9 +288,44 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     </div>
   );
 
+  const renderFatihInput = (
+    label: string,
+    key: keyof typeof fatihForm,
+    opts?: { type?: string; placeholder?: string; maxLength?: number }
+  ) => (
+    <div>
+      <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
+        {label}
+      </label>
+      <input
+        type={opts?.type || "text"}
+        {...(opts?.type === "number" ? { min: 0, step: "0.01" } : {})}
+        {...(opts?.maxLength ? { maxLength: opts.maxLength } : {})}
+        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
+        placeholder={opts?.placeholder}
+        value={String(fatihForm[key] ?? "")}
+        onChange={(e) => setFatihForm({ ...fatihForm, [key]: e.target.value })}
+        disabled={isSaving || fatihLoading}
+      />
+    </div>
+  );
+
+  const renderFatihCheckbox = (label: string, key: keyof typeof fatihForm) => (
+    <label className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200">
+      <input
+        type="checkbox"
+        className="h-4 w-4 rounded border-slate-300 dark:border-slate-600"
+        checked={Boolean(fatihForm[key])}
+        onChange={(e) => setFatihForm({ ...fatihForm, [key]: e.target.checked })}
+        disabled={isSaving || fatihLoading}
+      />
+      {label}
+    </label>
+  );
+
   return (
     <AppModal
-      size="md"
+      size="lg"
       isOpen={isOpen}
       onClose={onClose}
       title="بيانات الشحن والعمولات"
@@ -302,6 +404,28 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                 {renderFatihSelect("الوحدة", fatihForm.unitId, "unitId", fatihOptions.units, "اختر الوحدة")}
                 {renderFatihSelect("الوزن", fatihForm.weightId, "weightId", fatihOptions.weights, "اختر الوزن")}
                 {renderFatihSelect("الحجم", fatihForm.sizeId, "sizeId", fatihOptions.sizes, "اختر الحجم")}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {renderFatihInput("عدد الطرود", "packageCount", { type: "number", placeholder: "1" })}
+                  {renderFatihInput("هاتف المرسل", "senderPhone", { maxLength: 20 })}
+                  {renderFatihInput("عنوان المرسل", "senderAddress", { maxLength: 255 })}
+                  {renderFatihInput("اسم المستلم", "globalName")}
+                  {renderFatihInput("هاتف المستلم", "receivePhone", { maxLength: 20 })}
+                  {renderFatihInput("عنوان المستلم", "receiveAddress", { maxLength: 500 })}
+                  {renderFatihInput("قيمة الطلب", "orderValue", { type: "number" })}
+                  {renderFatihInput("السعر (price)", "price", { type: "number" })}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">
+                  أجور الشحن (far) تؤخذ من حقل «سعر الشحنة» أدناه
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {renderFatihCheckbox("قيمة الطلب تطابق التحصيل", "isOrderValueMatchesCollection")}
+                  {renderFatihCheckbox("تأمين ضد الكسر", "insuranceBreakage")}
+                  {renderFatihCheckbox("تأمين ضد الفقدان", "insuranceLoss")}
+                  {renderFatihCheckbox("الأجور على المرسل", "farSender")}
+                  {renderFatihCheckbox("أجور مخصصة", "requiresCustomFee")}
+                  {renderFatihCheckbox("الاستلام من الفرع", "receiveAtBranch")}
+                </div>
+                {renderFatihInput("ملاحظة (اختياري)", "note")}
                 <div>
                   <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
                     رقم الشحنة QR (اختياري — اتركه فارغاً للتوليد التلقائي)
