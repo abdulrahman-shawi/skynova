@@ -1,8 +1,10 @@
 import React from 'react';
 import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
+import { SearchableSelect } from '@/components/ui/searchable-select';
 import { getFatihFormOptions, getFatihPricing } from '@/server/shipping';
 import { FATIH_COMPANY_NAME } from '@/lib/fatih';
+import toast from 'react-hot-toast';
 
 interface ShippingForm {
   shippingCompanyName: string;
@@ -46,85 +48,6 @@ interface ShippingModalProps {
   isSaving: boolean;
   targetOrder?: any;
 }
-
-// منتقي مدينة مع حقل بحث يفلتر القائمة أثناء الكتابة
-const FatihCityPicker = ({
-  label,
-  value,
-  onChange,
-  options,
-  disabled,
-  searchPlaceholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  options: any[];
-  disabled?: boolean;
-  searchPlaceholder: string;
-}) => {
-  const [query, setQuery] = React.useState("");
-  const selected = options.find((o) => String(o.id) === value);
-  const q = query.trim();
-  const filtered = q
-    ? options.filter(
-        (o) => (o.name || "").includes(q) || (o.parent_city_name || "").includes(q)
-      )
-    : options;
-
-  const cityLabel = (o: any) =>
-    o.parent_city_name ? `${o.parent_city_name} - ${o.name}` : o.name;
-
-  return (
-    <div>
-      <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
-        {label}
-      </label>
-      {selected && (
-        <div className="mb-2 flex items-center justify-between rounded-lg border border-blue-300 bg-blue-50 px-3 py-1.5 text-sm dark:border-blue-800 dark:bg-blue-950/50">
-          <span className="font-bold text-blue-700 dark:text-blue-300">{cityLabel(selected)}</span>
-          <button
-            type="button"
-            onClick={() => onChange("")}
-            disabled={disabled}
-            className="text-xs text-red-500 hover:underline"
-          >
-            إزالة
-          </button>
-        </div>
-      )}
-      <input
-        type="text"
-        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
-        placeholder={searchPlaceholder}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        disabled={disabled}
-      />
-      <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-        {filtered.length === 0 ? (
-          <div className="px-3 py-2 text-sm text-slate-400">لا توجد مدن مطابقة</div>
-        ) : (
-          filtered.map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => onChange(String(opt.id))}
-              disabled={disabled}
-              className={`block w-full px-3 py-2 text-right text-sm transition-colors ${
-                String(opt.id) === value
-                  ? "bg-blue-100 font-bold text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"
-                  : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-              }`}
-            >
-              {cityLabel(opt)}
-            </button>
-          ))
-        )}
-      </div>
-    </div>
-  );
-};
 
 export const ShippingModal: React.FC<ShippingModalProps> = ({
   isOpen,
@@ -234,6 +157,15 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     };
   }, [isOpen, isFatih]);
 
+  const cityOptions = React.useMemo(
+    () =>
+      fatihOptions.cities.map((c: any) => ({
+        value: c.id,
+        label: c.parent_city_name ? `${c.parent_city_name} - ${c.name}` : c.name,
+      })),
+    [fatihOptions.cities]
+  );
+
   const canEstimate = Boolean(fatihForm.cityTargetId && fatihForm.weightId && fatihForm.sizeId);
 
   const handleEstimatePricing = async () => {
@@ -254,14 +186,21 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       });
       if (res.success) {
         setPricingResult(res.data);
+        // تعبئة سعر الشحنة تلقائياً بالأجور المقدرة
+        if (res.data.far > 0) {
+          onFormChange({ ...shippingForm, shippingPrice: String(res.data.far) });
+        }
         if (res.data.requiresCustomFee) {
           setFatihForm((f) => ({ ...f, requiresCustomFee: true }));
         }
+        toast.success(`الأجور المقدرة: ${res.data.far} $`);
       } else {
         setPricingError(res.error || "تعذر تقدير أجور الشحن");
+        toast.error(res.error || "تعذر تقدير أجور الشحن");
       }
     } catch {
       setPricingError("تعذر تقدير أجور الشحن");
+      toast.error("تعذر تقدير أجور الشحن");
     } finally {
       setPricingLoading(false);
     }
@@ -429,21 +368,25 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
               <div className="text-sm text-red-500">{fatihError}</div>
             ) : (
               <>
-                <FatihCityPicker
+                <SearchableSelect
                   label="مدينة المصدر"
+                  options={cityOptions}
                   value={fatihForm.citySourceId}
-                  onChange={(v) => setFatihForm({ ...fatihForm, citySourceId: v })}
-                  options={fatihOptions.cities}
-                  disabled={isSaving || fatihLoading}
+                  onChange={(v) => setFatihForm({ ...fatihForm, citySourceId: String(v) })}
+                  placeholder="اختر مدينة المصدر"
                   searchPlaceholder="ابحث عن مدينة المصدر..."
-                />
-                <FatihCityPicker
-                  label="مدينة الوجهة"
-                  value={fatihForm.cityTargetId}
-                  onChange={(v) => setFatihForm({ ...fatihForm, cityTargetId: v })}
-                  options={fatihOptions.cities}
                   disabled={isSaving || fatihLoading}
+                  defaultLimit={5}
+                />
+                <SearchableSelect
+                  label="مدينة الوجهة"
+                  options={cityOptions}
+                  value={fatihForm.cityTargetId}
+                  onChange={(v) => setFatihForm({ ...fatihForm, cityTargetId: String(v) })}
+                  placeholder="اختر مدينة الوجهة"
                   searchPlaceholder="ابحث عن مدينة الوجهة..."
+                  disabled={isSaving || fatihLoading}
+                  defaultLimit={5}
                 />
                 {renderFatihSelect("الوحدة", fatihForm.unitId, "unitId", fatihOptions.units, "اختر الوحدة")}
                 {renderFatihSelect("الوزن", fatihForm.weightId, "weightId", fatihOptions.weights, "اختر الوزن")}
@@ -494,18 +437,14 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                         {pricingResult.farTr > 0 && ` — ${pricingResult.farTr} ₺`}
                         {pricingResult.farSyp > 0 && ` — ${pricingResult.farSyp} ل.س`}
                       </div>
+                      {pricingResult.far > 0 && (
+                        <div className="text-xs text-emerald-600 dark:text-emerald-400">
+                          تمت تعبئة حقل «سعر الشحنة» تلقائياً بالقيمة المقدرة
+                        </div>
+                      )}
                       {pricingResult.customFeeMessage && (
                         <div className="text-amber-600 dark:text-amber-400">{pricingResult.customFeeMessage}</div>
                       )}
-                      <button
-                        type="button"
-                        className="text-xs font-bold text-blue-600 hover:underline dark:text-blue-400"
-                        onClick={() =>
-                          onFormChange({ ...shippingForm, shippingPrice: String(pricingResult.far) })
-                        }
-                      >
-                        اعتماد كسعر شحنة
-                      </button>
                     </div>
                   )}
                 </div>

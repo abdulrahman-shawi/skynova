@@ -18,6 +18,8 @@ interface SearchableSelectProps {
   searchPlaceholder?: string;
   error?: string;
   disabled?: boolean;
+  // عدد العناصر الظاهرة عند فتح القائمة قبل الكتابة في البحث
+  defaultLimit?: number;
 }
 
 export function SearchableSelect({
@@ -29,6 +31,7 @@ export function SearchableSelect({
   searchPlaceholder = "ابحث هنا...",
   error,
   disabled = false,
+  defaultLimit,
 }: SearchableSelectProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -41,9 +44,9 @@ export function SearchableSelect({
 
   const filteredOptions = React.useMemo(() => {
     const term = search.trim().toLowerCase();
-    if (!term) return options;
+    if (!term) return defaultLimit ? options.slice(0, defaultLimit) : options;
     return options.filter((opt) => opt.label.toLowerCase().includes(term));
-  }, [options, search]);
+  }, [options, search, defaultLimit]);
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
