@@ -301,6 +301,7 @@ function UnifiedCollectionsTable({
                   <th className="px-3 py-3 font-bold">المبلغ بالدولار</th>
                   <th className="px-3 py-3 font-bold">المبلغ بالتركي تقريبًا</th>
                   <th className="px-3 py-3 font-bold">أجرة الشحن</th>
+                  <th className="px-3 py-3 font-bold">المتبقي بعد الشحن</th>
                   <th className="px-3 py-3 font-bold">التاريخ</th>
                   <th className="px-3 py-3 font-bold">الإجراء</th>
                 </tr>
@@ -326,6 +327,7 @@ function UnifiedCollectionsTable({
                       <td className="px-3 py-3 font-black text-emerald-600">{formatMoney(entry.amountUsd)}</td>
                       <td className="px-3 py-3 font-bold text-amber-600 dark:text-amber-300">{formatMoney(entry.amountTry, "₺")}</td>
                       <td className="px-3 py-3 font-bold text-slate-700 dark:text-slate-200">{shippingCharge > 0 ? formatMoney(shippingCharge) : "-"}</td>
+                      <td className="px-3 py-3 font-black text-emerald-600">{formatMoney(Math.max(0, entry.amountUsd - shippingCharge))}</td>
                       <td className="px-3 py-3 text-slate-500 dark:text-slate-400">{getDisplayDate(row)}</td>
                       <td className="px-3 py-3">
                         {canReceive ? (
@@ -600,6 +602,7 @@ export default function CollectionsPage() {
       "المبلغ بالدولار": Number(entry.amountUsd || 0),
       "المبلغ بالتركي تقريبًا": Number(entry.amountTry || 0),
       "أجرة الشحن بالدولار": Number(entry.row.shippingCharge || 0),
+      "المتبقي بعد الشحن": Math.max(0, Number(entry.amountUsd || 0) - Number(entry.row.shippingCharge || 0)),
       "التاريخ": getDisplayDate(entry.row),
     }));
 

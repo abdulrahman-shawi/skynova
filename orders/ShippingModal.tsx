@@ -13,6 +13,46 @@ interface ShippingForm {
   otherCommissions: string;
 }
 
+// توحيد الحروف العربية لتسهيل المطابقة (أ/إ/آ -> ا)
+const normalizeAr = (value: unknown) =>
+  String(value || "").replace(/[أإآ]/g, "ا").replace(/\s+/g, " ").trim();
+
+// مدينة المصدر الافتراضية: محافظة حمص - حمص
+const pickFatihSourceCity = (cities: any[]) => {
+  const exact = cities.find(
+    (c: any) =>
+      normalizeAr(c?.parent_city_name).includes("حمص") && normalizeAr(c?.name) === "حمص"
+  );
+  if (exact) return exact;
+  return cities.find((c: any) =>
+    normalizeAr(`${c?.parent_city_name || ""} ${c?.name || ""}`).includes("حمص")
+  );
+};
+
+// الوحدة الافتراضية: إلكترونيات
+const pickFatihElectronicsUnit = (units: any[]) =>
+  units.find((u: any) => normalizeAr(u?.name || u?.title).includes("الكترونيات"));
+
+// يستخرج قيمة رقمية من عنصر قائمة (من حقول معروفة أو من الاسم)
+const fatihNumericValue = (item: any): number | null => {
+  for (const key of ["value", "weight", "size", "min", "min_weight", "from"]) {
+    const n = Number(item?.[key]);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+  const match = String(item?.name || "").replace(/[,،]/g, ".").match(/\d+(\.\d+)?/);
+  return match ? Number(match[0]) : null;
+};
+
+// الوزن/الحجم الافتراضي: أقل قيمة (وإن تعذر استخراج رقم نأخذ أول عنصر)
+const pickFatihLowest = (list: any[]) => {
+  if (!Array.isArray(list) || list.length === 0) return undefined;
+  const valued = list.map((item) => ({ item, value: fatihNumericValue(item) }));
+  if (valued.every((v) => v.value === null)) return list[0];
+  return valued.reduce((best, current) =>
+    (current.value ?? Infinity) < (best.value ?? Infinity) ? current : best
+  ).item;
+};
+
 // بيانات شحنة الفاتح المطلوبة حسب واجهة إنشاء الشحنة في نظامهم
 export interface FatihShipmentInput {
   citySourceId: number | null;
@@ -141,7 +181,20 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
         const res = await getFatihFormOptions();
         if (cancelled) return;
         if (res.success) {
-          setFatihOptions(res.data as any);
+          const data = res.data as any;
+          setFatihOptions(data);
+          // تعبئة القيم الافتراضية للحقول الفارغة فقط (لا تكتب فوق القيم المحفوظة)
+          const sourceCity = pickFatihSourceCity(data.cities || []);
+          const electronicsUnit = pickFatihElectronicsUnit(data.units || []);
+          const lowestWeight = pickFatihLowest(data.weights || []);
+          const lowestSize = pickFatihLowest(data.sizes || []);
+          setFatihForm((f) => ({
+            ...f,
+            citySourceId: f.citySourceId || (sourceCity ? String(sourceCity.id) : ""),
+            unitId: f.unitId || (electronicsUnit ? String(electronicsUnit.id) : ""),
+            weightId: f.weightId || (lowestWeight ? String(lowestWeight.id) : ""),
+            sizeId: f.sizeId || (lowestSize ? String(lowestSize.id) : ""),
+          }));
         } else {
           setFatihError(res.error || "تعذر جلب بيانات الفاتح");
         }
@@ -362,6 +415,29 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
             <div className="text-sm font-black text-blue-700 dark:text-blue-300">
               بيانات شحنة الفاتح (سيتم إنشاء الشحنة تلقائياً عند الحفظ)
             </div>
+            {/* رقم الشحنة QR — أول الحقول ويظهر دائماً */}
+            <div>
+              <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
+                رقم الشحنة QR
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={7}
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
+                placeholder="اختياري — اتركه فارغاً للتوليد التلقائي"
+                value={fatihForm.qrCode}
+                onChange={(e) =>
+                  setFatihForm({ ...fatihForm, qrCode: e.target.value.replace(/\D/g, "").slice(0, 7) })
+                }
+                disabled={isSaving}
+              />
+            </div>
+            {targetOrder?.fatihQrCode && (
+              <div className="text-sm text-slate-600 dark:text-slate-300">
+                رقم الشحنة الحالي: <span className="font-bold">{targetOrder.fatihQrCode}</span>
+              </div>
+            )}
             {fatihLoading ? (
               <div className="text-sm text-slate-500">جاري تحميل قوائم الفاتح...</div>
             ) : fatihError ? (
@@ -437,6 +513,10 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                         {pricingResult.farTr > 0 && ` — ${pricingResult.farTr} ₺`}
                         {pricingResult.farSyp > 0 && ` — ${pricingResult.farSyp} ل.س`}
                       </div>
+                      <div className="font-bold text-blue-700 dark:text-blue-300">
+                        المتبقي من قيمة الطلب بعد الأجور:{" "}
+                        {Math.max(0, (Number(fatihForm.orderValue) || 0) - pricingResult.far)} $
+                      </div>
                       {pricingResult.far > 0 && (
                         <div className="text-xs text-emerald-600 dark:text-emerald-400">
                           تمت تعبئة حقل «سعر الشحنة» تلقائياً بالقيمة المقدرة
@@ -448,28 +528,6 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                     </div>
                   )}
                 </div>
-                <div>
-                  <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
-                    رقم الشحنة QR (اختياري — اتركه فارغاً للتوليد التلقائي)
-                  </label>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={7}
-                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
-                    placeholder="7 أرقام"
-                    value={fatihForm.qrCode}
-                    onChange={(e) =>
-                      setFatihForm({ ...fatihForm, qrCode: e.target.value.replace(/\D/g, "").slice(0, 7) })
-                    }
-                    disabled={isSaving}
-                  />
-                </div>
-                {targetOrder?.fatihQrCode && (
-                  <div className="text-sm text-slate-600 dark:text-slate-300">
-                    رقم الشحنة الحالي: <span className="font-bold">{targetOrder.fatihQrCode}</span>
-                  </div>
-                )}
               </>
             )}
           </div>
