@@ -779,6 +779,8 @@ model Order {
   amountBank                      String?
   deliveryMethod                  String?
   additionalNotes                 String?
+  // سبب الإلغاء / فشل التسليم (يُملأ عند حالات الإرجاع والإلغاء)
+  cancelReason                    String?
   status                          String      @default("PENDING")
   customerId                      String
   userId                          String?

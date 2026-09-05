@@ -103,6 +103,10 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const [isOpenorder, setisOpenorder] = React.useState(false);
     const [isOpenordercustomer, setisOpenordercustomer] = React.useState(false);
+    // مودال سبب الإلغاء / فشل التسليم
+    const [cancelReasonTarget, setCancelReasonTarget] = React.useState<{ id: any; status: string } | null>(null);
+    const [cancelReason, setCancelReason] = React.useState("");
+    const [isSavingCancelReason, setIsSavingCancelReason] = React.useState(false);
     const [status, setStatus] = React.useState("طلب جديد");
     const [editId, setEditId] = React.useState<string | number | null>(null);
     const [items, setItems] = React.useState([
@@ -896,10 +900,12 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         }
 
     ];
-    const updatestatuschange = async (status: any, id: any) => {
+    const CANCEL_REASON_STATUSES = new Set(["فشل التسليم مرتجع", "تم الغاء الطلب", "تم إلغاء الطلب"]);
+
+    const applyStatusChange = async (status: any, id: any, reason?: string | null) => {
         const loading = toast.loading("جاري تحديث حالة الطلب")
         try {
-            const res = await updateStaus(status, id)
+            const res = await updateStaus(status, id, reason)
             if (res.success) {
                 Order()
                 toast.success("تم تحديث الحالة")
@@ -910,6 +916,28 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
             toast.error("فشل تحديث الحالة")
         } finally {
             toast.dismiss(loading)
+        }
+    }
+
+    const updatestatuschange = async (status: any, id: any) => {
+        // حالات الإلغاء/الإرجاع تتطلب إدخال السبب أولاً عبر المودال
+        if (CANCEL_REASON_STATUSES.has(String(status || "").trim())) {
+            const existing = orders.find((o: any) => String(o.id) === String(id));
+            setCancelReason(String(existing?.cancelReason || ""));
+            setCancelReasonTarget({ id, status: String(status) });
+            return;
+        }
+        await applyStatusChange(status, id);
+    }
+
+    const handleConfirmCancelReason = async () => {
+        if (!cancelReasonTarget || isSavingCancelReason) return;
+        setIsSavingCancelReason(true);
+        try {
+            await applyStatusChange(cancelReasonTarget.status, cancelReasonTarget.id, cancelReason);
+            setCancelReasonTarget(null);
+        } finally {
+            setIsSavingCancelReason(false);
         }
     }
     return (
@@ -1011,6 +1039,50 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                 isSaving={shippingModalSaving}
                 targetOrder={shippingTargetOrder}
             />
+
+            {/* مودال سبب الإلغاء / فشل التسليم */}
+            <AppModal
+                isOpen={Boolean(cancelReasonTarget)}
+                onClose={() => {
+                    if (isSavingCancelReason) return;
+                    setCancelReasonTarget(null);
+                }}
+                title="سبب الإلغاء / فشل التسليم"
+                description={cancelReasonTarget ? `سيتم تعيين حالة الطلب إلى: ${cancelReasonTarget.status}` : undefined}
+                footer={
+                    <>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setCancelReasonTarget(null)}
+                            disabled={isSavingCancelReason}
+                        >
+                            تراجع
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={handleConfirmCancelReason}
+                            disabled={isSavingCancelReason}
+                        >
+                            {isSavingCancelReason ? "جاري الحفظ..." : "تأكيد الحالة"}
+                        </Button>
+                    </>
+                }
+            >
+                <div>
+                    <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
+                        سبب الإلغاء
+                    </label>
+                    <textarea
+                        rows={3}
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
+                        placeholder="اكتب سبب فشل التسليم أو إلغاء الطلب..."
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                        disabled={isSavingCancelReason}
+                    />
+                </div>
+            </AppModal>
 
             {/* مودال إنشاء وتعديل الطلب */}
 {isOpen && (

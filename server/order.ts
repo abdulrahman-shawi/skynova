@@ -344,6 +344,7 @@ const orderBaseSelect = {
     amountBank: true,
     deliveryMethod: true,
     additionalNotes: true,
+    cancelReason: true,
     status: true,
     userId: true,
     customerId: true,
@@ -1191,7 +1192,7 @@ export async function updateOrderShippingFromTable(
     }
 }
 
-export async function updateStaus(status:any , id:any){
+export async function updateStaus(status:any , id:any, cancelReason?: string | null){
     try {
         const nextStatus = String(status || "").trim();
         const orderId = Number(id);
@@ -1242,6 +1243,10 @@ export async function updateStaus(status:any , id:any){
                 where: { id: orderId },
                 data: {
                     status: nextStatus,
+                    // حفظ سبب الإلغاء/الإرجاع عند حالات الإرجاع، ومسحه عند العودة لحالة نشطة
+                    cancelReason: willBeReturned
+                        ? (String(cancelReason || "").trim() || null)
+                        : null,
                 },
                 select: {
                     id: true,

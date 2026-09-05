@@ -34998,6 +34998,7 @@ export namespace Prisma {
     amountBank: string | null
     deliveryMethod: string | null
     additionalNotes: string | null
+    cancelReason: string | null
     status: string | null
     customerId: string | null
     userId: string | null
@@ -35043,6 +35044,7 @@ export namespace Prisma {
     amountBank: string | null
     deliveryMethod: string | null
     additionalNotes: string | null
+    cancelReason: string | null
     status: string | null
     customerId: string | null
     userId: string | null
@@ -35089,6 +35091,7 @@ export namespace Prisma {
     amountBank: number
     deliveryMethod: number
     additionalNotes: number
+    cancelReason: number
     status: number
     customerId: number
     userId: number
@@ -35176,6 +35179,7 @@ export namespace Prisma {
     amountBank?: true
     deliveryMethod?: true
     additionalNotes?: true
+    cancelReason?: true
     status?: true
     customerId?: true
     userId?: true
@@ -35221,6 +35225,7 @@ export namespace Prisma {
     amountBank?: true
     deliveryMethod?: true
     additionalNotes?: true
+    cancelReason?: true
     status?: true
     customerId?: true
     userId?: true
@@ -35267,6 +35272,7 @@ export namespace Prisma {
     amountBank?: true
     deliveryMethod?: true
     additionalNotes?: true
+    cancelReason?: true
     status?: true
     customerId?: true
     userId?: true
@@ -35400,6 +35406,7 @@ export namespace Prisma {
     amountBank: string | null
     deliveryMethod: string | null
     additionalNotes: string | null
+    cancelReason: string | null
     status: string
     customerId: string
     userId: string | null
@@ -35465,6 +35472,7 @@ export namespace Prisma {
     amountBank?: boolean
     deliveryMethod?: boolean
     additionalNotes?: boolean
+    cancelReason?: boolean
     status?: boolean
     customerId?: boolean
     userId?: boolean
@@ -35519,6 +35527,7 @@ export namespace Prisma {
     amountBank?: boolean
     deliveryMethod?: boolean
     additionalNotes?: boolean
+    cancelReason?: boolean
     status?: boolean
     customerId?: boolean
     userId?: boolean
@@ -35569,6 +35578,7 @@ export namespace Prisma {
     amountBank?: boolean
     deliveryMethod?: boolean
     additionalNotes?: boolean
+    cancelReason?: boolean
     status?: boolean
     customerId?: boolean
     userId?: boolean
@@ -35619,6 +35629,7 @@ export namespace Prisma {
     amountBank?: boolean
     deliveryMethod?: boolean
     additionalNotes?: boolean
+    cancelReason?: boolean
     status?: boolean
     customerId?: boolean
     userId?: boolean
@@ -35637,7 +35648,7 @@ export namespace Prisma {
     fatihSizeId?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderNumber" | "usdToTryRateAtOrder" | "shippingPrice" | "moneyTransferCommission" | "otherCommissions" | "carrierCollectionReceivedAt" | "carrierCollectionReceivedAmount" | "carrierCollectionNotes" | "totalAmount" | "discount" | "finalAmount" | "paymentMethod" | "pay" | "receiverName" | "receiverPhone" | "country" | "city" | "invoiceImage" | "municipality" | "fullAddress" | "deliveryNotes" | "googleMapsLink" | "amount" | "amountBank" | "deliveryMethod" | "additionalNotes" | "status" | "customerId" | "userId" | "warehouseId" | "shippingId" | "manualCreatedAt" | "createdAt" | "updatedAt" | "fatihOrderId" | "fatihQrCode" | "fatihCode" | "fatihCitySourceId" | "fatihCityTargetId" | "fatihUnitId" | "fatihWeightId" | "fatihSizeId", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderNumber" | "usdToTryRateAtOrder" | "shippingPrice" | "moneyTransferCommission" | "otherCommissions" | "carrierCollectionReceivedAt" | "carrierCollectionReceivedAmount" | "carrierCollectionNotes" | "totalAmount" | "discount" | "finalAmount" | "paymentMethod" | "pay" | "receiverName" | "receiverPhone" | "country" | "city" | "invoiceImage" | "municipality" | "fullAddress" | "deliveryNotes" | "googleMapsLink" | "amount" | "amountBank" | "deliveryMethod" | "additionalNotes" | "cancelReason" | "status" | "customerId" | "userId" | "warehouseId" | "shippingId" | "manualCreatedAt" | "createdAt" | "updatedAt" | "fatihOrderId" | "fatihQrCode" | "fatihCode" | "fatihCitySourceId" | "fatihCityTargetId" | "fatihUnitId" | "fatihWeightId" | "fatihSizeId", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
@@ -35700,6 +35711,7 @@ export namespace Prisma {
       amountBank: string | null
       deliveryMethod: string | null
       additionalNotes: string | null
+      cancelReason: string | null
       status: string
       customerId: string
       userId: string | null
@@ -36173,6 +36185,7 @@ export namespace Prisma {
     readonly amountBank: FieldRef<"Order", 'String'>
     readonly deliveryMethod: FieldRef<"Order", 'String'>
     readonly additionalNotes: FieldRef<"Order", 'String'>
+    readonly cancelReason: FieldRef<"Order", 'String'>
     readonly status: FieldRef<"Order", 'String'>
     readonly customerId: FieldRef<"Order", 'String'>
     readonly userId: FieldRef<"Order", 'String'>
@@ -53409,6 +53422,7 @@ export namespace Prisma {
     amountBank: 'amountBank',
     deliveryMethod: 'deliveryMethod',
     additionalNotes: 'additionalNotes',
+    cancelReason: 'cancelReason',
     status: 'status',
     customerId: 'customerId',
     userId: 'userId',
@@ -56510,6 +56524,7 @@ export namespace Prisma {
     amountBank?: StringNullableFilter<"Order"> | string | null
     deliveryMethod?: StringNullableFilter<"Order"> | string | null
     additionalNotes?: StringNullableFilter<"Order"> | string | null
+    cancelReason?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
     customerId?: StringFilter<"Order"> | string
     userId?: StringNullableFilter<"Order"> | string | null
@@ -56563,6 +56578,7 @@ export namespace Prisma {
     amountBank?: SortOrderInput | SortOrder
     deliveryMethod?: SortOrderInput | SortOrder
     additionalNotes?: SortOrderInput | SortOrder
+    cancelReason?: SortOrderInput | SortOrder
     status?: SortOrder
     customerId?: SortOrder
     userId?: SortOrderInput | SortOrder
@@ -56619,6 +56635,7 @@ export namespace Prisma {
     amountBank?: StringNullableFilter<"Order"> | string | null
     deliveryMethod?: StringNullableFilter<"Order"> | string | null
     additionalNotes?: StringNullableFilter<"Order"> | string | null
+    cancelReason?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
     customerId?: StringFilter<"Order"> | string
     userId?: StringNullableFilter<"Order"> | string | null
@@ -56672,6 +56689,7 @@ export namespace Prisma {
     amountBank?: SortOrderInput | SortOrder
     deliveryMethod?: SortOrderInput | SortOrder
     additionalNotes?: SortOrderInput | SortOrder
+    cancelReason?: SortOrderInput | SortOrder
     status?: SortOrder
     customerId?: SortOrder
     userId?: SortOrderInput | SortOrder
@@ -56726,6 +56744,7 @@ export namespace Prisma {
     amountBank?: StringNullableWithAggregatesFilter<"Order"> | string | null
     deliveryMethod?: StringNullableWithAggregatesFilter<"Order"> | string | null
     additionalNotes?: StringNullableWithAggregatesFilter<"Order"> | string | null
+    cancelReason?: StringNullableWithAggregatesFilter<"Order"> | string | null
     status?: StringWithAggregatesFilter<"Order"> | string
     customerId?: StringWithAggregatesFilter<"Order"> | string
     userId?: StringNullableWithAggregatesFilter<"Order"> | string | null
@@ -60753,6 +60772,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
@@ -60802,6 +60822,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -60850,6 +60871,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60899,6 +60921,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60948,6 +60971,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -60993,6 +61017,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61035,6 +61060,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64599,6 +64625,7 @@ export namespace Prisma {
     amountBank?: SortOrder
     deliveryMethod?: SortOrder
     additionalNotes?: SortOrder
+    cancelReason?: SortOrder
     status?: SortOrder
     customerId?: SortOrder
     userId?: SortOrder
@@ -64664,6 +64691,7 @@ export namespace Prisma {
     amountBank?: SortOrder
     deliveryMethod?: SortOrder
     additionalNotes?: SortOrder
+    cancelReason?: SortOrder
     status?: SortOrder
     customerId?: SortOrder
     userId?: SortOrder
@@ -64709,6 +64737,7 @@ export namespace Prisma {
     amountBank?: SortOrder
     deliveryMethod?: SortOrder
     additionalNotes?: SortOrder
+    cancelReason?: SortOrder
     status?: SortOrder
     customerId?: SortOrder
     userId?: SortOrder
@@ -69731,6 +69760,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
@@ -69779,6 +69809,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     warehouseId?: number | null
@@ -70641,6 +70672,7 @@ export namespace Prisma {
     amountBank?: StringNullableFilter<"Order"> | string | null
     deliveryMethod?: StringNullableFilter<"Order"> | string | null
     additionalNotes?: StringNullableFilter<"Order"> | string | null
+    cancelReason?: StringNullableFilter<"Order"> | string | null
     status?: StringFilter<"Order"> | string
     customerId?: StringFilter<"Order"> | string
     userId?: StringNullableFilter<"Order"> | string | null
@@ -73087,6 +73119,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
@@ -73135,6 +73168,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -74931,6 +74965,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
@@ -74979,6 +75014,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     userId?: string | null
     warehouseId?: number | null
@@ -77127,6 +77163,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
@@ -77175,6 +77212,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -77397,6 +77435,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77445,6 +77484,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -78964,6 +79004,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
@@ -79012,6 +79053,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -79188,6 +79230,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
@@ -79236,6 +79279,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -79392,6 +79436,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79440,6 +79485,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -80506,6 +80552,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     manualCreatedAt?: Date | string | null
     createdAt?: Date | string
@@ -80554,6 +80601,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -80652,6 +80700,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -80700,6 +80749,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -80934,6 +80984,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     warehouseId?: number | null
@@ -81258,6 +81309,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -81306,6 +81358,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     warehouseId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -81354,6 +81407,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     warehouseId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -82891,6 +82945,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -83033,6 +83088,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -83081,6 +83137,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -83129,6 +83186,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -83588,6 +83646,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     userId?: string | null
     warehouseId?: number | null
@@ -83654,6 +83713,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -83702,6 +83762,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -83750,6 +83811,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     warehouseId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -84498,6 +84560,7 @@ export namespace Prisma {
     amountBank?: string | null
     deliveryMethod?: string | null
     additionalNotes?: string | null
+    cancelReason?: string | null
     status?: string
     customerId: string
     userId?: string | null
@@ -84579,6 +84642,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     manualCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -84627,6 +84691,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -84675,6 +84740,7 @@ export namespace Prisma {
     amountBank?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryMethod?: NullableStringFieldUpdateOperationsInput | string | null
     additionalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
