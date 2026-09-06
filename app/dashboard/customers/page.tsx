@@ -111,7 +111,7 @@ const CustomrLayout: React.FC = () => {
   const warehousesLoadPromiseRef = React.useRef<Promise<any[]> | null>(null);
   const customerDetailsRequestRef = React.useRef(0);
 
-  const filterCustomer = useCustomerFilters(customers, search, dateFilter, genderFilter, createdPreset, createdFrom, createdTo);
+  const filterCustomer = useCustomerFilters(customers, search, dateFilter, genderFilter);
   const {
     selectedCustomers,
     setSelectedCustomers,
@@ -152,8 +152,43 @@ const CustomrLayout: React.FC = () => {
   }
 
 
+  // حساب مدة تاريخ الإنشاء حسب الفلتر المختار (تُرسل للخادم لجلب العملاء ضمن المدة فقط)
+  const getCreatedRange = React.useCallback((): { from: string | null; to: string | null } => {
+    const now = new Date();
+
+    if (createdPreset === "today") {
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const end = new Date(start);
+      end.setDate(end.getDate() + 1);
+      return { from: start.toISOString(), to: end.toISOString() };
+    }
+
+    if (createdPreset === "last7") {
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      start.setDate(start.getDate() - 6);
+      const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      return { from: start.toISOString(), to: end.toISOString() };
+    }
+
+    if (createdPreset === "month") {
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      return { from: start.toISOString(), to: end.toISOString() };
+    }
+
+    if (createdPreset === "custom") {
+      const from = createdFrom ? new Date(`${createdFrom}T00:00:00`) : null;
+      const to = createdTo ? new Date(`${createdTo}T00:00:00`) : null;
+      if (to) to.setDate(to.getDate() + 1);
+      return { from: from ? from.toISOString() : null, to: to ? to.toISOString() : null };
+    }
+
+    return { from: null, to: null };
+  }, [createdPreset, createdFrom, createdTo]);
+
   const getData = React.useCallback(async () => {
-    const res = await getCustomerList();
+    const { from, to } = getCreatedRange();
+    const res = await getCustomerList(from, to);
     if (res.success) {
       const allCustomers: any[] = Array.isArray(res.data) ? res.data : [];
       setCustomers(allCustomers);
@@ -166,7 +201,7 @@ const CustomrLayout: React.FC = () => {
         });
       }
     }
-  }, [customer?.id]);
+  }, [customer?.id, getCreatedRange]);
 
   const getAlluser = React.useCallback(async () => {
     if (alluser.length > 0) {

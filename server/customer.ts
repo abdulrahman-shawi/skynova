@@ -133,8 +133,17 @@ const customerDetailsSelect = {
   },
 } as const;
 
-export async function getCustomerList() {
+export async function getCustomerList(dateFrom?: string | null, dateTo?: string | null) {
+  const from = parseOptionalDate(dateFrom);
+  const to = parseOptionalDate(dateTo);
+
   const res = await prisma.customer.findMany({
+    where: from || to ? {
+      createdAt: {
+        ...(from ? { gte: from } : {}),
+        ...(to ? { lt: to } : {}),
+      },
+    } : undefined,
     orderBy: {
       createdAt: "desc"
     },
@@ -159,8 +168,17 @@ export async function getCustomerDetails(customerId: string) {
   return { success: Boolean(customer), data: customer };
 }
 
-export async function getCustomer() {
+export async function getCustomer(dateFrom?: string | null, dateTo?: string | null) {
+  const from = parseOptionalDate(dateFrom);
+  const to = parseOptionalDate(dateTo);
+
   const res = await prisma.customer.findMany({
+    where: from || to ? {
+      createdAt: {
+        ...(from ? { gte: from } : {}),
+        ...(to ? { lt: to } : {}),
+      },
+    } : undefined,
     orderBy:{
       createdAt:"desc"
     },

@@ -37,28 +37,6 @@ const LOCKED_STATUS_VALUES = new Set(["جاري المتابعة", "تم الب�
 
 const FORCE_STATUS = "تم البيع";
 
-const buildDateKey = (value: Date) =>
-  `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
-
-const getRangeForPreset = (preset: string) => {
-  const now = new Date();
-  const todayKey = buildDateKey(now);
-
-  if (preset === "today") return { start: todayKey, end: todayKey };
-  if (preset === "last7") {
-    const start = new Date(now);
-    start.setDate(now.getDate() - 6);
-    return { start: buildDateKey(start), end: todayKey };
-  }
-  if (preset === "month") {
-    const start = new Date(now.getFullYear(), now.getMonth(), 1);
-    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    return { start: buildDateKey(start), end: buildDateKey(end) };
-  }
-
-  return { start: "", end: "" };
-};
-
 
 /* ===================== Schema (التحقق المرن) ===================== */
 // نصيحة خبير: استخدم .or(z.literal("")) لضمان أن الحقول الفارغة لا تكسر شرط الـ min
@@ -142,11 +120,6 @@ const CustomrLayout: React.FC = () => {
 
   const filterCustomer = customers.filter((e: any) => {
     const normalizedSearch = search.toLowerCase().trim();
-    const presetRange = getRangeForPreset(createdPreset);
-    const fromKey = createdPreset === "custom" ? (createdFrom || "") : presetRange.start;
-    const toKey = createdPreset === "custom" ? (createdTo || "") : presetRange.end;
-    const rangeStart = fromKey && toKey ? (fromKey <= toKey ? fromKey : toKey) : fromKey || toKey;
-    const rangeEnd = fromKey && toKey ? (fromKey <= toKey ? toKey : fromKey) : fromKey || toKey;
 
     const hasAssignedUserMatch = Array.isArray(e.users)
       ? e.users.some((assignedUser: any) => {
@@ -174,16 +147,9 @@ const CustomrLayout: React.FC = () => {
     // إذا كان المستخدم اختار حالة معينة، نقوم بالمطابقة، وإذا لم يختار (All) نعرض الكل
     const matchesStatus = e.status === FORCE_STATUS;
     const matchesGender = genderFilter === "الكل" ? true : String(e?.gender || "").trim() === genderFilter;
-    const customerCreatedAt = e?.createdAt ? new Date(e.createdAt) : null;
-    const hasValidCreatedAt = Boolean(customerCreatedAt && !Number.isNaN(customerCreatedAt.getTime()));
-    const customerCreatedKey = hasValidCreatedAt
-      ? `${customerCreatedAt!.getFullYear()}-${String(customerCreatedAt!.getMonth() + 1).padStart(2, "0")}-${String(customerCreatedAt!.getDate()).padStart(2, "0")}`
-      : "";
-    const matchesCreatedAt =
-      (!rangeStart || customerCreatedKey >= rangeStart) &&
-      (!rangeEnd || customerCreatedKey <= rangeEnd);
+    // فلترة تاريخ الإنشاء تتم على الخادم (getCustomer) حسب المدة المختارة
 
-    return matchesSearch && matchesStatus && matchesGender && matchesCreatedAt;
+    return matchesSearch && matchesStatus && matchesGender;
   });
 
   React.useEffect(() => {
@@ -399,11 +365,45 @@ const CustomrLayout: React.FC = () => {
   };
 
 
-  const getData = async () => {
-    const res = await getCustomer();
+  // حساب مدة تاريخ الإنشاء حسب الفلتر المختار (تُرسل للخادم لجلب العملاء ضمن المدة فقط)
+  const getCreatedRange = React.useCallback((): { from: string | null; to: string | null } => {
+    const now = new Date();
+
+    if (createdPreset === "today") {
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const end = new Date(start);
+      end.setDate(end.getDate() + 1);
+      return { from: start.toISOString(), to: end.toISOString() };
+    }
+
+    if (createdPreset === "last7") {
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      start.setDate(start.getDate() - 6);
+      const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      return { from: start.toISOString(), to: end.toISOString() };
+    }
+
+    if (createdPreset === "month") {
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      return { from: start.toISOString(), to: end.toISOString() };
+    }
+
+    if (createdPreset === "custom") {
+      const from = createdFrom ? new Date(`${createdFrom}T00:00:00`) : null;
+      const to = createdTo ? new Date(`${createdTo}T00:00:00`) : null;
+      if (to) to.setDate(to.getDate() + 1);
+      return { from: from ? from.toISOString() : null, to: to ? to.toISOString() : null };
+    }
+
+    return { from: null, to: null };
+  }, [createdPreset, createdFrom, createdTo]);
+
+  const getData = React.useCallback(async () => {
+    const { from, to } = getCreatedRange();
+    const res = await getCustomer(from, to);
     if (res.success) {
       const allCustomers: any[] = Array.isArray(res.data) ? res.data : [];
-      console.log(allCustomers)
       setCustomers(allCustomers);
 
       // 2. السطر السحري: تحديث العميل المختار حالياً ببياناته الجديدة
@@ -415,7 +415,7 @@ const CustomrLayout: React.FC = () => {
         }
       }
     }
-  };
+  }, [customer?.id, getCreatedRange]);
 
   const getAlluser = async () => {
     try {
@@ -435,6 +435,13 @@ const CustomrLayout: React.FC = () => {
     }
 
     getData();
+  }, [loading, getData])
+
+  React.useEffect(() => {
+    if (loading) {
+      return;
+    }
+
     getAlluser();
     getProduct().then((products) => {
       setProduct(products);
