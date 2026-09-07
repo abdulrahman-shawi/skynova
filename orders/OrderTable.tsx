@@ -1,4 +1,5 @@
 import React from 'react';
+import { AlertCircle } from 'lucide-react';
 import { DataTable, TableAction } from '@/components/shared/DataTable';
 import {
   statusColors,
@@ -21,6 +22,8 @@ interface OrderTableProps {
   onPageChange: (page: number) => void;
   isLoading?: boolean;
 }
+
+const REASON_STATUSES = new Set(["تم الغاء الطلب", "تم إلغاء الطلب", "معلق / نقص معلومات", "فشل التسليم مرتجع"]);
 
 export const OrderTable: React.FC<OrderTableProps> = ({
   orders,
@@ -135,11 +138,13 @@ export const OrderTable: React.FC<OrderTableProps> = ({
           header: "حالة الطلب",
           accessor: (c: any) => {
             const currentColor = statusColors[c.status] || "bg-slate-50 text-slate-500 border-slate-200";
+            const reason = String(c.cancelReason || "").trim();
+            const showReason = REASON_STATUSES.has(String(c.status || "").trim()) && reason.length > 0;
 
             return (
-              <div className="min-w-[150px]">
+              <div className="min-w-[150px] flex items-center gap-1.5">
                 <select
-                  className={`${currentColor} w-full p-2.5 rounded-xl border font-bold transition-all cursor-pointer outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400`}
+                  className={`${currentColor} flex-1 w-full p-2.5 rounded-xl border font-bold transition-all cursor-pointer outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-400`}
                   value={c.status}
                   onChange={(e) => {
                     const newValue = e.target.value;
@@ -175,6 +180,19 @@ export const OrderTable: React.FC<OrderTableProps> = ({
                     المتجر
                   </option>
                 </select>
+                {showReason && (
+                  <div className="relative group shrink-0">
+                    <span
+                      title={reason}
+                      className="flex items-center justify-center w-6 h-6 rounded-full bg-rose-100 text-rose-600 border border-rose-300 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-800 cursor-help"
+                    >
+                      <AlertCircle className="w-4 h-4" />
+                    </span>
+                    <div className="absolute z-50 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-lg border border-rose-200 dark:border-rose-800 bg-white dark:bg-slate-900 p-2.5 text-xs font-bold leading-relaxed text-slate-700 dark:text-slate-200 shadow-lg whitespace-pre-wrap break-words">
+                      {reason}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           },

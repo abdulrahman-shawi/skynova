@@ -12,11 +12,13 @@ const AFFILIATE_COOKIE_NAME = 'affiliate-code';
 const SOLD_ORDER_STATUSES = new Set(["تم تسليم الطلب", "تم التسليم", "مدفوعة"]);
 const PAID_COMMISSION_ORDER_STATUSES = new Set(["تم استلام الطلب", "تم تسليم الطلب", "تم التسليم", "مدفوعة", "تم البيع"]);
 const STOCK_RETURN_STATUSES = new Set(["فشل التسليم مرتجع", "تم الغاء الطلب"]);
+const REASON_STATUSES = new Set(["فشل التسليم مرتجع", "تم الغاء الطلب", "تم إلغاء الطلب", "معلق / نقص معلومات"]);
 const DEFAULT_TURKEY_EXCHANGE_RATE = 44;
 
 const isSoldOrderStatus = (status: string) => SOLD_ORDER_STATUSES.has(status);
 const shouldMarkAffiliateCommissionPaid = (status: string) => PAID_COMMISSION_ORDER_STATUSES.has(String(status || "").trim());
 const isStockReturnStatus = (status: string) => STOCK_RETURN_STATUSES.has(status);
+const isReasonStatus = (status: string) => REASON_STATUSES.has(status);
 const WAREHOUSE_ROLE_NAME = "مستودع";
 
 const normalizeWarehouseLocation = (location?: string | null) => {
@@ -1243,8 +1245,8 @@ export async function updateStaus(status:any , id:any, cancelReason?: string | n
                 where: { id: orderId },
                 data: {
                     status: nextStatus,
-                    // حفظ سبب الإلغاء/الإرجاع عند حالات الإرجاع، ومسحه عند العودة لحالة نشطة
-                    cancelReason: willBeReturned
+                    // حفظ السبب عند حالات الإلغاء/الإرجاع/التعليق، ومسحه عند العودة لحالة نشطة
+                    cancelReason: isReasonStatus(nextStatus)
                         ? (String(cancelReason || "").trim() || null)
                         : null,
                 },
