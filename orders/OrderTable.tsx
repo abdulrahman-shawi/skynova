@@ -139,7 +139,8 @@ export const OrderTable: React.FC<OrderTableProps> = ({
           accessor: (c: any) => {
             const currentColor = statusColors[c.status] || "bg-slate-50 text-slate-500 border-slate-200";
             const reason = String(c.cancelReason || "").trim();
-            const showReason = REASON_STATUSES.has(String(c.status || "").trim()) && reason.length > 0;
+            const showReason = REASON_STATUSES.has(String(c.status || "").trim());
+            const tooltipText = reason || "لا يوجد سبب مسجل";
 
             return (
               <div className="min-w-[150px] flex items-center gap-1.5">
@@ -183,13 +184,13 @@ export const OrderTable: React.FC<OrderTableProps> = ({
                 {showReason && (
                   <div className="relative group shrink-0">
                     <span
-                      title={reason}
+                      title={tooltipText}
                       className="flex items-center justify-center w-6 h-6 rounded-full bg-rose-100 text-rose-600 border border-rose-300 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-800 cursor-help"
                     >
                       <AlertCircle className="w-4 h-4" />
                     </span>
                     <div className="absolute z-50 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-lg border border-rose-200 dark:border-rose-800 bg-white dark:bg-slate-900 p-2.5 text-xs font-bold leading-relaxed text-slate-700 dark:text-slate-200 shadow-lg whitespace-pre-wrap break-words">
-                      {reason}
+                      {tooltipText}
                     </div>
                   </div>
                 )}
