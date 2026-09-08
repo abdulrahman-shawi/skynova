@@ -6,7 +6,7 @@ const prisma = new PrismaClient({
     adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
 
-const NAME = "بابل أكسبريس";
+const NAME = "شركة بابل اكسبريس";
 
 try {
     const existing = await prisma.shipping.findFirst({ where: { name: NAME } });
