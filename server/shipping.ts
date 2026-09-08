@@ -408,6 +408,34 @@ function extractBabelAwb(payload: any): string | null {
     return null;
 }
 
+// يطابق عنواناً نصياً حراً مع أقرب مدينة/منطقة/حي في نظام بابل اكسبريس
+export async function findBabelNeighbourhoodByAddress(address: string) {
+    const text = String(address || "").trim();
+    if (!text) {
+        return { success: false as const, error: "يرجى إدخال نص العنوان للبحث عن المنطقة" };
+    }
+    const res = await babelExpressFetch("/findNeighbourhoodByAddress", {
+        method: "POST",
+        body: JSON.stringify({ address: text }),
+    });
+    if (!res.success) return res;
+    const d = res.data || {};
+    if (String(d?.status || "").toLowerCase() !== "success" || !d?.neighbourhood?.id) {
+        return { success: false as const, error: "لم يتم العثور على منطقة مطابقة لهذا العنوان" };
+    }
+    return {
+        success: true as const,
+        data: {
+            city: d.city ? { id: d.city.id ?? null, name: String(d.city.name || "") } : null,
+            area: d.area ? { id: d.area.id ?? null, name: String(d.area.name || "") } : null,
+            neighbourhood: {
+                id: Number(d.neighbourhood.id),
+                name: String(d.neighbourhood.name || ""),
+            },
+        },
+    };
+}
+
 // ينشئ شحنة في نظام بابل اكسبريس
 export async function createBabelExpressShipment(shipment: Record<string, any>) {
     const res = await babelExpressFetch("/createShipment", {

@@ -1004,8 +1004,7 @@ export async function updateOrderShippingFromTable(
         phoneCountry?: string | null;
         phone?: string | null;
         address?: string | null;
-        lat?: number | null;
-        lng?: number | null;
+        neighbourhoodId?: number | null;
         type?: "box" | "envelope" | null;
         weight?: number | null;
         contents?: string | null;
@@ -1244,16 +1243,16 @@ export async function updateOrderShippingFromTable(
                 };
             }
 
-            const lat = babelData?.lat != null ? Number(babelData.lat) : null;
-            const lng = babelData?.lng != null ? Number(babelData.lng) : null;
-            const hasCoordinates = Number.isFinite(lat) && Number.isFinite(lng);
+            const neighbourhoodId = Number.isInteger(Number(babelData?.neighbourhoodId)) && Number(babelData?.neighbourhoodId) > 0
+                ? Number(babelData?.neighbourhoodId)
+                : null;
 
             const receiver: Record<string, any> = {
                 name: receiverName,
                 phone: { country: phoneCountry, phone },
                 address,
-                ...(hasCoordinates
-                    ? { neighbourhood: { coordinates: { lat, lng } } }
+                ...(neighbourhoodId
+                    ? { neighbourhood: { id: neighbourhoodId } }
                     : {}),
             };
 

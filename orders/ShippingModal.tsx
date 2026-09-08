@@ -2,7 +2,7 @@ import React from 'react';
 import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
 import { SearchableSelect } from '@/components/ui/searchable-select';
-import { getFatihFormOptions, getFatihPricing } from '@/server/shipping';
+import { getFatihFormOptions, getFatihPricing, findBabelNeighbourhoodByAddress } from '@/server/shipping';
 import { FATIH_COMPANY_NAME } from '@/lib/fatih';
 import { BABEL_EXPRESS_COMPANY_NAME } from '@/lib/babel-express';
 import toast from 'react-hot-toast';
@@ -85,8 +85,7 @@ export interface BabelExpressShipmentInput {
   phoneCountry: string | null;
   phone: string | null;
   address: string | null;
-  lat: number | null;
-  lng: number | null;
+  neighbourhoodId: number | null;
   type: "box" | "envelope";
   weight: number | null;
   contents: string | null;
@@ -187,8 +186,8 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     phoneCountry: "90",
     phone: "",
     address: "",
-    lat: "",
-    lng: "",
+    neighbourhoodAddress: "",
+    neighbourhoodId: null as number | null,
     type: "box",
     weight: "1",
     contents: "",
@@ -199,6 +198,13 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     codCurrency: "USD",
     payer: "reseller",
   });
+  const [babelNeighLoading, setBabelNeighLoading] = React.useState(false);
+  const [babelNeighError, setBabelNeighError] = React.useState<string | null>(null);
+  const [babelNeighResult, setBabelNeighResult] = React.useState<{
+    city: { id: number | null; name: string } | null;
+    area: { id: number | null; name: string } | null;
+    neighbourhood: { id: number; name: string };
+  } | null>(null);
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -242,8 +248,8 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       phoneCountry: phoneParts.country,
       phone: phoneParts.phone,
       address: String(targetOrder?.fullAddress || targetOrder?.city || ""),
-      lat: "",
-      lng: "",
+      neighbourhoodAddress: String(targetOrder?.city || targetOrder?.fullAddress || ""),
+      neighbourhoodId: null,
       type: "box",
       weight: "1",
       contents: itemNames,
@@ -254,6 +260,8 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       codCurrency: "USD",
       payer: "reseller",
     });
+    setBabelNeighResult(null);
+    setBabelNeighError(null);
   }, [isOpen, targetOrder]);
 
   React.useEffect(() => {
@@ -345,6 +353,34 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     }
   };
 
+  const handleFindBabelNeighbourhood = async () => {
+    const text = babelForm.neighbourhoodAddress.trim();
+    if (!text || babelNeighLoading) return;
+    setBabelNeighLoading(true);
+    setBabelNeighError(null);
+    setBabelNeighResult(null);
+    try {
+      const res = await findBabelNeighbourhoodByAddress(text);
+      if (res.success) {
+        setBabelNeighResult(res.data);
+      } else {
+        setBabelNeighError(res.error || "لم يتم العثور على منطقة مطابقة");
+        toast.error(res.error || "لم يتم العثور على منطقة مطابقة");
+      }
+    } catch {
+      setBabelNeighError("تعذر البحث عن المنطقة");
+      toast.error("تعذر البحث عن المنطقة");
+    } finally {
+      setBabelNeighLoading(false);
+    }
+  };
+
+  const handleConfirmBabelNeighbourhood = () => {
+    if (!babelNeighResult) return;
+    setBabelForm((f) => ({ ...f, neighbourhoodId: babelNeighResult.neighbourhood.id }));
+    toast.success(`تم تأكيد المنطقة: ${babelNeighResult.neighbourhood.name}`);
+  };
+
   const handleSave = () => {
     if (isBabelExpress) {
       const toNum = (v: string) => {
@@ -356,8 +392,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
         phoneCountry: babelForm.phoneCountry.replace(/\D/g, "") || null,
         phone: babelForm.phone.replace(/\D/g, "") || null,
         address: babelForm.address.trim() || null,
-        lat: toNum(babelForm.lat),
-        lng: toNum(babelForm.lng),
+        neighbourhoodId: babelForm.neighbourhoodId,
         type: babelForm.type === "envelope" ? "envelope" : "box",
         weight: babelForm.type === "envelope" ? 1 : toNum(babelForm.weight),
         contents: babelForm.contents.trim() || null,
@@ -749,8 +784,77 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                 { value: "sender", label: "المرسل (sender)" },
                 { value: "receiver", label: "المستلم (receiver)" },
               ])}
-              {renderBabelInput("خط العرض lat (اختياري)", "lat", { type: "number" })}
-              {renderBabelInput("خط الطول lng (اختياري)", "lng", { type: "number" })}
+              <div className="sm:col-span-2 space-y-2">
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-200">
+                  عنوان المنطقة (للبحث عن الحي)
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
+                    placeholder="مثال: دمشق أبو رمانة"
+                    value={babelForm.neighbourhoodAddress}
+                    onChange={(e) => {
+                      setBabelForm({ ...babelForm, neighbourhoodAddress: e.target.value, neighbourhoodId: null });
+                      setBabelNeighResult(null);
+                      setBabelNeighError(null);
+                    }}
+                    disabled={isSaving || babelNeighLoading}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleFindBabelNeighbourhood}
+                    disabled={isSaving || babelNeighLoading || !babelForm.neighbourhoodAddress.trim()}
+                  >
+                    {babelNeighLoading ? "جاري البحث..." : "بحث عن المنطقة"}
+                  </Button>
+                </div>
+                {babelNeighError && (
+                  <div className="text-sm text-red-500">{babelNeighError}</div>
+                )}
+                {babelForm.neighbourhoodId ? (
+                  <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm dark:border-emerald-900 dark:bg-emerald-950/40 flex items-center justify-between gap-2">
+                    <span className="font-bold text-emerald-700 dark:text-emerald-300">
+                      المنطقة المؤكدة:{" "}
+                      {babelNeighResult
+                        ? [babelNeighResult.city?.name, babelNeighResult.area?.name, babelNeighResult.neighbourhood.name]
+                            .filter(Boolean)
+                            .join(" - ")
+                        : `#${babelForm.neighbourhoodId}`}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setBabelForm({ ...babelForm, neighbourhoodId: null })}
+                      disabled={isSaving}
+                    >
+                      تغيير
+                    </Button>
+                  </div>
+                ) : (
+                  babelNeighResult && (
+                    <div className="rounded-lg border border-purple-200 bg-purple-50 px-3 py-2 text-sm dark:border-purple-900 dark:bg-purple-950/40 space-y-2">
+                      <div className="font-bold text-purple-700 dark:text-purple-300">
+                        النتيجة:{" "}
+                        {[babelNeighResult.city?.name, babelNeighResult.area?.name, babelNeighResult.neighbourhood.name]
+                          .filter(Boolean)
+                          .join(" - ")}
+                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                        اضغط «تأكيد المنطقة» لاعتماد هذا الحي في الشحنة
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={handleConfirmBabelNeighbourhood}
+                        disabled={isSaving}
+                      >
+                        تأكيد المنطقة
+                      </Button>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
             {babelForm.type === "envelope" && (
               <div className="text-xs text-slate-500 dark:text-slate-400">
