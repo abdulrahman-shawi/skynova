@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { SearchableSelect } from '@/components/ui/searchable-select';
 import { getFatihFormOptions, getFatihPricing } from '@/server/shipping';
 import { FATIH_COMPANY_NAME } from '@/lib/fatih';
+import { BABEL_EXPRESS_COMPANY_NAME } from '@/lib/babel-express';
 import toast from 'react-hot-toast';
 
 interface ShippingForm {
@@ -100,6 +101,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
   targetOrder,
 }) => {
   const isFatih = shippingForm.shippingCompanyName.trim() === FATIH_COMPANY_NAME;
+  const isBabelExpress = shippingForm.shippingCompanyName.trim() === BABEL_EXPRESS_COMPANY_NAME;
   const [fatihOptions, setFatihOptions] = React.useState<{
     cities: any[];
     units: any[];
@@ -530,6 +532,15 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* حقول شركة بابل أكسبريس (مؤقت) */}
+        {isBabelExpress && (
+          <div className="rounded-xl border border-purple-200 dark:border-purple-900 bg-purple-50/50 dark:bg-purple-950/30 p-4">
+            <div className="text-sm font-black text-purple-700 dark:text-purple-300">
+              مرحبا
+            </div>
           </div>
         )}
 
