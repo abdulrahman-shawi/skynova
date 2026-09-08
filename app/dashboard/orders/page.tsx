@@ -18,7 +18,7 @@ import OrderCustomer from '@/components/pages/customers/orderCustomer';
 import OrderCustomerEdit from '@/components/pages/customers/orderCustomerEdit';
 import { StatusCards } from '@/orders/StatusCards';
 import { SearchAndFilter } from '@/orders/SearchAndFilter';
-import { ShippingModal, FatihShipmentInput } from '@/orders/ShippingModal';
+import { ShippingModal, FatihShipmentInput, BabelExpressShipmentInput } from '@/orders/ShippingModal';
 import { OrderTable } from '@/orders/OrderTable';
 import { useOrderFilters } from '@/orders/useOrderFilters';
 import { useOrderData } from '@/orders/useOrderData';
@@ -540,7 +540,7 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
         setIsShippingModalOpen(true);
     };
 
-    const handleSaveShippingModal = async (fatihData?: FatihShipmentInput) => {
+    const handleSaveShippingModal = async (fatihData?: FatihShipmentInput, babelData?: BabelExpressShipmentInput) => {
         const orderId = Number(shippingTargetOrder?.id || 0);
         if (!orderId) {
             toast.error("معرف الطلب غير صالح");
@@ -583,11 +583,19 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
                 moneyTransferCommission,
                 otherCommissions,
                 fatihData ?? null,
+                babelData ?? null,
             );
 
             if (result.success) {
                 const fatihQr = (result as any)?.fatih?.qrCode;
-                toast.success(fatihQr ? `تم حفظ بيانات الشحن وإنشاء شحنة الفاتح (${fatihQr})` : "تم حفظ بيانات الشحن والعمولات");
+                const babelAwb = (result as any)?.babel?.awb;
+                toast.success(
+                    fatihQr
+                        ? `تم حفظ بيانات الشحن وإنشاء شحنة الفاتح (${fatihQr})`
+                        : babelAwb
+                            ? `تم حفظ بيانات الشحن وإنشاء شحنة بابل اكسبريس (AWB: ${babelAwb})`
+                            : "تم حفظ بيانات الشحن والعمولات"
+                );
                 setIsShippingModalOpen(false);
                 setShippingTargetOrder(null);
                 await Order();

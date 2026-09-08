@@ -79,13 +79,53 @@ export interface FatihShipmentInput {
   note: string | null;
 }
 
+// بيانات شحنة بابل اكسبريس حسب واجهة createShipment في نظامهم
+export interface BabelExpressShipmentInput {
+  receiverName: string | null;
+  phoneCountry: string | null;
+  phone: string | null;
+  address: string | null;
+  lat: number | null;
+  lng: number | null;
+  type: "box" | "envelope";
+  weight: number | null;
+  contents: string | null;
+  reference: string | null;
+  deliveryType: "address" | "hub";
+  pickupType: "address" | "hub";
+  codAmount: number | null;
+  codCurrency: string;
+  payer: "sender" | "receiver" | "reseller";
+}
+
+// يفصل رمز الدولة عن رقم الهاتف عند تعبئة النموذج من بيانات الطلب
+const splitBabelPhone = (rawPhone: unknown, fallbackCountry: string) => {
+  const digits = String(rawPhone || "").replace(/\D/g, "");
+  for (const code of ["963", "964", "90"]) {
+    if (digits.startsWith(code) && digits.length > code.length + 6) {
+      return { country: code, phone: digits.slice(code.length) };
+    }
+  }
+  return { country: fallbackCountry, phone: digits.replace(/^0+/, "") };
+};
+
+// يخمن رمز الدولة الافتراضي من دولة الطلب
+const guessBabelPhoneCountry = (order: any) => {
+  const saved = String(order?.customer?.countryCode || "").replace(/\D/g, "");
+  if (saved) return saved;
+  const country = String(order?.country || "");
+  if (country.includes("سوريا")) return "963";
+  if (country.includes("عراق")) return "964";
+  return "90";
+};
+
 interface ShippingModalProps {
   isOpen: boolean;
   onClose: () => void;
   shippingForm: ShippingForm;
   onFormChange: (form: ShippingForm) => void;
   shippingCompanyOptions: string[];
-  onSave: (fatihData?: FatihShipmentInput) => Promise<void>;
+  onSave: (fatihData?: FatihShipmentInput, babelData?: BabelExpressShipmentInput) => Promise<void>;
   isSaving: boolean;
   targetOrder?: any;
 }
@@ -142,6 +182,23 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     receiveAtBranch: false,
     note: "",
   });
+  const [babelForm, setBabelForm] = React.useState({
+    receiverName: "",
+    phoneCountry: "90",
+    phone: "",
+    address: "",
+    lat: "",
+    lng: "",
+    type: "box",
+    weight: "1",
+    contents: "",
+    reference: "",
+    deliveryType: "address",
+    pickupType: "address",
+    codAmount: "",
+    codCurrency: "USD",
+    payer: "reseller",
+  });
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -170,6 +227,33 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     });
     setPricingResult(null);
     setPricingError(null);
+
+    // تعبئة نموذج بابل اكسبريس من بيانات الطلب
+    const fallbackCountry = guessBabelPhoneCountry(targetOrder);
+    const phoneParts = splitBabelPhone(
+      targetOrder?.receiverPhone?.[0] || targetOrder?.customer?.phone || "",
+      fallbackCountry
+    );
+    const itemNames = Array.isArray(targetOrder?.items)
+      ? targetOrder.items.map((i: any) => i?.product?.name || i?.name).filter(Boolean).join(" - ")
+      : "";
+    setBabelForm({
+      receiverName: String(targetOrder?.receiverName || targetOrder?.customer?.name || ""),
+      phoneCountry: phoneParts.country,
+      phone: phoneParts.phone,
+      address: String(targetOrder?.fullAddress || targetOrder?.city || ""),
+      lat: "",
+      lng: "",
+      type: "box",
+      weight: "1",
+      contents: itemNames,
+      reference: String(targetOrder?.orderNumber || ""),
+      deliveryType: "address",
+      pickupType: "address",
+      codAmount: String(Number(targetOrder?.finalAmount || 0)),
+      codCurrency: "USD",
+      payer: "reseller",
+    });
   }, [isOpen, targetOrder]);
 
   React.useEffect(() => {
@@ -262,6 +346,32 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
   };
 
   const handleSave = () => {
+    if (isBabelExpress) {
+      const toNum = (v: string) => {
+        const n = Number(v);
+        return Number.isFinite(n) && String(v).trim() !== "" ? n : null;
+      };
+      void onSave(undefined, {
+        receiverName: babelForm.receiverName.trim() || null,
+        phoneCountry: babelForm.phoneCountry.replace(/\D/g, "") || null,
+        phone: babelForm.phone.replace(/\D/g, "") || null,
+        address: babelForm.address.trim() || null,
+        lat: toNum(babelForm.lat),
+        lng: toNum(babelForm.lng),
+        type: babelForm.type === "envelope" ? "envelope" : "box",
+        weight: babelForm.type === "envelope" ? 1 : toNum(babelForm.weight),
+        contents: babelForm.contents.trim() || null,
+        reference: babelForm.reference.trim() || null,
+        deliveryType: babelForm.deliveryType === "hub" ? "hub" : "address",
+        pickupType: babelForm.pickupType === "hub" ? "hub" : "address",
+        codAmount: toNum(babelForm.codAmount),
+        codCurrency: babelForm.codCurrency || "USD",
+        payer: (["sender", "receiver", "reseller"] as const).includes(babelForm.payer as any)
+          ? (babelForm.payer as "sender" | "receiver" | "reseller")
+          : "reseller",
+      });
+      return;
+    }
     if (!isFatih) {
       void onSave();
       return;
@@ -359,6 +469,60 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       />
       {label}
     </label>
+  );
+
+  const renderBabelInput = (
+    label: string,
+    key: keyof typeof babelForm,
+    opts?: { type?: string; placeholder?: string; maxLength?: number; disabled?: boolean }
+  ) => (
+    <div>
+      <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
+        {label}
+      </label>
+      <input
+        type={opts?.type || "text"}
+        {...(opts?.type === "number" ? { min: 0, step: "0.01" } : {})}
+        {...(opts?.maxLength ? { maxLength: opts.maxLength } : {})}
+        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-3 py-2"
+        placeholder={opts?.placeholder}
+        value={String(babelForm[key] ?? "")}
+        onChange={(e) => setBabelForm({ ...babelForm, [key]: e.target.value })}
+        disabled={isSaving || opts?.disabled}
+      />
+    </div>
+  );
+
+  const renderBabelSelect = (
+    label: string,
+    key: keyof typeof babelForm,
+    options: { value: string; label: string }[]
+  ) => (
+    <div>
+      <label className="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-200">
+        {label}
+      </label>
+      <select
+        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2"
+        value={String(babelForm[key])}
+        onChange={(e) => {
+          const value = e.target.value;
+          setBabelForm((f) => ({
+            ...f,
+            [key]: value,
+            // عند اختيار ظرف (envelope) يجب أن يكون الوزن 1
+            ...(key === "type" && value === "envelope" ? { weight: "1" } : {}),
+          }));
+        }}
+        disabled={isSaving}
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 
   return (
@@ -535,12 +699,64 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
           </div>
         )}
 
-        {/* حقول شركة بابل أكسبريس (مؤقت) */}
+        {/* حقول شركة بابل اكسبريس */}
         {isBabelExpress && (
-          <div className="rounded-xl border border-purple-200 dark:border-purple-900 bg-purple-50/50 dark:bg-purple-950/30 p-4">
+          <div className="rounded-xl border border-purple-200 dark:border-purple-900 bg-purple-50/50 dark:bg-purple-950/30 p-4 space-y-4">
             <div className="text-sm font-black text-purple-700 dark:text-purple-300">
-              مرحبا
+              بيانات شحنة بابل اكسبريس (سيتم إنشاء الشحنة تلقائياً عند الحفظ)
             </div>
+            {targetOrder?.babelAwb && (
+              <div className="text-sm text-slate-600 dark:text-slate-300">
+                رقم البوليصة الحالي (AWB): <span className="font-bold">{targetOrder.babelAwb}</span>
+              </div>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {renderBabelInput("اسم المستلم", "receiverName")}
+              <div className="grid grid-cols-2 gap-2">
+                {renderBabelInput("رمز الدولة", "phoneCountry", { placeholder: "90", maxLength: 4 })}
+                {renderBabelInput("هاتف المستلم", "phone", { maxLength: 20 })}
+              </div>
+              {renderBabelInput("عنوان المستلم", "address", { maxLength: 500 })}
+              {renderBabelInput("محتويات الشحنة", "contents", { placeholder: "مثال: ملابس" })}
+              {renderBabelSelect("نوع الشحنة", "type", [
+                { value: "box", label: "صندوق (box)" },
+                { value: "envelope", label: "ظرف (envelope)" },
+              ])}
+              {renderBabelInput("الوزن (كغ)", "weight", {
+                type: "number",
+                placeholder: "1",
+                disabled: babelForm.type === "envelope",
+              })}
+              {renderBabelInput("المرجع (اختياري)", "reference")}
+              {renderBabelSelect("نوع التوصيل", "deliveryType", [
+                { value: "address", label: "إلى العنوان (address)" },
+                { value: "hub", label: "إلى المركز (hub)" },
+              ])}
+              {renderBabelSelect("نوع الاستلام", "pickupType", [
+                { value: "address", label: "من العنوان (address)" },
+                { value: "hub", label: "من المركز (hub)" },
+              ])}
+              {renderBabelInput("قيمة التحصيل (COD)", "codAmount", { type: "number" })}
+              {renderBabelSelect("عملة التحصيل", "codCurrency", [
+                { value: "USD", label: "دولار (USD)" },
+                { value: "TRY", label: "ليرة تركية (TRY)" },
+                { value: "SYP", label: "ليرة سورية (SYP)" },
+                { value: "IQD", label: "دينار عراقي (IQD)" },
+                { value: "EUR", label: "يورو (EUR)" },
+              ])}
+              {renderBabelSelect("الدافع", "payer", [
+                { value: "reseller", label: "الموزع (reseller)" },
+                { value: "sender", label: "المرسل (sender)" },
+                { value: "receiver", label: "المستلم (receiver)" },
+              ])}
+              {renderBabelInput("خط العرض lat (اختياري)", "lat", { type: "number" })}
+              {renderBabelInput("خط الطول lng (اختياري)", "lng", { type: "number" })}
+            </div>
+            {babelForm.type === "envelope" && (
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                عند اختيار ظرف (envelope) يتم تثبيت الوزن على 1 كغ تلقائياً
+              </div>
+            )}
           </div>
         )}
 

@@ -797,6 +797,9 @@ model Order {
   fatihWeightId     Int?
   fatihSizeId       Int?
 
+  // ─── Babel Express integration (nullable) ───
+  babelAwb String?
+
   // ─── Existing Relations ───
   customer   Customer    @relation(fields: [customerId], references: [id])
   user       User?       @relation(fields: [userId], references: [id])

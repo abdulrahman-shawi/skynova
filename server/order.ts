@@ -4,8 +4,9 @@ import { decrypt } from "@/lib/auth";
 import { calculateAffiliateCommissionAmount } from "@/lib/affiliate";
 import { prisma } from "@/lib/prisma"
 import { cookies } from "next/headers";
-import { createFatihShipment } from "@/server/shipping";
+import { createFatihShipment, createBabelExpressShipment } from "@/server/shipping";
 import { FATIH_COMPANY_NAME } from "@/lib/fatih";
+import { BABEL_EXPRESS_COMPANY_NAME } from "@/lib/babel-express";
 
 const AFFILIATE_COOKIE_NAME = 'affiliate-code';
 
@@ -362,6 +363,7 @@ const orderBaseSelect = {
     fatihUnitId: true,
     fatihWeightId: true,
     fatihSizeId: true,
+    babelAwb: true,
     createdAt: true,
     manualCreatedAt: true,
     updatedAt: true,
@@ -997,6 +999,23 @@ export async function updateOrderShippingFromTable(
         receiveAtBranch?: boolean | null;
         note?: string | null;
     } | null,
+    babelData?: {
+        receiverName?: string | null;
+        phoneCountry?: string | null;
+        phone?: string | null;
+        address?: string | null;
+        lat?: number | null;
+        lng?: number | null;
+        type?: "box" | "envelope" | null;
+        weight?: number | null;
+        contents?: string | null;
+        reference?: string | null;
+        deliveryType?: "address" | "hub" | null;
+        pickupType?: "address" | "hub" | null;
+        codAmount?: number | null;
+        codCurrency?: string | null;
+        payer?: "sender" | "receiver" | "reseller" | null;
+    } | null,
 ) {
     try {
         const user = await getCurrentSessionUser();
@@ -1040,6 +1059,7 @@ export async function updateOrderShippingFromTable(
         }
 
         const isFatih = normalizedShippingCompanyName === FATIH_COMPANY_NAME;
+        const isBabelExpress = normalizedShippingCompanyName === BABEL_EXPRESS_COMPANY_NAME;
 
         let shipping = await prisma.shipping.findFirst({
             where: { name: normalizedShippingCompanyName },
@@ -1184,6 +1204,89 @@ export async function updateOrderShippingFromTable(
                 success: true,
                 data: updatedOrder,
                 fatih: fatihResult.data,
+            };
+        }
+
+        // إنشاء الشحنة تلقائياً في نظام بابل اكسبريس عند اختيار شركتهم
+        if (isBabelExpress) {
+            const receiverName = String(babelData?.receiverName || existingOrder.receiverName || existingOrder.customer?.name || "").trim();
+            const phoneCountry = String(babelData?.phoneCountry || existingOrder.customer?.countryCode || "").replace(/\D/g, "");
+            const phone = String(babelData?.phone || existingOrder.receiverPhone?.[0] || existingOrder.customer?.phone || "").replace(/\D/g, "");
+            const address = String(babelData?.address || existingOrder.fullAddress || existingOrder.city || "").trim();
+            const type = babelData?.type === "envelope" ? "envelope" : "box";
+            const contents = String(babelData?.contents || "").trim();
+            const reference = String(babelData?.reference || existingOrder.orderNumber || "").trim();
+            const deliveryType = babelData?.deliveryType === "hub" ? "hub" : "address";
+            const pickupType = babelData?.pickupType === "hub" ? "hub" : "address";
+            const payer = ["sender", "receiver", "reseller"].includes(String(babelData?.payer))
+                ? String(babelData?.payer)
+                : "reseller";
+            const codAmount = babelData?.codAmount != null ? Number(babelData.codAmount) : Number(existingOrder.finalAmount || 0);
+            const codCurrency = String(babelData?.codCurrency || "USD").trim().toUpperCase() || "USD";
+
+            // عند type = envelope يجب أن يكون الوزن 1
+            const weight = type === "envelope" ? 1 : Number(babelData?.weight || 0);
+
+            const missing: string[] = [];
+            if (!receiverName) missing.push("اسم المستلم");
+            if (!phoneCountry) missing.push("رمز الدولة للهاتف");
+            if (!phone) missing.push("هاتف المستلم");
+            if (!address) missing.push("عنوان المستلم");
+            if (!contents) missing.push("محتويات الشحنة");
+            if (!(weight > 0)) missing.push("الوزن");
+            if (!Number.isFinite(codAmount) || codAmount < 0) missing.push("قيمة التحصيل (COD)");
+
+            if (missing.length > 0) {
+                return {
+                    success: false,
+                    partiallySaved: true,
+                    error: `تم حفظ بيانات الشحن، لكن تعذر إنشاء شحنة بابل اكسبريس: حقول ناقصة أو غير صالحة (${missing.join("، ")})`,
+                };
+            }
+
+            const lat = babelData?.lat != null ? Number(babelData.lat) : null;
+            const lng = babelData?.lng != null ? Number(babelData.lng) : null;
+            const hasCoordinates = Number.isFinite(lat) && Number.isFinite(lng);
+
+            const receiver: Record<string, any> = {
+                name: receiverName,
+                phone: { country: phoneCountry, phone },
+                address,
+                ...(hasCoordinates
+                    ? { neighbourhood: { coordinates: { lat, lng } } }
+                    : {}),
+            };
+
+            const shipment: Record<string, any> = {
+                receiver,
+                type,
+                parts: [{ weight }],
+                contents,
+                ...(reference ? { reference } : {}),
+                deliveryType,
+                pickupType,
+                cod: { amount: codAmount, currency: codCurrency },
+                payer,
+            };
+
+            const babelResult = await createBabelExpressShipment(shipment);
+            if (!babelResult.success) {
+                return {
+                    success: false,
+                    partiallySaved: true,
+                    error: `تم حفظ بيانات الشحن، لكن تعذر إنشاء شحنة بابل اكسبريس: ${babelResult.error}`,
+                };
+            }
+
+            await prisma.order.update({
+                where: { id: parsedOrderId },
+                data: { babelAwb: babelResult.data.awb ?? null },
+            });
+
+            return {
+                success: true,
+                data: updatedOrder,
+                babel: babelResult.data,
             };
         }
 

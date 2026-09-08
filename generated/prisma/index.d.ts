@@ -35015,6 +35015,7 @@ export namespace Prisma {
     fatihUnitId: number | null
     fatihWeightId: number | null
     fatihSizeId: number | null
+    babelAwb: string | null
   }
 
   export type OrderMaxAggregateOutputType = {
@@ -35061,6 +35062,7 @@ export namespace Prisma {
     fatihUnitId: number | null
     fatihWeightId: number | null
     fatihSizeId: number | null
+    babelAwb: string | null
   }
 
   export type OrderCountAggregateOutputType = {
@@ -35108,6 +35110,7 @@ export namespace Prisma {
     fatihUnitId: number
     fatihWeightId: number
     fatihSizeId: number
+    babelAwb: number
     _all: number
   }
 
@@ -35196,6 +35199,7 @@ export namespace Prisma {
     fatihUnitId?: true
     fatihWeightId?: true
     fatihSizeId?: true
+    babelAwb?: true
   }
 
   export type OrderMaxAggregateInputType = {
@@ -35242,6 +35246,7 @@ export namespace Prisma {
     fatihUnitId?: true
     fatihWeightId?: true
     fatihSizeId?: true
+    babelAwb?: true
   }
 
   export type OrderCountAggregateInputType = {
@@ -35289,6 +35294,7 @@ export namespace Prisma {
     fatihUnitId?: true
     fatihWeightId?: true
     fatihSizeId?: true
+    babelAwb?: true
     _all?: true
   }
 
@@ -35423,6 +35429,7 @@ export namespace Prisma {
     fatihUnitId: number | null
     fatihWeightId: number | null
     fatihSizeId: number | null
+    babelAwb: string | null
     _count: OrderCountAggregateOutputType | null
     _avg: OrderAvgAggregateOutputType | null
     _sum: OrderSumAggregateOutputType | null
@@ -35489,6 +35496,7 @@ export namespace Prisma {
     fatihUnitId?: boolean
     fatihWeightId?: boolean
     fatihSizeId?: boolean
+    babelAwb?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
     items?: boolean | Order$itemsArgs<ExtArgs>
@@ -35544,6 +35552,7 @@ export namespace Prisma {
     fatihUnitId?: boolean
     fatihWeightId?: boolean
     fatihSizeId?: boolean
+    babelAwb?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
     warehouse?: boolean | Order$warehouseArgs<ExtArgs>
@@ -35595,6 +35604,7 @@ export namespace Prisma {
     fatihUnitId?: boolean
     fatihWeightId?: boolean
     fatihSizeId?: boolean
+    babelAwb?: boolean
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
     warehouse?: boolean | Order$warehouseArgs<ExtArgs>
@@ -35646,9 +35656,10 @@ export namespace Prisma {
     fatihUnitId?: boolean
     fatihWeightId?: boolean
     fatihSizeId?: boolean
+    babelAwb?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderNumber" | "usdToTryRateAtOrder" | "shippingPrice" | "moneyTransferCommission" | "otherCommissions" | "carrierCollectionReceivedAt" | "carrierCollectionReceivedAmount" | "carrierCollectionNotes" | "totalAmount" | "discount" | "finalAmount" | "paymentMethod" | "pay" | "receiverName" | "receiverPhone" | "country" | "city" | "invoiceImage" | "municipality" | "fullAddress" | "deliveryNotes" | "googleMapsLink" | "amount" | "amountBank" | "deliveryMethod" | "additionalNotes" | "cancelReason" | "status" | "customerId" | "userId" | "warehouseId" | "shippingId" | "manualCreatedAt" | "createdAt" | "updatedAt" | "fatihOrderId" | "fatihQrCode" | "fatihCode" | "fatihCitySourceId" | "fatihCityTargetId" | "fatihUnitId" | "fatihWeightId" | "fatihSizeId", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderNumber" | "usdToTryRateAtOrder" | "shippingPrice" | "moneyTransferCommission" | "otherCommissions" | "carrierCollectionReceivedAt" | "carrierCollectionReceivedAmount" | "carrierCollectionNotes" | "totalAmount" | "discount" | "finalAmount" | "paymentMethod" | "pay" | "receiverName" | "receiverPhone" | "country" | "city" | "invoiceImage" | "municipality" | "fullAddress" | "deliveryNotes" | "googleMapsLink" | "amount" | "amountBank" | "deliveryMethod" | "additionalNotes" | "cancelReason" | "status" | "customerId" | "userId" | "warehouseId" | "shippingId" | "manualCreatedAt" | "createdAt" | "updatedAt" | "fatihOrderId" | "fatihQrCode" | "fatihCode" | "fatihCitySourceId" | "fatihCityTargetId" | "fatihUnitId" | "fatihWeightId" | "fatihSizeId" | "babelAwb", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
     user?: boolean | Order$userArgs<ExtArgs>
@@ -35728,6 +35739,7 @@ export namespace Prisma {
       fatihUnitId: number | null
       fatihWeightId: number | null
       fatihSizeId: number | null
+      babelAwb: string | null
     }, ExtArgs["result"]["order"]>
     composites: {}
   }
@@ -36202,6 +36214,7 @@ export namespace Prisma {
     readonly fatihUnitId: FieldRef<"Order", 'Int'>
     readonly fatihWeightId: FieldRef<"Order", 'Int'>
     readonly fatihSizeId: FieldRef<"Order", 'Int'>
+    readonly babelAwb: FieldRef<"Order", 'String'>
   }
     
 
@@ -53438,7 +53451,8 @@ export namespace Prisma {
     fatihCityTargetId: 'fatihCityTargetId',
     fatihUnitId: 'fatihUnitId',
     fatihWeightId: 'fatihWeightId',
-    fatihSizeId: 'fatihSizeId'
+    fatihSizeId: 'fatihSizeId',
+    babelAwb: 'babelAwb'
   };
 
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -56541,6 +56555,7 @@ export namespace Prisma {
     fatihUnitId?: IntNullableFilter<"Order"> | number | null
     fatihWeightId?: IntNullableFilter<"Order"> | number | null
     fatihSizeId?: IntNullableFilter<"Order"> | number | null
+    babelAwb?: StringNullableFilter<"Order"> | string | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: OrderItemListRelationFilter
@@ -56595,6 +56610,7 @@ export namespace Prisma {
     fatihUnitId?: SortOrderInput | SortOrder
     fatihWeightId?: SortOrderInput | SortOrder
     fatihSizeId?: SortOrderInput | SortOrder
+    babelAwb?: SortOrderInput | SortOrder
     customer?: CustomerOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     items?: OrderItemOrderByRelationAggregateInput
@@ -56652,6 +56668,7 @@ export namespace Prisma {
     fatihUnitId?: IntNullableFilter<"Order"> | number | null
     fatihWeightId?: IntNullableFilter<"Order"> | number | null
     fatihSizeId?: IntNullableFilter<"Order"> | number | null
+    babelAwb?: StringNullableFilter<"Order"> | string | null
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: OrderItemListRelationFilter
@@ -56706,6 +56723,7 @@ export namespace Prisma {
     fatihUnitId?: SortOrderInput | SortOrder
     fatihWeightId?: SortOrderInput | SortOrder
     fatihSizeId?: SortOrderInput | SortOrder
+    babelAwb?: SortOrderInput | SortOrder
     _count?: OrderCountOrderByAggregateInput
     _avg?: OrderAvgOrderByAggregateInput
     _max?: OrderMaxOrderByAggregateInput
@@ -56761,6 +56779,7 @@ export namespace Prisma {
     fatihUnitId?: IntNullableWithAggregatesFilter<"Order"> | number | null
     fatihWeightId?: IntNullableWithAggregatesFilter<"Order"> | number | null
     fatihSizeId?: IntNullableWithAggregatesFilter<"Order"> | number | null
+    babelAwb?: StringNullableWithAggregatesFilter<"Order"> | string | null
   }
 
   export type ExpenseWhereInput = {
@@ -60785,6 +60804,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -60839,6 +60859,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -60884,6 +60905,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -60938,6 +60960,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -60988,6 +61011,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
   }
 
   export type OrderUpdateManyMutationInput = {
@@ -61030,6 +61054,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderUncheckedUpdateManyInput = {
@@ -61077,6 +61102,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ExpenseCreateInput = {
@@ -64642,6 +64668,7 @@ export namespace Prisma {
     fatihUnitId?: SortOrder
     fatihWeightId?: SortOrder
     fatihSizeId?: SortOrder
+    babelAwb?: SortOrder
   }
 
   export type OrderAvgOrderByAggregateInput = {
@@ -64708,6 +64735,7 @@ export namespace Prisma {
     fatihUnitId?: SortOrder
     fatihWeightId?: SortOrder
     fatihSizeId?: SortOrder
+    babelAwb?: SortOrder
   }
 
   export type OrderMinOrderByAggregateInput = {
@@ -64754,6 +64782,7 @@ export namespace Prisma {
     fatihUnitId?: SortOrder
     fatihWeightId?: SortOrder
     fatihSizeId?: SortOrder
+    babelAwb?: SortOrder
   }
 
   export type OrderSumOrderByAggregateInput = {
@@ -69773,6 +69802,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     warehouse?: WarehouseCreateNestedOneWithoutOrdersInput
@@ -69825,6 +69855,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -70689,6 +70720,7 @@ export namespace Prisma {
     fatihUnitId?: IntNullableFilter<"Order"> | number | null
     fatihWeightId?: IntNullableFilter<"Order"> | number | null
     fatihSizeId?: IntNullableFilter<"Order"> | number | null
+    babelAwb?: StringNullableFilter<"Order"> | string | null
   }
 
   export type AffiliateWalletTransferUpsertWithWhereUniqueWithoutUserInput = {
@@ -73132,6 +73164,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -73184,6 +73217,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -74978,6 +75012,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
     warehouse?: WarehouseCreateNestedOneWithoutOrdersInput
@@ -75030,6 +75065,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -77176,6 +77212,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -77229,6 +77266,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -77448,6 +77486,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -77501,6 +77540,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
   }
@@ -79017,6 +79057,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -79069,6 +79110,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
@@ -79243,6 +79285,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     warehouse?: WarehouseCreateNestedOneWithoutOrdersInput
@@ -79296,6 +79339,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
     commissions?: CommissionUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -79449,6 +79493,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     warehouse?: WarehouseUpdateOneWithoutOrdersNestedInput
@@ -79502,6 +79547,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
   }
@@ -80565,6 +80611,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     customer: CustomerCreateNestedOneWithoutOrdersInput
     user?: UserCreateNestedOneWithoutOrdersInput
     items?: OrderItemCreateNestedManyWithoutOrderInput
@@ -80618,6 +80665,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
     items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
     warranties?: WarrantyUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -80713,6 +80761,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -80766,6 +80815,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
   }
@@ -81000,6 +81050,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
   }
 
   export type AffiliateWalletTransferCreateManyUserInput = {
@@ -81322,6 +81373,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     warehouse?: WarehouseUpdateOneWithoutOrdersNestedInput
@@ -81374,6 +81426,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -81423,6 +81476,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AffiliateWalletTransferUpdateWithoutUserInput = {
@@ -82961,6 +83015,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
   }
 
   export type WholesaleOrderCreateManyWarehouseInput = {
@@ -83101,6 +83156,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -83153,6 +83209,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -83202,6 +83259,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type WholesaleOrderUpdateWithoutWarehouseInput = {
@@ -83662,6 +83720,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
   }
 
   export type MessageCreateManyCustomerInput = {
@@ -83726,6 +83785,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
     warehouse?: WarehouseUpdateOneWithoutOrdersNestedInput
@@ -83778,6 +83838,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -83827,6 +83888,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUpdateWithoutCustomersInput = {
@@ -84576,6 +84638,7 @@ export namespace Prisma {
     fatihUnitId?: number | null
     fatihWeightId?: number | null
     fatihSizeId?: number | null
+    babelAwb?: string | null
   }
 
   export type WholesaleOrderCreateManyShippingInput = {
@@ -84655,6 +84718,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
     user?: UserUpdateOneWithoutOrdersNestedInput
     items?: OrderItemUpdateManyWithoutOrderNestedInput
@@ -84707,6 +84771,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
     items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
     warranties?: WarrantyUncheckedUpdateManyWithoutOrderNestedInput
     commissions?: CommissionUncheckedUpdateManyWithoutOrderNestedInput
@@ -84756,6 +84821,7 @@ export namespace Prisma {
     fatihUnitId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihWeightId?: NullableIntFieldUpdateOperationsInput | number | null
     fatihSizeId?: NullableIntFieldUpdateOperationsInput | number | null
+    babelAwb?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type WholesaleOrderUpdateWithoutShippingInput = {

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { encrypt, decrypt } from "@/lib/auth";
+import { BABEL_EXPRESS_API_BASE } from "@/lib/babel-express";
 import { cookies } from "next/headers";
 
 const SHIPPING_SESSION_COOKIE = "skynova_shipping";
@@ -353,6 +354,72 @@ export async function createFatihShipment(payload: Record<string, any>) {
             code: data.code ?? data.order?.code ?? null,
             merged: Boolean(data.merged),
             warning: data.warning || null,
+        },
+    };
+}
+
+// ─── Babel Express ───
+
+async function babelExpressFetch(path: string, init?: RequestInit) {
+    const username = process.env.BABEL_EXPRESS_USERNAME;
+    const password = process.env.BABEL_EXPRESS_PASSWORD;
+    if (!username || !password) {
+        return { success: false as const, error: "لم يتم ضبط بيانات اعتماد بابل اكسبريس (BABEL_EXPRESS_USERNAME / BABEL_EXPRESS_PASSWORD) في ملف .env" };
+    }
+    const basicAuth = Buffer.from(`${username}:${password}`).toString("base64");
+    try {
+        const res = await fetch(`${BABEL_EXPRESS_API_BASE}${path}`, {
+            ...init,
+            headers: {
+                Authorization: `Basic ${basicAuth}`,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                ...(init?.headers || {}),
+            },
+            cache: "no-store",
+        });
+        const json = await res.json().catch(() => null);
+        if (!res.ok) {
+            const msg = json?.message || json?.error || `فشل الاتصال بخدمة بابل اكسبريس (كود ${res.status})`;
+            return { success: false as const, error: msg };
+        }
+        return { success: true as const, data: json };
+    } catch (error) {
+        console.error("Babel Express API error:", error);
+        return { success: false as const, error: "حدث خطأ أثناء الاتصال بخدمة بابل اكسبريس" };
+    }
+}
+
+// يستخرج رقم البوليصة (AWB) من استجابة إنشاء الشحنة مهما كان موضعه
+function extractBabelAwb(payload: any): string | null {
+    const candidates = [
+        payload?.awb,
+        payload?.AWB,
+        payload?.awb_number,
+        payload?.awbNumber,
+        payload?.data?.awb,
+        payload?.data?.awb_number,
+        payload?.shipment?.awb,
+        payload?.shipment?.awb_number,
+    ];
+    for (const c of candidates) {
+        if (c != null && String(c).trim()) return String(c).trim();
+    }
+    return null;
+}
+
+// ينشئ شحنة في نظام بابل اكسبريس
+export async function createBabelExpressShipment(shipment: Record<string, any>) {
+    const res = await babelExpressFetch("/createShipment", {
+        method: "POST",
+        body: JSON.stringify({ shipment }),
+    });
+    if (!res.success) return res;
+    return {
+        success: true as const,
+        data: {
+            awb: extractBabelAwb(res.data),
+            raw: res.data,
         },
     };
 }
