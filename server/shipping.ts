@@ -378,9 +378,29 @@ async function babelExpressFetch(path: string, init?: RequestInit) {
             },
             cache: "no-store",
         });
-        const json = await res.json().catch(() => null);
+        const rawText = await res.text().catch(() => "");
+        let json: any = null;
+        try {
+            json = rawText ? JSON.parse(rawText) : null;
+        } catch {
+            json = null;
+        }
         if (!res.ok) {
-            const msg = json?.message || json?.error || `فشل الاتصال بخدمة بابل اكسبريس (كود ${res.status})`;
+            // استخراج رسالة الخطأ من الاستجابة مهما كان شكلها
+            const apiMessage =
+                json?.message ||
+                json?.error ||
+                json?.errors?.[0]?.message ||
+                (json?.errors && typeof json.errors === "object" && !Array.isArray(json.errors)
+                    ? Object.values(json.errors).flat().join("، ")
+                    : null);
+            const bodyExcerpt = String(rawText || "").replace(/\s+/g, " ").trim().slice(0, 300);
+            console.error(`Babel Express API ${path} failed (${res.status}):`, rawText);
+            const msg = apiMessage
+                ? `${apiMessage} (كود ${res.status})`
+                : bodyExcerpt
+                    ? `فشل الاتصال بخدمة بابل اكسبريس (كود ${res.status}): ${bodyExcerpt}`
+                    : `فشل الاتصال بخدمة بابل اكسبريس (كود ${res.status})`;
             return { success: false as const, error: msg };
         }
         return { success: true as const, data: json };
@@ -442,7 +462,10 @@ export async function createBabelExpressShipment(shipment: Record<string, any>) 
         method: "POST",
         body: JSON.stringify({ shipment }),
     });
-    if (!res.success) return res;
+    if (!res.success) {
+        console.error("Babel Express createShipment failed. Sent payload:", JSON.stringify({ shipment }));
+        return res;
+    }
     return {
         success: true as const,
         data: {
