@@ -383,6 +383,10 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
 
   const handleSave = () => {
     if (isBabelExpress) {
+      if (babelForm.address.trim().length <= 10) {
+        toast.error("عنوان المستلم يجب أن يتجاوز 10 أحرف (اكتب العنوان كاملاً: الشارع، البناء، الطابق...)");
+        return;
+      }
       const toNum = (v: string) => {
         const n = Number(v);
         return Number.isFinite(n) && String(v).trim() !== "" ? n : null;

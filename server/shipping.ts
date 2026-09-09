@@ -389,6 +389,7 @@ async function babelExpressFetch(path: string, init?: RequestInit) {
             // استخراج رسالة الخطأ من الاستجابة مهما كان شكلها
             const apiMessage =
                 json?.message ||
+                json?.errorMessage ||
                 json?.error ||
                 json?.errors?.[0]?.message ||
                 (json?.errors && typeof json.errors === "object" && !Array.isArray(json.errors)

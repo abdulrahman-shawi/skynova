@@ -1231,6 +1231,7 @@ export async function updateOrderShippingFromTable(
             if (!phoneCountry) missing.push("رمز الدولة للهاتف");
             if (!phone) missing.push("هاتف المستلم");
             if (!address) missing.push("عنوان المستلم");
+            if (address && address.length <= 10) missing.push("عنوان المستلم (يجب أن يتجاوز 10 أحرف)");
             if (!contents) missing.push("محتويات الشحنة");
             if (!(weight > 0)) missing.push("الوزن");
             if (!Number.isFinite(codAmount) || codAmount < 0) missing.push("قيمة التحصيل (COD)");
