@@ -457,6 +457,48 @@ export async function findBabelNeighbourhoodByAddress(address: string) {
     };
 }
 
+// يقدّر تكلفة الشحن قبل إنشاء الشحنة
+export async function calculateBabelExpressPrice(params: {
+    neighbourhoodId: number;
+    type: "box" | "envelope";
+    weight: number;
+    deliveryType: "address" | "hub";
+    pickupType?: "address" | "hub";
+    payer?: "sender" | "receiver" | "reseller";
+}) {
+    const delivery: Record<string, any> = {
+        receiver: { neighbourhood: { id: params.neighbourhoodId } },
+        type: params.type,
+        parts: [{ weight: params.weight }],
+        deliveryType: params.deliveryType,
+        ...(params.pickupType ? { pickupType: params.pickupType } : {}),
+        ...(params.payer ? { payer: params.payer } : {}),
+    };
+    const res = await babelExpressFetch("/calculatePrice", {
+        method: "POST",
+        body: JSON.stringify({ delivery }),
+    });
+    if (!res.success) return res;
+    const d = res.data || {};
+    // استخراج السعر من الاستجابة مهما كان اسم الحقل
+    const priceCandidates = [
+        d.price, d.cost, d.total, d.amount,
+        d.shippingCost, d.shipping_cost,
+        d.deliveryCost, d.delivery_cost,
+        d.data?.price, d.data?.cost, d.data?.total, d.data?.amount,
+    ];
+    const price = priceCandidates.map(Number).find((n) => Number.isFinite(n));
+    const currency = d.currency || d.data?.currency || null;
+    return {
+        success: true as const,
+        data: {
+            price: price != null && Number.isFinite(price) ? price : null,
+            currency: currency ? String(currency) : null,
+            raw: d,
+        },
+    };
+}
+
 // ينشئ شحنة في نظام بابل اكسبريس
 export async function createBabelExpressShipment(shipment: Record<string, any>) {
     const res = await babelExpressFetch("/createShipment", {

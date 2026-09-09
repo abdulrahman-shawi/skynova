@@ -2,7 +2,7 @@ import React from 'react';
 import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
 import { SearchableSelect } from '@/components/ui/searchable-select';
-import { getFatihFormOptions, getFatihPricing, findBabelNeighbourhoodByAddress } from '@/server/shipping';
+import { getFatihFormOptions, getFatihPricing, findBabelNeighbourhoodByAddress, calculateBabelExpressPrice } from '@/server/shipping';
 import { FATIH_COMPANY_NAME } from '@/lib/fatih';
 import { BABEL_EXPRESS_COMPANY_NAME } from '@/lib/babel-express';
 import toast from 'react-hot-toast';
@@ -205,6 +205,9 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     area: { id: number | null; name: string } | null;
     neighbourhood: { id: number; name: string };
   } | null>(null);
+  const [babelPricing, setBabelPricing] = React.useState<{ price: number | null; currency: string | null } | null>(null);
+  const [babelPricingLoading, setBabelPricingLoading] = React.useState(false);
+  const [babelPricingError, setBabelPricingError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -262,6 +265,8 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     });
     setBabelNeighResult(null);
     setBabelNeighError(null);
+    setBabelPricing(null);
+    setBabelPricingError(null);
   }, [isOpen, targetOrder]);
 
   React.useEffect(() => {
@@ -303,6 +308,53 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       cancelled = true;
     };
   }, [isOpen, isFatih]);
+
+  const canEstimateBabel = Boolean(babelForm.neighbourhoodId) && Number(babelForm.weight) > 0;
+
+  // تقدير أجور شحن بابل اكسبريس تلقائياً عند اكتمال الحقول (بتأخير بسيط لتجنب كثرة الطلبات)
+  React.useEffect(() => {
+    if (!isOpen || !isBabelExpress || !canEstimateBabel) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      setBabelPricingLoading(true);
+      setBabelPricingError(null);
+      try {
+        const res = await calculateBabelExpressPrice({
+          neighbourhoodId: babelForm.neighbourhoodId as number,
+          type: babelForm.type === "envelope" ? "envelope" : "box",
+          weight: babelForm.type === "envelope" ? 1 : Number(babelForm.weight),
+          deliveryType: babelForm.deliveryType === "hub" ? "hub" : "address",
+          pickupType: babelForm.pickupType === "hub" ? "hub" : "address",
+          payer: (["sender", "receiver", "reseller"] as const).includes(babelForm.payer as any)
+            ? (babelForm.payer as "sender" | "receiver" | "reseller")
+            : "reseller",
+        });
+        if (cancelled) return;
+        if (res.success) {
+          setBabelPricing(res.data);
+          // تعبئة سعر الشحنة تلقائياً بالقيمة المقدرة
+          if (res.data.price != null && res.data.price > 0) {
+            onFormChange({ ...shippingForm, shippingPrice: String(res.data.price) });
+          }
+        } else {
+          setBabelPricing(null);
+          setBabelPricingError(res.error || "تعذر تقدير أجور الشحن");
+        }
+      } catch {
+        if (!cancelled) {
+          setBabelPricing(null);
+          setBabelPricingError("تعذر تقدير أجور الشحن");
+        }
+      } finally {
+        if (!cancelled) setBabelPricingLoading(false);
+      }
+    }, 600);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, isBabelExpress, canEstimateBabel, babelForm.neighbourhoodId, babelForm.type, babelForm.weight, babelForm.deliveryType, babelForm.pickupType, babelForm.payer]);
 
   const cityOptions = React.useMemo(
     () =>
@@ -860,6 +912,30 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                 )}
               </div>
             </div>
+            {canEstimateBabel ? (
+              babelPricingLoading ? (
+                <div className="text-sm text-slate-500 dark:text-slate-400">جاري تقدير أجور الشحن...</div>
+              ) : babelPricingError ? (
+                <div className="text-sm text-red-500">{babelPricingError}</div>
+              ) : (
+                babelPricing?.price != null && (
+                  <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm dark:border-emerald-900 dark:bg-emerald-950/40 space-y-1">
+                    <div className="font-bold text-emerald-700 dark:text-emerald-300">
+                      السعر التقديري للشحن: {babelPricing.price} {babelPricing.currency || ""}
+                    </div>
+                    {babelPricing.price > 0 && (
+                      <div className="text-xs text-emerald-600 dark:text-emerald-400">
+                        تمت تعبئة حقل «سعر الشحنة» تلقائياً بالقيمة المقدرة
+                      </div>
+                    )}
+                  </div>
+                )
+              )
+            ) : (
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                أكّد المنطقة وأدخل الوزن ليظهر السعر التقديري تلقائياً
+              </div>
+            )}
             {babelForm.type === "envelope" && (
               <div className="text-xs text-slate-500 dark:text-slate-400">
                 عند اختيار ظرف (envelope) يتم تثبيت الوزن على 1 كغ تلقائياً
