@@ -2,7 +2,7 @@ import React from 'react';
 import { AppModal } from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
 import { SearchableSelect } from '@/components/ui/searchable-select';
-import { getFatihFormOptions, getFatihPricing, findBabelNeighbourhoodByAddress, calculateBabelExpressPrice } from '@/server/shipping';
+import { getFatihFormOptions, getFatihPricing, findBabelNeighbourhoodByAddress, calculateBabelExpressPrice, getBabelExpressAwbPdf, getBabelExpressAwbLink } from '@/server/shipping';
 import { FATIH_COMPANY_NAME } from '@/lib/fatih';
 import { BABEL_EXPRESS_COMPANY_NAME } from '@/lib/babel-express';
 import toast from 'react-hot-toast';
@@ -208,6 +208,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
   const [babelPricing, setBabelPricing] = React.useState<{ price: number | null; currency: string | null } | null>(null);
   const [babelPricingLoading, setBabelPricingLoading] = React.useState(false);
   const [babelPricingError, setBabelPricingError] = React.useState<string | null>(null);
+  const [babelAwbLoading, setBabelAwbLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -431,6 +432,49 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     if (!babelNeighResult) return;
     setBabelForm((f) => ({ ...f, neighbourhoodId: babelNeighResult.neighbourhood.id }));
     toast.success(`تم تأكيد المنطقة: ${babelNeighResult.neighbourhood.name}`);
+  };
+
+  // يفتح بوليصة بابل اكسبريس كملف PDF (تصل من الـ API بصيغة base64)
+  const handleOpenBabelAwbPdf = async () => {
+    const awb = String(targetOrder?.babelAwb || "").trim();
+    if (!awb || babelAwbLoading) return;
+    setBabelAwbLoading(true);
+    try {
+      const res = await getBabelExpressAwbPdf(awb);
+      if (!res.success) {
+        toast.error(res.error || "تعذر تحميل البوليصة");
+        return;
+      }
+      const byteChars = atob(res.data.pdfBase64);
+      const bytes = new Uint8Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
+      const blob = new Blob([bytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch {
+      toast.error("تعذر تحميل البوليصة");
+    } finally {
+      setBabelAwbLoading(false);
+    }
+  };
+
+  // يفتح رابط بوليصة بابل اكسبريس مباشرة في تبويب جديد
+  const handleOpenBabelAwbLink = async () => {
+    const awb = String(targetOrder?.babelAwb || "").trim();
+    if (!awb || babelAwbLoading) return;
+    setBabelAwbLoading(true);
+    try {
+      const res = await getBabelExpressAwbLink(awb);
+      if (!res.success) {
+        toast.error(res.error || "تعذر جلب رابط البوليصة");
+        return;
+      }
+      window.open(res.data.url, "_blank");
+    } catch {
+      toast.error("تعذر جلب رابط البوليصة");
+    } finally {
+      setBabelAwbLoading(false);
+    }
   };
 
   const handleSave = () => {
@@ -797,8 +841,28 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
               بيانات شحنة بابل اكسبريس (سيتم إنشاء الشحنة تلقائياً عند الحفظ)
             </div>
             {targetOrder?.babelAwb && (
-              <div className="text-sm text-slate-600 dark:text-slate-300">
-                رقم البوليصة الحالي (AWB): <span className="font-bold">{targetOrder.babelAwb}</span>
+              <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm dark:border-emerald-900 dark:bg-emerald-950/40 space-y-2">
+                <div className="text-slate-600 dark:text-slate-300">
+                  رقم البوليصة الحالي (AWB): <span className="font-bold">{targetOrder.babelAwb}</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleOpenBabelAwbPdf}
+                    disabled={isSaving || babelAwbLoading}
+                  >
+                    {babelAwbLoading ? "جاري التحميل..." : "تحميل البوليصة PDF"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleOpenBabelAwbLink}
+                    disabled={isSaving || babelAwbLoading}
+                  >
+                    فتح رابط البوليصة
+                  </Button>
+                </div>
               </div>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

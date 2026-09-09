@@ -499,6 +499,46 @@ export async function calculateBabelExpressPrice(params: {
     };
 }
 
+// يجلب رابط بوليصة الشحن (AWB) من نظام بابل اكسبريس
+export async function getBabelExpressAwbLink(awb: string) {
+    const code = String(awb || "").trim();
+    if (!code) {
+        return { success: false as const, error: "رقم البوليصة (AWB) غير موجود" };
+    }
+    const res = await babelExpressFetch("/getAWBLink", {
+        method: "POST",
+        body: JSON.stringify({ awb: code }),
+    });
+    if (!res.success) return res;
+    const url = res.data?.url || res.data?.data?.url || null;
+    if (!url) {
+        return { success: false as const, error: "لم يتم العثور على رابط البوليصة في الاستجابة" };
+    }
+    return { success: true as const, data: { url: String(url) } };
+}
+
+// يجلب بوليصة الشحن (AWB) كملف PDF مشفر بصيغة base64
+export async function getBabelExpressAwbPdf(awb: string) {
+    const code = String(awb || "").trim();
+    if (!code) {
+        return { success: false as const, error: "رقم البوليصة (AWB) غير موجود" };
+    }
+    const res = await babelExpressFetch("/getAWBPdf", {
+        method: "POST",
+        body: JSON.stringify({ awb: code }),
+    });
+    if (!res.success) return res;
+    const d = res.data || {};
+    const candidates = [d.pdf, d.data, d.document, d.file, d.pdfBase64, d.pdf_base64, d.base64];
+    const base64 = candidates.find((c) => typeof c === "string" && c.trim().length > 100);
+    if (!base64) {
+        return { success: false as const, error: "لم يتم العثور على ملف البوليصة في الاستجابة" };
+    }
+    // إزالة بادئة data URI إن وُجدت
+    const cleaned = String(base64).replace(/^data:application\/pdf;base64,/i, "").trim();
+    return { success: true as const, data: { pdfBase64: cleaned } };
+}
+
 // ينشئ شحنة في نظام بابل اكسبريس
 export async function createBabelExpressShipment(shipment: Record<string, any>) {
     const res = await babelExpressFetch("/createShipment", {
