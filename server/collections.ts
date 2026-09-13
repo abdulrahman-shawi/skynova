@@ -60,7 +60,7 @@ const getCarrierCollectionBaseAmount = (orderLike: any) => {
 };
 
 const getCarrierCollectionWithShipping = (orderLike: any) => {
-  return getCarrierCollectionBaseAmount(orderLike) + getShippingCharge(orderLike);
+  return Math.max(0, getCarrierCollectionBaseAmount(orderLike) - getShippingCharge(orderLike));
 };
 
 const getCarrierCollectionNetReceived = (orderLike: any) => {
