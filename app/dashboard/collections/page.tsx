@@ -327,7 +327,7 @@ function UnifiedCollectionsTable({
                       <td className="px-3 py-3 font-black text-emerald-600">{formatMoney(entry.amountUsd)}</td>
                       <td className="px-3 py-3 font-bold text-amber-600 dark:text-amber-300">{formatMoney(entry.amountTry, "₺")}</td>
                       <td className="px-3 py-3 font-bold text-slate-700 dark:text-slate-200">{shippingCharge > 0 ? formatMoney(shippingCharge) : "-"}</td>
-                      <td className="px-3 py-3 font-black text-emerald-600">{formatMoney(Math.max(0, entry.amountUsd - shippingCharge))}</td>
+                      <td className="px-3 py-3 font-black text-emerald-600">{formatMoney(Number(row.collectionNetReceived ?? Math.max(0, entry.amountUsd - shippingCharge)))}</td>
                       <td className="px-3 py-3 text-slate-500 dark:text-slate-400">{getDisplayDate(row)}</td>
                       <td className="px-3 py-3">
                         {canReceive ? (
@@ -538,7 +538,7 @@ export default function CollectionsPage() {
         };
       }),
       ...filteredPayload.carrierCollectionsPending.map((row: any) => {
-        const amountUsd = Number(row.collectionWithShipping || 0);
+        const amountUsd = Number(row.collectionWithShipping ?? row.collectionBaseAmount ?? 0);
         return {
           rowKey: `carrier-${row.id}`,
           source: "carrier" as const,
