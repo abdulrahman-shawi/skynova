@@ -635,10 +635,6 @@ const DashboardPage: React.FunctionComponent = () => {
       </div>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">📦 الطلبات</div>
-          <div className="mt-2 text-3xl font-black text-slate-900 dark:text-white">{todayDashboard.ordersToday}</div>
-        </div>
         <button
           type="button"
           onClick={() => openDashboardDetail('orders', 'الطلبات اليوم')}
