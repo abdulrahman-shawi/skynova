@@ -236,6 +236,11 @@ export async function getTodayDashboard() {
 
   const today = new Date();
   const todayOrders = ordersResult.data.filter((order: any) => isSameDay(getOrderEffectiveDate(order), today));
+  const todayOrderIds = new Set(
+    todayOrders
+      .map((order: any) => Number(order?.id))
+      .filter((id) => Number.isFinite(id))
+  );
 
   const totalSales = todayOrders.reduce((sum: number, order: any) => sum + normalizeNumber(order?.finalAmount), 0);
 
@@ -243,9 +248,20 @@ export async function getTodayDashboard() {
   const collectionsData = (collectionsResult && typeof collectionsResult === "object" && "success" in collectionsResult && collectionsResult.success && "data" in collectionsResult)
     ? (collectionsResult as any).data ?? null
     : null;
-  const collected = collectionsData
-    ? normalizeNumber((collectionsData as any)?.summaries?.bankTransfersTotal) + normalizeNumber((collectionsData as any)?.summaries?.carrierReceivedTotal)
-    : 0;
+
+  const todayBankTransfers = Array.isArray(collectionsData?.bankTransfers)
+    ? collectionsData.bankTransfers.filter((order: any) => todayOrderIds.has(Number(order?.id)))
+    : [];
+
+  const todayCarrierReceived = Array.isArray(collectionsData?.carrierCollectionsReceived)
+    ? collectionsData.carrierCollectionsReceived.filter((order: any) => todayOrderIds.has(Number(order?.id)))
+    : [];
+
+  const collected = todayBankTransfers.reduce((sum: number, order: any) => sum + normalizeNumber(order?.collectionAmount), 0)
+    + todayCarrierReceived.reduce((sum: number, order: any) => {
+      const overrideAmount = order?.carrierCollectionReceivedAmount;
+      return sum + (overrideAmount != null ? normalizeNumber(overrideAmount) : normalizeNumber(order?.collectionNetReceived));
+    }, 0);
 
   const debts = Math.max(0, totalSales - collected);
 
