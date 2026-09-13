@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { GetEmployeeActivitySummary, GetUserTargetProgress } from '@/server/analytics';
 import { getAffiliateUserDashboard } from '@/server/affiliate';
 import { getTodayDashboard } from '@/server/collections';
+import { getOrders } from '@/server/order';
 import { createUserTarget, deleteProductTargetRow, deleteSalesTargetRow, getUserActivityTargetProgress, updateUserTarget } from '@/server/user';
 import { getProduct } from '@/server/product';
 import toast from 'react-hot-toast';
@@ -117,6 +118,9 @@ const DashboardPage: React.FunctionComponent = () => {
     returned: 0,
     problemOrders: 0,
   });
+  const [salesDetailOrders, setSalesDetailOrders] = React.useState<any[]>([]);
+  const [salesDetailLoading, setSalesDetailLoading] = React.useState(false);
+  const [showSalesDetails, setShowSalesDetails] = React.useState(false);
 
   const isInvalidActivityCustomRange =
     activityFilterPreset === "custom" &&
@@ -557,6 +561,38 @@ const DashboardPage: React.FunctionComponent = () => {
     loadTodayDashboard();
   }, []);
 
+  const loadSalesDetailOrders = React.useCallback(async () => {
+    try {
+      setSalesDetailLoading(true);
+      const result = await getOrders();
+      if (!result?.success || !Array.isArray(result.data)) {
+        setSalesDetailOrders([]);
+        setShowSalesDetails(true);
+        return;
+      }
+
+      const today = new Date();
+      const filtered = result.data.filter((order: any) => {
+        const value = order?.manualCreatedAt || order?.createdAt;
+        if (!value) return false;
+        const date = new Date(value);
+        return !Number.isNaN(date.getTime()) &&
+          date.getFullYear() === today.getFullYear() &&
+          date.getMonth() === today.getMonth() &&
+          date.getDate() === today.getDate();
+      });
+
+      setSalesDetailOrders(filtered);
+      setShowSalesDetails(true);
+    } catch (error) {
+      console.error('Error loading sales detail orders:', error);
+      setSalesDetailOrders([]);
+      setShowSalesDetails(true);
+    } finally {
+      setSalesDetailLoading(false);
+    }
+  }, []);
+
   const formatCurrency = (value: number) => `$${Number(value || 0).toLocaleString()}`;
 
   return (
@@ -571,10 +607,14 @@ const DashboardPage: React.FunctionComponent = () => {
           <div className="text-xs font-bold text-slate-500 dark:text-slate-400">📦 الطلبات</div>
           <div className="mt-2 text-3xl font-black text-slate-900 dark:text-white">{todayDashboard.ordersToday}</div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <button
+          type="button"
+          onClick={loadSalesDetailOrders}
+          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-700 dark:hover:bg-slate-800"
+        >
           <div className="text-xs font-bold text-slate-500 dark:text-slate-400">💰 إجمالي المبيعات</div>
           <div className="mt-2 text-2xl font-black text-emerald-600">{formatCurrency(todayDashboard.totalSales)}</div>
-        </div>
+        </button>
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div className="text-xs font-bold text-slate-500 dark:text-slate-400">💵 المحصل</div>
           <div className="mt-2 text-2xl font-black text-blue-600">{formatCurrency(todayDashboard.collected)}</div>
@@ -603,6 +643,69 @@ const DashboardPage: React.FunctionComponent = () => {
           <div className="mt-2 text-3xl font-black text-orange-600">{todayDashboard.problemOrders}</div>
         </div>
       </div>
+
+      {showSalesDetails && (
+        <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-black text-slate-800 dark:text-white">تفاصيل الطلبات في إجمالي المبيعات</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">الطلبات المستخدمة في حساب اليوم الحالي</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowSalesDetails(false)}
+              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              إغلاق
+            </button>
+          </div>
+
+          {salesDetailLoading ? (
+            <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
+              جاري تحميل تفاصيل الطلبات...
+            </div>
+          ) : salesDetailOrders.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
+              لا توجد طلبات لهذا اليوم.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-right text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                    <th className="px-3 py-3 font-bold">رقم الطلب</th>
+                    <th className="px-3 py-3 font-bold">العميل</th>
+                    <th className="px-3 py-3 font-bold">طريقة الدفع</th>
+                    <th className="px-3 py-3 font-bold">الحالة</th>
+                    <th className="px-3 py-3 font-bold">الشحن</th>
+                    <th className="px-3 py-3 font-bold">المبلغ النهائي</th>
+                    <th className="px-3 py-3 font-bold">التاريخ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {salesDetailOrders.map((order: any) => (
+                    <tr key={order.id} className="border-b border-slate-100 last:border-0 dark:border-slate-800/70">
+                      <td className="px-3 py-3 font-black text-blue-600">#{order.orderNumber || order.id}</td>
+                      <td className="px-3 py-3 font-bold text-slate-800 dark:text-slate-100">{order.customer?.name || order.receiverName || "-"}</td>
+                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{order.paymentMethod || "-"}</td>
+                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{order.status || "-"}</td>
+                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{Number(order.shippingPrice || order.shipping?.price || 0).toLocaleString()} $</td>
+                      <td className="px-3 py-3 font-black text-emerald-600">{formatCurrency(Number(order.finalAmount || 0))}</td>
+                      <td className="px-3 py-3 text-slate-500 dark:text-slate-400">
+                        {new Date(order.manualCreatedAt || order.createdAt).toLocaleDateString('ar-EG', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
