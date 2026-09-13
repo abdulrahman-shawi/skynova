@@ -14,6 +14,19 @@ const normalizeNumber = (value: unknown) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
+const isSameDay = (value: Date | string | null | undefined, today = new Date()) => {
+  if (!value) return false;
+  const date = new Date(value);
+  return (
+    !Number.isNaN(date.getTime()) &&
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
+};
+
+const getOrderEffectiveDate = (orderLike: any) => orderLike?.manualCreatedAt || orderLike?.createdAt || null;
+
 const DEFAULT_TURKEY_EXCHANGE_RATE = 44;
 
 const resolveOrderExchangeRate = (orderLike: any) => {
@@ -203,6 +216,72 @@ export async function getCollectionsDashboardData() {
         }, 0),
       },
     },
+  };
+}
+
+export async function getTodayDashboard() {
+  const ordersResult = await getOrders();
+  if (!ordersResult.success || !Array.isArray(ordersResult.data)) {
+    return {
+      ordersToday: 0,
+      totalSales: 0,
+      collected: 0,
+      debts: 0,
+      shippingPending: 0,
+      delivered: 0,
+      returned: 0,
+      problemOrders: 0,
+    };
+  }
+
+  const today = new Date();
+  const todayOrders = ordersResult.data.filter((order: any) => isSameDay(getOrderEffectiveDate(order), today));
+
+  const totalSales = todayOrders.reduce((sum: number, order: any) => sum + normalizeNumber(order?.finalAmount), 0);
+
+  const collectionsResult = await getCollectionsDashboardData();
+  const collectionsData = (collectionsResult && typeof collectionsResult === "object" && "success" in collectionsResult && collectionsResult.success && "data" in collectionsResult)
+    ? (collectionsResult as any).data ?? null
+    : null;
+  const collected = collectionsData
+    ? normalizeNumber((collectionsData as any)?.summaries?.bankTransfersTotal) + normalizeNumber((collectionsData as any)?.summaries?.carrierReceivedTotal)
+    : 0;
+
+  const debts = Math.max(0, totalSales - collected);
+
+  const shippingPending = todayOrders.filter((order: any) => {
+    const status = String(order?.status || "").trim();
+    return ["قيد الشحن", "في الطريق", "في انتظار الشحن", "معلق"].includes(status);
+  }).length;
+
+  const delivered = todayOrders.filter((order: any) => {
+    const status = String(order?.status || "").trim();
+    return ["تم التسليم", "تم تسليم الطلب", "مدفوعة"].includes(status);
+  }).length;
+
+  const returned = todayOrders.filter((order: any) => {
+    const status = String(order?.status || "").trim();
+    return ["مرتجع", "ملغي", "تم الإلغاء", "إلغاء"].includes(status);
+  }).length;
+
+  const problemOrders = todayOrders.filter((order: any) => {
+    const status = String(order?.status || "").trim();
+    const missingShipping = !order?.shipping && !order?.shippingName && !order?.shippingPrice;
+    const unclearPayment = !order?.paymentMethod || order.paymentMethod === "غير محدد";
+    const hasProblemFlag = Boolean(order?.hasProblem || order?.problem || order?.needsReview);
+
+    return hasProblemFlag || missingShipping || unclearPayment || ["مشكلة", "لديه مشكلة"].includes(status);
+  }).length;
+
+  return {
+    ordersToday: todayOrders.length,
+    totalSales,
+    collected,
+    debts,
+    shippingPending,
+    delivered,
+    returned,
+    problemOrders,
   };
 }
 

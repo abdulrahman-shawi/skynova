@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { GetEmployeeActivitySummary, GetUserTargetProgress } from '@/server/analytics';
 import { getAffiliateUserDashboard } from '@/server/affiliate';
+import { getTodayDashboard } from '@/server/collections';
 import { createUserTarget, deleteProductTargetRow, deleteSalesTargetRow, getUserActivityTargetProgress, updateUserTarget } from '@/server/user';
 import { getProduct } from '@/server/product';
 import toast from 'react-hot-toast';
@@ -106,6 +107,16 @@ const DashboardPage: React.FunctionComponent = () => {
       } | null;
     }>;
   } | null>(null);
+  const [todayDashboard, setTodayDashboard] = React.useState({
+    ordersToday: 0,
+    totalSales: 0,
+    collected: 0,
+    debts: 0,
+    shippingPending: 0,
+    delivered: 0,
+    returned: 0,
+    problemOrders: 0,
+  });
 
   const isInvalidActivityCustomRange =
     activityFilterPreset === "custom" &&
@@ -537,11 +548,60 @@ const DashboardPage: React.FunctionComponent = () => {
     loadAffiliateDashboard();
   }, [user?.id, user?.accountType]);
 
+  React.useEffect(() => {
+    const loadTodayDashboard = async () => {
+      const result = await getTodayDashboard();
+      setTodayDashboard(result);
+    };
+
+    loadTodayDashboard();
+  }, []);
+
+  const formatCurrency = (value: number) => `$${Number(value || 0).toLocaleString()}`;
+
   return (
     <div className="p-2 md:p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">لوحة التحكم</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">متابعة التاركت حسب المنتج</p>
+      </div>
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">📦 الطلبات</div>
+          <div className="mt-2 text-3xl font-black text-slate-900 dark:text-white">{todayDashboard.ordersToday}</div>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">💰 إجمالي المبيعات</div>
+          <div className="mt-2 text-2xl font-black text-emerald-600">{formatCurrency(todayDashboard.totalSales)}</div>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">💵 المحصل</div>
+          <div className="mt-2 text-2xl font-black text-blue-600">{formatCurrency(todayDashboard.collected)}</div>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">📌 الذمم</div>
+          <div className="mt-2 text-2xl font-black text-amber-600">{formatCurrency(todayDashboard.debts)}</div>
+        </div>
+      </div>
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">🚚 قيد الشحن</div>
+          <div className="mt-2 text-3xl font-black text-sky-600">{todayDashboard.shippingPending}</div>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">✅ تم التسليم</div>
+          <div className="mt-2 text-3xl font-black text-green-600">{todayDashboard.delivered}</div>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">↩️ مرتجع</div>
+          <div className="mt-2 text-3xl font-black text-red-600">{todayDashboard.returned}</div>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">⚠️ طلبات فيها مشكلة</div>
+          <div className="mt-2 text-3xl font-black text-orange-600">{todayDashboard.problemOrders}</div>
+        </div>
       </div>
 
       <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
