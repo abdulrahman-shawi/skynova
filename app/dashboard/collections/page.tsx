@@ -9,6 +9,7 @@ import { hasAnyPermission } from "@/lib/utils";
 import {
   clearCarrierCollectionReceived,
   getCollectionsDashboardData,
+  getTodayDashboard,
   markCarrierCollectionReceived,
 } from "@/server/collections";
 
@@ -385,6 +386,16 @@ function UnifiedCollectionsTable({
 export default function CollectionsPage() {
   const { user } = useAuth();
   const [payload, setPayload] = React.useState<CollectionsPayload | null>(null);
+  const [todaySummary, setTodaySummary] = React.useState({
+    ordersToday: 0,
+    totalSales: 0,
+    collected: 0,
+    debts: 0,
+    shippingPending: 0,
+    delivered: 0,
+    returned: 0,
+    problemOrders: 0,
+  });
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [paymentMethodFilter, setPaymentMethodFilter] = React.useState<(typeof paymentMethodOptions)[number]>("الكل");
@@ -426,6 +437,37 @@ export default function CollectionsPage() {
   React.useEffect(() => {
     void loadData();
   }, [loadData]);
+
+  React.useEffect(() => {
+    const loadTodaySummary = async () => {
+      try {
+        const result = await getTodayDashboard();
+        setTodaySummary(result || {
+          ordersToday: 0,
+          totalSales: 0,
+          collected: 0,
+          debts: 0,
+          shippingPending: 0,
+          delivered: 0,
+          returned: 0,
+          problemOrders: 0,
+        });
+      } catch {
+        setTodaySummary({
+          ordersToday: 0,
+          totalSales: 0,
+          collected: 0,
+          debts: 0,
+          shippingPending: 0,
+          delivered: 0,
+          returned: 0,
+          problemOrders: 0,
+        });
+      }
+    };
+
+    void loadTodaySummary();
+  }, []);
 
   const monthOptions = React.useMemo(() => {
     if (!payload) return [] as string[];
@@ -672,6 +714,43 @@ export default function CollectionsPage() {
           <RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />
           تحديث البيانات
         </button>
+      </div>
+
+      <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="mb-4">
+          <h2 className="text-lg font-black text-slate-900 dark:text-white">ملخص اليوم (ببيانات التحصيلات)</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">القيم مستخرجة من منطق صفحة التحصيلات وليس من الطلبات الخام فقط.</p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <SummaryCard
+            title="الطلبات اليوم"
+            value={String(todaySummary.ordersToday)}
+            subtitle="عدد الطلبات في اليوم الحالي"
+            icon={Landmark}
+            tone="blue"
+          />
+          <SummaryCard
+            title="إجمالي المبيعات"
+            value={formatMoney(todaySummary.totalSales)}
+            subtitle="مجموع قيمة المبيعات الحالية"
+            icon={Wallet}
+            tone="emerald"
+          />
+          <SummaryCard
+            title="المحصل"
+            value={formatMoney(todaySummary.collected)}
+            subtitle="مجموع التحصيلات المستلمة"
+            icon={HandCoins}
+            tone="blue"
+          />
+          <SummaryCard
+            title="الذمم"
+            value={formatMoney(todaySummary.debts)}
+            subtitle="المتبقي غير المحصل"
+            icon={RefreshCw}
+            tone="amber"
+          />
+        </div>
       </div>
 
       <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
