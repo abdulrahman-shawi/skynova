@@ -170,7 +170,7 @@ export async function getCollectionsDashboardData() {
         ...order,
         collectionBaseAmount: baseAmount,
         shippingCharge,
-        collectionWithShipping: baseAmount + shippingCharge,
+        collectionWithShipping: getCarrierCollectionWithShipping(order),
         collectionNetReceived: getCarrierCollectionNetReceived(order),
         carrierCollectionReceivedAt: trackingEntry?.carrierCollectionReceivedAt || null,
         carrierCollectionReceivedAmount: trackingEntry?.carrierCollectionReceivedAmount ?? null,
