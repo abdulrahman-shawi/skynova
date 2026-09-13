@@ -8,10 +8,11 @@ import { useAuth } from "@/context/AuthContext";
 import { hasAnyPermission } from "@/lib/utils";
 import {
   clearCarrierCollectionReceived,
+  getCollectionsDashboardByPeriod,
   getCollectionsDashboardData,
-  getTodayDashboard,
   markCarrierCollectionReceived,
 } from "@/server/collections";
+import { getOrders } from "@/server/order";
 
 type CollectionsPayload = {
   supportsCarrierCollectionTracking: boolean;
@@ -386,7 +387,10 @@ function UnifiedCollectionsTable({
 export default function CollectionsPage() {
   const { user } = useAuth();
   const [payload, setPayload] = React.useState<CollectionsPayload | null>(null);
-  const [todaySummary, setTodaySummary] = React.useState({
+  const [summaryPeriod, setSummaryPeriod] = React.useState<"today" | "this_month" | "last_month" | "custom">("today");
+  const [customSummaryStartDate, setCustomSummaryStartDate] = React.useState("");
+  const [customSummaryEndDate, setCustomSummaryEndDate] = React.useState("");
+  const [summaryData, setSummaryData] = React.useState({
     ordersToday: 0,
     totalSales: 0,
     collected: 0,
@@ -395,6 +399,13 @@ export default function CollectionsPage() {
     delivered: 0,
     returned: 0,
     problemOrders: 0,
+  });
+  const [dashboardDetail, setDashboardDetail] = React.useState<{ open: boolean; title: string; type: string | null; orders: any[]; loading: boolean }>({
+    open: false,
+    title: "",
+    type: null,
+    orders: [],
+    loading: false,
   });
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
@@ -439,10 +450,14 @@ export default function CollectionsPage() {
   }, [loadData]);
 
   React.useEffect(() => {
-    const loadTodaySummary = async () => {
+    const loadSummary = async () => {
       try {
-        const result = await getTodayDashboard();
-        setTodaySummary(result || {
+        const result = await getCollectionsDashboardByPeriod({
+          period: summaryPeriod,
+          customStartDate: customSummaryStartDate || undefined,
+          customEndDate: customSummaryEndDate || undefined,
+        });
+        setSummaryData(result || {
           ordersToday: 0,
           totalSales: 0,
           collected: 0,
@@ -453,7 +468,7 @@ export default function CollectionsPage() {
           problemOrders: 0,
         });
       } catch {
-        setTodaySummary({
+        setSummaryData({
           ordersToday: 0,
           totalSales: 0,
           collected: 0,
@@ -466,8 +481,8 @@ export default function CollectionsPage() {
       }
     };
 
-    void loadTodaySummary();
-  }, []);
+    void loadSummary();
+  }, [summaryPeriod, customSummaryStartDate, customSummaryEndDate]);
 
   const monthOptions = React.useMemo(() => {
     if (!payload) return [] as string[];
@@ -628,6 +643,101 @@ export default function CollectionsPage() {
     }
   }, [currentPage, totalPages]);
 
+  const getSummaryDateRange = React.useCallback(() => {
+    const now = new Date();
+
+    if (summaryPeriod === "today") {
+      return {
+        start: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+        end: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999),
+      };
+    }
+
+    if (summaryPeriod === "this_month") {
+      return {
+        start: new Date(now.getFullYear(), now.getMonth(), 1),
+        end: new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999),
+      };
+    }
+
+    if (summaryPeriod === "last_month") {
+      return {
+        start: new Date(now.getFullYear(), now.getMonth() - 1, 1),
+        end: new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999),
+      };
+    }
+
+    const start = customSummaryStartDate ? new Date(customSummaryStartDate) : null;
+    const end = customSummaryEndDate ? new Date(customSummaryEndDate) : null;
+    return {
+      start: start ? new Date(start.getFullYear(), start.getMonth(), start.getDate()) : null,
+      end: end ? new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999) : null,
+    };
+  }, [summaryPeriod, customSummaryStartDate, customSummaryEndDate]);
+
+  const openDashboardDetail = React.useCallback(async (type: string, title: string) => {
+    try {
+      setDashboardDetail({ open: true, title, type, orders: [], loading: true });
+
+      const result = await getOrders();
+      if (!result?.success || !Array.isArray(result.data)) {
+        setDashboardDetail({ open: true, title, type, orders: [], loading: false });
+        return;
+      }
+
+      const { start, end } = getSummaryDateRange();
+      const orders = result.data.filter((order: any) => {
+        const value = order?.manualCreatedAt || order?.createdAt;
+        if (!value) return false;
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return false;
+        if (start && date < start) return false;
+        if (end && date > end) return false;
+        return true;
+      });
+
+      const shippingPendingStatuses = ["قيد الشحن", "في الطريق", "في انتظار الشحن", "معلق"];
+      const deliveredStatuses = ["تم التسليم", "تم تسليم الطلب", "مدفوعة"];
+      const returnedStatuses = ["مرتجع", "ملغي", "تم الإلغاء", "إلغاء"];
+
+      const filtered = orders.filter((order: any) => {
+        const status = String(order?.status || "").trim();
+        const paymentMethod = String(order?.paymentMethod || "").trim();
+        const hasProblem = Boolean(order?.hasProblem || order?.problem || order?.needsReview);
+        const missingShipping = !order?.shipping && !order?.shippingName && !order?.shippingPrice;
+        const unclearPayment = !paymentMethod || paymentMethod === "غير محدد";
+        const isBankOrMixed = paymentMethod === "تحويل بنكي" || paymentMethod === "مختلطة";
+
+        switch (type) {
+          case "orders":
+            return true;
+          case "sales":
+            return true;
+          case "collected":
+            return isBankOrMixed || deliveredStatuses.includes(status);
+          case "debts":
+            return !(isBankOrMixed || deliveredStatuses.includes(status));
+          case "shipping":
+            return shippingPendingStatuses.includes(status);
+          case "delivered":
+            return deliveredStatuses.includes(status);
+          case "returned":
+            return returnedStatuses.includes(status);
+          case "problem":
+            return hasProblem || missingShipping || unclearPayment || ["مشكلة", "لديه مشكلة"].includes(status);
+          default:
+            return true;
+        }
+      });
+
+      setDashboardDetail({ open: true, title, type, orders: filtered, loading: false });
+    } catch (error) {
+      console.error("Error loading dashboard detail orders:", error);
+      setDashboardDetail({ open: true, title, type, orders: [], loading: false });
+    }
+  }, [getSummaryDateRange]);
+
   const exportUnifiedRowsToExcel = React.useCallback(() => {
     if (unifiedRows.length === 0) {
       toast.error("لا توجد بيانات لتصديرها");
@@ -717,41 +827,159 @@ export default function CollectionsPage() {
       </div>
 
       <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <div className="mb-4">
-          <h2 className="text-lg font-black text-slate-900 dark:text-white">ملخص اليوم (ببيانات التحصيلات)</h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">القيم مستخرجة من منطق صفحة التحصيلات وليس من الطلبات الخام فقط.</p>
+        <div className="mb-4 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div>
+            <h2 className="text-lg font-black text-slate-900 dark:text-white">ملخص {summaryPeriod === 'today' ? 'اليوم' : summaryPeriod === 'this_month' ? 'هذا الشهر' : summaryPeriod === 'last_month' ? 'الشهر الماضي' : 'المخصص'}</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">القيم مستخرجة من منطق صفحة التحصيلات مع نفس التفاصيل مثل الصفحة الرئيسية.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { key: 'today', label: 'اليوم' },
+              { key: 'this_month', label: 'هذا الشهر' },
+              { key: 'last_month', label: 'الشهر الماضي' },
+              { key: 'custom', label: 'مخصص' },
+            ].map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => setSummaryPeriod(option.key as any)}
+                className={`rounded-xl px-4 py-2 text-sm font-black transition-colors ${
+                  summaryPeriod === option.key
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {summaryPeriod === 'custom' && (
+          <div className="mb-4 grid gap-3 md:grid-cols-2">
+            <label className="text-sm font-bold text-slate-700 dark:text-slate-200">
+              من
+              <input
+                type="date"
+                value={customSummaryStartDate}
+                onChange={(event) => setCustomSummaryStartDate(event.target.value)}
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              />
+            </label>
+            <label className="text-sm font-bold text-slate-700 dark:text-slate-200">
+              إلى
+              <input
+                type="date"
+                value={customSummaryEndDate}
+                onChange={(event) => setCustomSummaryEndDate(event.target.value)}
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              />
+            </label>
+          </div>
+        )}
+
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <SummaryCard
-            title="الطلبات اليوم"
-            value={String(todaySummary.ordersToday)}
-            subtitle="عدد الطلبات في اليوم الحالي"
-            icon={Landmark}
-            tone="blue"
-          />
-          <SummaryCard
-            title="إجمالي المبيعات"
-            value={formatMoney(todaySummary.totalSales)}
-            subtitle="مجموع قيمة المبيعات الحالية"
-            icon={Wallet}
-            tone="emerald"
-          />
-          <SummaryCard
-            title="المحصل"
-            value={formatMoney(todaySummary.collected)}
-            subtitle="مجموع التحصيلات المستلمة"
-            icon={HandCoins}
-            tone="blue"
-          />
-          <SummaryCard
-            title="الذمم"
-            value={formatMoney(todaySummary.debts)}
-            subtitle="المتبقي غير المحصل"
-            icon={RefreshCw}
-            tone="amber"
-          />
+          <button
+            type="button"
+            onClick={() => openDashboardDetail('orders', 'الطلبات')}
+            className="rounded-[1.75rem] border border-slate-200 bg-white p-5 text-right shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+          >
+            <div className="text-sm font-bold text-slate-500 dark:text-slate-400">الطلبات</div>
+            <div className="mt-3 text-3xl font-black text-slate-900 dark:text-white">{summaryData.ordersToday}</div>
+            <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">عدد الطلبات في الفترة المختارة</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => openDashboardDetail('sales', 'إجمالي المبيعات')}
+            className="rounded-[1.75rem] border border-slate-200 bg-white p-5 text-right shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-700 dark:hover:bg-slate-800"
+          >
+            <div className="text-sm font-bold text-slate-500 dark:text-slate-400">إجمالي المبيعات</div>
+            <div className="mt-3 text-3xl font-black text-emerald-600">{formatMoney(summaryData.totalSales)}</div>
+            <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">مجموع فواتير الفترة</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => openDashboardDetail('collected', 'المحصل')}
+            className="rounded-[1.75rem] border border-slate-200 bg-white p-5 text-right shadow-sm transition hover:border-blue-300 hover:bg-blue-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-700 dark:hover:bg-slate-800"
+          >
+            <div className="text-sm font-bold text-slate-500 dark:text-slate-400">المحصل</div>
+            <div className="mt-3 text-3xl font-black text-blue-600">{formatMoney(summaryData.collected)}</div>
+            <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">المبالغ المستلمة</div>
+          </button>
+          <button
+            type="button"
+            onClick={() => openDashboardDetail('debts', 'الذمم')}
+            className="rounded-[1.75rem] border border-slate-200 bg-white p-5 text-right shadow-sm transition hover:border-amber-300 hover:bg-amber-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-amber-700 dark:hover:bg-slate-800"
+          >
+            <div className="text-sm font-bold text-slate-500 dark:text-slate-400">الذمم</div>
+            <div className="mt-3 text-3xl font-black text-amber-600">{formatMoney(summaryData.debts)}</div>
+            <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">المتبقي غير المحصل</div>
+          </button>
         </div>
       </div>
+
+      {dashboardDetail.open && (
+        <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-black text-slate-800 dark:text-white">{dashboardDetail.title}</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">الطلبات المرتبطة بهذا التب في الفترة المختارة</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDashboardDetail((prev) => ({ ...prev, open: false, orders: [], loading: false }))}
+              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              إغلاق
+            </button>
+          </div>
+
+          {dashboardDetail.loading ? (
+            <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
+              جاري تحميل تفاصيل الطلبات...
+            </div>
+          ) : dashboardDetail.orders.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
+              لا توجد طلبات لهذا التب.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-right text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                    <th className="px-3 py-3 font-bold">رقم الطلب</th>
+                    <th className="px-3 py-3 font-bold">العميل</th>
+                    <th className="px-3 py-3 font-bold">طريقة الدفع</th>
+                    <th className="px-3 py-3 font-bold">الحالة</th>
+                    <th className="px-3 py-3 font-bold">الشحن</th>
+                    <th className="px-3 py-3 font-bold">المبلغ النهائي</th>
+                    <th className="px-3 py-3 font-bold">التاريخ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardDetail.orders.map((order: any) => (
+                    <tr key={order.id} className="border-b border-slate-100 last:border-0 dark:border-slate-800/70">
+                      <td className="px-3 py-3 font-black text-blue-600">#{order.orderNumber || order.id}</td>
+                      <td className="px-3 py-3 font-bold text-slate-800 dark:text-slate-100">{order.customer?.name || order.receiverName || "-"}</td>
+                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{order.paymentMethod || "-"}</td>
+                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{order.status || "-"}</td>
+                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{Number(order.shippingPrice || order.shipping?.price || 0).toLocaleString()} $</td>
+                      <td className="px-3 py-3 font-black text-emerald-600">{formatMoney(Number(order.finalAmount || 0))}</td>
+                      <td className="px-3 py-3 text-slate-500 dark:text-slate-400">
+                        {new Date(order.manualCreatedAt || order.createdAt).toLocaleDateString('ar-EG', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div className="grid gap-4 lg:grid-cols-3">

@@ -219,7 +219,55 @@ export async function getCollectionsDashboardData() {
   };
 }
 
-export async function getTodayDashboard() {
+const isWithinRange = (orderLike: any, startDate?: Date | null, endDate?: Date | null) => {
+  const rawDate = getOrderEffectiveDate(orderLike);
+  if (!rawDate) return false;
+
+  const date = new Date(rawDate);
+  if (Number.isNaN(date.getTime())) return false;
+
+  if (startDate && date < startDate) return false;
+  if (endDate) {
+    const endOfDay = new Date(endDate);
+    endOfDay.setHours(23, 59, 59, 999);
+    if (date > endOfDay) return false;
+  }
+
+  return true;
+};
+
+const getPeriodRange = (period: "today" | "this_month" | "last_month" | "custom", customStartDate?: string, customEndDate?: string) => {
+  const now = new Date();
+
+  if (period === "today") {
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return { start, end: now };
+  }
+
+  if (period === "this_month") {
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    return { start, end: new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999) };
+  }
+
+  if (period === "last_month") {
+    const start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const end = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+    return { start, end };
+  }
+
+  const start = customStartDate ? new Date(customStartDate) : null;
+  const end = customEndDate ? new Date(customEndDate) : null;
+  return { start, end };
+};
+
+export async function getCollectionsDashboardByPeriod(config?: {
+  period?: "today" | "this_month" | "last_month" | "custom";
+  customStartDate?: string;
+  customEndDate?: string;
+}) {
+  const period = config?.period ?? "today";
+  const { start, end } = getPeriodRange(period, config?.customStartDate, config?.customEndDate);
+
   const ordersResult = await getOrders();
   if (!ordersResult.success || !Array.isArray(ordersResult.data)) {
     return {
@@ -234,53 +282,50 @@ export async function getTodayDashboard() {
     };
   }
 
-  const today = new Date();
-  const todayOrders = ordersResult.data.filter((order: any) => isSameDay(getOrderEffectiveDate(order), today));
-  const todayOrderIds = new Set(
-    todayOrders
-      .map((order: any) => Number(order?.id))
-      .filter((id) => Number.isFinite(id))
+  const filteredOrders = ordersResult.data.filter((order: any) => isWithinRange(order, start, end));
+  const filteredOrderIds = new Set(
+    filteredOrders.map((order: any) => Number(order?.id)).filter((id) => Number.isFinite(id))
   );
 
-  const totalSales = todayOrders.reduce((sum: number, order: any) => sum + normalizeNumber(order?.finalAmount), 0);
+  const totalSales = filteredOrders.reduce((sum: number, order: any) => sum + normalizeNumber(order?.finalAmount), 0);
 
   const collectionsResult = await getCollectionsDashboardData();
   const collectionsData = (collectionsResult && typeof collectionsResult === "object" && "success" in collectionsResult && collectionsResult.success && "data" in collectionsResult)
     ? (collectionsResult as any).data ?? null
     : null;
 
-  const todayBankTransfers = Array.isArray(collectionsData?.bankTransfers)
-    ? collectionsData.bankTransfers.filter((order: any) => todayOrderIds.has(Number(order?.id)))
+  const matchedBankTransfers = Array.isArray(collectionsData?.bankTransfers)
+    ? collectionsData.bankTransfers.filter((order: any) => filteredOrderIds.has(Number(order?.id)))
     : [];
 
-  const todayCarrierReceived = Array.isArray(collectionsData?.carrierCollectionsReceived)
-    ? collectionsData.carrierCollectionsReceived.filter((order: any) => todayOrderIds.has(Number(order?.id)))
+  const matchedCarrierReceived = Array.isArray(collectionsData?.carrierCollectionsReceived)
+    ? collectionsData.carrierCollectionsReceived.filter((order: any) => filteredOrderIds.has(Number(order?.id)))
     : [];
 
-  const collected = todayBankTransfers.reduce((sum: number, order: any) => sum + normalizeNumber(order?.collectionAmount), 0)
-    + todayCarrierReceived.reduce((sum: number, order: any) => {
+  const collected = matchedBankTransfers.reduce((sum: number, order: any) => sum + normalizeNumber(order?.collectionAmount), 0)
+    + matchedCarrierReceived.reduce((sum: number, order: any) => {
       const overrideAmount = order?.carrierCollectionReceivedAmount;
       return sum + (overrideAmount != null ? normalizeNumber(overrideAmount) : normalizeNumber(order?.collectionNetReceived));
     }, 0);
 
   const debts = Math.max(0, totalSales - collected);
 
-  const shippingPending = todayOrders.filter((order: any) => {
+  const shippingPending = filteredOrders.filter((order: any) => {
     const status = String(order?.status || "").trim();
     return ["قيد الشحن", "في الطريق", "في انتظار الشحن", "معلق"].includes(status);
   }).length;
 
-  const delivered = todayOrders.filter((order: any) => {
+  const delivered = filteredOrders.filter((order: any) => {
     const status = String(order?.status || "").trim();
     return ["تم التسليم", "تم تسليم الطلب", "مدفوعة"].includes(status);
   }).length;
 
-  const returned = todayOrders.filter((order: any) => {
+  const returned = filteredOrders.filter((order: any) => {
     const status = String(order?.status || "").trim();
     return ["مرتجع", "ملغي", "تم الإلغاء", "إلغاء"].includes(status);
   }).length;
 
-  const problemOrders = todayOrders.filter((order: any) => {
+  const problemOrders = filteredOrders.filter((order: any) => {
     const status = String(order?.status || "").trim();
     const missingShipping = !order?.shipping && !order?.shippingName && !order?.shippingPrice;
     const unclearPayment = !order?.paymentMethod || order.paymentMethod === "غير محدد";
@@ -290,7 +335,7 @@ export async function getTodayDashboard() {
   }).length;
 
   return {
-    ordersToday: todayOrders.length,
+    ordersToday: filteredOrders.length,
     totalSales,
     collected,
     debts,
@@ -299,6 +344,10 @@ export async function getTodayDashboard() {
     returned,
     problemOrders,
   };
+}
+
+export async function getTodayDashboard() {
+  return getCollectionsDashboardByPeriod({ period: "today" });
 }
 
 export async function markCarrierCollectionReceived(orderId: number, receivedAmount?: number | null, notes?: string | null) {
