@@ -1034,48 +1034,43 @@ const DashboardPage: React.FunctionComponent = () => {
           <div className="overflow-x-auto">
             <div className="mb-6 grid gap-4 sm:grid-cols-4">
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                <div className="text-xs font-semibold text-slate-500">{showSalesSummary ? "إجمالي المبيعات" : "عدد الطلبات الكلي"}</div>
+                <div className="text-xs font-semibold text-slate-500">إجمالي المبيعات</div>
                 <div className="text-xl font-bold text-slate-800 dark:text-white">
-                  {showSalesSummary
-                    ? (targetProgress.summary?.totalSalesAmount ?? 0).toFixed(2)
-                    : String(targetProgress.summary?.totalOrdersCount ?? 0)}
+                  {formatCurrency(todayDashboard.totalSales)}
                 </div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                <div className="text-xs font-semibold text-slate-500">{showSalesSummary ? "النسبة المعيّنة" : "تم تسليمها"}</div>
+                <div className="text-xs font-semibold text-slate-500">المحصل</div>
                 <div className="text-xl font-bold text-slate-800 dark:text-white">
-                  {showSalesSummary
-                    ? `${(targetProgress.summary?.assignedCommissionPercent ?? 0).toFixed(2)}%`
-                    : String(targetProgress.summary?.deliveredOrdersCount ?? 0)}
+                  {formatCurrency(todayDashboard.collected)}
                 </div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                <div className="text-xs font-semibold text-slate-500">البدل الثابت</div>
+                <div className="text-xs font-semibold text-slate-500">الذمم</div>
                 <div className="text-xl font-bold text-slate-800 dark:text-white">
-                  {wageAmount.toFixed(2)}
+                  {formatCurrency(todayDashboard.debts)}
                 </div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                <div className="text-xs font-semibold text-slate-500">قيمة العمولة</div>
+                <div className="text-xs font-semibold text-slate-500">قيد الشحن</div>
                 <div className="text-xl font-bold text-slate-800 dark:text-white">
-                  {(targetProgress.summary?.totalCommissionAmount ?? 0).toFixed(2)}
+                  {todayDashboard.shippingPending}
                 </div>
               </div>
             </div>
             <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div className="text-xs font-semibold text-slate-500">إجمالي أرباحك</div>
+                  <div className="text-xs font-semibold text-slate-500">ملخص اليوم</div>
                   <div className="text-2xl font-bold text-slate-800 dark:text-white">
-                    {totalEarnings.toFixed(2)}
+                    {todayDashboard.ordersToday} طلب
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
-                  <div>قيمة العمولة: {(targetProgress.summary?.totalCommissionAmount ?? 0).toFixed(2)}</div>
-                  <div>مكافأة المنتجات: {productRewardTotal.toFixed(2)}</div>
-                  <div>مكافأة قيمة المبيعات: {valueRewardTotal.toFixed(2)}</div>
-                  <div>البدل الثابت: {wageAmount.toFixed(2)}</div>
-                  <div>نسبة الأرباح: {(targetProgress.summary?.assignedCommissionPercent ?? 0).toFixed(2)}%</div>
+                  <div>تم التسليم: {todayDashboard.delivered}</div>
+                  <div>المرتجع: {todayDashboard.returned}</div>
+                  <div>طلبات فيها مشكلة: {todayDashboard.problemOrders}</div>
+                  <div>المحصل: {formatCurrency(todayDashboard.collected)}</div>
                 </div>
               </div>
             </div>
