@@ -5,7 +5,7 @@ import {
   Search, Filter, MessageSquare, Reply, UserPlus, Zap, Phone, Video,
   MoreHorizontal, Copy, MapPin, Mail, Instagram, Tag, StickyNote,
   Calendar, ShoppingCart, NotebookPen, Users, Smile, Paperclip, Send,
-  Check, CheckCheck, Pencil, Package,
+  Check, CheckCheck, Pencil, Package, PanelLeftClose, PanelLeftOpen, X,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -263,6 +263,7 @@ export default function WhatsAppPage() {
   const [search, setSearch] = React.useState('');
   const [messageText, setMessageText] = React.useState('');
   const [notes, setNotes] = React.useState(conversationsSeed[0].notes);
+  const [showInfo, setShowInfo] = React.useState(false);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
   const selected = conversations.find((c) => c.id === selectedId)!;
@@ -307,13 +308,22 @@ export default function WhatsAppPage() {
   return (
     <div className="space-y-5">
       {/* الترويسة */}
-      <div className="flex items-center gap-3">
-        <div className="h-11 w-11 rounded-xl bg-green-500 flex items-center justify-center shrink-0">
-          <MessageSquare size={22} className="text-white" />
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="h-11 w-11 rounded-xl bg-green-500 flex items-center justify-center shrink-0">
+            <MessageSquare size={22} className="text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-slate-800 dark:text-white">WhatsApp</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">تواصل أسرع .. مبيعات أكثر</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-black text-slate-800 dark:text-white">WhatsApp</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">تواصل أسرع .. مبيعات أكثر</p>
+        <div className="bg-gradient-to-l from-amber-50 to-yellow-50 dark:from-amber-500/10 dark:to-yellow-500/10 rounded-2xl border border-amber-200/60 dark:border-amber-500/20 px-4 py-2.5 flex items-center gap-3">
+          <Zap size={20} className="text-amber-500 shrink-0" />
+          <div>
+            <p className="font-black text-sm text-slate-800 dark:text-white">الرد السريع يصنع الفرق</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">حافظ على سرعة الرد</p>
+          </div>
         </div>
       </div>
 
@@ -335,10 +345,14 @@ export default function WhatsAppPage() {
         ))}
       </div>
 
-      {/* الأعمدة الثلاثة */}
-      <div className="grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)_300px] gap-5">
+      {/* منطقة المحادثات — تظهر لوحة معلومات العميل أسفل البطاقات عند تفعيلها */}
+      <div
+        className={`grid grid-cols-1 gap-5 transition-all duration-300 ${
+          showInfo ? 'xl:grid-cols-[300px_minmax(0,1fr)_300px]' : 'xl:grid-cols-[300px_minmax(0,1fr)]'
+        }`}
+      >
         {/* قائمة المحادثات */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col max-h-[720px]">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col h-[640px]">
           <div className="p-3 border-b border-slate-100 dark:border-slate-800 space-y-3">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -418,7 +432,7 @@ export default function WhatsAppPage() {
         </div>
 
         {/* نافذة المحادثة */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col max-h-[720px]">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col h-[640px] min-w-0">
           {/* ترويسة المحادثة */}
           <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
             <div className={`h-11 w-11 rounded-full ${selected.avatarColor} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
@@ -426,20 +440,35 @@ export default function WhatsAppPage() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <p className="font-bold text-slate-800 dark:text-white">{selected.name}</p>
-                <Pencil size={13} className="text-slate-400" />
+                <p className="font-bold text-slate-800 dark:text-white truncate">{selected.name}</p>
+                <Pencil size={13} className="text-slate-400 shrink-0" />
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium" dir="ltr">
-                {selected.phone} <span className="text-slate-300">|</span> {selected.city}
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
+                <span dir="ltr" className="whitespace-nowrap">{selected.phone}</span>
+                <span className="text-slate-300 dark:text-slate-600"> | </span>
+                {selected.city}
               </p>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              {selected.tags.map((tag) => (
-                <span key={tag.label} className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${tag.color}`}>
+            <div className="flex items-center gap-2 shrink-0">
+              {selected.tags.slice(0, 2).map((tag) => (
+                <span key={tag.label} className={`hidden md:inline-block px-2.5 py-1 rounded-lg text-[11px] font-bold ${tag.color}`}>
                   {tag.label}
                 </span>
               ))}
-              <button className="h-9 w-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-500">
+              {/* زر إظهار / إخفاء معلومات العميل */}
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                title={showInfo ? 'إخفاء معلومات العميل' : 'إظهار معلومات العميل'}
+                className={`h-9 px-3 rounded-xl flex items-center gap-2 text-xs font-bold transition-colors ${
+                  showInfo
+                    ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                }`}
+              >
+                {showInfo ? <PanelLeftClose size={16} /> : <PanelLeftOpen size={16} />}
+                <span className="hidden sm:inline">{showInfo ? 'إخفاء المعلومات' : 'معلومات العميل'}</span>
+              </button>
+              <button className="h-9 w-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 hidden sm:flex items-center justify-center text-slate-500">
                 <MoreHorizontal size={18} />
               </button>
             </div>
@@ -506,7 +535,7 @@ export default function WhatsAppPage() {
               onChange={(e) => setMessageText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
               placeholder="اكتب رسالتك هنا ..."
-              className="flex-1 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-rose-500/30 text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
+              className="flex-1 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 px-4 text-sm font-medium outline-none focus:ring-2 focus:ring-rose-500/30 text-slate-700 dark:text-slate-200 placeholder:text-slate-400 min-w-0"
             />
             <button
               onClick={sendMessage}
@@ -517,105 +546,109 @@ export default function WhatsAppPage() {
           </div>
         </div>
 
-        {/* معلومات العميل */}
-        <div className="space-y-4">
-          <div className="bg-gradient-to-l from-amber-50 to-yellow-50 dark:from-amber-500/10 dark:to-yellow-500/10 rounded-2xl border border-amber-200/60 dark:border-amber-500/20 p-4 flex items-center gap-3">
-            <Zap size={22} className="text-amber-500 shrink-0" />
-            <div>
-              <p className="font-black text-sm text-slate-800 dark:text-white">الرد السريع يصنع الفرق ⚡</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">حافظ على سرعة الرد</p>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-4">
-            <div className="flex flex-col items-center text-center gap-2">
-              <div className={`h-20 w-20 rounded-full ${selected.avatarColor} flex items-center justify-center text-white font-black text-2xl`}>
-                {selected.initials}
-              </div>
-              <p className="font-black text-slate-800 dark:text-white">{selected.name}</p>
-              {selected.tags[0] && (
-                <span className={`px-3 py-1 rounded-lg text-xs font-bold ${selected.tags[0].color}`}>
-                  {selected.tags[0].label}
-                </span>
-              )}
-              <div className="flex items-center gap-2">
-                <button onClick={() => mockAction('المكالمات الصوتية')} className="h-9 w-9 rounded-xl bg-green-50 dark:bg-green-500/10 text-green-600 flex items-center justify-center hover:bg-green-100 transition-colors">
-                  <Phone size={16} />
-                </button>
-                <button onClick={() => mockAction('مكالمات الفيديو')} className="h-9 w-9 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors">
-                  <Video size={16} />
-                </button>
-                <button className="h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition-colors">
-                  <MoreHorizontal size={16} />
+        {/* لوحة معلومات العميل — مخفية افتراضياً وتظهر أسفل بطاقات الإحصائيات */}
+        {showInfo && (
+          <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="font-black text-sm text-slate-800 dark:text-white">معلومات العميل</p>
+                <button
+                  onClick={() => setShowInfo(false)}
+                  title="إخفاء المعلومات"
+                  className="h-8 w-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors"
+                >
+                  <X size={16} />
                 </button>
               </div>
-            </div>
-
-            <div className="space-y-2.5 border-t border-slate-100 dark:border-slate-800 pt-4">
-              {[
-                { icon: Phone, value: selected.phone, ltr: true },
-                { icon: Mail, value: selected.email, ltr: true },
-                { icon: MapPin, value: selected.city, ltr: false },
-                { icon: Instagram, value: selected.instagram, ltr: true },
-              ].map((row, i) => (
-                <div key={i} className="flex items-center gap-2.5 text-sm">
-                  <row.icon size={15} className="text-slate-400 shrink-0" />
-                  <span className="flex-1 font-medium text-slate-700 dark:text-slate-200 truncate" dir={row.ltr ? 'ltr' : 'rtl'} style={row.ltr ? { textAlign: 'right' } : undefined}>
-                    {row.value}
+              <div className="flex flex-col items-center text-center gap-2">
+                <div className={`h-20 w-20 rounded-full ${selected.avatarColor} flex items-center justify-center text-white font-black text-2xl`}>
+                  {selected.initials}
+                </div>
+                <p className="font-black text-slate-800 dark:text-white">{selected.name}</p>
+                {selected.tags[0] && (
+                  <span className={`px-3 py-1 rounded-lg text-xs font-bold ${selected.tags[0].color}`}>
+                    {selected.tags[0].label}
                   </span>
-                  <button onClick={() => copyToClipboard(row.value)} className="text-slate-300 hover:text-blue-500 transition-colors">
-                    <Copy size={14} />
+                )}
+                <div className="flex items-center gap-2">
+                  <button onClick={() => mockAction('المكالمات الصوتية')} className="h-9 w-9 rounded-xl bg-green-50 dark:bg-green-500/10 text-green-600 flex items-center justify-center hover:bg-green-100 transition-colors">
+                    <Phone size={16} />
+                  </button>
+                  <button onClick={() => mockAction('مكالمات الفيديو')} className="h-9 w-9 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors">
+                    <Video size={16} />
+                  </button>
+                  <button className="h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition-colors">
+                    <MoreHorizontal size={16} />
                   </button>
                 </div>
-              ))}
-              <div className="flex items-center gap-2.5 text-sm">
-                <Tag size={15} className="text-slate-400 shrink-0" />
-                <span className="font-medium text-slate-700 dark:text-slate-200">SKYNOVA GLOW</span>
+              </div>
+
+              <div className="space-y-2.5 border-t border-slate-100 dark:border-slate-800 pt-4">
+                {[
+                  { icon: Phone, value: selected.phone, ltr: true },
+                  { icon: Mail, value: selected.email, ltr: true },
+                  { icon: MapPin, value: selected.city, ltr: false },
+                  { icon: Instagram, value: selected.instagram, ltr: true },
+                ].map((row, i) => (
+                  <div key={i} className="flex items-center gap-2.5 text-sm">
+                    <row.icon size={15} className="text-slate-400 shrink-0" />
+                    <span className="flex-1 font-medium text-slate-700 dark:text-slate-200 truncate" dir={row.ltr ? 'ltr' : 'rtl'} style={row.ltr ? { textAlign: 'right' } : undefined}>
+                      {row.value}
+                    </span>
+                    <button onClick={() => copyToClipboard(row.value)} className="text-slate-300 hover:text-blue-500 transition-colors">
+                      <Copy size={14} />
+                    </button>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2.5 text-sm">
+                  <Tag size={15} className="text-slate-400 shrink-0" />
+                  <span className="font-medium text-slate-700 dark:text-slate-200">SKYNOVA GLOW</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="font-black text-sm text-slate-800 dark:text-white flex items-center gap-2">
+                  <StickyNote size={15} className="text-slate-400" /> ملاحظات
+                </p>
+                <button onClick={() => toast.success('تم حفظ الملاحظة')} className="text-slate-400 hover:text-blue-500 transition-colors">
+                  <Pencil size={14} />
+                </button>
+              </div>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={3}
+                placeholder="أضف ملاحظة عن العميل ..."
+                className="w-full rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-700 dark:text-slate-200 placeholder:text-slate-400 resize-none"
+              />
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3">
+              <p className="font-black text-sm text-slate-800 dark:text-white flex items-center gap-2">
+                <Zap size={15} className="text-slate-400" /> إجراءات سريعة
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: 'تحديد متابعة', icon: Calendar },
+                  { label: 'إنشاء طلب', icon: ShoppingCart },
+                  { label: 'إضافة ملاحظة', icon: NotebookPen },
+                  { label: 'إسناد لزميل', icon: Users },
+                ].map((action) => (
+                  <button
+                    key={action.label}
+                    onClick={() => mockAction(action.label)}
+                    className="flex items-center justify-center gap-2 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:border-rose-300 hover:text-rose-500 dark:hover:border-rose-500/40 transition-colors"
+                  >
+                    <action.icon size={14} />
+                    {action.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
-
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="font-black text-sm text-slate-800 dark:text-white flex items-center gap-2">
-                <StickyNote size={15} className="text-slate-400" /> ملاحظات
-              </p>
-              <button onClick={() => toast.success('تم حفظ الملاحظة')} className="text-slate-400 hover:text-blue-500 transition-colors">
-                <Pencil size={14} />
-              </button>
-            </div>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              placeholder="أضف ملاحظة عن العميل ..."
-              className="w-full rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 text-xs font-medium outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-700 dark:text-slate-200 placeholder:text-slate-400 resize-none"
-            />
-          </div>
-
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-3">
-            <p className="font-black text-sm text-slate-800 dark:text-white flex items-center gap-2">
-              <Zap size={15} className="text-slate-400" /> إجراءات سريعة
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { label: 'تحديد متابعة', icon: Calendar },
-                { label: 'إنشاء طلب', icon: ShoppingCart },
-                { label: 'إضافة ملاحظة', icon: NotebookPen },
-                { label: 'إسناد لزميل', icon: Users },
-              ].map((action) => (
-                <button
-                  key={action.label}
-                  onClick={() => mockAction(action.label)}
-                  className="flex items-center justify-center gap-2 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:border-rose-300 hover:text-rose-500 dark:hover:border-rose-500/40 transition-colors"
-                >
-                  <action.icon size={14} />
-                  {action.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
