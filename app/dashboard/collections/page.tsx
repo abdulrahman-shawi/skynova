@@ -414,6 +414,13 @@ export default function CollectionsPage() {
   const [monthFilter, setMonthFilter] = React.useState("");
   const [currentPage, setCurrentPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState<number>(25);
+  const [selectedShippingCompany, setSelectedShippingCompany] = React.useState<{
+    name: string;
+    orderCount: number;
+    totalUsd: number;
+    transferredUsd: number;
+    remainingUsd: number;
+  } | null>(null);
 
   const canView = Boolean(user && hasAnyPermission(user, ["viewOrders", "addOrders", "editOrders", "deleteOrders"]));
   const canManage = Boolean(user && (user.accountType === "ADMIN" || user?.permission?.editOrders));
@@ -552,29 +559,39 @@ export default function CollectionsPage() {
       name: string;
       orderCount: number;
       totalUsd: number;
+      transferredUsd: number;
+      remainingUsd: number;
     }>();
 
     rows.forEach((row: any) => {
       const name = String(row?.shipping?.name || "غير محددة").trim() || "غير محددة";
       const amount = Number(row?.collectionWithShipping || 0);
+      const transferred = Number(row?.collectionNetReceived || 0);
+      const remaining = Number(row?.shippingCharge || 0);
 
       if (!grouped.has(name)) {
         grouped.set(name, {
           name,
           orderCount: 0,
           totalUsd: 0,
+          transferredUsd: 0,
+          remainingUsd: 0,
         });
       }
 
       const entry = grouped.get(name)!;
       entry.orderCount += 1;
       entry.totalUsd += amount;
+      entry.transferredUsd += transferred;
+      entry.remainingUsd += remaining;
     });
 
     return Array.from(grouped.values())
       .map((entry) => ({
         ...entry,
         totalLabel: formatMoney(entry.totalUsd),
+        transferredLabel: formatMoney(entry.transferredUsd),
+        remainingLabel: formatMoney(entry.remainingUsd),
       }))
       .sort((left, right) => right.totalUsd - left.totalUsd);
   }, [filteredPayload]);
@@ -1110,9 +1127,11 @@ export default function CollectionsPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {shippingCompanyBoxes.map((box) => (
-              <div
+              <button
                 key={box.name}
-                className="rounded-[1.5rem] border border-amber-200/70 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-5 shadow-sm dark:border-amber-900/40 dark:from-amber-950/20 dark:via-slate-900 dark:to-orange-950/20"
+                type="button"
+                onClick={() => setSelectedShippingCompany(box)}
+                className="cursor-pointer rounded-[1.5rem] border border-amber-200/70 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-5 text-right shadow-sm transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-amber-900/40 dark:from-amber-950/20 dark:via-slate-900 dark:to-orange-950/20"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -1123,17 +1142,47 @@ export default function CollectionsPage() {
                     <HandCoins size={20} />
                   </div>
                 </div>
-
-                <div className="mt-5 text-sm font-bold text-slate-500 dark:text-slate-400">المتبقي لدى الناقل</div>
-                <div className="mt-2 text-2xl font-black text-amber-600 dark:text-amber-300">{box.totalLabel || formatMoney(0)}</div>
-                <div className="mt-3 text-xs font-bold text-slate-500 dark:text-slate-400">
-                  {box.orderCount} طلب بانتظار الاستلام
-                </div>
-              </div>
+              </button>
             ))}
           </div>
         )}
       </section>
+
+      {selectedShippingCompany && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4">
+          <div className="w-full max-w-md rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+            <div className="mb-5 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-slate-500 dark:text-slate-400">شركة الشحن</p>
+                <h3 className="mt-1 text-2xl font-black text-slate-900 dark:text-white">{selectedShippingCompany.name}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedShippingCompany(null)}
+                className="rounded-full bg-slate-100 p-2 text-slate-600 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                aria-label="إغلاق"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="space-y-3 text-base text-slate-700 dark:text-slate-200">
+              <div>
+                شركة الشحن لديها <span className="font-black text-slate-900 dark:text-white">{selectedShippingCompany.orderCount}</span> طلباً
+              </div>
+              <div>
+                إجمالي التحصيل المفترض: <span className="font-black text-amber-600 dark:text-amber-300">{formatMoney(selectedShippingCompany.totalUsd)}</span>
+              </div>
+              <div>
+                المبلغ المحول لنا: <span className="font-black text-emerald-600 dark:text-emerald-300">{formatMoney(selectedShippingCompany.transferredUsd)}</span>
+              </div>
+              <div>
+                المتبقي عند شركة الشحن: <span className="font-black text-red-600 dark:text-red-300">{formatMoney(selectedShippingCompany.remainingUsd)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isLoading && !payload ? (
         <div className="rounded-[1.75rem] border border-slate-200 bg-white p-10 text-center text-sm font-bold text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
