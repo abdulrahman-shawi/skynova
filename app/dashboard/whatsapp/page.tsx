@@ -130,7 +130,6 @@ export default function WhatsAppPage() {
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-black">محادثات واتساب</h2>
           <div className="flex items-center gap-2">
-            <button onClick={fetchConversations} className="text-sm px-3 py-1 bg-slate-100 rounded">تحديث</button>
             {loading && <span className="text-xs text-slate-400">جارٍ التحميل...</span>}
           </div>
         </div>
