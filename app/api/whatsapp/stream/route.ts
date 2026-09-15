@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 function sseEvent(data: any) {
   return `data: ${JSON.stringify(data)}\n\n`;
@@ -16,10 +17,11 @@ export async function GET(req: Request) {
 
   const stream = new ReadableStream({
     async start(controller) {
+      const encoder = new TextEncoder();
       let lastChecked = new Date();
 
       // send initial ping
-      controller.enqueue(sseEvent({ type: 'connected', time: new Date().toISOString() }));
+      controller.enqueue(encoder.encode(sseEvent({ type: 'connected', time: new Date().toISOString() })));
 
       const timer = setInterval(async () => {
         try {
@@ -31,7 +33,7 @@ export async function GET(req: Request) {
 
           if (msgs.length > 0) {
             for (const m of msgs) {
-              controller.enqueue(sseEvent({ type: 'message', data: m }));
+              controller.enqueue(encoder.encode(sseEvent({ type: 'message', data: m })));
             }
             lastChecked = new Date();
           }
