@@ -40,9 +40,19 @@ export async function GET(req: Request) {
         }
       }, 2000);
 
-      controller.onclose = () => {
-        clearInterval(timer);
-      };
+      // Next.js request exposes an AbortSignal; use it to clean up when client disconnects
+      try {
+        req.signal.addEventListener('abort', () => {
+          clearInterval(timer);
+          try {
+            controller.close();
+          } catch (e) {
+            // ignore
+          }
+        });
+      } catch (e) {
+        // If signal isn't available for some reason, still ensure timer will be cleaned when stream ends
+      }
     },
   });
 
