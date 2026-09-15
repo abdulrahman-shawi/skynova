@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "WhatsApp Cloud API غير مهيأ. أضف WHATSAPP_CLOUD_API_TOKEN و WHATSAPP_PHONE_NUMBER_ID",
+          error: "WhatsApp Cloud API غير مهيأ. أضف WHATSAPP_TOKEN و WHATSAPP_PHONE_NUMBER_ID",
         },
         { status: 500 }
       );

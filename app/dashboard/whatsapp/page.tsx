@@ -1,172 +1,191 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import {
-  Search, Filter, MessageSquare, Reply, UserPlus, Zap, Phone, Video,
-  MoreHorizontal, Copy, MapPin, Mail, Instagram, Tag, StickyNote,
-  Calendar, ShoppingCart, NotebookPen, Users, Smile, Paperclip, Send,
-  Check, CheckCheck, Pencil, Package, PanelLeftClose, PanelLeftOpen, X,
-} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-// =====================================================
-// بيانات تجريبية مؤقتة — سيتم استبدالها بواجهة واتساب
-// الرسمية عند الاشتراك بمزود الخدمة
-// =====================================================
+type WaMessage = {
+  id: string;
+  waMessageId?: string | null;
+  direction: 'INBOUND' | 'OUTBOUND' | string;
+  type: string;
+  body?: string | null;
+  status?: string | null;
+  sentAt?: string | null;
+};
 
-type ChatTab = 'الكل' | 'غير مقروءة' | 'عملاء جدد' | 'المتابعات';
-
-interface ChatMessage {
-  id: number;
-  from: 'customer' | 'agent';
-  text: string;
-  time: string;
-  status?: 'sent' | 'read';
-  productCard?: {
-    name: string;
-    description: string;
-    pdfName: string;
-    pdfSize: string;
-  };
-}
-
-interface Conversation {
-  id: number;
-  name: string;
-  initials: string;
-  avatarColor: string;
-  lastMessage: string;
-  time: string;
-  unread: number;
-  tags: { label: string; color: string }[];
-  tab: ChatTab[];
+type WaConversation = {
+  id: string;
   phone: string;
-  email: string;
-  city: string;
-  instagram: string;
-  notes: string;
-  messages: ChatMessage[];
-}
+  name?: string | null;
+  lastMessage?: string | null;
+  lastMessageAt?: string | null;
+  unreadCount?: number;
+  messages?: WaMessage[];
+};
 
-const conversationsSeed: Conversation[] = [
-  {
-    id: 1,
-    name: 'نور الحسن',
-    initials: 'نح',
-    avatarColor: 'bg-rose-500',
-    lastMessage: 'هل الجهاز مناسب للبشرة الحساسة؟',
-    time: '10:24 ص',
-    unread: 2,
-    tags: [
-      { label: 'عميل جديد', color: 'bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400' },
-      { label: 'SKYNOVA GLOW', color: 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' },
-    ],
-    tab: ['الكل', 'غير مقروءة', 'عملاء جدد'],
-    phone: '+963 933 765 432',
-    email: 'noor.alhassan@gmail.com',
-    city: 'حمص',
-    instagram: '@noor.hassan',
-    notes: 'مهتمة جداً. تسأل عن مدى ملاءمة الجهاز للبشرة الحساسة. طلبت كتالوج.',
-    messages: [
-      { id: 1, from: 'customer', text: 'مرحباً 👋', time: '10:20 ص' },
-      { id: 2, from: 'customer', text: 'أريد معرفة هل الجهاز مناسب للبشرة الحساسة؟', time: '10:20 ص' },
-      {
-        id: 3, from: 'agent', status: 'read', time: '10:21 ص',
-        text: 'أهلاً نور 🌸 نعم الجهاز مناسب للبشرة الحساسة، ويتميز بتقنية التبريد لتقليل الإحساس بالحرارة أثناء الاستخدام. هل ترغبين بمعرفة المزيد من التفاصيل؟',
-      },
-      { id: 4, from: 'customer', text: 'نعم طبعاً', time: '10:22 ص' },
-      { id: 5, from: 'customer', text: 'وهل يعطي نتائج فعالة من أول شهر؟', time: '10:22 ص' },
-      {
-        id: 6, from: 'agent', status: 'read', time: '10:23 ص',
-        text: 'إليكِ دليل المنتج الكامل:',
-        productCard: {
-          name: 'SKYNOVA GLOW',
-          description: 'جهاز إزالة الشعر المنزلي بتقنية IPL',
-          pdfName: 'دليل المنتج',
-          pdfSize: '2.4 MB',
-        },
-      },
-      { id: 7, from: 'customer', text: 'شكراً! سأقرأ التفاصيل وأعود إليكم اليوم', time: '10:24 ص' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'رنا علي',
-    initials: 'رع',
-    avatarColor: 'bg-violet-500',
-    lastMessage: 'تمام، بدي أفكر وأرد عليكم بكرا',
-    time: '10:18 ص',
-    unread: 1,
-    tags: [
-      { label: 'متابعة', color: 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400' },
-      { label: 'SKYNOVA GLOW', color: 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' },
-    ],
-    tab: ['الكل', 'غير مقروءة', 'المتابعات'],
-    phone: '+963 944 123 456',
-    email: 'rana.ali@gmail.com',
-    city: 'دمشق',
-    instagram: '@rana.ali',
-    notes: 'تحتاج تذكير غداً بخصوص العرض الحالي.',
-    messages: [
-      { id: 1, from: 'agent', status: 'read', time: '10:10 ص', text: 'مرحباً رنا، العرض الحالي متاح حتى نهاية الأسبوع فقط 🎁' },
-      { id: 2, from: 'customer', text: 'تمام، بدي أفكر وأرد عليكم بكرا', time: '10:18 ص' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'مريم خالد',
-    initials: 'مخ',
-    avatarColor: 'bg-emerald-500',
-    lastMessage: 'شكراً على المعلومات 🙏',
-    time: '09:55 ص',
-    unread: 0,
-    tags: [
-      { label: 'مهتم', color: 'bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400' },
-      { label: 'مجموعة العناية', color: 'bg-sky-100 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400' },
-    ],
-    tab: ['الكل'],
-    phone: '+963 955 234 567',
-    email: 'mariam.k@gmail.com',
-    city: 'حلب',
-    instagram: '@mariam.kh',
-    notes: 'مهتمة بمجموعة العناية بالبشرة.',
-    messages: [
-      { id: 1, from: 'agent', status: 'read', time: '09:50 ص', text: 'مجموعة العناية تشمل الغسول والسيروم والكريم الليلي.' },
-      { id: 2, from: 'customer', text: 'شكراً على المعلومات 🙏', time: '09:55 ص' },
-    ],
-  },
-  {
-    id: 4,
-    name: 'هلا يوسف',
-    initials: 'هي',
-    avatarColor: 'bg-orange-500',
-    lastMessage: 'هل فيه ضمان على الجهاز؟',
-    time: '09:42 ص',
-    unread: 3,
-    tags: [
-      { label: 'استفسار', color: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400' },
-      { label: 'SKYNOVA GLOW', color: 'bg-blue-100 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' },
-    ],
-    tab: ['الكل', 'غير مقروءة'],
-    phone: '+963 966 345 678',
-    email: 'hala.yousef@gmail.com',
-    city: 'حمص',
-    instagram: '@hala.y',
-    notes: 'تسأل عن الضمان ومدة الكفالة.',
-    messages: [
-      { id: 1, from: 'customer', text: 'مرحباً، هل فيه ضمان على الجهاز؟', time: '09:42 ص' },
-    ],
-  },
-  {
-    id: 5,
-    name: 'دانا سمير',
-    initials: 'دس',
-    avatarColor: 'bg-pink-500',
-    lastMessage: 'أريد معرفة طريقة الدفع',
-    time: '09:30 ص',
-    unread: 0,
-    tags: [
-      { label: 'مهتم', color: 'bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400' },
+export default function WhatsAppPage() {
+  const [conversations, setConversations] = useState<WaConversation[]>([]);
+  const [selectedConv, setSelectedConv] = useState<WaConversation | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [composeText, setComposeText] = useState('');
+
+  const fetchConversations = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/whatsapp/conversations');
+      const data = await res.json();
+      if (data.success) {
+        setConversations(data.data || []);
+        if (!selectedConv && data.data && data.data.length > 0) setSelectedConv(data.data[0]);
+      } else {
+        toast.error(data.error || 'فشل في جلب المحادثات');
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error('خطأ في الاتصال');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchConversations();
+
+    // SSE connection
+    const es = new EventSource('/api/whatsapp/stream');
+    es.onmessage = (ev) => {
+      try {
+        const payload = JSON.parse(ev.data);
+        if (payload.type === 'message' && payload.data) {
+          const m = payload.data;
+          setConversations((prev) => {
+            const idx = prev.findIndex((c) => c.id === m.conversationId);
+            if (idx >= 0) {
+              const copy = [...prev];
+              const conv = copy[idx];
+              conv.lastMessage = m.body || conv.lastMessage;
+              conv.lastMessageAt = m.sentAt || conv.lastMessageAt;
+              conv.messages = conv.messages ? [...conv.messages, m] : [m];
+              copy[idx] = conv;
+              return copy;
+            }
+            // new conversation
+            const newConv: WaConversation = {
+              id: m.conversationId,
+              phone: m.conversation?.phone || 'unknown',
+              name: m.conversation?.name || null,
+              lastMessage: m.body || null,
+              lastMessageAt: m.sentAt || null,
+              unreadCount: 1,
+              messages: [m],
+            };
+            return [newConv, ...prev];
+          });
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    es.onerror = (err) => {
+      console.error('SSE error', err);
+      es.close();
+      // fallback to polling
+      const id = setInterval(fetchConversations, 5000);
+      return () => clearInterval(id);
+    };
+
+    return () => es.close();
+  }, []);
+
+  const sendMessage = async () => {
+    if (!selectedConv) return toast.error('اختر محادثة أولاً');
+    const to = String(selectedConv.phone || '').replace(/\D/g, '');
+    if (!to) return toast.error('رقم غير صالح');
+    const text = composeText.trim();
+    if (!text) return;
+
+    try {
+      const res = await fetch('/api/whatsapp/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ to, text }) });
+      const data = await res.json();
+      if (data.success) {
+        // optimistic UI: append to messages
+        const now = new Date().toISOString();
+        const out = { id: `local-${Date.now()}`, waMessageId: data.waMessageId || null, conversationId: selectedConv.id, direction: 'OUTBOUND', type: 'text', body: text, status: 'sent', sentAt: now };
+        setConversations((prev) => prev.map((c) => (c.id === selectedConv.id ? { ...c, messages: c.messages ? [...c.messages, out] : [out], lastMessage: text, lastMessageAt: now } : c)));
+        setComposeText('');
+        toast.success('تم الإرسال');
+      } else {
+        toast.error(data.error || 'فشل في الإرسال');
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error('خطأ في الإرسال');
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-[360px_1fr] gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border p-3 h-[640px] overflow-auto">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-black">محادثات واتساب</h2>
+          <div className="flex items-center gap-2">
+            <button onClick={fetchConversations} className="text-sm px-3 py-1 bg-slate-100 rounded">تحديث</button>
+            {loading && <span className="text-xs text-slate-400">جارٍ التحميل...</span>}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          {conversations.length === 0 && <p className="text-sm text-slate-500">لا توجد محادثات حتى الآن.</p>}
+          {conversations.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setSelectedConv(c)}
+              className={`w-full text-right p-3 rounded-md border ${selectedConv?.id === c.id ? 'bg-rose-50 dark:bg-rose-500/10 border-rose-200' : 'hover:bg-slate-50'}`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-bold text-sm">{c.name || c.phone}</p>
+                  <p className="text-xs text-slate-500 truncate">{c.lastMessage}</p>
+                </div>
+                <div className="text-xs text-slate-400">{c.lastMessageAt ? new Date(c.lastMessageAt).toLocaleString() : ''}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border p-4 h-[640px] overflow-auto">
+        {!selectedConv ? (
+          <p className="text-sm text-slate-500">اختر محادثة لعرض الرسائل</p>
+        ) : (
+          <div className="flex flex-col h-full">
+            <div className="mb-4">
+              <h3 className="font-black text-lg">{selectedConv.name || selectedConv.phone}</h3>
+              <p className="text-xs text-slate-500">آخر رسالة: {selectedConv.lastMessage}</p>
+            </div>
+
+            <div className="flex-1 overflow-auto space-y-3">
+              {(selectedConv.messages || []).map((m) => (
+                <div key={m.id} className={`p-2 rounded-lg max-w-[70%] ${m.direction === 'INBOUND' ? 'bg-slate-100 self-start' : 'bg-rose-50 self-end'}`}>
+                  <p className="text-sm">{m.body}</p>
+                  <div className="text-xs text-slate-400 mt-1">{m.sentAt ? new Date(m.sentAt).toLocaleString() : ''}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-3">
+              <textarea value={composeText} onChange={(e) => setComposeText(e.target.value)} rows={3} className="w-full p-2 rounded-md bg-slate-100 dark:bg-slate-800" placeholder="اكتب رسالة..."></textarea>
+              <div className="flex gap-2 mt-2">
+                <button onClick={sendMessage} className="px-4 py-2 bg-rose-500 text-white rounded-lg">إرسال</button>
+                <button onClick={() => setComposeText('')} className="px-4 py-2 bg-gray-200 rounded-lg">مسح</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
     ],
     tab: ['الكل'],
     phone: '+963 977 456 789',

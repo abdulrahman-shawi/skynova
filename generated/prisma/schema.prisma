@@ -1127,3 +1127,45 @@ model Coupon {
 
   @@map("coupons")
 }
+
+// ============================================
+// WhatsApp Cloud API (Meta) Integration
+// ============================================
+
+enum WhatsAppMessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+model WhatsAppConversation {
+  id            String    @id @default(cuid())
+  phone         String    @unique // رقم العميل بالصيغة الدولية بدون + (wa_id)
+  name          String? // اسم الملف الشخصي من واتساب
+  lastMessage   String?
+  lastMessageAt DateTime?
+  unreadCount   Int       @default(0)
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  messages WhatsAppMessage[]
+
+  @@map("whatsapp_conversations")
+}
+
+model WhatsAppMessage {
+  id             String                   @id @default(cuid())
+  waMessageId    String?                  @unique @map("wa_message_id") // معرف الرسالة من Meta
+  conversationId String                   @map("conversation_id")
+  direction      WhatsAppMessageDirection
+  type           String                   @default("text")
+  body           String?
+  status         String                   @default("sent") // sent | delivered | read | failed
+  sentAt         DateTime                 @default(now()) @map("sent_at")
+  createdAt      DateTime                 @default(now()) @map("created_at")
+
+  conversation WhatsAppConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@map("whatsapp_messages")
+}

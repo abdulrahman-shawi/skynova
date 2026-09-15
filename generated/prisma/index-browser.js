@@ -733,6 +733,30 @@ exports.Prisma.CouponScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.WhatsAppConversationScalarFieldEnum = {
+  id: 'id',
+  phone: 'phone',
+  name: 'name',
+  lastMessage: 'lastMessage',
+  lastMessageAt: 'lastMessageAt',
+  unreadCount: 'unreadCount',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WhatsAppMessageScalarFieldEnum = {
+  id: 'id',
+  waMessageId: 'waMessageId',
+  conversationId: 'conversationId',
+  direction: 'direction',
+  type: 'type',
+  body: 'body',
+  status: 'status',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -850,6 +874,11 @@ exports.WalletTransferStatus = exports.$Enums.WalletTransferStatus = {
   RECEIVED: 'RECEIVED'
 };
 
+exports.WhatsAppMessageDirection = exports.$Enums.WhatsAppMessageDirection = {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Permission: 'Permission',
@@ -888,7 +917,9 @@ exports.Prisma.ModelName = {
   OfferDiscount: 'OfferDiscount',
   Commission: 'Commission',
   AffiliateWalletTransfer: 'AffiliateWalletTransfer',
-  Coupon: 'Coupon'
+  Coupon: 'Coupon',
+  WhatsAppConversation: 'WhatsAppConversation',
+  WhatsAppMessage: 'WhatsAppMessage'
 };
 
 /**

@@ -203,6 +203,16 @@ export type AffiliateWalletTransfer = $Result.DefaultSelection<Prisma.$Affiliate
  * 
  */
 export type Coupon = $Result.DefaultSelection<Prisma.$CouponPayload>
+/**
+ * Model WhatsAppConversation
+ * 
+ */
+export type WhatsAppConversation = $Result.DefaultSelection<Prisma.$WhatsAppConversationPayload>
+/**
+ * Model WhatsAppMessage
+ * 
+ */
+export type WhatsAppMessage = $Result.DefaultSelection<Prisma.$WhatsAppMessagePayload>
 
 /**
  * Enums
@@ -350,6 +360,14 @@ export const WholesaleVisitStatus: {
 
 export type WholesaleVisitStatus = (typeof WholesaleVisitStatus)[keyof typeof WholesaleVisitStatus]
 
+
+export const WhatsAppMessageDirection: {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND'
+};
+
+export type WhatsAppMessageDirection = (typeof WhatsAppMessageDirection)[keyof typeof WhatsAppMessageDirection]
+
 }
 
 export type ActivityTargetCycle = $Enums.ActivityTargetCycle
@@ -411,6 +429,10 @@ export const WholesaleVisitResult: typeof $Enums.WholesaleVisitResult
 export type WholesaleVisitStatus = $Enums.WholesaleVisitStatus
 
 export const WholesaleVisitStatus: typeof $Enums.WholesaleVisitStatus
+
+export type WhatsAppMessageDirection = $Enums.WhatsAppMessageDirection
+
+export const WhatsAppMessageDirection: typeof $Enums.WhatsAppMessageDirection
 
 /**
  * ##  Prisma Client ʲˢ
@@ -908,6 +930,26 @@ export class PrismaClient<
     * ```
     */
   get coupon(): Prisma.CouponDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.whatsAppConversation`: Exposes CRUD operations for the **WhatsAppConversation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WhatsAppConversations
+    * const whatsAppConversations = await prisma.whatsAppConversation.findMany()
+    * ```
+    */
+  get whatsAppConversation(): Prisma.WhatsAppConversationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.whatsAppMessage`: Exposes CRUD operations for the **WhatsAppMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WhatsAppMessages
+    * const whatsAppMessages = await prisma.whatsAppMessage.findMany()
+    * ```
+    */
+  get whatsAppMessage(): Prisma.WhatsAppMessageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1379,7 +1421,9 @@ export namespace Prisma {
     OfferDiscount: 'OfferDiscount',
     Commission: 'Commission',
     AffiliateWalletTransfer: 'AffiliateWalletTransfer',
-    Coupon: 'Coupon'
+    Coupon: 'Coupon',
+    WhatsAppConversation: 'WhatsAppConversation',
+    WhatsAppMessage: 'WhatsAppMessage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1395,7 +1439,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "permission" | "category" | "product" | "adPageVisit" | "productLandingPage" | "review" | "warehouse" | "productStock" | "stockMovement" | "userTarget" | "userActivityTarget" | "targetProduct" | "productImage" | "customer" | "wholesaleCustomer" | "productWholesalePriceTier" | "wholesaleOrder" | "wholesaleOrderItem" | "wholesaleVisit" | "warranty" | "wholesaleWarranty" | "message" | "order" | "expense" | "shipping" | "orderItem" | "trakingCompany" | "generalSetting" | "employeeSalaryAdjustment" | "page" | "heroSlide" | "affiliateLink" | "offer" | "offerDiscount" | "commission" | "affiliateWalletTransfer" | "coupon"
+      modelProps: "user" | "permission" | "category" | "product" | "adPageVisit" | "productLandingPage" | "review" | "warehouse" | "productStock" | "stockMovement" | "userTarget" | "userActivityTarget" | "targetProduct" | "productImage" | "customer" | "wholesaleCustomer" | "productWholesalePriceTier" | "wholesaleOrder" | "wholesaleOrderItem" | "wholesaleVisit" | "warranty" | "wholesaleWarranty" | "message" | "order" | "expense" | "shipping" | "orderItem" | "trakingCompany" | "generalSetting" | "employeeSalaryAdjustment" | "page" | "heroSlide" | "affiliateLink" | "offer" | "offerDiscount" | "commission" | "affiliateWalletTransfer" | "coupon" | "whatsAppConversation" | "whatsAppMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4211,6 +4255,154 @@ export namespace Prisma {
           }
         }
       }
+      WhatsAppConversation: {
+        payload: Prisma.$WhatsAppConversationPayload<ExtArgs>
+        fields: Prisma.WhatsAppConversationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WhatsAppConversationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WhatsAppConversationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>
+          }
+          findFirst: {
+            args: Prisma.WhatsAppConversationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WhatsAppConversationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>
+          }
+          findMany: {
+            args: Prisma.WhatsAppConversationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>[]
+          }
+          create: {
+            args: Prisma.WhatsAppConversationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>
+          }
+          createMany: {
+            args: Prisma.WhatsAppConversationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WhatsAppConversationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>[]
+          }
+          delete: {
+            args: Prisma.WhatsAppConversationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>
+          }
+          update: {
+            args: Prisma.WhatsAppConversationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>
+          }
+          deleteMany: {
+            args: Prisma.WhatsAppConversationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WhatsAppConversationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WhatsAppConversationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>[]
+          }
+          upsert: {
+            args: Prisma.WhatsAppConversationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppConversationPayload>
+          }
+          aggregate: {
+            args: Prisma.WhatsAppConversationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWhatsAppConversation>
+          }
+          groupBy: {
+            args: Prisma.WhatsAppConversationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WhatsAppConversationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WhatsAppConversationCountArgs<ExtArgs>
+            result: $Utils.Optional<WhatsAppConversationCountAggregateOutputType> | number
+          }
+        }
+      }
+      WhatsAppMessage: {
+        payload: Prisma.$WhatsAppMessagePayload<ExtArgs>
+        fields: Prisma.WhatsAppMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WhatsAppMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WhatsAppMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.WhatsAppMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WhatsAppMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          findMany: {
+            args: Prisma.WhatsAppMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>[]
+          }
+          create: {
+            args: Prisma.WhatsAppMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          createMany: {
+            args: Prisma.WhatsAppMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WhatsAppMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.WhatsAppMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          update: {
+            args: Prisma.WhatsAppMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.WhatsAppMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WhatsAppMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WhatsAppMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.WhatsAppMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.WhatsAppMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWhatsAppMessage>
+          }
+          groupBy: {
+            args: Prisma.WhatsAppMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WhatsAppMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WhatsAppMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<WhatsAppMessageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4357,6 +4549,8 @@ export namespace Prisma {
     commission?: CommissionOmit
     affiliateWalletTransfer?: AffiliateWalletTransferOmit
     coupon?: CouponOmit
+    whatsAppConversation?: WhatsAppConversationOmit
+    whatsAppMessage?: WhatsAppMessageOmit
   }
 
   /* Types for Logging */
@@ -5259,6 +5453,37 @@ export namespace Prisma {
    */
   export type OfferCountOutputTypeCountDiscountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OfferDiscountWhereInput
+  }
+
+
+  /**
+   * Count Type WhatsAppConversationCountOutputType
+   */
+
+  export type WhatsAppConversationCountOutputType = {
+    messages: number
+  }
+
+  export type WhatsAppConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | WhatsAppConversationCountOutputTypeCountMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * WhatsAppConversationCountOutputType without action
+   */
+  export type WhatsAppConversationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversationCountOutputType
+     */
+    select?: WhatsAppConversationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * WhatsAppConversationCountOutputType without action
+   */
+  export type WhatsAppConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhatsAppMessageWhereInput
   }
 
 
@@ -52942,6 +53167,2272 @@ export namespace Prisma {
 
 
   /**
+   * Model WhatsAppConversation
+   */
+
+  export type AggregateWhatsAppConversation = {
+    _count: WhatsAppConversationCountAggregateOutputType | null
+    _avg: WhatsAppConversationAvgAggregateOutputType | null
+    _sum: WhatsAppConversationSumAggregateOutputType | null
+    _min: WhatsAppConversationMinAggregateOutputType | null
+    _max: WhatsAppConversationMaxAggregateOutputType | null
+  }
+
+  export type WhatsAppConversationAvgAggregateOutputType = {
+    unreadCount: number | null
+  }
+
+  export type WhatsAppConversationSumAggregateOutputType = {
+    unreadCount: number | null
+  }
+
+  export type WhatsAppConversationMinAggregateOutputType = {
+    id: string | null
+    phone: string | null
+    name: string | null
+    lastMessage: string | null
+    lastMessageAt: Date | null
+    unreadCount: number | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WhatsAppConversationMaxAggregateOutputType = {
+    id: string | null
+    phone: string | null
+    name: string | null
+    lastMessage: string | null
+    lastMessageAt: Date | null
+    unreadCount: number | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WhatsAppConversationCountAggregateOutputType = {
+    id: number
+    phone: number
+    name: number
+    lastMessage: number
+    lastMessageAt: number
+    unreadCount: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WhatsAppConversationAvgAggregateInputType = {
+    unreadCount?: true
+  }
+
+  export type WhatsAppConversationSumAggregateInputType = {
+    unreadCount?: true
+  }
+
+  export type WhatsAppConversationMinAggregateInputType = {
+    id?: true
+    phone?: true
+    name?: true
+    lastMessage?: true
+    lastMessageAt?: true
+    unreadCount?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WhatsAppConversationMaxAggregateInputType = {
+    id?: true
+    phone?: true
+    name?: true
+    lastMessage?: true
+    lastMessageAt?: true
+    unreadCount?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WhatsAppConversationCountAggregateInputType = {
+    id?: true
+    phone?: true
+    name?: true
+    lastMessage?: true
+    lastMessageAt?: true
+    unreadCount?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WhatsAppConversationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WhatsAppConversation to aggregate.
+     */
+    where?: WhatsAppConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppConversations to fetch.
+     */
+    orderBy?: WhatsAppConversationOrderByWithRelationInput | WhatsAppConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WhatsAppConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppConversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppConversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WhatsAppConversations
+    **/
+    _count?: true | WhatsAppConversationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WhatsAppConversationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WhatsAppConversationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WhatsAppConversationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WhatsAppConversationMaxAggregateInputType
+  }
+
+  export type GetWhatsAppConversationAggregateType<T extends WhatsAppConversationAggregateArgs> = {
+        [P in keyof T & keyof AggregateWhatsAppConversation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWhatsAppConversation[P]>
+      : GetScalarType<T[P], AggregateWhatsAppConversation[P]>
+  }
+
+
+
+
+  export type WhatsAppConversationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhatsAppConversationWhereInput
+    orderBy?: WhatsAppConversationOrderByWithAggregationInput | WhatsAppConversationOrderByWithAggregationInput[]
+    by: WhatsAppConversationScalarFieldEnum[] | WhatsAppConversationScalarFieldEnum
+    having?: WhatsAppConversationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WhatsAppConversationCountAggregateInputType | true
+    _avg?: WhatsAppConversationAvgAggregateInputType
+    _sum?: WhatsAppConversationSumAggregateInputType
+    _min?: WhatsAppConversationMinAggregateInputType
+    _max?: WhatsAppConversationMaxAggregateInputType
+  }
+
+  export type WhatsAppConversationGroupByOutputType = {
+    id: string
+    phone: string
+    name: string | null
+    lastMessage: string | null
+    lastMessageAt: Date | null
+    unreadCount: number
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WhatsAppConversationCountAggregateOutputType | null
+    _avg: WhatsAppConversationAvgAggregateOutputType | null
+    _sum: WhatsAppConversationSumAggregateOutputType | null
+    _min: WhatsAppConversationMinAggregateOutputType | null
+    _max: WhatsAppConversationMaxAggregateOutputType | null
+  }
+
+  type GetWhatsAppConversationGroupByPayload<T extends WhatsAppConversationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WhatsAppConversationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WhatsAppConversationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WhatsAppConversationGroupByOutputType[P]>
+            : GetScalarType<T[P], WhatsAppConversationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WhatsAppConversationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    name?: boolean
+    lastMessage?: boolean
+    lastMessageAt?: boolean
+    unreadCount?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    messages?: boolean | WhatsAppConversation$messagesArgs<ExtArgs>
+    _count?: boolean | WhatsAppConversationCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppConversation"]>
+
+  export type WhatsAppConversationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    name?: boolean
+    lastMessage?: boolean
+    lastMessageAt?: boolean
+    unreadCount?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["whatsAppConversation"]>
+
+  export type WhatsAppConversationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    name?: boolean
+    lastMessage?: boolean
+    lastMessageAt?: boolean
+    unreadCount?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["whatsAppConversation"]>
+
+  export type WhatsAppConversationSelectScalar = {
+    id?: boolean
+    phone?: boolean
+    name?: boolean
+    lastMessage?: boolean
+    lastMessageAt?: boolean
+    unreadCount?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WhatsAppConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "phone" | "name" | "lastMessage" | "lastMessageAt" | "unreadCount" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppConversation"]>
+  export type WhatsAppConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | WhatsAppConversation$messagesArgs<ExtArgs>
+    _count?: boolean | WhatsAppConversationCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type WhatsAppConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type WhatsAppConversationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $WhatsAppConversationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WhatsAppConversation"
+    objects: {
+      messages: Prisma.$WhatsAppMessagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      phone: string
+      name: string | null
+      lastMessage: string | null
+      lastMessageAt: Date | null
+      unreadCount: number
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["whatsAppConversation"]>
+    composites: {}
+  }
+
+  type WhatsAppConversationGetPayload<S extends boolean | null | undefined | WhatsAppConversationDefaultArgs> = $Result.GetResult<Prisma.$WhatsAppConversationPayload, S>
+
+  type WhatsAppConversationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WhatsAppConversationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WhatsAppConversationCountAggregateInputType | true
+    }
+
+  export interface WhatsAppConversationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WhatsAppConversation'], meta: { name: 'WhatsAppConversation' } }
+    /**
+     * Find zero or one WhatsAppConversation that matches the filter.
+     * @param {WhatsAppConversationFindUniqueArgs} args - Arguments to find a WhatsAppConversation
+     * @example
+     * // Get one WhatsAppConversation
+     * const whatsAppConversation = await prisma.whatsAppConversation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WhatsAppConversationFindUniqueArgs>(args: SelectSubset<T, WhatsAppConversationFindUniqueArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WhatsAppConversation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WhatsAppConversationFindUniqueOrThrowArgs} args - Arguments to find a WhatsAppConversation
+     * @example
+     * // Get one WhatsAppConversation
+     * const whatsAppConversation = await prisma.whatsAppConversation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WhatsAppConversationFindUniqueOrThrowArgs>(args: SelectSubset<T, WhatsAppConversationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WhatsAppConversation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppConversationFindFirstArgs} args - Arguments to find a WhatsAppConversation
+     * @example
+     * // Get one WhatsAppConversation
+     * const whatsAppConversation = await prisma.whatsAppConversation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WhatsAppConversationFindFirstArgs>(args?: SelectSubset<T, WhatsAppConversationFindFirstArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WhatsAppConversation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppConversationFindFirstOrThrowArgs} args - Arguments to find a WhatsAppConversation
+     * @example
+     * // Get one WhatsAppConversation
+     * const whatsAppConversation = await prisma.whatsAppConversation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WhatsAppConversationFindFirstOrThrowArgs>(args?: SelectSubset<T, WhatsAppConversationFindFirstOrThrowArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WhatsAppConversations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppConversationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WhatsAppConversations
+     * const whatsAppConversations = await prisma.whatsAppConversation.findMany()
+     * 
+     * // Get first 10 WhatsAppConversations
+     * const whatsAppConversations = await prisma.whatsAppConversation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const whatsAppConversationWithIdOnly = await prisma.whatsAppConversation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WhatsAppConversationFindManyArgs>(args?: SelectSubset<T, WhatsAppConversationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WhatsAppConversation.
+     * @param {WhatsAppConversationCreateArgs} args - Arguments to create a WhatsAppConversation.
+     * @example
+     * // Create one WhatsAppConversation
+     * const WhatsAppConversation = await prisma.whatsAppConversation.create({
+     *   data: {
+     *     // ... data to create a WhatsAppConversation
+     *   }
+     * })
+     * 
+     */
+    create<T extends WhatsAppConversationCreateArgs>(args: SelectSubset<T, WhatsAppConversationCreateArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WhatsAppConversations.
+     * @param {WhatsAppConversationCreateManyArgs} args - Arguments to create many WhatsAppConversations.
+     * @example
+     * // Create many WhatsAppConversations
+     * const whatsAppConversation = await prisma.whatsAppConversation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WhatsAppConversationCreateManyArgs>(args?: SelectSubset<T, WhatsAppConversationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WhatsAppConversations and returns the data saved in the database.
+     * @param {WhatsAppConversationCreateManyAndReturnArgs} args - Arguments to create many WhatsAppConversations.
+     * @example
+     * // Create many WhatsAppConversations
+     * const whatsAppConversation = await prisma.whatsAppConversation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WhatsAppConversations and only return the `id`
+     * const whatsAppConversationWithIdOnly = await prisma.whatsAppConversation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WhatsAppConversationCreateManyAndReturnArgs>(args?: SelectSubset<T, WhatsAppConversationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WhatsAppConversation.
+     * @param {WhatsAppConversationDeleteArgs} args - Arguments to delete one WhatsAppConversation.
+     * @example
+     * // Delete one WhatsAppConversation
+     * const WhatsAppConversation = await prisma.whatsAppConversation.delete({
+     *   where: {
+     *     // ... filter to delete one WhatsAppConversation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WhatsAppConversationDeleteArgs>(args: SelectSubset<T, WhatsAppConversationDeleteArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WhatsAppConversation.
+     * @param {WhatsAppConversationUpdateArgs} args - Arguments to update one WhatsAppConversation.
+     * @example
+     * // Update one WhatsAppConversation
+     * const whatsAppConversation = await prisma.whatsAppConversation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WhatsAppConversationUpdateArgs>(args: SelectSubset<T, WhatsAppConversationUpdateArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WhatsAppConversations.
+     * @param {WhatsAppConversationDeleteManyArgs} args - Arguments to filter WhatsAppConversations to delete.
+     * @example
+     * // Delete a few WhatsAppConversations
+     * const { count } = await prisma.whatsAppConversation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WhatsAppConversationDeleteManyArgs>(args?: SelectSubset<T, WhatsAppConversationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WhatsAppConversations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppConversationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WhatsAppConversations
+     * const whatsAppConversation = await prisma.whatsAppConversation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WhatsAppConversationUpdateManyArgs>(args: SelectSubset<T, WhatsAppConversationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WhatsAppConversations and returns the data updated in the database.
+     * @param {WhatsAppConversationUpdateManyAndReturnArgs} args - Arguments to update many WhatsAppConversations.
+     * @example
+     * // Update many WhatsAppConversations
+     * const whatsAppConversation = await prisma.whatsAppConversation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WhatsAppConversations and only return the `id`
+     * const whatsAppConversationWithIdOnly = await prisma.whatsAppConversation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WhatsAppConversationUpdateManyAndReturnArgs>(args: SelectSubset<T, WhatsAppConversationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WhatsAppConversation.
+     * @param {WhatsAppConversationUpsertArgs} args - Arguments to update or create a WhatsAppConversation.
+     * @example
+     * // Update or create a WhatsAppConversation
+     * const whatsAppConversation = await prisma.whatsAppConversation.upsert({
+     *   create: {
+     *     // ... data to create a WhatsAppConversation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WhatsAppConversation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WhatsAppConversationUpsertArgs>(args: SelectSubset<T, WhatsAppConversationUpsertArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WhatsAppConversations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppConversationCountArgs} args - Arguments to filter WhatsAppConversations to count.
+     * @example
+     * // Count the number of WhatsAppConversations
+     * const count = await prisma.whatsAppConversation.count({
+     *   where: {
+     *     // ... the filter for the WhatsAppConversations we want to count
+     *   }
+     * })
+    **/
+    count<T extends WhatsAppConversationCountArgs>(
+      args?: Subset<T, WhatsAppConversationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WhatsAppConversationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WhatsAppConversation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppConversationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WhatsAppConversationAggregateArgs>(args: Subset<T, WhatsAppConversationAggregateArgs>): Prisma.PrismaPromise<GetWhatsAppConversationAggregateType<T>>
+
+    /**
+     * Group by WhatsAppConversation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppConversationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WhatsAppConversationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WhatsAppConversationGroupByArgs['orderBy'] }
+        : { orderBy?: WhatsAppConversationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WhatsAppConversationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWhatsAppConversationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WhatsAppConversation model
+   */
+  readonly fields: WhatsAppConversationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WhatsAppConversation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WhatsAppConversationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    messages<T extends WhatsAppConversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, WhatsAppConversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WhatsAppConversation model
+   */
+  interface WhatsAppConversationFieldRefs {
+    readonly id: FieldRef<"WhatsAppConversation", 'String'>
+    readonly phone: FieldRef<"WhatsAppConversation", 'String'>
+    readonly name: FieldRef<"WhatsAppConversation", 'String'>
+    readonly lastMessage: FieldRef<"WhatsAppConversation", 'String'>
+    readonly lastMessageAt: FieldRef<"WhatsAppConversation", 'DateTime'>
+    readonly unreadCount: FieldRef<"WhatsAppConversation", 'Int'>
+    readonly notes: FieldRef<"WhatsAppConversation", 'String'>
+    readonly createdAt: FieldRef<"WhatsAppConversation", 'DateTime'>
+    readonly updatedAt: FieldRef<"WhatsAppConversation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WhatsAppConversation findUnique
+   */
+  export type WhatsAppConversationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppConversation to fetch.
+     */
+    where: WhatsAppConversationWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppConversation findUniqueOrThrow
+   */
+  export type WhatsAppConversationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppConversation to fetch.
+     */
+    where: WhatsAppConversationWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppConversation findFirst
+   */
+  export type WhatsAppConversationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppConversation to fetch.
+     */
+    where?: WhatsAppConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppConversations to fetch.
+     */
+    orderBy?: WhatsAppConversationOrderByWithRelationInput | WhatsAppConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WhatsAppConversations.
+     */
+    cursor?: WhatsAppConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppConversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppConversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppConversations.
+     */
+    distinct?: WhatsAppConversationScalarFieldEnum | WhatsAppConversationScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppConversation findFirstOrThrow
+   */
+  export type WhatsAppConversationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppConversation to fetch.
+     */
+    where?: WhatsAppConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppConversations to fetch.
+     */
+    orderBy?: WhatsAppConversationOrderByWithRelationInput | WhatsAppConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WhatsAppConversations.
+     */
+    cursor?: WhatsAppConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppConversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppConversations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppConversations.
+     */
+    distinct?: WhatsAppConversationScalarFieldEnum | WhatsAppConversationScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppConversation findMany
+   */
+  export type WhatsAppConversationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppConversations to fetch.
+     */
+    where?: WhatsAppConversationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppConversations to fetch.
+     */
+    orderBy?: WhatsAppConversationOrderByWithRelationInput | WhatsAppConversationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WhatsAppConversations.
+     */
+    cursor?: WhatsAppConversationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppConversations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppConversations.
+     */
+    skip?: number
+    distinct?: WhatsAppConversationScalarFieldEnum | WhatsAppConversationScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppConversation create
+   */
+  export type WhatsAppConversationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WhatsAppConversation.
+     */
+    data: XOR<WhatsAppConversationCreateInput, WhatsAppConversationUncheckedCreateInput>
+  }
+
+  /**
+   * WhatsAppConversation createMany
+   */
+  export type WhatsAppConversationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WhatsAppConversations.
+     */
+    data: WhatsAppConversationCreateManyInput | WhatsAppConversationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WhatsAppConversation createManyAndReturn
+   */
+  export type WhatsAppConversationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * The data used to create many WhatsAppConversations.
+     */
+    data: WhatsAppConversationCreateManyInput | WhatsAppConversationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WhatsAppConversation update
+   */
+  export type WhatsAppConversationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WhatsAppConversation.
+     */
+    data: XOR<WhatsAppConversationUpdateInput, WhatsAppConversationUncheckedUpdateInput>
+    /**
+     * Choose, which WhatsAppConversation to update.
+     */
+    where: WhatsAppConversationWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppConversation updateMany
+   */
+  export type WhatsAppConversationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WhatsAppConversations.
+     */
+    data: XOR<WhatsAppConversationUpdateManyMutationInput, WhatsAppConversationUncheckedUpdateManyInput>
+    /**
+     * Filter which WhatsAppConversations to update
+     */
+    where?: WhatsAppConversationWhereInput
+    /**
+     * Limit how many WhatsAppConversations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppConversation updateManyAndReturn
+   */
+  export type WhatsAppConversationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * The data used to update WhatsAppConversations.
+     */
+    data: XOR<WhatsAppConversationUpdateManyMutationInput, WhatsAppConversationUncheckedUpdateManyInput>
+    /**
+     * Filter which WhatsAppConversations to update
+     */
+    where?: WhatsAppConversationWhereInput
+    /**
+     * Limit how many WhatsAppConversations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppConversation upsert
+   */
+  export type WhatsAppConversationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WhatsAppConversation to update in case it exists.
+     */
+    where: WhatsAppConversationWhereUniqueInput
+    /**
+     * In case the WhatsAppConversation found by the `where` argument doesn't exist, create a new WhatsAppConversation with this data.
+     */
+    create: XOR<WhatsAppConversationCreateInput, WhatsAppConversationUncheckedCreateInput>
+    /**
+     * In case the WhatsAppConversation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WhatsAppConversationUpdateInput, WhatsAppConversationUncheckedUpdateInput>
+  }
+
+  /**
+   * WhatsAppConversation delete
+   */
+  export type WhatsAppConversationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+    /**
+     * Filter which WhatsAppConversation to delete.
+     */
+    where: WhatsAppConversationWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppConversation deleteMany
+   */
+  export type WhatsAppConversationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WhatsAppConversations to delete
+     */
+    where?: WhatsAppConversationWhereInput
+    /**
+     * Limit how many WhatsAppConversations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppConversation.messages
+   */
+  export type WhatsAppConversation$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    where?: WhatsAppMessageWhereInput
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    cursor?: WhatsAppMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppConversation without action
+   */
+  export type WhatsAppConversationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppConversation
+     */
+    select?: WhatsAppConversationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppConversation
+     */
+    omit?: WhatsAppConversationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppConversationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WhatsAppMessage
+   */
+
+  export type AggregateWhatsAppMessage = {
+    _count: WhatsAppMessageCountAggregateOutputType | null
+    _min: WhatsAppMessageMinAggregateOutputType | null
+    _max: WhatsAppMessageMaxAggregateOutputType | null
+  }
+
+  export type WhatsAppMessageMinAggregateOutputType = {
+    id: string | null
+    waMessageId: string | null
+    conversationId: string | null
+    direction: $Enums.WhatsAppMessageDirection | null
+    type: string | null
+    body: string | null
+    status: string | null
+    sentAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type WhatsAppMessageMaxAggregateOutputType = {
+    id: string | null
+    waMessageId: string | null
+    conversationId: string | null
+    direction: $Enums.WhatsAppMessageDirection | null
+    type: string | null
+    body: string | null
+    status: string | null
+    sentAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type WhatsAppMessageCountAggregateOutputType = {
+    id: number
+    waMessageId: number
+    conversationId: number
+    direction: number
+    type: number
+    body: number
+    status: number
+    sentAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type WhatsAppMessageMinAggregateInputType = {
+    id?: true
+    waMessageId?: true
+    conversationId?: true
+    direction?: true
+    type?: true
+    body?: true
+    status?: true
+    sentAt?: true
+    createdAt?: true
+  }
+
+  export type WhatsAppMessageMaxAggregateInputType = {
+    id?: true
+    waMessageId?: true
+    conversationId?: true
+    direction?: true
+    type?: true
+    body?: true
+    status?: true
+    sentAt?: true
+    createdAt?: true
+  }
+
+  export type WhatsAppMessageCountAggregateInputType = {
+    id?: true
+    waMessageId?: true
+    conversationId?: true
+    direction?: true
+    type?: true
+    body?: true
+    status?: true
+    sentAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type WhatsAppMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WhatsAppMessage to aggregate.
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppMessages to fetch.
+     */
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WhatsAppMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WhatsAppMessages
+    **/
+    _count?: true | WhatsAppMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WhatsAppMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WhatsAppMessageMaxAggregateInputType
+  }
+
+  export type GetWhatsAppMessageAggregateType<T extends WhatsAppMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateWhatsAppMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWhatsAppMessage[P]>
+      : GetScalarType<T[P], AggregateWhatsAppMessage[P]>
+  }
+
+
+
+
+  export type WhatsAppMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhatsAppMessageWhereInput
+    orderBy?: WhatsAppMessageOrderByWithAggregationInput | WhatsAppMessageOrderByWithAggregationInput[]
+    by: WhatsAppMessageScalarFieldEnum[] | WhatsAppMessageScalarFieldEnum
+    having?: WhatsAppMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WhatsAppMessageCountAggregateInputType | true
+    _min?: WhatsAppMessageMinAggregateInputType
+    _max?: WhatsAppMessageMaxAggregateInputType
+  }
+
+  export type WhatsAppMessageGroupByOutputType = {
+    id: string
+    waMessageId: string | null
+    conversationId: string
+    direction: $Enums.WhatsAppMessageDirection
+    type: string
+    body: string | null
+    status: string
+    sentAt: Date
+    createdAt: Date
+    _count: WhatsAppMessageCountAggregateOutputType | null
+    _min: WhatsAppMessageMinAggregateOutputType | null
+    _max: WhatsAppMessageMaxAggregateOutputType | null
+  }
+
+  type GetWhatsAppMessageGroupByPayload<T extends WhatsAppMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WhatsAppMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WhatsAppMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WhatsAppMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], WhatsAppMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WhatsAppMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    waMessageId?: boolean
+    conversationId?: boolean
+    direction?: boolean
+    type?: boolean
+    body?: boolean
+    status?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    conversation?: boolean | WhatsAppConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppMessage"]>
+
+  export type WhatsAppMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    waMessageId?: boolean
+    conversationId?: boolean
+    direction?: boolean
+    type?: boolean
+    body?: boolean
+    status?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    conversation?: boolean | WhatsAppConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppMessage"]>
+
+  export type WhatsAppMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    waMessageId?: boolean
+    conversationId?: boolean
+    direction?: boolean
+    type?: boolean
+    body?: boolean
+    status?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    conversation?: boolean | WhatsAppConversationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppMessage"]>
+
+  export type WhatsAppMessageSelectScalar = {
+    id?: boolean
+    waMessageId?: boolean
+    conversationId?: boolean
+    direction?: boolean
+    type?: boolean
+    body?: boolean
+    status?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type WhatsAppMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "waMessageId" | "conversationId" | "direction" | "type" | "body" | "status" | "sentAt" | "createdAt", ExtArgs["result"]["whatsAppMessage"]>
+  export type WhatsAppMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | WhatsAppConversationDefaultArgs<ExtArgs>
+  }
+  export type WhatsAppMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | WhatsAppConversationDefaultArgs<ExtArgs>
+  }
+  export type WhatsAppMessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    conversation?: boolean | WhatsAppConversationDefaultArgs<ExtArgs>
+  }
+
+  export type $WhatsAppMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WhatsAppMessage"
+    objects: {
+      conversation: Prisma.$WhatsAppConversationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      waMessageId: string | null
+      conversationId: string
+      direction: $Enums.WhatsAppMessageDirection
+      type: string
+      body: string | null
+      status: string
+      sentAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["whatsAppMessage"]>
+    composites: {}
+  }
+
+  type WhatsAppMessageGetPayload<S extends boolean | null | undefined | WhatsAppMessageDefaultArgs> = $Result.GetResult<Prisma.$WhatsAppMessagePayload, S>
+
+  type WhatsAppMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WhatsAppMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WhatsAppMessageCountAggregateInputType | true
+    }
+
+  export interface WhatsAppMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WhatsAppMessage'], meta: { name: 'WhatsAppMessage' } }
+    /**
+     * Find zero or one WhatsAppMessage that matches the filter.
+     * @param {WhatsAppMessageFindUniqueArgs} args - Arguments to find a WhatsAppMessage
+     * @example
+     * // Get one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WhatsAppMessageFindUniqueArgs>(args: SelectSubset<T, WhatsAppMessageFindUniqueArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WhatsAppMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WhatsAppMessageFindUniqueOrThrowArgs} args - Arguments to find a WhatsAppMessage
+     * @example
+     * // Get one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WhatsAppMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, WhatsAppMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WhatsAppMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageFindFirstArgs} args - Arguments to find a WhatsAppMessage
+     * @example
+     * // Get one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WhatsAppMessageFindFirstArgs>(args?: SelectSubset<T, WhatsAppMessageFindFirstArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WhatsAppMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageFindFirstOrThrowArgs} args - Arguments to find a WhatsAppMessage
+     * @example
+     * // Get one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WhatsAppMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, WhatsAppMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WhatsAppMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WhatsAppMessages
+     * const whatsAppMessages = await prisma.whatsAppMessage.findMany()
+     * 
+     * // Get first 10 WhatsAppMessages
+     * const whatsAppMessages = await prisma.whatsAppMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const whatsAppMessageWithIdOnly = await prisma.whatsAppMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WhatsAppMessageFindManyArgs>(args?: SelectSubset<T, WhatsAppMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WhatsAppMessage.
+     * @param {WhatsAppMessageCreateArgs} args - Arguments to create a WhatsAppMessage.
+     * @example
+     * // Create one WhatsAppMessage
+     * const WhatsAppMessage = await prisma.whatsAppMessage.create({
+     *   data: {
+     *     // ... data to create a WhatsAppMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends WhatsAppMessageCreateArgs>(args: SelectSubset<T, WhatsAppMessageCreateArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WhatsAppMessages.
+     * @param {WhatsAppMessageCreateManyArgs} args - Arguments to create many WhatsAppMessages.
+     * @example
+     * // Create many WhatsAppMessages
+     * const whatsAppMessage = await prisma.whatsAppMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WhatsAppMessageCreateManyArgs>(args?: SelectSubset<T, WhatsAppMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WhatsAppMessages and returns the data saved in the database.
+     * @param {WhatsAppMessageCreateManyAndReturnArgs} args - Arguments to create many WhatsAppMessages.
+     * @example
+     * // Create many WhatsAppMessages
+     * const whatsAppMessage = await prisma.whatsAppMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WhatsAppMessages and only return the `id`
+     * const whatsAppMessageWithIdOnly = await prisma.whatsAppMessage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WhatsAppMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, WhatsAppMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WhatsAppMessage.
+     * @param {WhatsAppMessageDeleteArgs} args - Arguments to delete one WhatsAppMessage.
+     * @example
+     * // Delete one WhatsAppMessage
+     * const WhatsAppMessage = await prisma.whatsAppMessage.delete({
+     *   where: {
+     *     // ... filter to delete one WhatsAppMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WhatsAppMessageDeleteArgs>(args: SelectSubset<T, WhatsAppMessageDeleteArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WhatsAppMessage.
+     * @param {WhatsAppMessageUpdateArgs} args - Arguments to update one WhatsAppMessage.
+     * @example
+     * // Update one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WhatsAppMessageUpdateArgs>(args: SelectSubset<T, WhatsAppMessageUpdateArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WhatsAppMessages.
+     * @param {WhatsAppMessageDeleteManyArgs} args - Arguments to filter WhatsAppMessages to delete.
+     * @example
+     * // Delete a few WhatsAppMessages
+     * const { count } = await prisma.whatsAppMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WhatsAppMessageDeleteManyArgs>(args?: SelectSubset<T, WhatsAppMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WhatsAppMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WhatsAppMessages
+     * const whatsAppMessage = await prisma.whatsAppMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WhatsAppMessageUpdateManyArgs>(args: SelectSubset<T, WhatsAppMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WhatsAppMessages and returns the data updated in the database.
+     * @param {WhatsAppMessageUpdateManyAndReturnArgs} args - Arguments to update many WhatsAppMessages.
+     * @example
+     * // Update many WhatsAppMessages
+     * const whatsAppMessage = await prisma.whatsAppMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WhatsAppMessages and only return the `id`
+     * const whatsAppMessageWithIdOnly = await prisma.whatsAppMessage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WhatsAppMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, WhatsAppMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WhatsAppMessage.
+     * @param {WhatsAppMessageUpsertArgs} args - Arguments to update or create a WhatsAppMessage.
+     * @example
+     * // Update or create a WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.upsert({
+     *   create: {
+     *     // ... data to create a WhatsAppMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WhatsAppMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WhatsAppMessageUpsertArgs>(args: SelectSubset<T, WhatsAppMessageUpsertArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WhatsAppMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageCountArgs} args - Arguments to filter WhatsAppMessages to count.
+     * @example
+     * // Count the number of WhatsAppMessages
+     * const count = await prisma.whatsAppMessage.count({
+     *   where: {
+     *     // ... the filter for the WhatsAppMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends WhatsAppMessageCountArgs>(
+      args?: Subset<T, WhatsAppMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WhatsAppMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WhatsAppMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WhatsAppMessageAggregateArgs>(args: Subset<T, WhatsAppMessageAggregateArgs>): Prisma.PrismaPromise<GetWhatsAppMessageAggregateType<T>>
+
+    /**
+     * Group by WhatsAppMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WhatsAppMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WhatsAppMessageGroupByArgs['orderBy'] }
+        : { orderBy?: WhatsAppMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WhatsAppMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWhatsAppMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WhatsAppMessage model
+   */
+  readonly fields: WhatsAppMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WhatsAppMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WhatsAppMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    conversation<T extends WhatsAppConversationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WhatsAppConversationDefaultArgs<ExtArgs>>): Prisma__WhatsAppConversationClient<$Result.GetResult<Prisma.$WhatsAppConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WhatsAppMessage model
+   */
+  interface WhatsAppMessageFieldRefs {
+    readonly id: FieldRef<"WhatsAppMessage", 'String'>
+    readonly waMessageId: FieldRef<"WhatsAppMessage", 'String'>
+    readonly conversationId: FieldRef<"WhatsAppMessage", 'String'>
+    readonly direction: FieldRef<"WhatsAppMessage", 'WhatsAppMessageDirection'>
+    readonly type: FieldRef<"WhatsAppMessage", 'String'>
+    readonly body: FieldRef<"WhatsAppMessage", 'String'>
+    readonly status: FieldRef<"WhatsAppMessage", 'String'>
+    readonly sentAt: FieldRef<"WhatsAppMessage", 'DateTime'>
+    readonly createdAt: FieldRef<"WhatsAppMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WhatsAppMessage findUnique
+   */
+  export type WhatsAppMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessage to fetch.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppMessage findUniqueOrThrow
+   */
+  export type WhatsAppMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessage to fetch.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppMessage findFirst
+   */
+  export type WhatsAppMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessage to fetch.
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppMessages to fetch.
+     */
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WhatsAppMessages.
+     */
+    cursor?: WhatsAppMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppMessages.
+     */
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppMessage findFirstOrThrow
+   */
+  export type WhatsAppMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessage to fetch.
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppMessages to fetch.
+     */
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WhatsAppMessages.
+     */
+    cursor?: WhatsAppMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppMessages.
+     */
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppMessage findMany
+   */
+  export type WhatsAppMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessages to fetch.
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppMessages to fetch.
+     */
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WhatsAppMessages.
+     */
+    cursor?: WhatsAppMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppMessages.
+     */
+    skip?: number
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppMessage create
+   */
+  export type WhatsAppMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WhatsAppMessage.
+     */
+    data: XOR<WhatsAppMessageCreateInput, WhatsAppMessageUncheckedCreateInput>
+  }
+
+  /**
+   * WhatsAppMessage createMany
+   */
+  export type WhatsAppMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WhatsAppMessages.
+     */
+    data: WhatsAppMessageCreateManyInput | WhatsAppMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WhatsAppMessage createManyAndReturn
+   */
+  export type WhatsAppMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many WhatsAppMessages.
+     */
+    data: WhatsAppMessageCreateManyInput | WhatsAppMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WhatsAppMessage update
+   */
+  export type WhatsAppMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WhatsAppMessage.
+     */
+    data: XOR<WhatsAppMessageUpdateInput, WhatsAppMessageUncheckedUpdateInput>
+    /**
+     * Choose, which WhatsAppMessage to update.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppMessage updateMany
+   */
+  export type WhatsAppMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WhatsAppMessages.
+     */
+    data: XOR<WhatsAppMessageUpdateManyMutationInput, WhatsAppMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which WhatsAppMessages to update
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * Limit how many WhatsAppMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppMessage updateManyAndReturn
+   */
+  export type WhatsAppMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update WhatsAppMessages.
+     */
+    data: XOR<WhatsAppMessageUpdateManyMutationInput, WhatsAppMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which WhatsAppMessages to update
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * Limit how many WhatsAppMessages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WhatsAppMessage upsert
+   */
+  export type WhatsAppMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WhatsAppMessage to update in case it exists.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+    /**
+     * In case the WhatsAppMessage found by the `where` argument doesn't exist, create a new WhatsAppMessage with this data.
+     */
+    create: XOR<WhatsAppMessageCreateInput, WhatsAppMessageUncheckedCreateInput>
+    /**
+     * In case the WhatsAppMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WhatsAppMessageUpdateInput, WhatsAppMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * WhatsAppMessage delete
+   */
+  export type WhatsAppMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter which WhatsAppMessage to delete.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppMessage deleteMany
+   */
+  export type WhatsAppMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WhatsAppMessages to delete
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * Limit how many WhatsAppMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppMessage without action
+   */
+  export type WhatsAppMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -53682,6 +56173,36 @@ export namespace Prisma {
   export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
 
 
+  export const WhatsAppConversationScalarFieldEnum: {
+    id: 'id',
+    phone: 'phone',
+    name: 'name',
+    lastMessage: 'lastMessage',
+    lastMessageAt: 'lastMessageAt',
+    unreadCount: 'unreadCount',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WhatsAppConversationScalarFieldEnum = (typeof WhatsAppConversationScalarFieldEnum)[keyof typeof WhatsAppConversationScalarFieldEnum]
+
+
+  export const WhatsAppMessageScalarFieldEnum: {
+    id: 'id',
+    waMessageId: 'waMessageId',
+    conversationId: 'conversationId',
+    direction: 'direction',
+    type: 'type',
+    body: 'body',
+    status: 'status',
+    sentAt: 'sentAt',
+    createdAt: 'createdAt'
+  };
+
+  export type WhatsAppMessageScalarFieldEnum = (typeof WhatsAppMessageScalarFieldEnum)[keyof typeof WhatsAppMessageScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -53998,6 +56519,20 @@ export namespace Prisma {
    * Reference to a field of type 'WalletTransferStatus[]'
    */
   export type ListEnumWalletTransferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WalletTransferStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WhatsAppMessageDirection'
+   */
+  export type EnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatsAppMessageDirection'>
+    
+
+
+  /**
+   * Reference to a field of type 'WhatsAppMessageDirection[]'
+   */
+  export type ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatsAppMessageDirection[]'>
     
   /**
    * Deep Input Types
@@ -57939,6 +60474,158 @@ export namespace Prisma {
     isActive?: BoolWithAggregatesFilter<"Coupon"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Coupon"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Coupon"> | Date | string
+  }
+
+  export type WhatsAppConversationWhereInput = {
+    AND?: WhatsAppConversationWhereInput | WhatsAppConversationWhereInput[]
+    OR?: WhatsAppConversationWhereInput[]
+    NOT?: WhatsAppConversationWhereInput | WhatsAppConversationWhereInput[]
+    id?: StringFilter<"WhatsAppConversation"> | string
+    phone?: StringFilter<"WhatsAppConversation"> | string
+    name?: StringNullableFilter<"WhatsAppConversation"> | string | null
+    lastMessage?: StringNullableFilter<"WhatsAppConversation"> | string | null
+    lastMessageAt?: DateTimeNullableFilter<"WhatsAppConversation"> | Date | string | null
+    unreadCount?: IntFilter<"WhatsAppConversation"> | number
+    notes?: StringNullableFilter<"WhatsAppConversation"> | string | null
+    createdAt?: DateTimeFilter<"WhatsAppConversation"> | Date | string
+    updatedAt?: DateTimeFilter<"WhatsAppConversation"> | Date | string
+    messages?: WhatsAppMessageListRelationFilter
+  }
+
+  export type WhatsAppConversationOrderByWithRelationInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    name?: SortOrderInput | SortOrder
+    lastMessage?: SortOrderInput | SortOrder
+    lastMessageAt?: SortOrderInput | SortOrder
+    unreadCount?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    messages?: WhatsAppMessageOrderByRelationAggregateInput
+  }
+
+  export type WhatsAppConversationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    phone?: string
+    AND?: WhatsAppConversationWhereInput | WhatsAppConversationWhereInput[]
+    OR?: WhatsAppConversationWhereInput[]
+    NOT?: WhatsAppConversationWhereInput | WhatsAppConversationWhereInput[]
+    name?: StringNullableFilter<"WhatsAppConversation"> | string | null
+    lastMessage?: StringNullableFilter<"WhatsAppConversation"> | string | null
+    lastMessageAt?: DateTimeNullableFilter<"WhatsAppConversation"> | Date | string | null
+    unreadCount?: IntFilter<"WhatsAppConversation"> | number
+    notes?: StringNullableFilter<"WhatsAppConversation"> | string | null
+    createdAt?: DateTimeFilter<"WhatsAppConversation"> | Date | string
+    updatedAt?: DateTimeFilter<"WhatsAppConversation"> | Date | string
+    messages?: WhatsAppMessageListRelationFilter
+  }, "id" | "phone">
+
+  export type WhatsAppConversationOrderByWithAggregationInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    name?: SortOrderInput | SortOrder
+    lastMessage?: SortOrderInput | SortOrder
+    lastMessageAt?: SortOrderInput | SortOrder
+    unreadCount?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WhatsAppConversationCountOrderByAggregateInput
+    _avg?: WhatsAppConversationAvgOrderByAggregateInput
+    _max?: WhatsAppConversationMaxOrderByAggregateInput
+    _min?: WhatsAppConversationMinOrderByAggregateInput
+    _sum?: WhatsAppConversationSumOrderByAggregateInput
+  }
+
+  export type WhatsAppConversationScalarWhereWithAggregatesInput = {
+    AND?: WhatsAppConversationScalarWhereWithAggregatesInput | WhatsAppConversationScalarWhereWithAggregatesInput[]
+    OR?: WhatsAppConversationScalarWhereWithAggregatesInput[]
+    NOT?: WhatsAppConversationScalarWhereWithAggregatesInput | WhatsAppConversationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WhatsAppConversation"> | string
+    phone?: StringWithAggregatesFilter<"WhatsAppConversation"> | string
+    name?: StringNullableWithAggregatesFilter<"WhatsAppConversation"> | string | null
+    lastMessage?: StringNullableWithAggregatesFilter<"WhatsAppConversation"> | string | null
+    lastMessageAt?: DateTimeNullableWithAggregatesFilter<"WhatsAppConversation"> | Date | string | null
+    unreadCount?: IntWithAggregatesFilter<"WhatsAppConversation"> | number
+    notes?: StringNullableWithAggregatesFilter<"WhatsAppConversation"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WhatsAppConversation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WhatsAppConversation"> | Date | string
+  }
+
+  export type WhatsAppMessageWhereInput = {
+    AND?: WhatsAppMessageWhereInput | WhatsAppMessageWhereInput[]
+    OR?: WhatsAppMessageWhereInput[]
+    NOT?: WhatsAppMessageWhereInput | WhatsAppMessageWhereInput[]
+    id?: StringFilter<"WhatsAppMessage"> | string
+    waMessageId?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    conversationId?: StringFilter<"WhatsAppMessage"> | string
+    direction?: EnumWhatsAppMessageDirectionFilter<"WhatsAppMessage"> | $Enums.WhatsAppMessageDirection
+    type?: StringFilter<"WhatsAppMessage"> | string
+    body?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    status?: StringFilter<"WhatsAppMessage"> | string
+    sentAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    createdAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    conversation?: XOR<WhatsAppConversationScalarRelationFilter, WhatsAppConversationWhereInput>
+  }
+
+  export type WhatsAppMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    waMessageId?: SortOrderInput | SortOrder
+    conversationId?: SortOrder
+    direction?: SortOrder
+    type?: SortOrder
+    body?: SortOrderInput | SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    conversation?: WhatsAppConversationOrderByWithRelationInput
+  }
+
+  export type WhatsAppMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    waMessageId?: string
+    AND?: WhatsAppMessageWhereInput | WhatsAppMessageWhereInput[]
+    OR?: WhatsAppMessageWhereInput[]
+    NOT?: WhatsAppMessageWhereInput | WhatsAppMessageWhereInput[]
+    conversationId?: StringFilter<"WhatsAppMessage"> | string
+    direction?: EnumWhatsAppMessageDirectionFilter<"WhatsAppMessage"> | $Enums.WhatsAppMessageDirection
+    type?: StringFilter<"WhatsAppMessage"> | string
+    body?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    status?: StringFilter<"WhatsAppMessage"> | string
+    sentAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    createdAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    conversation?: XOR<WhatsAppConversationScalarRelationFilter, WhatsAppConversationWhereInput>
+  }, "id" | "waMessageId">
+
+  export type WhatsAppMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    waMessageId?: SortOrderInput | SortOrder
+    conversationId?: SortOrder
+    direction?: SortOrder
+    type?: SortOrder
+    body?: SortOrderInput | SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: WhatsAppMessageCountOrderByAggregateInput
+    _max?: WhatsAppMessageMaxOrderByAggregateInput
+    _min?: WhatsAppMessageMinOrderByAggregateInput
+  }
+
+  export type WhatsAppMessageScalarWhereWithAggregatesInput = {
+    AND?: WhatsAppMessageScalarWhereWithAggregatesInput | WhatsAppMessageScalarWhereWithAggregatesInput[]
+    OR?: WhatsAppMessageScalarWhereWithAggregatesInput[]
+    NOT?: WhatsAppMessageScalarWhereWithAggregatesInput | WhatsAppMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WhatsAppMessage"> | string
+    waMessageId?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    conversationId?: StringWithAggregatesFilter<"WhatsAppMessage"> | string
+    direction?: EnumWhatsAppMessageDirectionWithAggregatesFilter<"WhatsAppMessage"> | $Enums.WhatsAppMessageDirection
+    type?: StringWithAggregatesFilter<"WhatsAppMessage"> | string
+    body?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    status?: StringWithAggregatesFilter<"WhatsAppMessage"> | string
+    sentAt?: DateTimeWithAggregatesFilter<"WhatsAppMessage"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"WhatsAppMessage"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -62374,6 +65061,177 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WhatsAppConversationCreateInput = {
+    id?: string
+    phone: string
+    name?: string | null
+    lastMessage?: string | null
+    lastMessageAt?: Date | string | null
+    unreadCount?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: WhatsAppMessageCreateNestedManyWithoutConversationInput
+  }
+
+  export type WhatsAppConversationUncheckedCreateInput = {
+    id?: string
+    phone: string
+    name?: string | null
+    lastMessage?: string | null
+    lastMessageAt?: Date | string | null
+    unreadCount?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: WhatsAppMessageUncheckedCreateNestedManyWithoutConversationInput
+  }
+
+  export type WhatsAppConversationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: WhatsAppMessageUpdateManyWithoutConversationNestedInput
+  }
+
+  export type WhatsAppConversationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: WhatsAppMessageUncheckedUpdateManyWithoutConversationNestedInput
+  }
+
+  export type WhatsAppConversationCreateManyInput = {
+    id?: string
+    phone: string
+    name?: string | null
+    lastMessage?: string | null
+    lastMessageAt?: Date | string | null
+    unreadCount?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppConversationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppConversationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageCreateInput = {
+    id?: string
+    waMessageId?: string | null
+    direction: $Enums.WhatsAppMessageDirection
+    type?: string
+    body?: string | null
+    status?: string
+    sentAt?: Date | string
+    createdAt?: Date | string
+    conversation: WhatsAppConversationCreateNestedOneWithoutMessagesInput
+  }
+
+  export type WhatsAppMessageUncheckedCreateInput = {
+    id?: string
+    waMessageId?: string | null
+    conversationId: string
+    direction: $Enums.WhatsAppMessageDirection
+    type?: string
+    body?: string | null
+    status?: string
+    sentAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type WhatsAppMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    waMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: EnumWhatsAppMessageDirectionFieldUpdateOperationsInput | $Enums.WhatsAppMessageDirection
+    type?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conversation?: WhatsAppConversationUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type WhatsAppMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    waMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppMessageDirectionFieldUpdateOperationsInput | $Enums.WhatsAppMessageDirection
+    type?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageCreateManyInput = {
+    id?: string
+    waMessageId?: string | null
+    conversationId: string
+    direction: $Enums.WhatsAppMessageDirection
+    type?: string
+    body?: string | null
+    status?: string
+    sentAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type WhatsAppMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    waMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: EnumWhatsAppMessageDirectionFieldUpdateOperationsInput | $Enums.WhatsAppMessageDirection
+    type?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    waMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    conversationId?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppMessageDirectionFieldUpdateOperationsInput | $Enums.WhatsAppMessageDirection
+    type?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -65635,6 +68493,118 @@ export namespace Prisma {
     discountValue?: SortOrder
     usageLimit?: SortOrder
     usedCount?: SortOrder
+  }
+
+  export type WhatsAppMessageListRelationFilter = {
+    every?: WhatsAppMessageWhereInput
+    some?: WhatsAppMessageWhereInput
+    none?: WhatsAppMessageWhereInput
+  }
+
+  export type WhatsAppMessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WhatsAppConversationCountOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    name?: SortOrder
+    lastMessage?: SortOrder
+    lastMessageAt?: SortOrder
+    unreadCount?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhatsAppConversationAvgOrderByAggregateInput = {
+    unreadCount?: SortOrder
+  }
+
+  export type WhatsAppConversationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    name?: SortOrder
+    lastMessage?: SortOrder
+    lastMessageAt?: SortOrder
+    unreadCount?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhatsAppConversationMinOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    name?: SortOrder
+    lastMessage?: SortOrder
+    lastMessageAt?: SortOrder
+    unreadCount?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhatsAppConversationSumOrderByAggregateInput = {
+    unreadCount?: SortOrder
+  }
+
+  export type EnumWhatsAppMessageDirectionFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppMessageDirection | EnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppMessageDirection[] | ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppMessageDirection[] | ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppMessageDirectionFilter<$PrismaModel> | $Enums.WhatsAppMessageDirection
+  }
+
+  export type WhatsAppConversationScalarRelationFilter = {
+    is?: WhatsAppConversationWhereInput
+    isNot?: WhatsAppConversationWhereInput
+  }
+
+  export type WhatsAppMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    waMessageId?: SortOrder
+    conversationId?: SortOrder
+    direction?: SortOrder
+    type?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WhatsAppMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    waMessageId?: SortOrder
+    conversationId?: SortOrder
+    direction?: SortOrder
+    type?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WhatsAppMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    waMessageId?: SortOrder
+    conversationId?: SortOrder
+    direction?: SortOrder
+    type?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumWhatsAppMessageDirectionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppMessageDirection | EnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppMessageDirection[] | ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppMessageDirection[] | ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppMessageDirectionWithAggregatesFilter<$PrismaModel> | $Enums.WhatsAppMessageDirection
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWhatsAppMessageDirectionFilter<$PrismaModel>
+    _max?: NestedEnumWhatsAppMessageDirectionFilter<$PrismaModel>
   }
 
   export type UserCreateNestedOneWithoutSubordinatesInput = {
@@ -69105,6 +72075,66 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWalletTransfersInput, UserUpdateWithoutWalletTransfersInput>, UserUncheckedUpdateWithoutWalletTransfersInput>
   }
 
+  export type WhatsAppMessageCreateNestedManyWithoutConversationInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutConversationInput, WhatsAppMessageUncheckedCreateWithoutConversationInput> | WhatsAppMessageCreateWithoutConversationInput[] | WhatsAppMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutConversationInput | WhatsAppMessageCreateOrConnectWithoutConversationInput[]
+    createMany?: WhatsAppMessageCreateManyConversationInputEnvelope
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+  }
+
+  export type WhatsAppMessageUncheckedCreateNestedManyWithoutConversationInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutConversationInput, WhatsAppMessageUncheckedCreateWithoutConversationInput> | WhatsAppMessageCreateWithoutConversationInput[] | WhatsAppMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutConversationInput | WhatsAppMessageCreateOrConnectWithoutConversationInput[]
+    createMany?: WhatsAppMessageCreateManyConversationInputEnvelope
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+  }
+
+  export type WhatsAppMessageUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutConversationInput, WhatsAppMessageUncheckedCreateWithoutConversationInput> | WhatsAppMessageCreateWithoutConversationInput[] | WhatsAppMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutConversationInput | WhatsAppMessageCreateOrConnectWithoutConversationInput[]
+    upsert?: WhatsAppMessageUpsertWithWhereUniqueWithoutConversationInput | WhatsAppMessageUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: WhatsAppMessageCreateManyConversationInputEnvelope
+    set?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    disconnect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    delete?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    update?: WhatsAppMessageUpdateWithWhereUniqueWithoutConversationInput | WhatsAppMessageUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: WhatsAppMessageUpdateManyWithWhereWithoutConversationInput | WhatsAppMessageUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+  }
+
+  export type WhatsAppMessageUncheckedUpdateManyWithoutConversationNestedInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutConversationInput, WhatsAppMessageUncheckedCreateWithoutConversationInput> | WhatsAppMessageCreateWithoutConversationInput[] | WhatsAppMessageUncheckedCreateWithoutConversationInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutConversationInput | WhatsAppMessageCreateOrConnectWithoutConversationInput[]
+    upsert?: WhatsAppMessageUpsertWithWhereUniqueWithoutConversationInput | WhatsAppMessageUpsertWithWhereUniqueWithoutConversationInput[]
+    createMany?: WhatsAppMessageCreateManyConversationInputEnvelope
+    set?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    disconnect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    delete?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    update?: WhatsAppMessageUpdateWithWhereUniqueWithoutConversationInput | WhatsAppMessageUpdateWithWhereUniqueWithoutConversationInput[]
+    updateMany?: WhatsAppMessageUpdateManyWithWhereWithoutConversationInput | WhatsAppMessageUpdateManyWithWhereWithoutConversationInput[]
+    deleteMany?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+  }
+
+  export type WhatsAppConversationCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<WhatsAppConversationCreateWithoutMessagesInput, WhatsAppConversationUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: WhatsAppConversationCreateOrConnectWithoutMessagesInput
+    connect?: WhatsAppConversationWhereUniqueInput
+  }
+
+  export type EnumWhatsAppMessageDirectionFieldUpdateOperationsInput = {
+    set?: $Enums.WhatsAppMessageDirection
+  }
+
+  export type WhatsAppConversationUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<WhatsAppConversationCreateWithoutMessagesInput, WhatsAppConversationUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: WhatsAppConversationCreateOrConnectWithoutMessagesInput
+    upsert?: WhatsAppConversationUpsertWithoutMessagesInput
+    connect?: WhatsAppConversationWhereUniqueInput
+    update?: XOR<XOR<WhatsAppConversationUpdateToOneWithWhereWithoutMessagesInput, WhatsAppConversationUpdateWithoutMessagesInput>, WhatsAppConversationUncheckedUpdateWithoutMessagesInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -69597,6 +72627,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWalletTransferStatusFilter<$PrismaModel>
     _max?: NestedEnumWalletTransferStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWhatsAppMessageDirectionFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppMessageDirection | EnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppMessageDirection[] | ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppMessageDirection[] | ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppMessageDirectionFilter<$PrismaModel> | $Enums.WhatsAppMessageDirection
+  }
+
+  export type NestedEnumWhatsAppMessageDirectionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppMessageDirection | EnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppMessageDirection[] | ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppMessageDirection[] | ListEnumWhatsAppMessageDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppMessageDirectionWithAggregatesFilter<$PrismaModel> | $Enums.WhatsAppMessageDirection
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWhatsAppMessageDirectionFilter<$PrismaModel>
+    _max?: NestedEnumWhatsAppMessageDirectionFilter<$PrismaModel>
   }
 
   export type UserCreateWithoutSubordinatesInput = {
@@ -80984,6 +84031,133 @@ export namespace Prisma {
     wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type WhatsAppMessageCreateWithoutConversationInput = {
+    id?: string
+    waMessageId?: string | null
+    direction: $Enums.WhatsAppMessageDirection
+    type?: string
+    body?: string | null
+    status?: string
+    sentAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type WhatsAppMessageUncheckedCreateWithoutConversationInput = {
+    id?: string
+    waMessageId?: string | null
+    direction: $Enums.WhatsAppMessageDirection
+    type?: string
+    body?: string | null
+    status?: string
+    sentAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type WhatsAppMessageCreateOrConnectWithoutConversationInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    create: XOR<WhatsAppMessageCreateWithoutConversationInput, WhatsAppMessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type WhatsAppMessageCreateManyConversationInputEnvelope = {
+    data: WhatsAppMessageCreateManyConversationInput | WhatsAppMessageCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WhatsAppMessageUpsertWithWhereUniqueWithoutConversationInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    update: XOR<WhatsAppMessageUpdateWithoutConversationInput, WhatsAppMessageUncheckedUpdateWithoutConversationInput>
+    create: XOR<WhatsAppMessageCreateWithoutConversationInput, WhatsAppMessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type WhatsAppMessageUpdateWithWhereUniqueWithoutConversationInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    data: XOR<WhatsAppMessageUpdateWithoutConversationInput, WhatsAppMessageUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type WhatsAppMessageUpdateManyWithWhereWithoutConversationInput = {
+    where: WhatsAppMessageScalarWhereInput
+    data: XOR<WhatsAppMessageUpdateManyMutationInput, WhatsAppMessageUncheckedUpdateManyWithoutConversationInput>
+  }
+
+  export type WhatsAppMessageScalarWhereInput = {
+    AND?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+    OR?: WhatsAppMessageScalarWhereInput[]
+    NOT?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+    id?: StringFilter<"WhatsAppMessage"> | string
+    waMessageId?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    conversationId?: StringFilter<"WhatsAppMessage"> | string
+    direction?: EnumWhatsAppMessageDirectionFilter<"WhatsAppMessage"> | $Enums.WhatsAppMessageDirection
+    type?: StringFilter<"WhatsAppMessage"> | string
+    body?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    status?: StringFilter<"WhatsAppMessage"> | string
+    sentAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    createdAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+  }
+
+  export type WhatsAppConversationCreateWithoutMessagesInput = {
+    id?: string
+    phone: string
+    name?: string | null
+    lastMessage?: string | null
+    lastMessageAt?: Date | string | null
+    unreadCount?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppConversationUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    phone: string
+    name?: string | null
+    lastMessage?: string | null
+    lastMessageAt?: Date | string | null
+    unreadCount?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppConversationCreateOrConnectWithoutMessagesInput = {
+    where: WhatsAppConversationWhereUniqueInput
+    create: XOR<WhatsAppConversationCreateWithoutMessagesInput, WhatsAppConversationUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type WhatsAppConversationUpsertWithoutMessagesInput = {
+    update: XOR<WhatsAppConversationUpdateWithoutMessagesInput, WhatsAppConversationUncheckedUpdateWithoutMessagesInput>
+    create: XOR<WhatsAppConversationCreateWithoutMessagesInput, WhatsAppConversationUncheckedCreateWithoutMessagesInput>
+    where?: WhatsAppConversationWhereInput
+  }
+
+  export type WhatsAppConversationUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: WhatsAppConversationWhereInput
+    data: XOR<WhatsAppConversationUpdateWithoutMessagesInput, WhatsAppConversationUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type WhatsAppConversationUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppConversationUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    unreadCount?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyParentInput = {
     id?: string
     username: string
@@ -85075,6 +88249,50 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageCreateManyConversationInput = {
+    id?: string
+    waMessageId?: string | null
+    direction: $Enums.WhatsAppMessageDirection
+    type?: string
+    body?: string | null
+    status?: string
+    sentAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type WhatsAppMessageUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    waMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: EnumWhatsAppMessageDirectionFieldUpdateOperationsInput | $Enums.WhatsAppMessageDirection
+    type?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    waMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: EnumWhatsAppMessageDirectionFieldUpdateOperationsInput | $Enums.WhatsAppMessageDirection
+    type?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    waMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    direction?: EnumWhatsAppMessageDirectionFieldUpdateOperationsInput | $Enums.WhatsAppMessageDirection
+    type?: StringFieldUpdateOperationsInput | string
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    sentAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
