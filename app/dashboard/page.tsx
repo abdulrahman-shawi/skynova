@@ -4,8 +4,6 @@ import * as React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { GetEmployeeActivitySummary, GetUserTargetProgress } from '@/server/analytics';
 import { getAffiliateUserDashboard } from '@/server/affiliate';
-import { getTodayDashboard } from '@/server/collections';
-import { getOrders } from '@/server/order';
 import { createUserTarget, deleteProductTargetRow, deleteSalesTargetRow, getUserActivityTargetProgress, updateUserTarget } from '@/server/user';
 import { getProduct } from '@/server/product';
 import toast from 'react-hot-toast';
@@ -108,23 +106,6 @@ const DashboardPage: React.FunctionComponent = () => {
       } | null;
     }>;
   } | null>(null);
-  const [todayDashboard, setTodayDashboard] = React.useState({
-    ordersToday: 0,
-    totalSales: 0,
-    collected: 0,
-    debts: 0,
-    shippingPending: 0,
-    delivered: 0,
-    returned: 0,
-    problemOrders: 0,
-  });
-  const [dashboardDetail, setDashboardDetail] = React.useState<{ open: boolean; title: string; type: string | null; orders: any[]; loading: boolean }>({
-    open: false,
-    title: '',
-    type: null,
-    orders: [],
-    loading: false,
-  });
 
   const isInvalidActivityCustomRange =
     activityFilterPreset === "custom" &&
@@ -556,216 +537,12 @@ const DashboardPage: React.FunctionComponent = () => {
     loadAffiliateDashboard();
   }, [user?.id, user?.accountType]);
 
-  React.useEffect(() => {
-    const loadTodayDashboard = async () => {
-      const result = await getTodayDashboard();
-      setTodayDashboard(result);
-    };
-
-    loadTodayDashboard();
-  }, []);
-
-  const openDashboardDetail = React.useCallback(async (type: string, title: string) => {
-    try {
-      setDashboardDetail({ open: true, title, type, orders: [], loading: true });
-      const result = await getOrders();
-      if (!result?.success || !Array.isArray(result.data)) {
-        setDashboardDetail({ open: true, title, type, orders: [], loading: false });
-        return;
-      }
-
-      const today = new Date();
-      const todayOrders = result.data.filter((order: any) => {
-        const value = order?.manualCreatedAt || order?.createdAt;
-        if (!value) return false;
-        const date = new Date(value);
-        return !Number.isNaN(date.getTime()) &&
-          date.getFullYear() === today.getFullYear() &&
-          date.getMonth() === today.getMonth() &&
-          date.getDate() === today.getDate();
-      });
-
-      const shippingPendingStatuses = ["قيد الشحن", "في الطريق", "في انتظار الشحن", "معلق"];
-      const deliveredStatuses = ["تم التسليم", "تم تسليم الطلب", "مدفوعة"];
-      const returnedStatuses = ["مرتجع", "ملغي", "تم الإلغاء", "إلغاء"];
-
-      const filtered = todayOrders.filter((order: any) => {
-        const status = String(order?.status || '').trim();
-        const paymentMethod = String(order?.paymentMethod || '').trim();
-        const hasProblem = Boolean(order?.hasProblem || order?.problem || order?.needsReview);
-        const missingShipping = !order?.shipping && !order?.shippingName && !order?.shippingPrice;
-        const unclearPayment = !paymentMethod || paymentMethod === 'غير محدد';
-
-        switch (type) {
-          case 'orders':
-            return true;
-          case 'sales':
-            return true;
-          case 'collected':
-            return paymentMethod === 'تحويل بنكي' || paymentMethod === 'مختلطة' || deliveredStatuses.includes(status);
-          case 'debts':
-            return !(paymentMethod === 'تحويل بنكي' || paymentMethod === 'مختلطة' || deliveredStatuses.includes(status));
-          case 'shipping':
-            return shippingPendingStatuses.includes(status);
-          case 'delivered':
-            return deliveredStatuses.includes(status);
-          case 'returned':
-            return returnedStatuses.includes(status);
-          case 'problem':
-            return hasProblem || missingShipping || unclearPayment || ["مشكلة", "لديه مشكلة"].includes(status);
-          default:
-            return true;
-        }
-      });
-
-      setDashboardDetail({ open: true, title, type, orders: filtered, loading: false });
-    } catch (error) {
-      console.error('Error loading dashboard detail orders:', error);
-      setDashboardDetail({ open: true, title, type, orders: [], loading: false });
-    }
-  }, []);
-
-  const formatCurrency = (value: number) => `$${Number(value || 0).toLocaleString()}`;
-
   return (
     <div className="p-2 md:p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">لوحة التحكم</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">متابعة التاركت حسب المنتج</p>
       </div>
-
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <button
-          type="button"
-          onClick={() => openDashboardDetail('orders', 'الطلبات اليوم')}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-600 dark:hover:bg-slate-800"
-        >
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">📦 الطلبات</div>
-          <div className="mt-2 text-3xl font-black text-slate-900 dark:text-white">{todayDashboard.ordersToday}</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => openDashboardDetail('sales', 'إجمالي المبيعات')}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-700 dark:hover:bg-slate-800"
-        >
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">💰 إجمالي المبيعات</div>
-          <div className="mt-2 text-2xl font-black text-emerald-600">{formatCurrency(todayDashboard.totalSales)}</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => openDashboardDetail('collected', 'المحصل')}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-blue-300 hover:bg-blue-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-700 dark:hover:bg-slate-800"
-        >
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">💵 المحصل</div>
-          <div className="mt-2 text-2xl font-black text-blue-600">{formatCurrency(todayDashboard.collected)}</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => openDashboardDetail('debts', 'الذمم')}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-amber-300 hover:bg-amber-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-amber-700 dark:hover:bg-slate-800"
-        >
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">📌 الذمم</div>
-          <div className="mt-2 text-2xl font-black text-amber-600">{formatCurrency(todayDashboard.debts)}</div>
-        </button>
-      </div>
-
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <button
-          type="button"
-          onClick={() => openDashboardDetail('shipping', 'قيد الشحن')}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-sky-300 hover:bg-sky-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-sky-700 dark:hover:bg-slate-800"
-        >
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">🚚 قيد الشحن</div>
-          <div className="mt-2 text-3xl font-black text-sky-600">{todayDashboard.shippingPending}</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => openDashboardDetail('delivered', 'تم التسليم')}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-green-300 hover:bg-green-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-green-700 dark:hover:bg-slate-800"
-        >
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">✅ تم التسليم</div>
-          <div className="mt-2 text-3xl font-black text-green-600">{todayDashboard.delivered}</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => openDashboardDetail('returned', 'مرتجع')}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-red-300 hover:bg-red-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-red-700 dark:hover:bg-slate-800"
-        >
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">↩️ مرتجع</div>
-          <div className="mt-2 text-3xl font-black text-red-600">{todayDashboard.returned}</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => openDashboardDetail('problem', 'طلبات فيها مشكلة')}
-          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm transition hover:border-orange-300 hover:bg-orange-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-orange-700 dark:hover:bg-slate-800"
-        >
-          <div className="text-xs font-bold text-slate-500 dark:text-slate-400">⚠️ طلبات فيها مشكلة</div>
-          <div className="mt-2 text-3xl font-black text-orange-600">{todayDashboard.problemOrders}</div>
-        </button>
-      </div>
-
-      {dashboardDetail.open && (
-        <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-lg font-black text-slate-800 dark:text-white">{dashboardDetail.title}</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">الطلبات المستخدمة في الحساب لهذا التب</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setDashboardDetail((prev) => ({ ...prev, open: false, orders: [], loading: false }))}
-              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-            >
-              إغلاق
-            </button>
-          </div>
-
-          {dashboardDetail.loading ? (
-            <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
-              جاري تحميل تفاصيل الطلبات...
-            </div>
-          ) : dashboardDetail.orders.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
-              لا توجد طلبات لهذا التب.
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-right text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                    <th className="px-3 py-3 font-bold">رقم الطلب</th>
-                    <th className="px-3 py-3 font-bold">العميل</th>
-                    <th className="px-3 py-3 font-bold">طريقة الدفع</th>
-                    <th className="px-3 py-3 font-bold">الحالة</th>
-                    <th className="px-3 py-3 font-bold">الشحن</th>
-                    <th className="px-3 py-3 font-bold">المبلغ النهائي</th>
-                    <th className="px-3 py-3 font-bold">التاريخ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboardDetail.orders.map((order: any) => (
-                    <tr key={order.id} className="border-b border-slate-100 last:border-0 dark:border-slate-800/70">
-                      <td className="px-3 py-3 font-black text-blue-600">#{order.orderNumber || order.id}</td>
-                      <td className="px-3 py-3 font-bold text-slate-800 dark:text-slate-100">{order.customer?.name || order.receiverName || "-"}</td>
-                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{order.paymentMethod || "-"}</td>
-                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{order.status || "-"}</td>
-                      <td className="px-3 py-3 text-slate-600 dark:text-slate-300">{Number(order.shippingPrice || order.shipping?.price || 0).toLocaleString()} $</td>
-                      <td className="px-3 py-3 font-black text-emerald-600">{formatCurrency(Number(order.finalAmount || 0))}</td>
-                      <td className="px-3 py-3 text-slate-500 dark:text-slate-400">
-                        {new Date(order.manualCreatedAt || order.createdAt).toLocaleDateString('ar-EG', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
 
       <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -1197,43 +974,48 @@ const DashboardPage: React.FunctionComponent = () => {
           <div className="overflow-x-auto">
             <div className="mb-6 grid gap-4 sm:grid-cols-4">
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                <div className="text-xs font-semibold text-slate-500">إجمالي المبيعات</div>
+                <div className="text-xs font-semibold text-slate-500">{showSalesSummary ? "إجمالي المبيعات" : "عدد الطلبات الكلي"}</div>
                 <div className="text-xl font-bold text-slate-800 dark:text-white">
-                  {formatCurrency(todayDashboard.totalSales)}
+                  {showSalesSummary
+                    ? (targetProgress.summary?.totalSalesAmount ?? 0).toFixed(2)
+                    : String(targetProgress.summary?.totalOrdersCount ?? 0)}
                 </div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                <div className="text-xs font-semibold text-slate-500">المحصل</div>
+                <div className="text-xs font-semibold text-slate-500">{showSalesSummary ? "النسبة المعيّنة" : "تم تسليمها"}</div>
                 <div className="text-xl font-bold text-slate-800 dark:text-white">
-                  {formatCurrency(todayDashboard.collected)}
+                  {showSalesSummary
+                    ? `${(targetProgress.summary?.assignedCommissionPercent ?? 0).toFixed(2)}%`
+                    : String(targetProgress.summary?.deliveredOrdersCount ?? 0)}
                 </div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                <div className="text-xs font-semibold text-slate-500">الذمم</div>
+                <div className="text-xs font-semibold text-slate-500">البدل الثابت</div>
                 <div className="text-xl font-bold text-slate-800 dark:text-white">
-                  {formatCurrency(todayDashboard.debts)}
+                  {wageAmount.toFixed(2)}
                 </div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
-                <div className="text-xs font-semibold text-slate-500">قيد الشحن</div>
+                <div className="text-xs font-semibold text-slate-500">قيمة العمولة</div>
                 <div className="text-xl font-bold text-slate-800 dark:text-white">
-                  {todayDashboard.shippingPending}
+                  {(targetProgress.summary?.totalCommissionAmount ?? 0).toFixed(2)}
                 </div>
               </div>
             </div>
             <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm dark:border-slate-800 dark:bg-slate-950">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div className="text-xs font-semibold text-slate-500">ملخص اليوم</div>
+                  <div className="text-xs font-semibold text-slate-500">إجمالي أرباحك</div>
                   <div className="text-2xl font-bold text-slate-800 dark:text-white">
-                    {todayDashboard.ordersToday} طلب
+                    {totalEarnings.toFixed(2)}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
-                  <div>تم التسليم: {todayDashboard.delivered}</div>
-                  <div>المرتجع: {todayDashboard.returned}</div>
-                  <div>طلبات فيها مشكلة: {todayDashboard.problemOrders}</div>
-                  <div>المحصل: {formatCurrency(todayDashboard.collected)}</div>
+                  <div>قيمة العمولة: {(targetProgress.summary?.totalCommissionAmount ?? 0).toFixed(2)}</div>
+                  <div>مكافأة المنتجات: {productRewardTotal.toFixed(2)}</div>
+                  <div>مكافأة قيمة المبيعات: {valueRewardTotal.toFixed(2)}</div>
+                  <div>البدل الثابت: {wageAmount.toFixed(2)}</div>
+                  <div>نسبة الأرباح: {(targetProgress.summary?.assignedCommissionPercent ?? 0).toFixed(2)}%</div>
                 </div>
               </div>
             </div>
