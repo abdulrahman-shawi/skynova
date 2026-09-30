@@ -207,12 +207,20 @@ export async function GetSalesByStatusAction(userId: string, dateFilter?: OrderD
             price: true,
             discount: true,
           }
+        },
+        warranties: {
+          select: {
+            id: true,
+            type: true,
+          }
         }
       },
       orderBy: { createdAt: 'desc' }
     });
 
     const statusGroups: Record<string, any> = {};
+    const replacementOrdersDetails: any[] = [];
+    let replacementOrdersAmount = 0;
     let totalRevenue = 0;
     let lostRevenue = 0;
     
@@ -236,12 +244,21 @@ export async function GetSalesByStatusAction(userId: string, dateFilter?: OrderD
       statusGroups[order.status].count += 1;
       statusGroups[order.status].amount += orderAmountUSD;
       
-      statusGroups[order.status].ordersDetails.push({
+      const orderDetails = {
         id: order.id,
         orderNumber: order.orderNumber,
         customerName: order.customer.name,
         amount: orderAmountUSD,
-      });
+        isWarrantyReplacement: order.warranties.length > 0,
+      };
+
+      statusGroups[order.status].ordersDetails.push(orderDetails);
+
+      // تجميع طلبات الكفالة (تبديل) في حالة مستقلة بغض النظر عن حالة الطلب
+      if (orderDetails.isWarrantyReplacement) {
+        replacementOrdersDetails.push(orderDetails);
+        replacementOrdersAmount += orderAmountUSD;
+      }
 
       if (order.status === "تم الغاء الطلب") {
         cancelledCount++;
@@ -256,9 +273,21 @@ export async function GetSalesByStatusAction(userId: string, dateFilter?: OrderD
       }
     });
 
+    const data = Object.values(statusGroups);
+
+    // حالة افتراضية تجمع كل طلبات التبديل المنشأة من صفحة الكفالة
+    if (replacementOrdersDetails.length > 0) {
+      data.unshift({
+        status: "طلبات التبديل",
+        count: replacementOrdersDetails.length,
+        amount: replacementOrdersAmount,
+        ordersDetails: replacementOrdersDetails,
+      });
+    }
+
     return { 
       success: true, 
-      data: Object.values(statusGroups),
+      data,
       summary: {
         totalRevenue,
         lostRevenue,
@@ -312,6 +341,11 @@ export async function GetSalesTimelineAction(userId: string, dateFilter?: OrderD
             price: true,
             discount: true,
           }
+        },
+        warranties: {
+          select: {
+            id: true,
+          }
         }
       },
       orderBy: { createdAt: 'asc' }
@@ -334,12 +368,28 @@ export async function GetSalesTimelineAction(userId: string, dateFilter?: OrderD
       if (!timeline[monthYear].statuses[order.status]) {
         timeline[monthYear].statuses[order.status] = {
           count: 0,
-          amount: 0
+          amount: 0,
+          warrantyCount: 0
         };
       }
 
       timeline[monthYear].statuses[order.status].count += 1;
       timeline[monthYear].statuses[order.status].amount += orderAmountUSD;
+      if (order.warranties.length > 0) {
+        timeline[monthYear].statuses[order.status].warrantyCount += 1;
+
+        // حالة افتراضية تجمع كل طلبات التبديل المنشأة من صفحة الكفالة
+        if (!timeline[monthYear].statuses["طلبات التبديل"]) {
+          timeline[monthYear].statuses["طلبات التبديل"] = {
+            count: 0,
+            amount: 0,
+            warrantyCount: 0
+          };
+        }
+        timeline[monthYear].statuses["طلبات التبديل"].count += 1;
+        timeline[monthYear].statuses["طلبات التبديل"].amount += orderAmountUSD;
+        timeline[monthYear].statuses["طلبات التبديل"].warrantyCount += 1;
+      }
     });
 
     return { 
@@ -925,6 +975,64 @@ export async function GetDailyExpensesAnalytics(userId: string, dateFilter?: Ord
   } catch (error) {
     console.error("Error in GetDailyExpensesAnalytics:", error);
     return { success: false, data: [], summary: { USD: 0, TRY: 0, SYP: 0 } };
+  }
+}
+
+export async function GetDailySalesCount(userId: string, dateFilter?: OrderDateFilter) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { permission: true }
+    });
+
+    if (!user) return { success: false, error: "User not found", data: [] };
+
+    const canViewAll = isAdmin(user) || Boolean(user?.permission?.viewOrders);
+    const createdAtFilter = buildOrderDateWhere(dateFilter);
+    const warehouseScope = buildWarehouseScope(dateFilter?.warehouseLocation);
+
+    // احتساب الطلبات التي حالتها "تم تسليم الطلب" فقط
+    const whereClause = {
+      status: "تم تسليم الطلب",
+      ...(canViewAll ? {} : { userId: userId }),
+      ...(warehouseScope ? warehouseScope : {}),
+      ...(createdAtFilter ? {
+        OR: [
+          { manualCreatedAt: createdAtFilter },
+          { AND: [
+              { manualCreatedAt: null },
+              { createdAt: createdAtFilter }
+            ]
+          }
+        ]
+      } : {}),
+    };
+
+    const orders = await prisma.order.findMany({
+      where: whereClause,
+      select: {
+        createdAt: true,
+        manualCreatedAt: true,
+      },
+    });
+
+    const grouped = orders.reduce((acc, order) => {
+      const effectiveDate = getOrderEffectiveDate(order);
+      if (!effectiveDate) return acc;
+
+      const date = effectiveDate.toISOString().split("T")[0];
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const data = Object.entries(grouped)
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    return { success: true, data, summary: { total: orders.length } };
+  } catch (error) {
+    console.error("Error in GetDailySalesCount:", error);
+    return { success: false, data: [], summary: { total: 0 } };
   }
 }
 // src/actions/analytics.ts

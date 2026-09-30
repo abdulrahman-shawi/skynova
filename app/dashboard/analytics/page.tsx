@@ -9,6 +9,7 @@ import {
   GetBestSellingProducts,
   GetCustomerAcquisitionMonth,
   GetDailyExpensesAnalytics,
+  GetDailySalesCount,
   GetEmployeeCustomerReport,
   GetLowStockProducts,
   GetOrdersByCity,
@@ -33,7 +34,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { MapPin, Package, ReceiptText, TrendingDown, TrendingUp, Trophy, Truck, Users, X, Download } from "lucide-react";
+import { MapPin, Package, ReceiptText, ShoppingCart, TrendingDown, TrendingUp, Trophy, Truck, Users, X, Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import toast from "react-hot-toast";
@@ -114,6 +115,11 @@ const AnalyticPage: React.FC = () => {
     success: true,
     data: [],
     summary: { USD: 0, TRY: 0, SYP: 0 },
+  });
+  const [dailySales, setDailySales] = React.useState<{ success: boolean; data: any[]; summary?: { total: number } }>({
+    success: true,
+    data: [],
+    summary: { total: 0 },
   });
   const [topSale, setTopSale] = React.useState<{ success: boolean; data: any[] }>({ success: true, data: [] });
   const [productInsights, setProductInsights] = React.useState<{ success: boolean; data: any[]; meta?: any | null }>({ success: true, data: [], meta: null });
@@ -341,6 +347,7 @@ const AnalyticPage: React.FC = () => {
           resWholesaleRegions,
           resTimeline,
           resMsgTimeline,
+          resDailySales,
         ] = await Promise.all([
           GetSalesByStatusAction(user.id, orderDateFilter),
           GetSalesByCity(user.id, orderDateFilter),
@@ -355,6 +362,7 @@ const AnalyticPage: React.FC = () => {
           GetWholesaleActiveRegions(user.id),
           GetSalesTimelineAction(user.id, orderDateFilter),
           GetCustomerAcquisitionMonth(user.id, orderDateFilter),
+          GetDailySalesCount(user.id, orderDateFilter),
         ]);
 
         setResult(resStatus as any);
@@ -370,6 +378,7 @@ const AnalyticPage: React.FC = () => {
         setWholesaleRegions(resWholesaleRegions as any);
         setTimelineData((resTimeline as any)?.data || []);
         setMsgTimeline(resMsgTimeline as any);
+        setDailySales(resDailySales as any);
       } catch (error) {
         console.error("Error fetching analytics:", error);
       } finally {
@@ -411,6 +420,7 @@ const AnalyticPage: React.FC = () => {
   const showOrdersByCity = loading || (ordersByCity.data?.length || 0) > 0;
   const showShippingByCompany = loading || (shippingByCompany.data?.length || 0) > 0;
   const showDailyExpenses = loading || (dailyExpenses.data?.length || 0) > 0;
+  const showDailySales = loading || (dailySales.data?.length || 0) > 0;
   const showSalesGeo = loading || cityData.length > 0;
   const showTopProducts = loading || (topSale.data?.length || 0) > 0;
   const showProductInsights = loading || (productInsights.data?.length || 0) > 0;
@@ -501,7 +511,14 @@ const AnalyticPage: React.FC = () => {
             <div className="p-4 border-b flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 rounded-t-xl">
               <div>
                 <h3 className="font-bold text-lg text-slate-800 dark:text-white">طلبات حالة: {selectedStatus.status}</h3>
-                <p className="text-sm text-slate-500">الإجمالي: {formatUSD(selectedStatus.amount)}$ ({selectedStatus.count} طلب)</p>
+                <p className="text-sm text-slate-500">
+                  الإجمالي: {formatUSD(selectedStatus.amount)}$ ({selectedStatus.count} طلب)
+                  {selectedStatus.ordersDetails?.some((o: any) => o.isWarrantyReplacement) && (
+                    <span className="text-violet-600 dark:text-violet-400 font-semibold">
+                      {" "}— منها {selectedStatus.ordersDetails.filter((o: any) => o.isWarrantyReplacement).length} كفالة تبديل
+                    </span>
+                  )}
+                </p>
               </div>
               <button
                 onClick={() => setSelectedStatus(null)}
@@ -523,7 +540,14 @@ const AnalyticPage: React.FC = () => {
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {selectedStatus.ordersDetails?.map((order: any) => (
                     <tr key={order.id}>
-                      <td className="py-3 px-2 text-sm text-blue-600 font-medium font-mono">#{order.orderNumber}</td>
+                      <td className="py-3 px-2 text-sm text-blue-600 font-medium font-mono">
+                        <span className="inline-flex items-center gap-2">
+                          #{order.orderNumber}
+                          {order.isWarrantyReplacement && (
+                            <span className="text-[10px] font-bold bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 px-1.5 py-0.5 rounded">كفالة تبديل</span>
+                          )}
+                        </span>
+                      </td>
                       <td className="py-3 px-2 text-sm text-slate-600 dark:text-slate-300">{order.customerName}</td>
                       <td className="py-3 px-2 text-sm font-bold text-slate-900 dark:text-white">{formatUSD(order.amount)}$</td>
                     </tr>
@@ -695,7 +719,11 @@ const AnalyticPage: React.FC = () => {
             <div
               key={item.status}
               onClick={() => setSelectedStatus(item)}
-              className="flex flex-col p-4 bg-slate-50/50 dark:bg-slate-950/50 rounded-lg border border-slate-100 dark:border-slate-800 cursor-pointer"
+              className={`flex flex-col p-4 bg-slate-50/50 dark:bg-slate-950/50 rounded-lg border cursor-pointer ${
+                item.status === "طلبات التبديل"
+                  ? "border-violet-300 dark:border-violet-700 bg-violet-50/50 dark:bg-violet-950/30"
+                  : "border-slate-100 dark:border-slate-800"
+              }`}
             >
               <div className="flex justify-between items-center mb-2">
                 <div className="flex flex-col">
@@ -757,6 +785,9 @@ const AnalyticPage: React.FC = () => {
                                   <span className="text-xs text-blue-600">{details.count} طلب</span>
                                   <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{formatUSD(details.amount)}$</span>
                                 </div>
+                                {details.warrantyCount > 0 && status !== "طلبات التبديل" && (
+                                  <span className="text-[10px] text-violet-600 dark:text-violet-400 font-bold mt-1">منها {details.warrantyCount} كفالة تبديل</span>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -784,6 +815,27 @@ const AnalyticPage: React.FC = () => {
                 <Tooltip formatter={(value: number | undefined) => [`${value || 0} عميل جديد`, "العدد"]} />
                 <Bar dataKey="العملاء الجدد" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={40}>
                   {msgTimeline.data.map((_: any, index: number) => (
+                    <Cell key={`cell-${index}`} className="hover:opacity-80 transition-opacity cursor-pointer" />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </DynamicCard.Content>
+        </DynamicCard>
+      )}
+
+      {showDailySales && (
+        <DynamicCard isLoading={loading} isError={!dailySales.success} isEmpty={!loading && dailySales.data?.length === 0} variant="glass" className="mt-6">
+          <DynamicCard.Header title="المبيعات اليومية" description={`عدد الطلبات المسلّمة في كل يوم (الإجمالي: ${dailySales.summary?.total || 0} طلب مسلّم)`} icon={<ShoppingCart size={20} className="text-violet-500" />} />
+          <DynamicCard.Content className="h-[350px] w-full pt-6">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dailySales.data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} dy={10} />
+                <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                <Tooltip formatter={(value: number | undefined) => [`${value || 0} طلب مسلّم`, "المبيعات"]} />
+                <Bar dataKey="count" name="المبيعات" fill="#8b5cf6" radius={[6, 6, 0, 0]} barSize={40}>
+                  {dailySales.data.map((_: any, index: number) => (
                     <Cell key={`cell-${index}`} className="hover:opacity-80 transition-opacity cursor-pointer" />
                   ))}
                 </Bar>
