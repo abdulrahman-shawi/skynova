@@ -36,6 +36,7 @@ const pickFatihLowest = (list: any[]) => {
 
 // بيانات شحنة الفاتح المطلوبة حسب واجهة إنشاء الشحنة الجديدة في نظامهم (POST /shipments)
 export interface FatihShipmentInput {
+  typeId: number | null;
   cityTargetId: number | null;
   weightId: number | null;
   sizeId: number | null;
@@ -117,9 +118,10 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
   const isBabelExpress = shippingForm.shippingCompanyName.trim() === BABEL_EXPRESS_COMPANY_NAME;
   const [fatihOptions, setFatihOptions] = React.useState<{
     cities: any[];
+    packageTypes: any[];
     weights: any[];
     sizes: any[];
-  }>({ cities: [], weights: [], sizes: [] });
+  }>({ cities: [], packageTypes: [], weights: [], sizes: [] });
   const [fatihLoading, setFatihLoading] = React.useState(false);
   const [fatihError, setFatihError] = React.useState<string | null>(null);
   const [pricingLoading, setPricingLoading] = React.useState(false);
@@ -139,6 +141,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     };
   } | null>(null);
   const [fatihForm, setFatihForm] = React.useState({
+    typeId: "",
     cityTargetId: "",
     weightId: "",
     sizeId: "",
@@ -187,6 +190,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
   React.useEffect(() => {
     if (!isOpen) return;
     setFatihForm({
+      typeId: "",
       cityTargetId: targetOrder?.fatihCityTargetId ? String(targetOrder.fatihCityTargetId) : "",
       weightId: targetOrder?.fatihWeightId ? String(targetOrder.fatihWeightId) : "",
       sizeId: targetOrder?.fatihSizeId ? String(targetOrder.fatihSizeId) : "",
@@ -252,10 +256,12 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
           const data = res.data as any;
           setFatihOptions(data);
           // تعبئة القيم الافتراضية للحقول الفارغة فقط (لا تكتب فوق القيم المحفوظة)
+          const firstType = (data.packageTypes || [])[0];
           const lowestWeight = pickFatihLowest(data.weights || []);
           const lowestSize = pickFatihLowest(data.sizes || []);
           setFatihForm((f) => ({
             ...f,
+            typeId: f.typeId || (firstType ? String(firstType.id) : ""),
             weightId: f.weightId || (lowestWeight ? String(lowestWeight.id) : ""),
             sizeId: f.sizeId || (lowestSize ? String(lowestSize.id) : ""),
           }));
@@ -495,6 +501,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
       return Number.isFinite(n) && n >= 0 ? n : null;
     };
     void onSave({
+      typeId: toId(fatihForm.typeId),
       cityTargetId: toId(fatihForm.cityTargetId),
       weightId: toId(fatihForm.weightId),
       sizeId: toId(fatihForm.sizeId),
@@ -533,7 +540,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
         <option value="">{emptyLabel}</option>
         {options.map((opt: any) => (
           <option key={opt.id} value={String(opt.id)}>
-            {opt.parent_city_name ? `${opt.parent_city_name} - ${opt.name}` : opt.name}
+            {opt.fee_effect === "manual_pricing" ? `${opt.name} (تسعير يدوي)` : opt.name}
           </option>
         ))}
       </select>
@@ -724,6 +731,7 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                   disabled={isSaving || fatihLoading}
                   defaultLimit={5}
                 />
+                {renderFatihSelect("نوع الطرد", fatihForm.typeId, "typeId", fatihOptions.packageTypes, "اختر نوع الطرد")}
                 {renderFatihSelect("الوزن", fatihForm.weightId, "weightId", fatihOptions.weights, "اختر الوزن")}
                 {renderFatihSelect("الحجم", fatihForm.sizeId, "sizeId", fatihOptions.sizes, "اختر الحجم")}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

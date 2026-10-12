@@ -278,36 +278,36 @@ export async function getFatihOrders(params?: { page?: number; status?: string; 
     return fatihFetch(`/shipping/orders?${query.toString()}`);
 }
 
-// تجلب قوائم الإدخال اللازمة لإنشاء شحنة (المدن، الأوزان، الأحجام)
-// المدن من واجهة v2 (GET /cities): { id, name, governorate: { id, name }, pickup_at_branch_available }
+// تخزين مؤقت في الذاكرة لقوائم الفاتح المرجعية (تتغير نادراً — صلاحيته يوم كامل)
+let fatihFormOptionsCache: { data: any; expiresAt: number } | null = null;
+const FATIH_OPTIONS_TTL_MS = 24 * 60 * 60 * 1000;
+
+// تجلب قوائم الإدخال اللازمة لإنشاء شحنة (المدن، أنواع الطرود، الأوزان، الأحجام) من واجهة v2
+// GET /cities | /package-types | /weight-categories | /size-categories — الاستجابة { data: [...] }
 export async function getFatihFormOptions() {
-    const [citiesRes, weightsRes, sizesRes] = await Promise.all([
+    if (fatihFormOptionsCache && fatihFormOptionsCache.expiresAt > Date.now()) {
+        return { success: true as const, data: fatihFormOptionsCache.data };
+    }
+    const [citiesRes, packageTypesRes, weightsRes, sizesRes] = await Promise.all([
         fatihFetch("/cities"),
-        fatihFetch("/shipping/reference/categories?type=weight"),
-        fatihFetch("/shipping/reference/categories?type=size"),
+        fatihFetch("/package-types"),
+        fatihFetch("/weight-categories"),
+        fatihFetch("/size-categories"),
     ]);
     if (!citiesRes.success) return citiesRes;
-    const pickList = (res: any, key: string) => {
+    const pickDataList = (res: any) => {
         if (!res?.success) return [];
         const d = res.data;
-        return Array.isArray(d?.[key]) ? d[key] : Array.isArray(d) ? d : [];
+        return Array.isArray(d) ? d : Array.isArray(d?.data) ? d.data : [];
     };
-    const citiesData = citiesRes.data as any;
-    const cities = Array.isArray(citiesData)
-        ? citiesData
-        : Array.isArray(citiesData?.data)
-            ? citiesData.data
-            : Array.isArray(citiesData?.cities)
-                ? citiesData.cities
-                : [];
-    return {
-        success: true as const,
-        data: {
-            cities,
-            weights: pickList(weightsRes, "categories"),
-            sizes: pickList(sizesRes, "categories"),
-        },
+    const data = {
+        cities: pickDataList(citiesRes),
+        packageTypes: pickDataList(packageTypesRes),
+        weights: pickDataList(weightsRes),
+        sizes: pickDataList(sizesRes),
     };
+    fatihFormOptionsCache = { data, expiresAt: Date.now() + FATIH_OPTIONS_TTL_MS };
+    return { success: true as const, data };
 }
 
 // يقدّر أجور الشحن لمدينة الوجهة قبل إنشاء الشحنة (POST /shipments/quote — لا ينشئ شيئاً)

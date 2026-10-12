@@ -977,6 +977,7 @@ export async function updateOrderShippingFromTable(
     moneyTransferCommission: number,
     otherCommissions: number,
     fatihData?: {
+        typeId?: number | null;
         cityTargetId?: number | null;
         weightId?: number | null;
         sizeId?: number | null;
@@ -1102,6 +1103,7 @@ export async function updateOrderShippingFromTable(
             if (!fatihData?.cityTargetId) missing.push("مدينة الوجهة");
             if (!fatihData?.weightId) missing.push("الوزن");
             if (!fatihData?.sizeId) missing.push("الحجم");
+            if (!fatihData?.typeId) missing.push("نوع الطرد");
             if (!recipientName) missing.push("اسم المستلم");
             if (!recipientPhone) missing.push("هاتف المستلم");
             if (!recipientAddress) missing.push("عنوان المستلم");
@@ -1151,6 +1153,7 @@ export async function updateOrderShippingFromTable(
                     pickup_at_branch: fatihData?.receiveAtBranch ?? false,
                 },
                 package: {
+                    type_id: fatihData?.typeId,
                     weight_category_id: fatihData?.weightId,
                     size_category_id: fatihData?.sizeId,
                     count: packageCount,
