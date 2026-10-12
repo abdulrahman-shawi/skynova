@@ -278,11 +278,11 @@ export async function getFatihOrders(params?: { page?: number; status?: string; 
     return fatihFetch(`/shipping/orders?${query.toString()}`);
 }
 
-// تجلب قوائم الإدخال اللازمة لإنشاء شحنة (المدن، الوحدات، الأوزان، الأحجام)
+// تجلب قوائم الإدخال اللازمة لإنشاء شحنة (المدن، الأوزان، الأحجام)
+// المدن من واجهة v2 (GET /cities): { id, name, governorate: { id, name }, pickup_at_branch_available }
 export async function getFatihFormOptions() {
-    const [citiesRes, unitsRes, weightsRes, sizesRes] = await Promise.all([
-        fatihFetch("/shipping/reference/cities"),
-        fatihFetch("/shipping/reference/units"),
+    const [citiesRes, weightsRes, sizesRes] = await Promise.all([
+        fatihFetch("/cities"),
         fatihFetch("/shipping/reference/categories?type=weight"),
         fatihFetch("/shipping/reference/categories?type=size"),
     ]);
@@ -292,11 +292,18 @@ export async function getFatihFormOptions() {
         const d = res.data;
         return Array.isArray(d?.[key]) ? d[key] : Array.isArray(d) ? d : [];
     };
+    const citiesData = citiesRes.data as any;
+    const cities = Array.isArray(citiesData)
+        ? citiesData
+        : Array.isArray(citiesData?.data)
+            ? citiesData.data
+            : Array.isArray(citiesData?.cities)
+                ? citiesData.cities
+                : [];
     return {
         success: true as const,
         data: {
-            cities: pickList(citiesRes, "cities"),
-            units: pickList(unitsRes, "units"),
+            cities,
             weights: pickList(weightsRes, "categories"),
             sizes: pickList(sizesRes, "categories"),
         },

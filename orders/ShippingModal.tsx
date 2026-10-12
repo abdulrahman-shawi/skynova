@@ -117,10 +117,9 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
   const isBabelExpress = shippingForm.shippingCompanyName.trim() === BABEL_EXPRESS_COMPANY_NAME;
   const [fatihOptions, setFatihOptions] = React.useState<{
     cities: any[];
-    units: any[];
     weights: any[];
     sizes: any[];
-  }>({ cities: [], units: [], weights: [], sizes: [] });
+  }>({ cities: [], weights: [], sizes: [] });
   const [fatihLoading, setFatihLoading] = React.useState(false);
   const [fatihError, setFatihError] = React.useState<string | null>(null);
   const [pricingLoading, setPricingLoading] = React.useState(false);
@@ -322,14 +321,22 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, isBabelExpress, canEstimateBabel, babelForm.neighbourhoodId, babelForm.type, babelForm.weight, babelForm.deliveryType, babelForm.pickupType, babelForm.payer]);
 
+  // تسمية المدينة بالشكل الجديد: «المحافظة - المدينة»
   const cityOptions = React.useMemo(
     () =>
       fatihOptions.cities.map((c: any) => ({
         value: c.id,
-        label: c.parent_city_name ? `${c.parent_city_name} - ${c.name}` : c.name,
+        label: c.governorate?.name ? `${c.governorate.name} - ${c.name}` : c.name,
       })),
     [fatihOptions.cities]
   );
+
+  // هل تدعم مدينة الوجهة الاستلام من الفرع؟
+  const targetCitySupportsPickup = React.useMemo(() => {
+    if (!fatihForm.cityTargetId) return true;
+    const city = fatihOptions.cities.find((c: any) => String(c.id) === String(fatihForm.cityTargetId));
+    return city ? city.pickup_at_branch_available !== false : true;
+  }, [fatihOptions.cities, fatihForm.cityTargetId]);
 
   const canEstimate = Boolean(fatihForm.cityTargetId && fatihForm.weightId && fatihForm.sizeId);
 
@@ -743,6 +750,11 @@ export const ShippingModal: React.FC<ShippingModalProps> = ({
                   {renderFatihCheckbox("تأمين ضد الفقدان", "insuranceLoss")}
                   {renderFatihCheckbox("الاستلام من الفرع", "receiveAtBranch")}
                 </div>
+                {!targetCitySupportsPickup && (
+                  <div className="text-xs text-amber-600 dark:text-amber-400">
+                    مدينة الوجهة المختارة لا تدعم الاستلام من الفرع — سيتم التوصيل إلى العنوان
+                  </div>
+                )}
                 {renderFatihInput("ملاحظات (اختياري)", "note")}
                 <div className="space-y-2">
                   <Button
