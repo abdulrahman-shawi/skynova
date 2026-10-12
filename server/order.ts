@@ -977,25 +977,19 @@ export async function updateOrderShippingFromTable(
     moneyTransferCommission: number,
     otherCommissions: number,
     fatihData?: {
-        citySourceId?: number | null;
         cityTargetId?: number | null;
-        unitId?: number | null;
         weightId?: number | null;
         sizeId?: number | null;
-        qrCode?: string | null;
+        trackingNumber?: string | null;
         packageCount?: number | null;
-        senderPhone?: string | null;
-        senderAddress?: string | null;
-        globalName?: string | null;
-        receivePhone?: string | null;
-        receiveAddress?: string | null;
-        price?: number | null;
-        orderValue?: number | null;
-        isOrderValueMatchesCollection?: boolean | null;
+        recipientName?: string | null;
+        recipientPhone?: string | null;
+        recipientAddress?: string | null;
+        codAmount?: number | null;
+        codCurrency?: string | null;
         insuranceBreakage?: boolean | null;
         insuranceLoss?: boolean | null;
-        farSender?: boolean | null;
-        requiresCustomFee?: boolean | null;
+        feePayer?: "sender" | "recipient" | null;
         receiveAtBranch?: boolean | null;
         note?: string | null;
     } | null,
@@ -1089,9 +1083,7 @@ export async function updateOrderShippingFromTable(
                 otherCommissions: parsedOtherCommissions,
                 ...(isFatih
                     ? {
-                        fatihCitySourceId: fatihData?.citySourceId ?? null,
                         fatihCityTargetId: fatihData?.cityTargetId ?? null,
-                        fatihUnitId: fatihData?.unitId ?? null,
                         fatihWeightId: fatihData?.weightId ?? null,
                         fatihSizeId: fatihData?.sizeId ?? null,
                     }
@@ -1100,25 +1092,20 @@ export async function updateOrderShippingFromTable(
             include: { shipping: true, warehouse: true },
         });
 
-        // إنشاء الشحنة تلقائياً في نظام الفاتح عند اختيار شركة الفاتح
+        // إنشاء الشحنة تلقائياً في نظام الفاتح عند اختيار شركة الفاتح (POST /shipments — v2)
         if (isFatih) {
-            const senderPhone = String(fatihData?.senderPhone || existingOrder.user?.phone || existingOrder.customer?.phone || "").slice(0, 20);
-            const senderAddress = String(fatihData?.senderAddress || existingOrder.warehouse?.location || existingOrder.country || "").slice(0, 255);
-            const globalName = String(fatihData?.globalName || existingOrder.receiverName || existingOrder.customer?.name || "");
-            const receivePhone = String(fatihData?.receivePhone || existingOrder.receiverPhone?.[0] || existingOrder.customer?.phone || "").slice(0, 20);
-            const receiveAddress = String(fatihData?.receiveAddress || existingOrder.fullAddress || existingOrder.city || "").slice(0, 500);
+            const recipientName = String(fatihData?.recipientName || existingOrder.receiverName || existingOrder.customer?.name || "");
+            const recipientPhone = String(fatihData?.recipientPhone || existingOrder.receiverPhone?.[0] || existingOrder.customer?.phone || "").slice(0, 20);
+            const recipientAddress = String(fatihData?.recipientAddress || existingOrder.fullAddress || existingOrder.city || "").slice(0, 500);
 
             const missing: string[] = [];
-            if (!fatihData?.citySourceId) missing.push("مدينة المصدر");
             if (!fatihData?.cityTargetId) missing.push("مدينة الوجهة");
-            if (!fatihData?.unitId) missing.push("الوحدة");
             if (!fatihData?.weightId) missing.push("الوزن");
             if (!fatihData?.sizeId) missing.push("الحجم");
-            if (!senderPhone) missing.push("هاتف المرسل");
-            if (!senderAddress) missing.push("عنوان المرسل");
-            if (!globalName) missing.push("اسم المستلم");
-            if (!receivePhone) missing.push("هاتف المستلم");
-            if (!receiveAddress) missing.push("عنوان المستلم");
+            if (!recipientName) missing.push("اسم المستلم");
+            if (!recipientPhone) missing.push("هاتف المستلم");
+            if (!recipientAddress) missing.push("عنوان المستلم");
+            if (!fatihData?.feePayer) missing.push("دافع أجور الشحن");
 
             if (missing.length > 0) {
                 return {
@@ -1132,53 +1119,51 @@ export async function updateOrderShippingFromTable(
             const packageCount = Number.isInteger(fatihData?.packageCount) && (fatihData?.packageCount as number) >= 1
                 ? Math.floor(fatihData!.packageCount as number)
                 : derivedPackageCount;
-            const fatihPrice = fatihData?.price != null && Number.isFinite(Number(fatihData.price)) ? Number(fatihData.price) : 0;
-            const orderValue = fatihData?.orderValue != null ? Number(fatihData.orderValue) : Number(existingOrder.finalAmount || 0);
+            const codAmount = fatihData?.codAmount != null ? Number(fatihData.codAmount) : Number(existingOrder.finalAmount || 0);
+            const codCurrency = String(fatihData?.codCurrency || "USD").trim().toUpperCase() || "USD";
 
-            if (Number.isNaN(orderValue) || orderValue < 0) {
+            if (Number.isNaN(codAmount) || codAmount < 0) {
                 return {
                     success: false,
                     partiallySaved: true,
-                    error: "تم حفظ بيانات الشحن، لكن قيمة الطلب غير صالحة",
+                    error: "تم حفظ بيانات الشحن، لكن مبلغ التحصيل غير صالح",
                 };
             }
 
-            const manualQrCode = String(fatihData?.qrCode || "").trim();
-            if (manualQrCode && !/^\d{7}$/.test(manualQrCode)) {
+            const manualTrackingNumber = String(fatihData?.trackingNumber || "").trim();
+            if (manualTrackingNumber && !/^\d{7}$/.test(manualTrackingNumber)) {
                 return {
                     success: false,
                     partiallySaved: true,
-                    error: "تم حفظ بيانات الشحن، لكن رقم QR يجب أن يتكون من 7 أرقام",
+                    error: "تم حفظ بيانات الشحن، لكن رقم التتبع يجب أن يتكون من 7 أرقام",
                 };
             }
             const note = String(fatihData?.note || "").trim();
+            // reference: رقم الطلب لدينا — يُمنع تكراره على شحنة فعّالة لدى الفاتح ويُستخدم كمفتاح Idempotency
+            const reference = String(existingOrder.orderNumber || `ORDER-${parsedOrderId}`).slice(0, 100);
             const payload: Record<string, any> = {
-                ...(manualQrCode ? { qr_code: manualQrCode } : { auto_generate_qr: true }),
-                package_count: packageCount,
-                sender_phone: senderPhone,
-                sender_address: senderAddress,
-                global_name: globalName,
-                receive_phone: receivePhone,
-                receive_address: receiveAddress,
-                receive_at_branch: fatihData?.receiveAtBranch ?? false,
-                city_source_id: fatihData?.citySourceId,
-                city_target_id: fatihData?.cityTargetId,
-                unit_id: fatihData?.unitId,
-                weight_id: fatihData?.weightId,
-                size_id: fatihData?.sizeId,
-                far: parsedShippingPrice,
-                price: fatihPrice,
-                far_tr: 0,
-                price_tr: 0,
-                far_syp: 0,
-                price_syp: 0,
-                order_value: orderValue,
-                is_order_value_matches_collection: fatihData?.isOrderValueMatchesCollection ?? true,
-                insurance_against_breakage: fatihData?.insuranceBreakage ?? false,
-                insurance_against_loss: fatihData?.insuranceLoss ?? false,
-                far_sender: fatihData?.farSender ?? false,
-                requires_custom_fee: fatihData?.requiresCustomFee ?? (parsedShippingPrice <= 0 && fatihPrice <= 0),
-                ...(note ? { note } : {}),
+                reference,
+                recipient: {
+                    name: recipientName,
+                    phone: recipientPhone,
+                    city_id: fatihData?.cityTargetId,
+                    address: recipientAddress,
+                    pickup_at_branch: fatihData?.receiveAtBranch ?? false,
+                },
+                package: {
+                    weight_category_id: fatihData?.weightId,
+                    size_category_id: fatihData?.sizeId,
+                    count: packageCount,
+                },
+                shipping_fee_paid_by: fatihData?.feePayer === "sender" ? "sender" : "recipient",
+                insurance: {
+                    against_breakage: fatihData?.insuranceBreakage ?? false,
+                    against_loss: fatihData?.insuranceLoss ?? false,
+                },
+                // لا تحصيل عندما يكون المبلغ صفراً (cod يكون null لدى الفاتح)
+                ...(codAmount > 0 ? { cod: { amount: codAmount, currency: codCurrency } } : {}),
+                ...(manualTrackingNumber ? { tracking_number: manualTrackingNumber } : {}),
+                ...(note ? { notes: note } : {}),
             };
 
             const fatihResult = await createFatihShipment(payload);
@@ -1190,18 +1175,28 @@ export async function updateOrderShippingFromTable(
                 };
             }
 
-            await prisma.order.update({
+            // الأجور تُحسب عند الفاتح دائماً: مزامنة الأجر المعتمد مع الطلب وشركة الشحن
+            const fatihUpdates: Record<string, any> = {
+                fatihOrderId: fatihResult.data.orderId ?? null,
+                fatihQrCode: fatihResult.data.trackingNumber ?? null,
+                fatihCode: fatihResult.data.reference ?? null,
+            };
+            if (!fatihResult.data.pendingManualPricing && fatihResult.data.shippingFee != null) {
+                fatihUpdates.shippingPrice = fatihResult.data.shippingFee;
+                await prisma.shipping.update({
+                    where: { id: shipping.id },
+                    data: { price: fatihResult.data.shippingFee },
+                });
+            }
+            const finalOrder = await prisma.order.update({
                 where: { id: parsedOrderId },
-                data: {
-                    fatihOrderId: fatihResult.data.orderId ?? null,
-                    fatihQrCode: fatihResult.data.qrCode ?? null,
-                    fatihCode: fatihResult.data.code ?? null,
-                },
+                data: fatihUpdates,
+                include: { shipping: true, warehouse: true },
             });
 
             return {
                 success: true,
-                data: updatedOrder,
+                data: finalOrder,
                 fatih: fatihResult.data,
             };
         }

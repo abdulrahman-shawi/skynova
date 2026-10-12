@@ -19,6 +19,7 @@ import OrderCustomerEdit from '@/components/pages/customers/orderCustomerEdit';
 import { StatusCards } from '@/orders/StatusCards';
 import { SearchAndFilter } from '@/orders/SearchAndFilter';
 import { ShippingModal, FatihShipmentInput, BabelExpressShipmentInput } from '@/orders/ShippingModal';
+import { FATIH_WARNING_MESSAGES } from '@/lib/fatih';
 import { OrderTable } from '@/orders/OrderTable';
 import { useOrderFilters } from '@/orders/useOrderFilters';
 import { useOrderData } from '@/orders/useOrderData';
@@ -587,15 +588,28 @@ const OrderLayout: React.FunctionComponent<IOrderLayoutProps> = (props) => {
             );
 
             if (result.success) {
-                const fatihQr = (result as any)?.fatih?.qrCode;
+                const fatih = (result as any)?.fatih;
+                const fatihTracking = fatih?.trackingNumber;
                 const babelAwb = (result as any)?.babel?.awb;
                 toast.success(
-                    fatihQr
-                        ? `تم حفظ بيانات الشحن وإنشاء شحنة الفاتح (${fatihQr})`
+                    fatihTracking
+                        ? `تم حفظ بيانات الشحن وإنشاء شحنة الفاتح (${fatihTracking})`
                         : babelAwb
                             ? `تم حفظ بيانات الشحن وإنشاء شحنة بابل اكسبريس (AWB: ${babelAwb})`
                             : "تم حفظ بيانات الشحن والعمولات"
                 );
+                if (fatih?.pendingManualPricing) {
+                    toast("أجور شحنة الفاتح ستُحدد يدوياً عند الاستلام", { icon: "⚠️" });
+                }
+                const fatihWarnings = Array.isArray(fatih?.warnings) ? fatih.warnings : [];
+                if (fatihWarnings.length > 0) {
+                    const messages = fatihWarnings
+                        .map((w: any) => FATIH_WARNING_MESSAGES[String(w?.code || w)] || w?.message || String(w?.code || w))
+                        .filter(Boolean);
+                    if (messages.length > 0) {
+                        toast(messages.join(" — "), { icon: "⚠️", duration: 6000 });
+                    }
+                }
                 setIsShippingModalOpen(false);
                 setShippingTargetOrder(null);
                 await Order();

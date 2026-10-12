@@ -233,7 +233,7 @@ export async function getMyShippingOrders() {
 // تكامل شركة الفاتح (API خارجي)
 // ============================================
 
-const FATIH_API_BASE = "https://fatihcargo.com/api/v1";
+const FATIH_API_BASE = "https://fatihcargo.com/api/v2";
 
 async function fatihFetch(path: string, init?: RequestInit) {
     const token = process.env.FATIH_API_TOKEN;
@@ -253,7 +253,12 @@ async function fatihFetch(path: string, init?: RequestInit) {
         });
         const json = await res.json().catch(() => null);
         if (!res.ok) {
-            const msg = json?.message || `فشل الاتصال بخدمة الفاتح (كود ${res.status})`;
+            const rawMsg = json?.message || `فشل الاتصال بخدمة الفاتح (كود ${res.status})`;
+            const KNOWN_ERRORS: Record<string, string> = {
+                sender_profile_incomplete: "بيانات المرسل ناقصة في ملف حسابكم لدى الفاتح (الاسم/الهاتف/العنوان) — أكملوها من لوحة الفاتح",
+                duplicate_reference: "رقم الطلب مستخدم لشحنة فعّالة أخرى لدى الفاتح",
+            };
+            const msg = KNOWN_ERRORS[rawMsg] || rawMsg;
             return { success: false as const, error: msg };
         }
         return { success: true as const, data: json };
@@ -298,62 +303,90 @@ export async function getFatihFormOptions() {
     };
 }
 
-// يقدّر أجور الشحن لمدينة الوجهة قبل إنشاء الشحنة
+// يقدّر أجور الشحن لمدينة الوجهة قبل إنشاء الشحنة (POST /shipments/quote — لا ينشئ شيئاً)
 export async function getFatihPricing(params: {
     cityId: number;
     weightId: number;
     sizeId: number;
     packageCount: number;
-    orderValue: number;
+    codAmount?: number;
+    codCurrency?: string;
     receiveAtBranch?: boolean;
     insuranceAgainstLoss?: boolean;
     insuranceAgainstBreakage?: boolean;
-    currency?: string;
+    feePayer?: "sender" | "recipient";
 }) {
-    const res = await fatihFetch("/shipping/pricing", {
+    const res = await fatihFetch("/shipments/quote", {
         method: "POST",
         body: JSON.stringify({
-            city_id: params.cityId,
-            receive_at_branch: params.receiveAtBranch ?? false,
-            order_value: params.orderValue,
-            order_value_currency: params.currency || "usd",
-            insurance_against_loss: params.insuranceAgainstLoss ?? false,
-            insurance_against_breakage: params.insuranceAgainstBreakage ?? false,
-            weight_id: params.weightId,
-            size_id: params.sizeId,
-            package_count: Math.max(1, Math.floor(params.packageCount) || 1),
+            recipient: {
+                city_id: params.cityId,
+                pickup_at_branch: params.receiveAtBranch ?? false,
+            },
+            package: {
+                weight_category_id: params.weightId,
+                size_category_id: params.sizeId,
+                count: Math.max(1, Math.floor(params.packageCount) || 1),
+            },
+            cod: {
+                amount: Math.max(0, Number(params.codAmount) || 0),
+                currency: params.codCurrency || "USD",
+            },
+            shipping_fee_paid_by: params.feePayer === "sender" ? "sender" : "recipient",
+            insurance: {
+                against_loss: params.insuranceAgainstLoss ?? false,
+                against_breakage: params.insuranceAgainstBreakage ?? false,
+            },
         }),
     });
     if (!res.success) return res;
-    const d = res.data || {};
+    const d = res.data?.data ?? res.data ?? {};
+    const fee = d.shipping_fee || {};
+    const breakdown = d.breakdown || {};
     return {
         success: true as const,
         data: {
-            far: Number(d.far ?? d.final_prices?.usd ?? 0),
-            farTr: Number(d.far_tr ?? d.final_prices?.try ?? 0),
-            farSyp: Number(d.far_syp ?? d.final_prices?.syp ?? 0),
-            requiresCustomFee: Boolean(d.requires_custom_fee),
-            customFeeMessage: d.custom_fee_required?.message || null,
+            amount: fee.amount != null ? Number(fee.amount) : null,
+            currency: fee.currency || "USD",
+            pendingManualPricing: Boolean(d.pending_manual_pricing ?? fee.pending_manual_pricing),
+            manualPricingReasons: Array.isArray(d.manual_pricing_reasons) ? d.manual_pricing_reasons : [],
+            breakdown: {
+                baseFee: Number(breakdown.base_fee ?? 0),
+                afterDiscounts: Number(breakdown.after_discounts ?? 0),
+                categorySurcharge: Number(breakdown.category_surcharge ?? 0),
+                insuranceFee: Number(breakdown.insurance_fee ?? 0),
+                total: Number(breakdown.total ?? fee.amount ?? 0),
+                currency: breakdown.currency || fee.currency || "USD",
+            },
         },
     };
 }
 
-// ينشئ شحنة في نظام الفاتح
+// ينشئ شحنة في نظام الفاتح (POST /shipments — الأجور تُحسب عندهم دائماً وتُرجع في الاستجابة)
 export async function createFatihShipment(payload: Record<string, any>) {
-    const res = await fatihFetch("/shipping/orders", {
+    const res = await fatihFetch("/shipments", {
         method: "POST",
+        headers: {
+            "Idempotency-Key": String(payload.reference || `fatih-${Date.now()}`),
+        },
         body: JSON.stringify(payload),
     });
     if (!res.success) return res;
     const data = res.data?.data || {};
+    const fee = data.shipping_fee || {};
     return {
         success: true as const,
         data: {
-            orderId: data.order_id ?? data.order?.id ?? null,
-            qrCode: data.qr_code ?? data.order?.qr_code ?? null,
-            code: data.code ?? data.order?.code ?? null,
-            merged: Boolean(data.merged),
-            warning: data.warning || null,
+            orderId: data.id ?? null,
+            trackingNumber: data.tracking_number ?? null,
+            reference: data.reference ?? null,
+            status: data.status ?? null,
+            statusLabel: data.status_label ?? null,
+            shippingFee: fee.amount != null ? Number(fee.amount) : null,
+            shippingFeeCurrency: fee.currency || "USD",
+            shippingFeePaidBy: fee.paid_by ?? null,
+            pendingManualPricing: Boolean(fee.pending_manual_pricing),
+            warnings: Array.isArray(res.data?.warnings) ? res.data.warnings : [],
         },
     };
 }
