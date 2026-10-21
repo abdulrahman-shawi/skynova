@@ -790,7 +790,7 @@ export async function updateOrder(data: any, id: any, items: any) {
                         where: {
                             productId_warehouseId: {
                                 productId: oldItem.productId,
-                                warehouseId: fallbackWarehouse.id,
+                                warehouseId: oldOrder.warehouseId,
                             }
                         }
                     });
