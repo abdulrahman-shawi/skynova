@@ -134,6 +134,8 @@ const UserManagement: React.FunctionComponent = () => {
     netSalesForCommission: number;
     totalOrdersCount: number;
     deliveredOrdersCount: number;
+    cancelledOrdersCount: number;
+    shippedOrdersCount: number;
     totalDefaultSalary: number;
     editedSalary: number | null;
     payableSalary: number;
@@ -698,6 +700,8 @@ const UserManagement: React.FunctionComponent = () => {
         netSalesForCommission: Number(summary?.netSalesForCommission || 0),
         totalOrdersCount: Number(summary?.totalOrdersCount || 0),
         deliveredOrdersCount: Number(summary?.deliveredOrdersCount || 0),
+        cancelledOrdersCount: Number(summary?.cancelledOrdersCount || 0),
+        shippedOrdersCount: Number(summary?.shippedOrdersCount || 0),
         totalDefaultSalary,
         editedSalary: hasEditedSalary ? editedSalaryValue : null,
         payableSalary,
@@ -851,6 +855,8 @@ const UserManagement: React.FunctionComponent = () => {
               <div>صافي المبيعات للعمولة: <strong>${formatMoney(financialReportData.netSalesForCommission)}</strong></div>
               <div>الطلبات الكلية: <strong>${Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</strong></div>
               <div>الطلبات المسلمة: <strong>${Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</strong></div>
+              <div>الطلبات الملغاة: <strong>${Number(financialReportData.cancelledOrdersCount || 0).toLocaleString()}</strong></div>
+              <div>الطلبات المرتبطة بالشحن: <strong>${Number(financialReportData.shippedOrdersCount || 0).toLocaleString()}</strong></div>
               <div>نسبة العمولة: <strong>${formatMoney(financialReportData.assignedCommissionPercent)}%</strong></div>
             </div>
           </div>
@@ -1179,6 +1185,8 @@ const UserManagement: React.FunctionComponent = () => {
                     <div>صافي المبيعات للعمولة: <span className="font-bold">{formatMoney(financialReportData.netSalesForCommission)}</span></div>
                     <div>إجمالي الطلبات: <span className="font-bold">{Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</span></div>
                     <div>الطلبات المسلمة: <span className="font-bold">{Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</span></div>
+                    <div>الطلبات الملغاة: <span className="font-bold">{Number(financialReportData.cancelledOrdersCount || 0).toLocaleString()}</span></div>
+                    <div>الطلبات المرتبطة بالشحن: <span className="font-bold">{Number(financialReportData.shippedOrdersCount || 0).toLocaleString()}</span></div>
                   </div>
                 </div>
 
