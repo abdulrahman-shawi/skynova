@@ -2033,11 +2033,11 @@ export async function GetUserTargetProgress(userId: string, monthKey?: string) {
 
     const countScope = userOrderScope;
 
-    // الطلبات المسلمة: فقط الطلبات التي حالتها من حالات التسليم الفعلية
+    // الطلبات المسلمة: فقط الطلبات التي حالتها "تم تسليم الطلب"
     const deliveredOrdersCount = await prisma.order.count({
       where: {
         ...countScope,
-        status: { in: DELIVERED_ORDER_STATUSES },
+        status: "تم تسليم الطلب",
         ...dateWhereClause,
       }
     });
