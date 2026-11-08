@@ -1826,7 +1826,7 @@ export async function GetTopSellingUsersByPermission(userId: string, dateFilter?
     return { success: true, data: [] };
   } catch (error) {
     console.error("Error in GetTopSellingUsersByPermission:", error);
-    return { success: false, data: [] };
+    return { success: false, error: "User not found", data: [] };
   }
 }
 
@@ -2033,10 +2033,29 @@ export async function GetUserTargetProgress(userId: string, monthKey?: string) {
 
     const countScope = userOrderScope;
 
+    // الطلبات المسلمة: فقط الطلبات التي حالتها من حالات التسليم الفعلية
     const deliveredOrdersCount = await prisma.order.count({
       where: {
         ...countScope,
-        status: { notIn: statusBlacklist },
+        status: { in: DELIVERED_ORDER_STATUSES },
+        ...dateWhereClause,
+      }
+    });
+
+    // الطلبات الملغاة: فقط الطلبات التي حالتها "تم الغاء الطلب"
+    const cancelledOrdersCount = await prisma.order.count({
+      where: {
+        ...countScope,
+        status: "تم الغاء الطلب",
+        ...dateWhereClause,
+      }
+    });
+
+    // الطلبات المرتبطة بالشحن: الطلبات المسندة إلى شركة شحن (shippingId غير فارغ)
+    const shippedOrdersCount = await prisma.order.count({
+      where: {
+        ...countScope,
+        shippingId: { not: null },
         ...dateWhereClause,
       }
     });
@@ -2354,6 +2373,8 @@ export async function GetUserTargetProgress(userId: string, monthKey?: string) {
         netSalesForCommission,
         totalOrdersCount,
         deliveredOrdersCount,
+        cancelledOrdersCount,
+        shippedOrdersCount,
         totalCommissionAmount,
         commissionPercent,
         assignedCommissionPercent,
