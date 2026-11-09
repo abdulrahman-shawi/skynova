@@ -13,7 +13,7 @@ const normalizeOrderAmountToUSD = (amount: number, warehouseLocation?: string | 
 };
 const NON_REVENUE_STATUSES = ["تم الغاء الطلب", "فشل التسليم مرتجع"];
 const DELIVERED_ORDER_STATUSES = ["تم تسليم الطلب", "تم التسليم", "تم استلام الطلب"];
-const PENDING_ORDER_STATUSES = ["معلقة / نقص معلومات"];
+const PENDING_ORDER_STATUSES = ["معلق / نقص معلومات"];
 
 const resolveOrderExchangeRate = (
   orderLike: { usdToTryRateAtOrder?: number | null },

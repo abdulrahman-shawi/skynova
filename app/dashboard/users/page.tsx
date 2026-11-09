@@ -859,7 +859,7 @@ const UserManagement: React.FunctionComponent = () => {
               <div>صافي المبيعات للعمولة: <strong>${formatMoney(financialReportData.netSalesForCommission)}</strong></div>
               <div>الطلبات الكلية: <strong>${Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</strong></div>
               <div>الطلبات المسلمة: <strong>${Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</strong></div>
-              <div>الطلبات المعلقة (معلقة / نقص معلومات): <strong>${Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</strong> — بقيمة ${formatMoney(financialReportData.pendingOrdersAmount)} $</div>
+              <div>الطلبات المعلقة (معلق / نقص معلومات): <strong>${Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</strong> — بقيمة ${formatMoney(financialReportData.pendingOrdersAmount)} $</div>
               <div>الطلبات الملغاة: <strong>${Number(financialReportData.cancelledOrdersCount || 0).toLocaleString()}</strong></div>
               <div>الطلبات المرتبطة بالشحن: <strong>${Number(financialReportData.shippedOrdersCount || 0).toLocaleString()}</strong></div>
               <div>نسبة العمولة: <strong>${formatMoney(financialReportData.assignedCommissionPercent)}%</strong></div>
@@ -1191,7 +1191,7 @@ const UserManagement: React.FunctionComponent = () => {
                     <div>إجمالي الطلبات: <span className="font-bold">{Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</span></div>
                     <div>الطلبات المسلمة: <span className="font-bold">{Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</span></div>
                     <div>
-                      الطلبات المعلقة (معلقة / نقص معلومات):{" "}
+                      الطلبات المعلقة (معلق / نقص معلومات):{" "}
                       <span className="font-bold">{Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</span>
                       <span className="text-xs text-slate-500 dark:text-slate-300"> — بقيمة {formatMoney(financialReportData.pendingOrdersAmount)} $</span>
                     </div>
