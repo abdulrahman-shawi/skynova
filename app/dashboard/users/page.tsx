@@ -136,6 +136,8 @@ const UserManagement: React.FunctionComponent = () => {
     deliveredOrdersCount: number;
     pendingOrdersCount: number;
     pendingOrdersAmount: number;
+    cancelledOrdersCount: number;
+    shippedOrdersCount: number;
     totalDefaultSalary: number;
     editedSalary: number | null;
     payableSalary: number;
@@ -702,6 +704,8 @@ const UserManagement: React.FunctionComponent = () => {
         deliveredOrdersCount: Number(summary?.deliveredOrdersCount || 0),
         pendingOrdersCount: Number(summary?.pendingOrdersCount || 0),
         pendingOrdersAmount: Number(summary?.pendingOrdersAmount || 0),
+        cancelledOrdersCount: Number(summary?.cancelledOrdersCount || 0),
+        shippedOrdersCount: Number(summary?.shippedOrdersCount || 0),
         totalDefaultSalary,
         editedSalary: hasEditedSalary ? editedSalaryValue : null,
         payableSalary,
@@ -856,6 +860,8 @@ const UserManagement: React.FunctionComponent = () => {
               <div>الطلبات الكلية: <strong>${Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</strong></div>
               <div>الطلبات المسلمة: <strong>${Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</strong></div>
               <div>الطلبات المعلقة (معلقة / نقص معلومات): <strong>${Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</strong> — بقيمة ${formatMoney(financialReportData.pendingOrdersAmount)} $</div>
+              <div>الطلبات الملغاة: <strong>${Number(financialReportData.cancelledOrdersCount || 0).toLocaleString()}</strong></div>
+              <div>الطلبات المرتبطة بالشحن: <strong>${Number(financialReportData.shippedOrdersCount || 0).toLocaleString()}</strong></div>
               <div>نسبة العمولة: <strong>${formatMoney(financialReportData.assignedCommissionPercent)}%</strong></div>
             </div>
           </div>
@@ -1189,6 +1195,8 @@ const UserManagement: React.FunctionComponent = () => {
                       <span className="font-bold">{Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</span>
                       <span className="text-xs text-slate-500 dark:text-slate-300"> — بقيمة {formatMoney(financialReportData.pendingOrdersAmount)} $</span>
                     </div>
+                    <div>الطلبات الملغاة: <span className="font-bold">{Number(financialReportData.cancelledOrdersCount || 0).toLocaleString()}</span></div>
+                    <div>الطلبات المرتبطة بالشحن: <span className="font-bold">{Number(financialReportData.shippedOrdersCount || 0).toLocaleString()}</span></div>
                   </div>
                 </div>
 
