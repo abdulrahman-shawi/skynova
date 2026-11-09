@@ -134,6 +134,8 @@ const UserManagement: React.FunctionComponent = () => {
     netSalesForCommission: number;
     totalOrdersCount: number;
     deliveredOrdersCount: number;
+    pendingOrdersCount: number;
+    pendingOrdersAmount: number;
     totalDefaultSalary: number;
     editedSalary: number | null;
     payableSalary: number;
@@ -698,6 +700,8 @@ const UserManagement: React.FunctionComponent = () => {
         netSalesForCommission: Number(summary?.netSalesForCommission || 0),
         totalOrdersCount: Number(summary?.totalOrdersCount || 0),
         deliveredOrdersCount: Number(summary?.deliveredOrdersCount || 0),
+        pendingOrdersCount: Number(summary?.pendingOrdersCount || 0),
+        pendingOrdersAmount: Number(summary?.pendingOrdersAmount || 0),
         totalDefaultSalary,
         editedSalary: hasEditedSalary ? editedSalaryValue : null,
         payableSalary,
@@ -851,6 +855,7 @@ const UserManagement: React.FunctionComponent = () => {
               <div>صافي المبيعات للعمولة: <strong>${formatMoney(financialReportData.netSalesForCommission)}</strong></div>
               <div>الطلبات الكلية: <strong>${Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</strong></div>
               <div>الطلبات المسلمة: <strong>${Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</strong></div>
+              <div>الطلبات المعلقة (معلقة / نقص معلومات): <strong>${Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</strong> — بقيمة ${formatMoney(financialReportData.pendingOrdersAmount)} $</div>
               <div>نسبة العمولة: <strong>${formatMoney(financialReportData.assignedCommissionPercent)}%</strong></div>
             </div>
           </div>
@@ -1179,6 +1184,11 @@ const UserManagement: React.FunctionComponent = () => {
                     <div>صافي المبيعات للعمولة: <span className="font-bold">{formatMoney(financialReportData.netSalesForCommission)}</span></div>
                     <div>إجمالي الطلبات: <span className="font-bold">{Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</span></div>
                     <div>الطلبات المسلمة: <span className="font-bold">{Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</span></div>
+                    <div>
+                      الطلبات المعلقة (معلقة / نقص معلومات):{" "}
+                      <span className="font-bold">{Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-300"> — بقيمة {formatMoney(financialReportData.pendingOrdersAmount)} $</span>
+                    </div>
                   </div>
                 </div>
 
