@@ -13,6 +13,7 @@ const normalizeOrderAmountToUSD = (amount: number, warehouseLocation?: string | 
 };
 const NON_REVENUE_STATUSES = ["تم الغاء الطلب", "فشل التسليم مرتجع"];
 const DELIVERED_ORDER_STATUSES = ["تم تسليم الطلب", "تم التسليم", "تم استلام الطلب"];
+const PENDING_ORDER_STATUSES = ["معلقة / نقص معلومات"];
 
 const resolveOrderExchangeRate = (
   orderLike: { usdToTryRateAtOrder?: number | null },
@@ -31,7 +32,7 @@ const getTurkeyExchangeRateFromSettings = async () => {
 // 4. يتم اختيار الحقل usdToTryRate فقط من السجل الذي تم جلبه.
 // 5. بعد جلب البيانات، يتم تحويل قيمة usdToTryRate إلى رقم باستخدام Number()، وإذا كانت القيمة غير موجودة أو غير صالحة، يتم تعيينها إلى 0.
 // 6. يتم التحقق مما إذا كانت القيمة المحولة أكبر من 0، فإذا كانت كذلك، يتم إرجاعها كسعر الصرف الحالي، وإلا يتم إرجاع القيمة الافتراضية DEFAULT_TURKEY_EXCHANGE_RATE.
-// 
+//
   try {
     const settings = await prisma.generalSetting.findFirst({
       orderBy: { id: "asc" },
@@ -223,7 +224,7 @@ export async function GetSalesByStatusAction(userId: string, dateFilter?: OrderD
     let replacementOrdersAmount = 0;
     let totalRevenue = 0;
     let lostRevenue = 0;
-    
+
     // عدادات الحالات المطلوبة
     let cancelledCount = 0;
     let missingInfoCount = 0;
@@ -243,7 +244,7 @@ export async function GetSalesByStatusAction(userId: string, dateFilter?: OrderD
 
       statusGroups[order.status].count += 1;
       statusGroups[order.status].amount += orderAmountUSD;
-      
+
       const orderDetails = {
         id: order.id,
         orderNumber: order.orderNumber,
@@ -285,8 +286,8 @@ export async function GetSalesByStatusAction(userId: string, dateFilter?: OrderD
       });
     }
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       data,
       summary: {
         totalRevenue,
@@ -392,8 +393,8 @@ export async function GetSalesTimelineAction(userId: string, dateFilter?: OrderD
       }
     });
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       data: Object.values(timeline)
     };
   } catch (error) {
@@ -427,7 +428,7 @@ export async function GetCustomerAcquisition(userId: string) {
       },
       orderBy: { createdAt: 'asc' }
     });
-    
+
     return { success: true, data: newCustomers };
   } catch (error) {
     console.error("Error in GetCustomerAcquisition:", error);
@@ -460,7 +461,7 @@ export async function GetCustomerAcquisitionMonth(userId: string, dateFilter?: O
 
     // تجميع العملاء حسب الشهر (YYYY-MM)
     const monthlyGroups: Record<string, number> = {};
-    
+
     customers.forEach(c => {
       const date = new Date(c.createdAt);
       // إنشاء مفتاح فريد للشهر والسنة للترتيب
@@ -542,7 +543,7 @@ export async function GetTopCustomers(userId: string, dateFilter?: OrderDateFilt
 //       where: { id: userId },
 //       include: { permission: true }
 //     });
-    
+
 //     const canViewAll = isAdmin(user) || Boolean(user?.permission?.viewOrders);
 //     const createdAtFilter = buildOrderDateWhere(dateFilter);
 //     const warehouseScope = buildWarehouseScope(dateFilter?.warehouseLocation);
@@ -603,7 +604,7 @@ export async function GetSalesByCity(userId: string, dateFilter?: OrderDateFilte
       where: { id: userId },
       include: { permission: true }
     });
-    
+
     const canViewAll = isAdmin(user) || Boolean(user?.permission?.viewOrders);
     const createdAtFilter = buildOrderDateWhere(dateFilter);
     const warehouseScope = buildWarehouseScope(dateFilter?.warehouseLocation);
@@ -616,9 +617,9 @@ export async function GetSalesByCity(userId: string, dateFilter?: OrderDateFilte
         OR: [
           { manualCreatedAt: createdAtFilter },
           { AND: [
-              { manualCreatedAt: null }, 
+              { manualCreatedAt: null },
               { createdAt: createdAtFilter }
-            ] 
+            ]
           }
         ]
       } : {}),
@@ -652,7 +653,7 @@ export async function GetSalesByCity(userId: string, dateFilter?: OrderDateFilte
 
       acc[warehouseCountry]._count.id += 1;
       const effectiveRate = resolveOrderExchangeRate(order, turkeyExchangeRate);
-      
+
       acc[warehouseCountry]._sum.finalAmount += normalizeOrderAmountToUSD(
         Number(order.finalAmount || 0),
         order.warehouse?.location,
@@ -1066,7 +1067,7 @@ export async function GetCustomerInteractions(userId: string, dateFilter?: Order
         id: true,
         name: true,
         _count: {
-          select: { 
+          select: {
             message: { where: messageFilter } // الفلترة هنا مهمة جداً
           }
         }
@@ -1933,7 +1934,7 @@ export async function GetUserTargetProgress(userId: string, monthKey?: string) {
       ? { userId: { in: scopedUserIds } }
       : { userId: effectiveUserId };
 
-    
+
     const revenueOrders = await prisma.order.findMany({
       where: {
         ...userOrderScope,
@@ -2233,6 +2234,13 @@ export async function GetUserTargetProgress(userId: string, monthKey?: string) {
       statusMap.set(order.status, currentStatus);
     }
 
+    // احتساب الطلبات المعلقة (معلقة / نقص معلومات) وقيمتها ضمن نفس نطاق الشهر
+    const pendingOrders = scopedOrders.filter((order) => PENDING_ORDER_STATUSES.includes(order.status));
+    const pendingOrdersCount = pendingOrders.length;
+    const pendingOrdersAmount = Number(
+      pendingOrders.reduce((sum, order) => sum + getOrderAmountFromItemsInUSD(order, turkeyExchangeRate), 0).toFixed(2)
+    );
+
     const exchangeRateBreakdown = Array.from(exchangeRateMap.values())
       .map((row) => ({
         label: row.label,
@@ -2354,6 +2362,8 @@ export async function GetUserTargetProgress(userId: string, monthKey?: string) {
         netSalesForCommission,
         totalOrdersCount,
         deliveredOrdersCount,
+        pendingOrdersCount,
+        pendingOrdersAmount,
         totalCommissionAmount,
         commissionPercent,
         assignedCommissionPercent,
