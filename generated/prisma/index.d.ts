@@ -164,6 +164,11 @@ export type GeneralSetting = $Result.DefaultSelection<Prisma.$GeneralSettingPayl
  */
 export type EmployeeSalaryAdjustment = $Result.DefaultSelection<Prisma.$EmployeeSalaryAdjustmentPayload>
 /**
+ * Model EmployeeMonthlyNote
+ * 
+ */
+export type EmployeeMonthlyNote = $Result.DefaultSelection<Prisma.$EmployeeMonthlyNotePayload>
+/**
  * Model Page
  * 
  */
@@ -852,6 +857,16 @@ export class PrismaClient<
   get employeeSalaryAdjustment(): Prisma.EmployeeSalaryAdjustmentDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.employeeMonthlyNote`: Exposes CRUD operations for the **EmployeeMonthlyNote** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployeeMonthlyNotes
+    * const employeeMonthlyNotes = await prisma.employeeMonthlyNote.findMany()
+    * ```
+    */
+  get employeeMonthlyNote(): Prisma.EmployeeMonthlyNoteDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.page`: Exposes CRUD operations for the **Page** model.
     * Example usage:
     * ```ts
@@ -1414,6 +1429,7 @@ export namespace Prisma {
     TrakingCompany: 'TrakingCompany',
     GeneralSetting: 'GeneralSetting',
     EmployeeSalaryAdjustment: 'EmployeeSalaryAdjustment',
+    EmployeeMonthlyNote: 'EmployeeMonthlyNote',
     Page: 'Page',
     HeroSlide: 'HeroSlide',
     AffiliateLink: 'AffiliateLink',
@@ -1439,7 +1455,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "permission" | "category" | "product" | "adPageVisit" | "productLandingPage" | "review" | "warehouse" | "productStock" | "stockMovement" | "userTarget" | "userActivityTarget" | "targetProduct" | "productImage" | "customer" | "wholesaleCustomer" | "productWholesalePriceTier" | "wholesaleOrder" | "wholesaleOrderItem" | "wholesaleVisit" | "warranty" | "wholesaleWarranty" | "message" | "order" | "expense" | "shipping" | "orderItem" | "trakingCompany" | "generalSetting" | "employeeSalaryAdjustment" | "page" | "heroSlide" | "affiliateLink" | "offer" | "offerDiscount" | "commission" | "affiliateWalletTransfer" | "coupon" | "whatsAppConversation" | "whatsAppMessage"
+      modelProps: "user" | "permission" | "category" | "product" | "adPageVisit" | "productLandingPage" | "review" | "warehouse" | "productStock" | "stockMovement" | "userTarget" | "userActivityTarget" | "targetProduct" | "productImage" | "customer" | "wholesaleCustomer" | "productWholesalePriceTier" | "wholesaleOrder" | "wholesaleOrderItem" | "wholesaleVisit" | "warranty" | "wholesaleWarranty" | "message" | "order" | "expense" | "shipping" | "orderItem" | "trakingCompany" | "generalSetting" | "employeeSalaryAdjustment" | "employeeMonthlyNote" | "page" | "heroSlide" | "affiliateLink" | "offer" | "offerDiscount" | "commission" | "affiliateWalletTransfer" | "coupon" | "whatsAppConversation" | "whatsAppMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3663,6 +3679,80 @@ export namespace Prisma {
           }
         }
       }
+      EmployeeMonthlyNote: {
+        payload: Prisma.$EmployeeMonthlyNotePayload<ExtArgs>
+        fields: Prisma.EmployeeMonthlyNoteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmployeeMonthlyNoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmployeeMonthlyNoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>
+          }
+          findFirst: {
+            args: Prisma.EmployeeMonthlyNoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmployeeMonthlyNoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>
+          }
+          findMany: {
+            args: Prisma.EmployeeMonthlyNoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>[]
+          }
+          create: {
+            args: Prisma.EmployeeMonthlyNoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>
+          }
+          createMany: {
+            args: Prisma.EmployeeMonthlyNoteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmployeeMonthlyNoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>[]
+          }
+          delete: {
+            args: Prisma.EmployeeMonthlyNoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>
+          }
+          update: {
+            args: Prisma.EmployeeMonthlyNoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>
+          }
+          deleteMany: {
+            args: Prisma.EmployeeMonthlyNoteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmployeeMonthlyNoteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmployeeMonthlyNoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>[]
+          }
+          upsert: {
+            args: Prisma.EmployeeMonthlyNoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmployeeMonthlyNotePayload>
+          }
+          aggregate: {
+            args: Prisma.EmployeeMonthlyNoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmployeeMonthlyNote>
+          }
+          groupBy: {
+            args: Prisma.EmployeeMonthlyNoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmployeeMonthlyNoteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmployeeMonthlyNoteCountArgs<ExtArgs>
+            result: $Utils.Optional<EmployeeMonthlyNoteCountAggregateOutputType> | number
+          }
+        }
+      }
       Page: {
         payload: Prisma.$PagePayload<ExtArgs>
         fields: Prisma.PageFieldRefs
@@ -4541,6 +4631,7 @@ export namespace Prisma {
     trakingCompany?: TrakingCompanyOmit
     generalSetting?: GeneralSettingOmit
     employeeSalaryAdjustment?: EmployeeSalaryAdjustmentOmit
+    employeeMonthlyNote?: EmployeeMonthlyNoteOmit
     page?: PageOmit
     heroSlide?: HeroSlideOmit
     affiliateLink?: AffiliateLinkOmit
@@ -4639,6 +4730,7 @@ export namespace Prisma {
     targets: number
     activityTargets: number
     salaryAdjustments: number
+    monthlyNotes: number
     expenses: number
     stockMovements: number
     affiliateLinks: number
@@ -4657,6 +4749,7 @@ export namespace Prisma {
     targets?: boolean | UserCountOutputTypeCountTargetsArgs
     activityTargets?: boolean | UserCountOutputTypeCountActivityTargetsArgs
     salaryAdjustments?: boolean | UserCountOutputTypeCountSalaryAdjustmentsArgs
+    monthlyNotes?: boolean | UserCountOutputTypeCountMonthlyNotesArgs
     expenses?: boolean | UserCountOutputTypeCountExpensesArgs
     stockMovements?: boolean | UserCountOutputTypeCountStockMovementsArgs
     affiliateLinks?: boolean | UserCountOutputTypeCountAffiliateLinksArgs
@@ -4731,6 +4824,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSalaryAdjustmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EmployeeSalaryAdjustmentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMonthlyNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeMonthlyNoteWhereInput
   }
 
   /**
@@ -5823,6 +5923,7 @@ export namespace Prisma {
     targets?: boolean | User$targetsArgs<ExtArgs>
     activityTargets?: boolean | User$activityTargetsArgs<ExtArgs>
     salaryAdjustments?: boolean | User$salaryAdjustmentsArgs<ExtArgs>
+    monthlyNotes?: boolean | User$monthlyNotesArgs<ExtArgs>
     expenses?: boolean | User$expensesArgs<ExtArgs>
     stockMovements?: boolean | User$stockMovementsArgs<ExtArgs>
     affiliateLinks?: boolean | User$affiliateLinksArgs<ExtArgs>
@@ -5918,6 +6019,7 @@ export namespace Prisma {
     targets?: boolean | User$targetsArgs<ExtArgs>
     activityTargets?: boolean | User$activityTargetsArgs<ExtArgs>
     salaryAdjustments?: boolean | User$salaryAdjustmentsArgs<ExtArgs>
+    monthlyNotes?: boolean | User$monthlyNotesArgs<ExtArgs>
     expenses?: boolean | User$expensesArgs<ExtArgs>
     stockMovements?: boolean | User$stockMovementsArgs<ExtArgs>
     affiliateLinks?: boolean | User$affiliateLinksArgs<ExtArgs>
@@ -5949,6 +6051,7 @@ export namespace Prisma {
       targets: Prisma.$UserTargetPayload<ExtArgs>[]
       activityTargets: Prisma.$UserActivityTargetPayload<ExtArgs>[]
       salaryAdjustments: Prisma.$EmployeeSalaryAdjustmentPayload<ExtArgs>[]
+      monthlyNotes: Prisma.$EmployeeMonthlyNotePayload<ExtArgs>[]
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
       stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
       affiliateLinks: Prisma.$AffiliateLinkPayload<ExtArgs>[]
@@ -6382,6 +6485,7 @@ export namespace Prisma {
     targets<T extends User$targetsArgs<ExtArgs> = {}>(args?: Subset<T, User$targetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserTargetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     activityTargets<T extends User$activityTargetsArgs<ExtArgs> = {}>(args?: Subset<T, User$activityTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserActivityTargetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     salaryAdjustments<T extends User$salaryAdjustmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$salaryAdjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeSalaryAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    monthlyNotes<T extends User$monthlyNotesArgs<ExtArgs> = {}>(args?: Subset<T, User$monthlyNotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     expenses<T extends User$expensesArgs<ExtArgs> = {}>(args?: Subset<T, User$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     stockMovements<T extends User$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, User$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     affiliateLinks<T extends User$affiliateLinksArgs<ExtArgs> = {}>(args?: Subset<T, User$affiliateLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AffiliateLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7061,6 +7165,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EmployeeSalaryAdjustmentScalarFieldEnum | EmployeeSalaryAdjustmentScalarFieldEnum[]
+  }
+
+  /**
+   * User.monthlyNotes
+   */
+  export type User$monthlyNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    where?: EmployeeMonthlyNoteWhereInput
+    orderBy?: EmployeeMonthlyNoteOrderByWithRelationInput | EmployeeMonthlyNoteOrderByWithRelationInput[]
+    cursor?: EmployeeMonthlyNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmployeeMonthlyNoteScalarFieldEnum | EmployeeMonthlyNoteScalarFieldEnum[]
   }
 
   /**
@@ -43894,6 +44022,1077 @@ export namespace Prisma {
 
 
   /**
+   * Model EmployeeMonthlyNote
+   */
+
+  export type AggregateEmployeeMonthlyNote = {
+    _count: EmployeeMonthlyNoteCountAggregateOutputType | null
+    _min: EmployeeMonthlyNoteMinAggregateOutputType | null
+    _max: EmployeeMonthlyNoteMaxAggregateOutputType | null
+  }
+
+  export type EmployeeMonthlyNoteMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    monthKey: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployeeMonthlyNoteMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    monthKey: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmployeeMonthlyNoteCountAggregateOutputType = {
+    id: number
+    userId: number
+    monthKey: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmployeeMonthlyNoteMinAggregateInputType = {
+    id?: true
+    userId?: true
+    monthKey?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployeeMonthlyNoteMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    monthKey?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmployeeMonthlyNoteCountAggregateInputType = {
+    id?: true
+    userId?: true
+    monthKey?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmployeeMonthlyNoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployeeMonthlyNote to aggregate.
+     */
+    where?: EmployeeMonthlyNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeMonthlyNotes to fetch.
+     */
+    orderBy?: EmployeeMonthlyNoteOrderByWithRelationInput | EmployeeMonthlyNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmployeeMonthlyNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeMonthlyNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeMonthlyNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmployeeMonthlyNotes
+    **/
+    _count?: true | EmployeeMonthlyNoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmployeeMonthlyNoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmployeeMonthlyNoteMaxAggregateInputType
+  }
+
+  export type GetEmployeeMonthlyNoteAggregateType<T extends EmployeeMonthlyNoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmployeeMonthlyNote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmployeeMonthlyNote[P]>
+      : GetScalarType<T[P], AggregateEmployeeMonthlyNote[P]>
+  }
+
+
+
+
+  export type EmployeeMonthlyNoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmployeeMonthlyNoteWhereInput
+    orderBy?: EmployeeMonthlyNoteOrderByWithAggregationInput | EmployeeMonthlyNoteOrderByWithAggregationInput[]
+    by: EmployeeMonthlyNoteScalarFieldEnum[] | EmployeeMonthlyNoteScalarFieldEnum
+    having?: EmployeeMonthlyNoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmployeeMonthlyNoteCountAggregateInputType | true
+    _min?: EmployeeMonthlyNoteMinAggregateInputType
+    _max?: EmployeeMonthlyNoteMaxAggregateInputType
+  }
+
+  export type EmployeeMonthlyNoteGroupByOutputType = {
+    id: string
+    userId: string
+    monthKey: string
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EmployeeMonthlyNoteCountAggregateOutputType | null
+    _min: EmployeeMonthlyNoteMinAggregateOutputType | null
+    _max: EmployeeMonthlyNoteMaxAggregateOutputType | null
+  }
+
+  type GetEmployeeMonthlyNoteGroupByPayload<T extends EmployeeMonthlyNoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmployeeMonthlyNoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmployeeMonthlyNoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmployeeMonthlyNoteGroupByOutputType[P]>
+            : GetScalarType<T[P], EmployeeMonthlyNoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmployeeMonthlyNoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    monthKey?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeMonthlyNote"]>
+
+  export type EmployeeMonthlyNoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    monthKey?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeMonthlyNote"]>
+
+  export type EmployeeMonthlyNoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    monthKey?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employeeMonthlyNote"]>
+
+  export type EmployeeMonthlyNoteSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    monthKey?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmployeeMonthlyNoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "monthKey" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeMonthlyNote"]>
+  export type EmployeeMonthlyNoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EmployeeMonthlyNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type EmployeeMonthlyNoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $EmployeeMonthlyNotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmployeeMonthlyNote"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      monthKey: string
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["employeeMonthlyNote"]>
+    composites: {}
+  }
+
+  type EmployeeMonthlyNoteGetPayload<S extends boolean | null | undefined | EmployeeMonthlyNoteDefaultArgs> = $Result.GetResult<Prisma.$EmployeeMonthlyNotePayload, S>
+
+  type EmployeeMonthlyNoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmployeeMonthlyNoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmployeeMonthlyNoteCountAggregateInputType | true
+    }
+
+  export interface EmployeeMonthlyNoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmployeeMonthlyNote'], meta: { name: 'EmployeeMonthlyNote' } }
+    /**
+     * Find zero or one EmployeeMonthlyNote that matches the filter.
+     * @param {EmployeeMonthlyNoteFindUniqueArgs} args - Arguments to find a EmployeeMonthlyNote
+     * @example
+     * // Get one EmployeeMonthlyNote
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmployeeMonthlyNoteFindUniqueArgs>(args: SelectSubset<T, EmployeeMonthlyNoteFindUniqueArgs<ExtArgs>>): Prisma__EmployeeMonthlyNoteClient<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmployeeMonthlyNote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmployeeMonthlyNoteFindUniqueOrThrowArgs} args - Arguments to find a EmployeeMonthlyNote
+     * @example
+     * // Get one EmployeeMonthlyNote
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmployeeMonthlyNoteFindUniqueOrThrowArgs>(args: SelectSubset<T, EmployeeMonthlyNoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmployeeMonthlyNoteClient<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployeeMonthlyNote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeMonthlyNoteFindFirstArgs} args - Arguments to find a EmployeeMonthlyNote
+     * @example
+     * // Get one EmployeeMonthlyNote
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmployeeMonthlyNoteFindFirstArgs>(args?: SelectSubset<T, EmployeeMonthlyNoteFindFirstArgs<ExtArgs>>): Prisma__EmployeeMonthlyNoteClient<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmployeeMonthlyNote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeMonthlyNoteFindFirstOrThrowArgs} args - Arguments to find a EmployeeMonthlyNote
+     * @example
+     * // Get one EmployeeMonthlyNote
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmployeeMonthlyNoteFindFirstOrThrowArgs>(args?: SelectSubset<T, EmployeeMonthlyNoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmployeeMonthlyNoteClient<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmployeeMonthlyNotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeMonthlyNoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmployeeMonthlyNotes
+     * const employeeMonthlyNotes = await prisma.employeeMonthlyNote.findMany()
+     * 
+     * // Get first 10 EmployeeMonthlyNotes
+     * const employeeMonthlyNotes = await prisma.employeeMonthlyNote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const employeeMonthlyNoteWithIdOnly = await prisma.employeeMonthlyNote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmployeeMonthlyNoteFindManyArgs>(args?: SelectSubset<T, EmployeeMonthlyNoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmployeeMonthlyNote.
+     * @param {EmployeeMonthlyNoteCreateArgs} args - Arguments to create a EmployeeMonthlyNote.
+     * @example
+     * // Create one EmployeeMonthlyNote
+     * const EmployeeMonthlyNote = await prisma.employeeMonthlyNote.create({
+     *   data: {
+     *     // ... data to create a EmployeeMonthlyNote
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmployeeMonthlyNoteCreateArgs>(args: SelectSubset<T, EmployeeMonthlyNoteCreateArgs<ExtArgs>>): Prisma__EmployeeMonthlyNoteClient<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmployeeMonthlyNotes.
+     * @param {EmployeeMonthlyNoteCreateManyArgs} args - Arguments to create many EmployeeMonthlyNotes.
+     * @example
+     * // Create many EmployeeMonthlyNotes
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmployeeMonthlyNoteCreateManyArgs>(args?: SelectSubset<T, EmployeeMonthlyNoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmployeeMonthlyNotes and returns the data saved in the database.
+     * @param {EmployeeMonthlyNoteCreateManyAndReturnArgs} args - Arguments to create many EmployeeMonthlyNotes.
+     * @example
+     * // Create many EmployeeMonthlyNotes
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmployeeMonthlyNotes and only return the `id`
+     * const employeeMonthlyNoteWithIdOnly = await prisma.employeeMonthlyNote.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmployeeMonthlyNoteCreateManyAndReturnArgs>(args?: SelectSubset<T, EmployeeMonthlyNoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmployeeMonthlyNote.
+     * @param {EmployeeMonthlyNoteDeleteArgs} args - Arguments to delete one EmployeeMonthlyNote.
+     * @example
+     * // Delete one EmployeeMonthlyNote
+     * const EmployeeMonthlyNote = await prisma.employeeMonthlyNote.delete({
+     *   where: {
+     *     // ... filter to delete one EmployeeMonthlyNote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmployeeMonthlyNoteDeleteArgs>(args: SelectSubset<T, EmployeeMonthlyNoteDeleteArgs<ExtArgs>>): Prisma__EmployeeMonthlyNoteClient<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmployeeMonthlyNote.
+     * @param {EmployeeMonthlyNoteUpdateArgs} args - Arguments to update one EmployeeMonthlyNote.
+     * @example
+     * // Update one EmployeeMonthlyNote
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmployeeMonthlyNoteUpdateArgs>(args: SelectSubset<T, EmployeeMonthlyNoteUpdateArgs<ExtArgs>>): Prisma__EmployeeMonthlyNoteClient<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmployeeMonthlyNotes.
+     * @param {EmployeeMonthlyNoteDeleteManyArgs} args - Arguments to filter EmployeeMonthlyNotes to delete.
+     * @example
+     * // Delete a few EmployeeMonthlyNotes
+     * const { count } = await prisma.employeeMonthlyNote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmployeeMonthlyNoteDeleteManyArgs>(args?: SelectSubset<T, EmployeeMonthlyNoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployeeMonthlyNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeMonthlyNoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmployeeMonthlyNotes
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmployeeMonthlyNoteUpdateManyArgs>(args: SelectSubset<T, EmployeeMonthlyNoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmployeeMonthlyNotes and returns the data updated in the database.
+     * @param {EmployeeMonthlyNoteUpdateManyAndReturnArgs} args - Arguments to update many EmployeeMonthlyNotes.
+     * @example
+     * // Update many EmployeeMonthlyNotes
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmployeeMonthlyNotes and only return the `id`
+     * const employeeMonthlyNoteWithIdOnly = await prisma.employeeMonthlyNote.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmployeeMonthlyNoteUpdateManyAndReturnArgs>(args: SelectSubset<T, EmployeeMonthlyNoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmployeeMonthlyNote.
+     * @param {EmployeeMonthlyNoteUpsertArgs} args - Arguments to update or create a EmployeeMonthlyNote.
+     * @example
+     * // Update or create a EmployeeMonthlyNote
+     * const employeeMonthlyNote = await prisma.employeeMonthlyNote.upsert({
+     *   create: {
+     *     // ... data to create a EmployeeMonthlyNote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmployeeMonthlyNote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmployeeMonthlyNoteUpsertArgs>(args: SelectSubset<T, EmployeeMonthlyNoteUpsertArgs<ExtArgs>>): Prisma__EmployeeMonthlyNoteClient<$Result.GetResult<Prisma.$EmployeeMonthlyNotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmployeeMonthlyNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeMonthlyNoteCountArgs} args - Arguments to filter EmployeeMonthlyNotes to count.
+     * @example
+     * // Count the number of EmployeeMonthlyNotes
+     * const count = await prisma.employeeMonthlyNote.count({
+     *   where: {
+     *     // ... the filter for the EmployeeMonthlyNotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmployeeMonthlyNoteCountArgs>(
+      args?: Subset<T, EmployeeMonthlyNoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmployeeMonthlyNoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmployeeMonthlyNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeMonthlyNoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmployeeMonthlyNoteAggregateArgs>(args: Subset<T, EmployeeMonthlyNoteAggregateArgs>): Prisma.PrismaPromise<GetEmployeeMonthlyNoteAggregateType<T>>
+
+    /**
+     * Group by EmployeeMonthlyNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmployeeMonthlyNoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmployeeMonthlyNoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmployeeMonthlyNoteGroupByArgs['orderBy'] }
+        : { orderBy?: EmployeeMonthlyNoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmployeeMonthlyNoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmployeeMonthlyNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmployeeMonthlyNote model
+   */
+  readonly fields: EmployeeMonthlyNoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmployeeMonthlyNote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmployeeMonthlyNoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmployeeMonthlyNote model
+   */
+  interface EmployeeMonthlyNoteFieldRefs {
+    readonly id: FieldRef<"EmployeeMonthlyNote", 'String'>
+    readonly userId: FieldRef<"EmployeeMonthlyNote", 'String'>
+    readonly monthKey: FieldRef<"EmployeeMonthlyNote", 'String'>
+    readonly notes: FieldRef<"EmployeeMonthlyNote", 'String'>
+    readonly createdAt: FieldRef<"EmployeeMonthlyNote", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmployeeMonthlyNote", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmployeeMonthlyNote findUnique
+   */
+  export type EmployeeMonthlyNoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeMonthlyNote to fetch.
+     */
+    where: EmployeeMonthlyNoteWhereUniqueInput
+  }
+
+  /**
+   * EmployeeMonthlyNote findUniqueOrThrow
+   */
+  export type EmployeeMonthlyNoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeMonthlyNote to fetch.
+     */
+    where: EmployeeMonthlyNoteWhereUniqueInput
+  }
+
+  /**
+   * EmployeeMonthlyNote findFirst
+   */
+  export type EmployeeMonthlyNoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeMonthlyNote to fetch.
+     */
+    where?: EmployeeMonthlyNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeMonthlyNotes to fetch.
+     */
+    orderBy?: EmployeeMonthlyNoteOrderByWithRelationInput | EmployeeMonthlyNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployeeMonthlyNotes.
+     */
+    cursor?: EmployeeMonthlyNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeMonthlyNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeMonthlyNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployeeMonthlyNotes.
+     */
+    distinct?: EmployeeMonthlyNoteScalarFieldEnum | EmployeeMonthlyNoteScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeMonthlyNote findFirstOrThrow
+   */
+  export type EmployeeMonthlyNoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeMonthlyNote to fetch.
+     */
+    where?: EmployeeMonthlyNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeMonthlyNotes to fetch.
+     */
+    orderBy?: EmployeeMonthlyNoteOrderByWithRelationInput | EmployeeMonthlyNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmployeeMonthlyNotes.
+     */
+    cursor?: EmployeeMonthlyNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeMonthlyNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeMonthlyNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmployeeMonthlyNotes.
+     */
+    distinct?: EmployeeMonthlyNoteScalarFieldEnum | EmployeeMonthlyNoteScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeMonthlyNote findMany
+   */
+  export type EmployeeMonthlyNoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which EmployeeMonthlyNotes to fetch.
+     */
+    where?: EmployeeMonthlyNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmployeeMonthlyNotes to fetch.
+     */
+    orderBy?: EmployeeMonthlyNoteOrderByWithRelationInput | EmployeeMonthlyNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmployeeMonthlyNotes.
+     */
+    cursor?: EmployeeMonthlyNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmployeeMonthlyNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmployeeMonthlyNotes.
+     */
+    skip?: number
+    distinct?: EmployeeMonthlyNoteScalarFieldEnum | EmployeeMonthlyNoteScalarFieldEnum[]
+  }
+
+  /**
+   * EmployeeMonthlyNote create
+   */
+  export type EmployeeMonthlyNoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmployeeMonthlyNote.
+     */
+    data: XOR<EmployeeMonthlyNoteCreateInput, EmployeeMonthlyNoteUncheckedCreateInput>
+  }
+
+  /**
+   * EmployeeMonthlyNote createMany
+   */
+  export type EmployeeMonthlyNoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmployeeMonthlyNotes.
+     */
+    data: EmployeeMonthlyNoteCreateManyInput | EmployeeMonthlyNoteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmployeeMonthlyNote createManyAndReturn
+   */
+  export type EmployeeMonthlyNoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmployeeMonthlyNotes.
+     */
+    data: EmployeeMonthlyNoteCreateManyInput | EmployeeMonthlyNoteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployeeMonthlyNote update
+   */
+  export type EmployeeMonthlyNoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmployeeMonthlyNote.
+     */
+    data: XOR<EmployeeMonthlyNoteUpdateInput, EmployeeMonthlyNoteUncheckedUpdateInput>
+    /**
+     * Choose, which EmployeeMonthlyNote to update.
+     */
+    where: EmployeeMonthlyNoteWhereUniqueInput
+  }
+
+  /**
+   * EmployeeMonthlyNote updateMany
+   */
+  export type EmployeeMonthlyNoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmployeeMonthlyNotes.
+     */
+    data: XOR<EmployeeMonthlyNoteUpdateManyMutationInput, EmployeeMonthlyNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployeeMonthlyNotes to update
+     */
+    where?: EmployeeMonthlyNoteWhereInput
+    /**
+     * Limit how many EmployeeMonthlyNotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployeeMonthlyNote updateManyAndReturn
+   */
+  export type EmployeeMonthlyNoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * The data used to update EmployeeMonthlyNotes.
+     */
+    data: XOR<EmployeeMonthlyNoteUpdateManyMutationInput, EmployeeMonthlyNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which EmployeeMonthlyNotes to update
+     */
+    where?: EmployeeMonthlyNoteWhereInput
+    /**
+     * Limit how many EmployeeMonthlyNotes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmployeeMonthlyNote upsert
+   */
+  export type EmployeeMonthlyNoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmployeeMonthlyNote to update in case it exists.
+     */
+    where: EmployeeMonthlyNoteWhereUniqueInput
+    /**
+     * In case the EmployeeMonthlyNote found by the `where` argument doesn't exist, create a new EmployeeMonthlyNote with this data.
+     */
+    create: XOR<EmployeeMonthlyNoteCreateInput, EmployeeMonthlyNoteUncheckedCreateInput>
+    /**
+     * In case the EmployeeMonthlyNote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmployeeMonthlyNoteUpdateInput, EmployeeMonthlyNoteUncheckedUpdateInput>
+  }
+
+  /**
+   * EmployeeMonthlyNote delete
+   */
+  export type EmployeeMonthlyNoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+    /**
+     * Filter which EmployeeMonthlyNote to delete.
+     */
+    where: EmployeeMonthlyNoteWhereUniqueInput
+  }
+
+  /**
+   * EmployeeMonthlyNote deleteMany
+   */
+  export type EmployeeMonthlyNoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmployeeMonthlyNotes to delete
+     */
+    where?: EmployeeMonthlyNoteWhereInput
+    /**
+     * Limit how many EmployeeMonthlyNotes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmployeeMonthlyNote without action
+   */
+  export type EmployeeMonthlyNoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmployeeMonthlyNote
+     */
+    select?: EmployeeMonthlyNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmployeeMonthlyNote
+     */
+    omit?: EmployeeMonthlyNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmployeeMonthlyNoteInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Page
    */
 
@@ -56041,6 +57240,18 @@ export namespace Prisma {
   export type EmployeeSalaryAdjustmentScalarFieldEnum = (typeof EmployeeSalaryAdjustmentScalarFieldEnum)[keyof typeof EmployeeSalaryAdjustmentScalarFieldEnum]
 
 
+  export const EmployeeMonthlyNoteScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    monthKey: 'monthKey',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmployeeMonthlyNoteScalarFieldEnum = (typeof EmployeeMonthlyNoteScalarFieldEnum)[keyof typeof EmployeeMonthlyNoteScalarFieldEnum]
+
+
   export const PageScalarFieldEnum: {
     id: 'id',
     title: 'title',
@@ -56573,6 +57784,7 @@ export namespace Prisma {
     targets?: UserTargetListRelationFilter
     activityTargets?: UserActivityTargetListRelationFilter
     salaryAdjustments?: EmployeeSalaryAdjustmentListRelationFilter
+    monthlyNotes?: EmployeeMonthlyNoteListRelationFilter
     expenses?: ExpenseListRelationFilter
     stockMovements?: StockMovementListRelationFilter
     affiliateLinks?: AffiliateLinkListRelationFilter
@@ -56613,6 +57825,7 @@ export namespace Prisma {
     targets?: UserTargetOrderByRelationAggregateInput
     activityTargets?: UserActivityTargetOrderByRelationAggregateInput
     salaryAdjustments?: EmployeeSalaryAdjustmentOrderByRelationAggregateInput
+    monthlyNotes?: EmployeeMonthlyNoteOrderByRelationAggregateInput
     expenses?: ExpenseOrderByRelationAggregateInput
     stockMovements?: StockMovementOrderByRelationAggregateInput
     affiliateLinks?: AffiliateLinkOrderByRelationAggregateInput
@@ -56656,6 +57869,7 @@ export namespace Prisma {
     targets?: UserTargetListRelationFilter
     activityTargets?: UserActivityTargetListRelationFilter
     salaryAdjustments?: EmployeeSalaryAdjustmentListRelationFilter
+    monthlyNotes?: EmployeeMonthlyNoteListRelationFilter
     expenses?: ExpenseListRelationFilter
     stockMovements?: StockMovementListRelationFilter
     affiliateLinks?: AffiliateLinkListRelationFilter
@@ -59793,6 +61007,67 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"EmployeeSalaryAdjustment"> | Date | string
   }
 
+  export type EmployeeMonthlyNoteWhereInput = {
+    AND?: EmployeeMonthlyNoteWhereInput | EmployeeMonthlyNoteWhereInput[]
+    OR?: EmployeeMonthlyNoteWhereInput[]
+    NOT?: EmployeeMonthlyNoteWhereInput | EmployeeMonthlyNoteWhereInput[]
+    id?: StringFilter<"EmployeeMonthlyNote"> | string
+    userId?: StringFilter<"EmployeeMonthlyNote"> | string
+    monthKey?: StringFilter<"EmployeeMonthlyNote"> | string
+    notes?: StringNullableFilter<"EmployeeMonthlyNote"> | string | null
+    createdAt?: DateTimeFilter<"EmployeeMonthlyNote"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeMonthlyNote"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type EmployeeMonthlyNoteOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    monthKey?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type EmployeeMonthlyNoteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_monthKey?: EmployeeMonthlyNoteUserIdMonthKeyCompoundUniqueInput
+    AND?: EmployeeMonthlyNoteWhereInput | EmployeeMonthlyNoteWhereInput[]
+    OR?: EmployeeMonthlyNoteWhereInput[]
+    NOT?: EmployeeMonthlyNoteWhereInput | EmployeeMonthlyNoteWhereInput[]
+    userId?: StringFilter<"EmployeeMonthlyNote"> | string
+    monthKey?: StringFilter<"EmployeeMonthlyNote"> | string
+    notes?: StringNullableFilter<"EmployeeMonthlyNote"> | string | null
+    createdAt?: DateTimeFilter<"EmployeeMonthlyNote"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeMonthlyNote"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_monthKey">
+
+  export type EmployeeMonthlyNoteOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    monthKey?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmployeeMonthlyNoteCountOrderByAggregateInput
+    _max?: EmployeeMonthlyNoteMaxOrderByAggregateInput
+    _min?: EmployeeMonthlyNoteMinOrderByAggregateInput
+  }
+
+  export type EmployeeMonthlyNoteScalarWhereWithAggregatesInput = {
+    AND?: EmployeeMonthlyNoteScalarWhereWithAggregatesInput | EmployeeMonthlyNoteScalarWhereWithAggregatesInput[]
+    OR?: EmployeeMonthlyNoteScalarWhereWithAggregatesInput[]
+    NOT?: EmployeeMonthlyNoteScalarWhereWithAggregatesInput | EmployeeMonthlyNoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmployeeMonthlyNote"> | string
+    userId?: StringWithAggregatesFilter<"EmployeeMonthlyNote"> | string
+    monthKey?: StringWithAggregatesFilter<"EmployeeMonthlyNote"> | string
+    notes?: StringNullableWithAggregatesFilter<"EmployeeMonthlyNote"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EmployeeMonthlyNote"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmployeeMonthlyNote"> | Date | string
+  }
+
   export type PageWhereInput = {
     AND?: PageWhereInput | PageWhereInput[]
     OR?: PageWhereInput[]
@@ -60657,6 +61932,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -60695,6 +61971,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -60733,6 +62010,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -60771,6 +62049,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -64301,6 +65580,68 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EmployeeMonthlyNoteCreateInput = {
+    id?: string
+    monthKey: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutMonthlyNotesInput
+  }
+
+  export type EmployeeMonthlyNoteUncheckedCreateInput = {
+    id?: string
+    userId: string
+    monthKey: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeMonthlyNoteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthKey?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutMonthlyNotesNestedInput
+  }
+
+  export type EmployeeMonthlyNoteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    monthKey?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeMonthlyNoteCreateManyInput = {
+    id?: string
+    userId: string
+    monthKey: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeMonthlyNoteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthKey?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeMonthlyNoteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    monthKey?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PageCreateInput = {
     id?: string
     title: string
@@ -65376,6 +66717,12 @@ export namespace Prisma {
     none?: EmployeeSalaryAdjustmentWhereInput
   }
 
+  export type EmployeeMonthlyNoteListRelationFilter = {
+    every?: EmployeeMonthlyNoteWhereInput
+    some?: EmployeeMonthlyNoteWhereInput
+    none?: EmployeeMonthlyNoteWhereInput
+  }
+
   export type ExpenseListRelationFilter = {
     every?: ExpenseWhereInput
     some?: ExpenseWhereInput
@@ -65452,6 +66799,10 @@ export namespace Prisma {
   }
 
   export type EmployeeSalaryAdjustmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EmployeeMonthlyNoteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -68025,6 +69376,38 @@ export namespace Prisma {
     editedSalary?: SortOrder
   }
 
+  export type EmployeeMonthlyNoteUserIdMonthKeyCompoundUniqueInput = {
+    userId: string
+    monthKey: string
+  }
+
+  export type EmployeeMonthlyNoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    monthKey?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployeeMonthlyNoteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    monthKey?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmployeeMonthlyNoteMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    monthKey?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type PageCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -68674,6 +70057,13 @@ export namespace Prisma {
     connect?: EmployeeSalaryAdjustmentWhereUniqueInput | EmployeeSalaryAdjustmentWhereUniqueInput[]
   }
 
+  export type EmployeeMonthlyNoteCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmployeeMonthlyNoteCreateWithoutUserInput, EmployeeMonthlyNoteUncheckedCreateWithoutUserInput> | EmployeeMonthlyNoteCreateWithoutUserInput[] | EmployeeMonthlyNoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmployeeMonthlyNoteCreateOrConnectWithoutUserInput | EmployeeMonthlyNoteCreateOrConnectWithoutUserInput[]
+    createMany?: EmployeeMonthlyNoteCreateManyUserInputEnvelope
+    connect?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+  }
+
   export type ExpenseCreateNestedManyWithoutEmployeeInput = {
     create?: XOR<ExpenseCreateWithoutEmployeeInput, ExpenseUncheckedCreateWithoutEmployeeInput> | ExpenseCreateWithoutEmployeeInput[] | ExpenseUncheckedCreateWithoutEmployeeInput[]
     connectOrCreate?: ExpenseCreateOrConnectWithoutEmployeeInput | ExpenseCreateOrConnectWithoutEmployeeInput[]
@@ -68776,6 +70166,13 @@ export namespace Prisma {
     connectOrCreate?: EmployeeSalaryAdjustmentCreateOrConnectWithoutUserInput | EmployeeSalaryAdjustmentCreateOrConnectWithoutUserInput[]
     createMany?: EmployeeSalaryAdjustmentCreateManyUserInputEnvelope
     connect?: EmployeeSalaryAdjustmentWhereUniqueInput | EmployeeSalaryAdjustmentWhereUniqueInput[]
+  }
+
+  export type EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<EmployeeMonthlyNoteCreateWithoutUserInput, EmployeeMonthlyNoteUncheckedCreateWithoutUserInput> | EmployeeMonthlyNoteCreateWithoutUserInput[] | EmployeeMonthlyNoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmployeeMonthlyNoteCreateOrConnectWithoutUserInput | EmployeeMonthlyNoteCreateOrConnectWithoutUserInput[]
+    createMany?: EmployeeMonthlyNoteCreateManyUserInputEnvelope
+    connect?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
   }
 
   export type ExpenseUncheckedCreateNestedManyWithoutEmployeeInput = {
@@ -68998,6 +70395,20 @@ export namespace Prisma {
     deleteMany?: EmployeeSalaryAdjustmentScalarWhereInput | EmployeeSalaryAdjustmentScalarWhereInput[]
   }
 
+  export type EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmployeeMonthlyNoteCreateWithoutUserInput, EmployeeMonthlyNoteUncheckedCreateWithoutUserInput> | EmployeeMonthlyNoteCreateWithoutUserInput[] | EmployeeMonthlyNoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmployeeMonthlyNoteCreateOrConnectWithoutUserInput | EmployeeMonthlyNoteCreateOrConnectWithoutUserInput[]
+    upsert?: EmployeeMonthlyNoteUpsertWithWhereUniqueWithoutUserInput | EmployeeMonthlyNoteUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmployeeMonthlyNoteCreateManyUserInputEnvelope
+    set?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+    disconnect?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+    delete?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+    connect?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+    update?: EmployeeMonthlyNoteUpdateWithWhereUniqueWithoutUserInput | EmployeeMonthlyNoteUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmployeeMonthlyNoteUpdateManyWithWhereWithoutUserInput | EmployeeMonthlyNoteUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmployeeMonthlyNoteScalarWhereInput | EmployeeMonthlyNoteScalarWhereInput[]
+  }
+
   export type ExpenseUpdateManyWithoutEmployeeNestedInput = {
     create?: XOR<ExpenseCreateWithoutEmployeeInput, ExpenseUncheckedCreateWithoutEmployeeInput> | ExpenseCreateWithoutEmployeeInput[] | ExpenseUncheckedCreateWithoutEmployeeInput[]
     connectOrCreate?: ExpenseCreateOrConnectWithoutEmployeeInput | ExpenseCreateOrConnectWithoutEmployeeInput[]
@@ -69205,6 +70616,20 @@ export namespace Prisma {
     update?: EmployeeSalaryAdjustmentUpdateWithWhereUniqueWithoutUserInput | EmployeeSalaryAdjustmentUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: EmployeeSalaryAdjustmentUpdateManyWithWhereWithoutUserInput | EmployeeSalaryAdjustmentUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: EmployeeSalaryAdjustmentScalarWhereInput | EmployeeSalaryAdjustmentScalarWhereInput[]
+  }
+
+  export type EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EmployeeMonthlyNoteCreateWithoutUserInput, EmployeeMonthlyNoteUncheckedCreateWithoutUserInput> | EmployeeMonthlyNoteCreateWithoutUserInput[] | EmployeeMonthlyNoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EmployeeMonthlyNoteCreateOrConnectWithoutUserInput | EmployeeMonthlyNoteCreateOrConnectWithoutUserInput[]
+    upsert?: EmployeeMonthlyNoteUpsertWithWhereUniqueWithoutUserInput | EmployeeMonthlyNoteUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EmployeeMonthlyNoteCreateManyUserInputEnvelope
+    set?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+    disconnect?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+    delete?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+    connect?: EmployeeMonthlyNoteWhereUniqueInput | EmployeeMonthlyNoteWhereUniqueInput[]
+    update?: EmployeeMonthlyNoteUpdateWithWhereUniqueWithoutUserInput | EmployeeMonthlyNoteUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EmployeeMonthlyNoteUpdateManyWithWhereWithoutUserInput | EmployeeMonthlyNoteUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EmployeeMonthlyNoteScalarWhereInput | EmployeeMonthlyNoteScalarWhereInput[]
   }
 
   export type ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput = {
@@ -71821,6 +73246,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSalaryAdjustmentsInput, UserUpdateWithoutSalaryAdjustmentsInput>, UserUncheckedUpdateWithoutSalaryAdjustmentsInput>
   }
 
+  export type UserCreateNestedOneWithoutMonthlyNotesInput = {
+    create?: XOR<UserCreateWithoutMonthlyNotesInput, UserUncheckedCreateWithoutMonthlyNotesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMonthlyNotesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutMonthlyNotesNestedInput = {
+    create?: XOR<UserCreateWithoutMonthlyNotesInput, UserUncheckedCreateWithoutMonthlyNotesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMonthlyNotesInput
+    upsert?: UserUpsertWithoutMonthlyNotesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMonthlyNotesInput, UserUpdateWithoutMonthlyNotesInput>, UserUncheckedUpdateWithoutMonthlyNotesInput>
+  }
+
   export type UserCreateNestedOneWithoutAffiliateLinksInput = {
     create?: XOR<UserCreateWithoutAffiliateLinksInput, UserUncheckedCreateWithoutAffiliateLinksInput>
     connectOrCreate?: UserCreateOrConnectWithoutAffiliateLinksInput
@@ -72674,6 +74113,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -72711,6 +74151,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -72753,6 +74194,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -72790,6 +74232,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -73236,6 +74679,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type EmployeeMonthlyNoteCreateWithoutUserInput = {
+    id?: string
+    monthKey: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeMonthlyNoteUncheckedCreateWithoutUserInput = {
+    id?: string
+    monthKey: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmployeeMonthlyNoteCreateOrConnectWithoutUserInput = {
+    where: EmployeeMonthlyNoteWhereUniqueInput
+    create: XOR<EmployeeMonthlyNoteCreateWithoutUserInput, EmployeeMonthlyNoteUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmployeeMonthlyNoteCreateManyUserInputEnvelope = {
+    data: EmployeeMonthlyNoteCreateManyUserInput | EmployeeMonthlyNoteCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ExpenseCreateWithoutEmployeeInput = {
     type?: $Enums.ExpenseType
     amount: number
@@ -73615,6 +75084,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -73652,6 +75122,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -74078,6 +75549,34 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"EmployeeSalaryAdjustment"> | Date | string
   }
 
+  export type EmployeeMonthlyNoteUpsertWithWhereUniqueWithoutUserInput = {
+    where: EmployeeMonthlyNoteWhereUniqueInput
+    update: XOR<EmployeeMonthlyNoteUpdateWithoutUserInput, EmployeeMonthlyNoteUncheckedUpdateWithoutUserInput>
+    create: XOR<EmployeeMonthlyNoteCreateWithoutUserInput, EmployeeMonthlyNoteUncheckedCreateWithoutUserInput>
+  }
+
+  export type EmployeeMonthlyNoteUpdateWithWhereUniqueWithoutUserInput = {
+    where: EmployeeMonthlyNoteWhereUniqueInput
+    data: XOR<EmployeeMonthlyNoteUpdateWithoutUserInput, EmployeeMonthlyNoteUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EmployeeMonthlyNoteUpdateManyWithWhereWithoutUserInput = {
+    where: EmployeeMonthlyNoteScalarWhereInput
+    data: XOR<EmployeeMonthlyNoteUpdateManyMutationInput, EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type EmployeeMonthlyNoteScalarWhereInput = {
+    AND?: EmployeeMonthlyNoteScalarWhereInput | EmployeeMonthlyNoteScalarWhereInput[]
+    OR?: EmployeeMonthlyNoteScalarWhereInput[]
+    NOT?: EmployeeMonthlyNoteScalarWhereInput | EmployeeMonthlyNoteScalarWhereInput[]
+    id?: StringFilter<"EmployeeMonthlyNote"> | string
+    userId?: StringFilter<"EmployeeMonthlyNote"> | string
+    monthKey?: StringFilter<"EmployeeMonthlyNote"> | string
+    notes?: StringNullableFilter<"EmployeeMonthlyNote"> | string | null
+    createdAt?: DateTimeFilter<"EmployeeMonthlyNote"> | Date | string
+    updatedAt?: DateTimeFilter<"EmployeeMonthlyNote"> | Date | string
+  }
+
   export type ExpenseUpsertWithWhereUniqueWithoutEmployeeInput = {
     where: ExpenseWhereUniqueInput
     update: XOR<ExpenseUpdateWithoutEmployeeInput, ExpenseUncheckedUpdateWithoutEmployeeInput>
@@ -74375,6 +75874,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -74412,6 +75912,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -75941,6 +77442,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -75978,6 +77480,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -76101,6 +77604,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -76138,6 +77642,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -77080,6 +78585,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
@@ -77117,6 +78623,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
@@ -77278,6 +78785,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
@@ -77315,6 +78823,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
@@ -77351,6 +78860,7 @@ export namespace Prisma {
     message?: MessageCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -77388,6 +78898,7 @@ export namespace Prisma {
     message?: MessageUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -77465,6 +78976,7 @@ export namespace Prisma {
     message?: MessageUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -77502,6 +79014,7 @@ export namespace Prisma {
     message?: MessageUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -77555,6 +79068,7 @@ export namespace Prisma {
     message?: MessageCreateNestedManyWithoutUserInput
     targets?: UserTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -77592,6 +79106,7 @@ export namespace Prisma {
     message?: MessageUncheckedCreateNestedManyWithoutUserInput
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -77645,6 +79160,7 @@ export namespace Prisma {
     message?: MessageUpdateManyWithoutUserNestedInput
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -77682,6 +79198,7 @@ export namespace Prisma {
     message?: MessageUncheckedUpdateManyWithoutUserNestedInput
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -78156,6 +79673,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -78193,6 +79711,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -78364,6 +79883,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -78401,6 +79921,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -78629,6 +80150,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -78666,6 +80188,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -78993,6 +80516,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -79030,6 +80554,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -79275,6 +80800,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -79312,6 +80838,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -79872,6 +81399,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -79909,6 +81437,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -80033,6 +81562,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -80070,6 +81600,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -81175,6 +82706,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -81212,6 +82744,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -81316,6 +82849,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -81353,6 +82887,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -81435,6 +82970,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -81472,6 +83008,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -81725,6 +83262,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -81762,6 +83300,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -81929,6 +83468,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
@@ -81966,6 +83506,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
@@ -82019,6 +83560,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
@@ -82056,6 +83598,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
@@ -82732,6 +84275,7 @@ export namespace Prisma {
     message?: MessageCreateNestedManyWithoutUserInput
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -82769,6 +84313,7 @@ export namespace Prisma {
     message?: MessageUncheckedCreateNestedManyWithoutUserInput
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -82822,6 +84367,7 @@ export namespace Prisma {
     message?: MessageUpdateManyWithoutUserNestedInput
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -82859,6 +84405,175 @@ export namespace Prisma {
     message?: MessageUncheckedUpdateManyWithoutUserNestedInput
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
+    affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
+    assignedWholesaleCustomers?: WholesaleCustomerUncheckedUpdateManyWithoutAssignedUserNestedInput
+    wholesaleVisits?: WholesaleVisitUncheckedUpdateManyWithoutUserNestedInput
+    wholesaleOrders?: WholesaleOrderUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutMonthlyNotesInput = {
+    id?: string
+    username: string
+    email: string
+    phone?: string | null
+    notes?: string | null
+    jobTitle?: string | null
+    avatar?: string | null
+    accountType?: $Enums.AccountType
+    password: string
+    salesCommissionPercent?: number
+    wage?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isAffiliate?: boolean
+    affiliateApproved?: boolean
+    affiliateCode?: string | null
+    affiliateRequestedAt?: Date | string | null
+    affiliateApprovedAt?: Date | string | null
+    parent?: UserCreateNestedOneWithoutSubordinatesInput
+    subordinates?: UserCreateNestedManyWithoutParentInput
+    orders?: OrderCreateNestedManyWithoutUserInput
+    walletTransfers?: AffiliateWalletTransferCreateNestedManyWithoutUserInput
+    permission?: PermissionCreateNestedOneWithoutUsersInput
+    customers?: CustomerCreateNestedManyWithoutUsersInput
+    message?: MessageCreateNestedManyWithoutUserInput
+    targets?: UserTargetCreateNestedManyWithoutUserInput
+    activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
+    salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
+    stockMovements?: StockMovementCreateNestedManyWithoutUserInput
+    affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
+    reviews?: ReviewCreateNestedManyWithoutUserInput
+    assignedWholesaleCustomers?: WholesaleCustomerCreateNestedManyWithoutAssignedUserInput
+    wholesaleVisits?: WholesaleVisitCreateNestedManyWithoutUserInput
+    wholesaleOrders?: WholesaleOrderCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutMonthlyNotesInput = {
+    id?: string
+    username: string
+    email: string
+    phone?: string | null
+    notes?: string | null
+    jobTitle?: string | null
+    avatar?: string | null
+    accountType?: $Enums.AccountType
+    password: string
+    salesCommissionPercent?: number
+    wage?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    permissionId?: string | null
+    parentId?: string | null
+    isAffiliate?: boolean
+    affiliateApproved?: boolean
+    affiliateCode?: string | null
+    affiliateRequestedAt?: Date | string | null
+    affiliateApprovedAt?: Date | string | null
+    subordinates?: UserUncheckedCreateNestedManyWithoutParentInput
+    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    walletTransfers?: AffiliateWalletTransferUncheckedCreateNestedManyWithoutUserInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutUsersInput
+    message?: MessageUncheckedCreateNestedManyWithoutUserInput
+    targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
+    activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
+    salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
+    affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
+    assignedWholesaleCustomers?: WholesaleCustomerUncheckedCreateNestedManyWithoutAssignedUserInput
+    wholesaleVisits?: WholesaleVisitUncheckedCreateNestedManyWithoutUserInput
+    wholesaleOrders?: WholesaleOrderUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutMonthlyNotesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMonthlyNotesInput, UserUncheckedCreateWithoutMonthlyNotesInput>
+  }
+
+  export type UserUpsertWithoutMonthlyNotesInput = {
+    update: XOR<UserUpdateWithoutMonthlyNotesInput, UserUncheckedUpdateWithoutMonthlyNotesInput>
+    create: XOR<UserCreateWithoutMonthlyNotesInput, UserUncheckedCreateWithoutMonthlyNotesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMonthlyNotesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMonthlyNotesInput, UserUncheckedUpdateWithoutMonthlyNotesInput>
+  }
+
+  export type UserUpdateWithoutMonthlyNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    accountType?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    password?: StringFieldUpdateOperationsInput | string
+    salesCommissionPercent?: FloatFieldUpdateOperationsInput | number
+    wage?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isAffiliate?: BoolFieldUpdateOperationsInput | boolean
+    affiliateApproved?: BoolFieldUpdateOperationsInput | boolean
+    affiliateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    affiliateRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliateApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parent?: UserUpdateOneWithoutSubordinatesNestedInput
+    subordinates?: UserUpdateManyWithoutParentNestedInput
+    orders?: OrderUpdateManyWithoutUserNestedInput
+    walletTransfers?: AffiliateWalletTransferUpdateManyWithoutUserNestedInput
+    permission?: PermissionUpdateOneWithoutUsersNestedInput
+    customers?: CustomerUpdateManyWithoutUsersNestedInput
+    message?: MessageUpdateManyWithoutUserNestedInput
+    targets?: UserTargetUpdateManyWithoutUserNestedInput
+    activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
+    salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
+    affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
+    reviews?: ReviewUpdateManyWithoutUserNestedInput
+    assignedWholesaleCustomers?: WholesaleCustomerUpdateManyWithoutAssignedUserNestedInput
+    wholesaleVisits?: WholesaleVisitUpdateManyWithoutUserNestedInput
+    wholesaleOrders?: WholesaleOrderUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMonthlyNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    jobTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    accountType?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    password?: StringFieldUpdateOperationsInput | string
+    salesCommissionPercent?: FloatFieldUpdateOperationsInput | number
+    wage?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    permissionId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isAffiliate?: BoolFieldUpdateOperationsInput | boolean
+    affiliateApproved?: BoolFieldUpdateOperationsInput | boolean
+    affiliateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    affiliateRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    affiliateApprovedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    subordinates?: UserUncheckedUpdateManyWithoutParentNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    walletTransfers?: AffiliateWalletTransferUncheckedUpdateManyWithoutUserNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutUsersNestedInput
+    message?: MessageUncheckedUpdateManyWithoutUserNestedInput
+    targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
+    activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
+    salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -82897,6 +84612,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     reviews?: ReviewCreateNestedManyWithoutUserInput
@@ -82934,6 +84650,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
@@ -83106,6 +84823,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     reviews?: ReviewUpdateManyWithoutUserNestedInput
@@ -83143,6 +84861,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
@@ -83895,6 +85614,7 @@ export namespace Prisma {
     targets?: UserTargetCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteCreateNestedManyWithoutUserInput
     expenses?: ExpenseCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkCreateNestedManyWithoutUserInput
@@ -83932,6 +85652,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedCreateNestedManyWithoutUserInput
     activityTargets?: UserActivityTargetUncheckedCreateNestedManyWithoutUserInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedCreateNestedManyWithoutUserInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedCreateNestedManyWithoutUserInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutEmployeeInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutUserInput
     affiliateLinks?: AffiliateLinkUncheckedCreateNestedManyWithoutUserInput
@@ -83985,6 +85706,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -84022,6 +85744,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -84282,6 +86005,14 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type EmployeeMonthlyNoteCreateManyUserInput = {
+    id?: string
+    monthKey: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ExpenseCreateManyEmployeeInput = {
     id?: number
     type?: $Enums.ExpenseType
@@ -84439,6 +86170,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -84476,6 +86208,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -84873,6 +86606,30 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     monthKey?: StringFieldUpdateOperationsInput | string
     editedSalary?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeMonthlyNoteUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthKey?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeMonthlyNoteUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthKey?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    monthKey?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -85326,6 +87083,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -85363,6 +87121,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput
@@ -87093,6 +88852,7 @@ export namespace Prisma {
     targets?: UserTargetUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUpdateManyWithoutUserNestedInput
@@ -87130,6 +88890,7 @@ export namespace Prisma {
     targets?: UserTargetUncheckedUpdateManyWithoutUserNestedInput
     activityTargets?: UserActivityTargetUncheckedUpdateManyWithoutUserNestedInput
     salaryAdjustments?: EmployeeSalaryAdjustmentUncheckedUpdateManyWithoutUserNestedInput
+    monthlyNotes?: EmployeeMonthlyNoteUncheckedUpdateManyWithoutUserNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutEmployeeNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutUserNestedInput
     affiliateLinks?: AffiliateLinkUncheckedUpdateManyWithoutUserNestedInput

@@ -7,6 +7,7 @@ import { hasAnyPermission, isAdmin } from "@/lib/utils";
 import { GetUserTargetProgress } from "@/server/analytics";
 import { getEmployeeSalaryAdjustments, upsertEmployeeSalaryAdjustment } from "@/server/employee-salaries";
 import { getalluser } from "@/server/user";
+import { getLocalMonthRange } from "@/orders/orderHelpers";
 import toast from "react-hot-toast";
 
 const formatMoney = (value: number | undefined | null) =>
@@ -50,7 +51,7 @@ export default function EmployeeSalariesPage() {
 
       const withProfit = await Promise.all(
         employeeRows.map(async (employee: any) => {
-          const summaryRes = await GetUserTargetProgress(String(employee.id), selectedMonth);
+          const summaryRes = await GetUserTargetProgress(String(employee.id), selectedMonth, getLocalMonthRange(selectedMonth));
           const summary: any = summaryRes?.summary || {};
           const fixedSalary = Number(employee?.wage || 0);
           const commissionPercent = Number(employee?.salesCommissionPercent || 0);

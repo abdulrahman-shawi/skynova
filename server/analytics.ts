@@ -1831,7 +1831,7 @@ export async function GetTopSellingUsersByPermission(userId: string, dateFilter?
   }
 }
 
-export async function GetUserTargetProgress(userId: string, monthKey?: string) {
+export async function GetUserTargetProgress(userId: string, monthKey?: string, clientMonthRange?: { start?: string; end?: string } | null) {
   try {
     const turkeyExchangeRate = await getTurkeyExchangeRateFromSettings();
     const session = cookies().get("skynova")?.value;
@@ -1861,6 +1861,12 @@ export async function GetUserTargetProgress(userId: string, monthKey?: string) {
       const year = Number(match[1]);
       const month = Number(match[2]);
       if (!year || !month) return null;
+      // عند توفر نطاق الشهر من المتصفح نستخدمه ليطابق التقرير فلترة صفحة الطلبات (التوقيت المحلي للمستخدم)
+      const clientStart = clientMonthRange?.start ? new Date(clientMonthRange.start) : null;
+      const clientEnd = clientMonthRange?.end ? new Date(clientMonthRange.end) : null;
+      if (clientStart && clientEnd && !Number.isNaN(clientStart.getTime()) && !Number.isNaN(clientEnd.getTime())) {
+        return { start: clientStart, end: clientEnd };
+      }
       const start = new Date(year, month - 1, 1, 0, 0, 0, 0);
       const end = new Date(year, month, 0, 23, 59, 59, 999);
       return { start, end };

@@ -64,6 +64,21 @@ export const getMonthKey = (dateValue: Date | string | number) => {
 
 export const getCurrentMonthKey = () => getMonthKey(new Date());
 
+// نطاق الشهر (أول وآخر مللي ثانية فيه) محسوبًا بالتوقيت المحلي للمتصفح،
+// بحيث يطابق فلترة الشهر في صفحة الطلبات تمامًا حتى عند اختلاف توقيت السيرفر
+export const getLocalMonthRange = (monthKey: string) => {
+  const match = monthKey.match(/^(\d{4})-(\d{2})$/);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  if (!year || !month) return null;
+  const start = new Date(year, month - 1, 1, 0, 0, 0, 0);
+  const nextMonthStart = new Date(year, month, 1, 0, 0, 0, 0);
+  const end = new Date(nextMonthStart.getTime() - 1);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return null;
+  return { start: start.toISOString(), end: end.toISOString() };
+};
+
 export const getPreviousMonthKey = () => {
   const date = new Date();
   date.setMonth(date.getMonth() - 1);

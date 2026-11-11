@@ -10,7 +10,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { assignManagerToEmployees, createUserTarget, deleteuser, getUserActivityTargetProgress, setUserActivityTarget, unassignManagerFromEmployees, updateUserTarget, updateUserCommission, updateUserWage, updateuser } from '@/server/user'; // تأكد من وجود updateuser
 import { GetUserTargetProgress } from '@/server/analytics';
-import { getEmployeeSalaryAdjustments } from '@/server/employee-salaries';
+import { getEmployeeMonthlyNote, getEmployeeSalaryAdjustments, upsertEmployeeMonthlyNote } from '@/server/employee-salaries';
 import { Button } from '@/components/ui/button';
 import { AppModal } from '@/components/ui/app-modal';
 import { Coins, Download, Mail, Plus } from 'lucide-react';
@@ -19,6 +19,7 @@ import { hasPermission } from '@/lib/utils';
 import { getProduct } from '@/server/product';
 import PhoneInput from 'react-phone-number-input';
 import { Controller } from 'react-hook-form';
+import { getLocalMonthRange } from '@/orders/orderHelpers';
 
 const userSchema = z.object({
   username: z.string().min(3, "اسم المستخدم مطلوب"),
@@ -66,6 +67,33 @@ const getCurrentMonthKey = () => {
 };
 
 const formatMoney = (value: number | undefined | null) => Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
+
+// كل حالات الطلبات المعتمدة (نفس قائمة صفحة الطلبات) لعرضها دائمًا في التقرير المالي حتى لو كان عددها صفر
+const ORDER_STATUSES_FOR_REPORT = [
+  "طلب جديد",
+  "تم استلام الطلب",
+  "تم ارسال الطلب",
+  "تم تسليم الطلب",
+  "فشل التسليم مرتجع",
+  "تم الغاء الطلب",
+  "معلق / نقص معلومات",
+  "المتجر",
+];
+
+const getStatusBreakdownForReport = (statusBreakdown: any[] | undefined | null) => {
+  const map = new Map(
+    (Array.isArray(statusBreakdown) ? statusBreakdown : [])
+      .map((row) => [String(row?.status || ""), row] as const)
+  );
+  return ORDER_STATUSES_FOR_REPORT.map((status) => {
+    const row = map.get(status);
+    return {
+      status,
+      count: Number(row?.count || 0),
+      amount: Number(row?.amount || 0),
+    };
+  });
+};
 
 const getLatestTarget = (targets: any[] | undefined | null) => {
   if (!Array.isArray(targets) || targets.length === 0) return null;
@@ -122,6 +150,8 @@ const UserManagement: React.FunctionComponent = () => {
   const [financialReportMonth, setFinancialReportMonth] = React.useState<string>(getCurrentMonthKey);
   const [financialReportLoading, setFinancialReportLoading] = React.useState(false);
   const [isFinancialReportPdfExporting, setIsFinancialReportPdfExporting] = React.useState(false);
+  const [financialReportNotes, setFinancialReportNotes] = React.useState("");
+  const [financialReportNotesSaving, setFinancialReportNotesSaving] = React.useState(false);
   const [financialReportData, setFinancialReportData] = React.useState<{
     employeeNotes: string | null;
     fixedSalary: number;
@@ -665,9 +695,10 @@ const UserManagement: React.FunctionComponent = () => {
         return;
       }
 
-      const [targetRes, adjustmentsRes] = await Promise.all([
-        GetUserTargetProgress(employeeId, monthKey),
+      const [targetRes, adjustmentsRes, monthlyNoteRes] = await Promise.all([
+        GetUserTargetProgress(employeeId, monthKey, getLocalMonthRange(monthKey)),
         getEmployeeSalaryAdjustments(monthKey),
+        getEmployeeMonthlyNote(employeeId, monthKey),
       ]);
 
       if (!targetRes?.success) {
@@ -714,6 +745,10 @@ const UserManagement: React.FunctionComponent = () => {
         dailySalesBreakdown: Array.isArray(summary?.dailySalesBreakdown) ? summary.dailySalesBreakdown : [],
         statusBreakdown: Array.isArray(summary?.statusBreakdown) ? summary.statusBreakdown : [],
       });
+
+      // ملاحظة الشهر المحدد، وعند غيابها نعرض ملاحظة الموظف العامة كاحتياطي
+      const monthlyNote = monthlyNoteRes?.success && monthlyNoteRes.notes ? String(monthlyNoteRes.notes) : "";
+      setFinancialReportNotes(monthlyNote || String(employee?.notes || "").trim());
     } catch (error) {
       toast.error("حدث خطأ أثناء تحميل التقرير المالي");
       setFinancialReportData(null);
@@ -734,6 +769,33 @@ const UserManagement: React.FunctionComponent = () => {
     setFinancialReportMonth(nextMonth);
     if (!financialReportUser || !nextMonth) return;
     await loadFinancialReport(financialReportUser, nextMonth);
+  };
+
+  const canEditFinancialNotes = Boolean(
+    user && (user.accountType === "ADMIN" || hasPermission(user, "editEmployees"))
+  );
+
+  const saveFinancialReportNotes = async () => {
+    const employeeId = String(financialReportUser?.id || "");
+    const monthKey = String(financialReportMonth || "");
+    if (!employeeId || !monthKey) {
+      toast.error("تعذر حفظ الملاحظات");
+      return;
+    }
+
+    setFinancialReportNotesSaving(true);
+    try {
+      const res = await upsertEmployeeMonthlyNote(employeeId, monthKey, financialReportNotes);
+      if (res?.success) {
+        toast.success("تم حفظ ملاحظات الشهر بنجاح");
+      } else {
+        toast.error(res?.error || "فشل حفظ ملاحظات الشهر");
+      }
+    } catch (error) {
+      toast.error("حدث خطأ أثناء حفظ الملاحظات");
+    } finally {
+      setFinancialReportNotesSaving(false);
+    }
   };
 
   const exportFinancialReportPdf = React.useCallback(async () => {
@@ -800,10 +862,9 @@ const UserManagement: React.FunctionComponent = () => {
             .join("")
         : `<div style="padding:10px 8px;color:#64748b;">لا توجد بيانات</div>`;
 
-      const statusRowsHtml = financialReportData.statusBreakdown.length
-        ? financialReportData.statusBreakdown
-            .map(
-              (row) => `
+      const statusRowsHtml = getStatusBreakdownForReport(financialReportData.statusBreakdown)
+        .map(
+          (row) => `
                 <div style="display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-bottom:1px solid #e2e8f0;">
                   <div>
                     <div style="font-weight:700;color:#0f172a;">${row.status}</div>
@@ -812,9 +873,8 @@ const UserManagement: React.FunctionComponent = () => {
                   <div style="font-weight:800;color:#7c3aed;white-space:nowrap;">${formatMoney(row.amount)} $</div>
                 </div>
               `
-            )
-            .join("")
-        : `<div style="padding:10px 8px;color:#64748b;">لا توجد بيانات</div>`;
+        )
+        .join("");
 
       const wrapper = document.createElement("div");
       wrapper.setAttribute("dir", "rtl");
@@ -858,10 +918,13 @@ const UserManagement: React.FunctionComponent = () => {
               <div>إجمالي الشحن: <strong>${formatMoney(financialReportData.totalShippingAmount)}</strong></div>
               <div>صافي المبيعات للعمولة: <strong>${formatMoney(financialReportData.netSalesForCommission)}</strong></div>
               <div>الطلبات الكلية: <strong>${Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</strong></div>
-              <div>الطلبات المسلمة: <strong>${Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</strong></div>
-              <div>الطلبات المعلقة (معلق / نقص معلومات): <strong>${Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</strong> — بقيمة ${formatMoney(financialReportData.pendingOrdersAmount)} $</div>
-              <div>الطلبات الملغاة: <strong>${Number(financialReportData.cancelledOrdersCount || 0).toLocaleString()}</strong></div>
               <div>الطلبات المرتبطة بالشحن: <strong>${Number(financialReportData.shippedOrdersCount || 0).toLocaleString()}</strong></div>
+              ${getStatusBreakdownForReport(financialReportData.statusBreakdown)
+                .map(
+                  (row) =>
+                    `<div>${row.status}: <strong>${Number(row.count || 0).toLocaleString()}</strong> — بقيمة ${formatMoney(row.amount)} $</div>`
+                )
+                .join("")}
               <div>نسبة العمولة: <strong>${formatMoney(financialReportData.assignedCommissionPercent)}%</strong></div>
             </div>
           </div>
@@ -880,7 +943,7 @@ const UserManagement: React.FunctionComponent = () => {
 
         <div style="border:1px solid #cbd5e1;border-radius:12px;padding:10px;background:#ffffff;margin-bottom:10px;">
           <div style="font-size:13px;font-weight:900;margin-bottom:6px;">ملاحظات الموظف</div>
-          <div style="font-size:11px;color:#334155;line-height:1.9;white-space:pre-wrap;word-break:break-word;">${financialReportData.employeeNotes || "لا توجد ملاحظات لهذا الموظف"}</div>
+          <div style="font-size:11px;color:#334155;line-height:1.9;white-space:pre-wrap;word-break:break-word;">${financialReportNotes || "لا توجد ملاحظات لهذا الموظف"}</div>
         </div>
 
         <div style="display:grid;grid-template-columns:1.05fr .95fr 1fr 1fr;gap:10px;align-items:start;">
@@ -933,7 +996,7 @@ const UserManagement: React.FunctionComponent = () => {
     } finally {
       setIsFinancialReportPdfExporting(false);
     }
-  }, [financialReportLoading, financialReportData, financialReportUser, financialReportMonth]);
+  }, [financialReportLoading, financialReportData, financialReportUser, financialReportMonth, financialReportNotes]);
 
   // هذا الجزء يستخدم عادة داخل مكون الجدول (DataTable)
   const tableActions: any[] = [
@@ -1189,14 +1252,19 @@ const UserManagement: React.FunctionComponent = () => {
                     <div>إجمالي الشحن: <span className="font-bold">{formatMoney(financialReportData.totalShippingAmount)}</span></div>
                     <div>صافي المبيعات للعمولة: <span className="font-bold">{formatMoney(financialReportData.netSalesForCommission)}</span></div>
                     <div>إجمالي الطلبات: <span className="font-bold">{Number(financialReportData.totalOrdersCount || 0).toLocaleString()}</span></div>
-                    <div>الطلبات المسلمة: <span className="font-bold">{Number(financialReportData.deliveredOrdersCount || 0).toLocaleString()}</span></div>
-                    <div>
-                      الطلبات المعلقة (معلق / نقص معلومات):{" "}
-                      <span className="font-bold">{Number(financialReportData.pendingOrdersCount || 0).toLocaleString()}</span>
-                      <span className="text-xs text-slate-500 dark:text-slate-300"> — بقيمة {formatMoney(financialReportData.pendingOrdersAmount)} $</span>
-                    </div>
-                    <div>الطلبات الملغاة: <span className="font-bold">{Number(financialReportData.cancelledOrdersCount || 0).toLocaleString()}</span></div>
                     <div>الطلبات المرتبطة بالشحن: <span className="font-bold">{Number(financialReportData.shippedOrdersCount || 0).toLocaleString()}</span></div>
+                    <div className="pt-1">
+                      <div className="font-bold text-slate-700 dark:text-slate-200">الطلبات حسب الحالة:</div>
+                      <div className="mt-1 space-y-1 rounded-lg border border-slate-100 p-2 dark:border-slate-800">
+                        {getStatusBreakdownForReport(financialReportData.statusBreakdown).map((row) => (
+                          <div key={row.status} className="flex items-center justify-between gap-2">
+                            <span className="text-slate-600 dark:text-slate-300">{row.status}:</span>
+                            <span className="font-bold">{Number(row.count || 0).toLocaleString()}</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-300">بقيمة {formatMoney(row.amount)} $</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -1218,10 +1286,34 @@ const UserManagement: React.FunctionComponent = () => {
               </div>
 
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm dark:border-slate-800 dark:bg-slate-900">
-                <div className="mb-2 font-black text-slate-700 dark:text-slate-100">ملاحظات الموظف</div>
-                <div className="whitespace-pre-wrap text-slate-600 dark:text-slate-300">
-                  {financialReportData.employeeNotes || "لا توجد ملاحظات لهذا الموظف."}
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <div className="font-black text-slate-700 dark:text-slate-100">
+                    ملاحظات الموظف <span className="text-xs font-normal text-slate-500 dark:text-slate-300">({financialReportMonth})</span>
+                  </div>
+                  {canEditFinancialNotes && (
+                    <Button
+                      type="button"
+                      onClick={saveFinancialReportNotes}
+                      disabled={financialReportNotesSaving || financialReportLoading}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 text-xs"
+                    >
+                      {financialReportNotesSaving ? "جار الحفظ..." : "حفظ الملاحظات"}
+                    </Button>
+                  )}
                 </div>
+                {canEditFinancialNotes ? (
+                  <textarea
+                    value={financialReportNotes}
+                    onChange={(e) => setFinancialReportNotes(e.target.value)}
+                    rows={3}
+                    placeholder="اكتب ملاحظات هذا الشهر هنا... تُحفظ لكل شهر على حدة ولا تؤثر على باقي الشهور"
+                    className="w-full rounded-md border border-slate-300 bg-white p-2 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                  />
+                ) : (
+                  <div className="whitespace-pre-wrap text-slate-600 dark:text-slate-300">
+                    {financialReportNotes || "لا توجد ملاحظات لهذا الموظف."}
+                  </div>
+                )}
               </div>
 
               <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">

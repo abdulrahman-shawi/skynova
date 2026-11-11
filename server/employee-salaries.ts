@@ -123,3 +123,55 @@ export async function upsertEmployeeSalaryAdjustment(userIdInput: string, monthK
     };
   }
 }
+
+export async function getEmployeeMonthlyNote(userIdInput: string, monthKeyInput: string) {
+  try {
+    const currentUser = await getCurrentSessionUser();
+    if (!canViewSalaries(currentUser)) {
+      return { success: false, error: "غير مصرح", notes: null as string | null };
+    }
+
+    const userId = String(userIdInput || "").trim();
+    if (!userId) {
+      return { success: false, error: "معرف الموظف غير صالح", notes: null as string | null };
+    }
+
+    const monthKey = normalizeMonthKey(monthKeyInput);
+
+    const row = await prisma.employeeMonthlyNote.findUnique({
+      where: { userId_monthKey: { userId, monthKey } },
+      select: { notes: true },
+    });
+
+    return { success: true, notes: row?.notes ?? null };
+  } catch (error: any) {
+    return { success: false, error: "فشل جلب ملاحظة الشهر.", notes: null as string | null };
+  }
+}
+
+export async function upsertEmployeeMonthlyNote(userIdInput: string, monthKeyInput: string, notesInput: string) {
+  try {
+    const currentUser = await getCurrentSessionUser();
+    if (!canEditSalaries(currentUser)) {
+      return { success: false, error: "غير مصرح" };
+    }
+
+    const userId = String(userIdInput || "").trim();
+    if (!userId) {
+      return { success: false, error: "معرف الموظف غير صالح" };
+    }
+
+    const monthKey = normalizeMonthKey(monthKeyInput);
+    const notes = String(notesInput || "").trim() || null;
+
+    await prisma.employeeMonthlyNote.upsert({
+      where: { userId_monthKey: { userId, monthKey } },
+      create: { userId, monthKey, notes },
+      update: { notes },
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: "فشل حفظ ملاحظة الشهر." };
+  }
+}

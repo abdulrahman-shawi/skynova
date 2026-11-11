@@ -625,6 +625,15 @@ exports.Prisma.EmployeeSalaryAdjustmentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.EmployeeMonthlyNoteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  monthKey: 'monthKey',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.PageScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -910,6 +919,7 @@ exports.Prisma.ModelName = {
   TrakingCompany: 'TrakingCompany',
   GeneralSetting: 'GeneralSetting',
   EmployeeSalaryAdjustment: 'EmployeeSalaryAdjustment',
+  EmployeeMonthlyNote: 'EmployeeMonthlyNote',
   Page: 'Page',
   HeroSlide: 'HeroSlide',
   AffiliateLink: 'AffiliateLink',
