@@ -41,9 +41,13 @@ const sortOrdersByDisplayDateDesc = <T extends { manualCreatedAt?: Date | null; 
 async function applyWholesaleOrderStockChange(
     tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
     order: { warehouseId?: number | null; warehouse?: { location?: string | null } | null; items: Array<{ productId: number; quantity: number }> },
-    direction: "restore" | "reserve"
+    direction: "restore" | "reserve",
+    userId?: string | null,
+    reason?: string
 ) {
     const warehouseId = order.warehouseId ? Number(order.warehouseId) : null;
+    const movementType = direction === "restore" ? "IN" : "OUT";
+    const movementReason = reason || (direction === "restore" ? "إرجاع مخزون لطلب جملة" : "حجز مخزون لطلب جملة");
 
     for (const item of order.items) {
         const quantity = Number(item.quantity || 0);
@@ -76,15 +80,26 @@ async function applyWholesaleOrderStockChange(
                     where: { id: stock.id },
                     data: { quantity: (Number(stock.quantity) || 0) + quantity },
                 });
-                continue;
-            }
-
-            if (warehouseId && !Number.isNaN(warehouseId)) {
+            } else if (warehouseId && !Number.isNaN(warehouseId)) {
                 await tx.productStock.create({
                     data: {
                         productId: item.productId,
                         warehouseId,
                         quantity,
+                    },
+                });
+            }
+
+            if (stock || (warehouseId && !Number.isNaN(warehouseId))) {
+                const movementWarehouseId = stock ? Number(stock.warehouseId) : warehouseId as number;
+                await tx.stockMovement.create({
+                    data: {
+                        productId: item.productId,
+                        warehouseId: movementWarehouseId,
+                        quantity,
+                        type: movementType,
+                        reason: movementReason,
+                        userId: userId || null,
                     },
                 });
             }
@@ -104,6 +119,17 @@ async function applyWholesaleOrderStockChange(
         await tx.productStock.update({
             where: { id: stock.id },
             data: { quantity: currentQuantity - quantity },
+        });
+
+        await tx.stockMovement.create({
+            data: {
+                productId: item.productId,
+                warehouseId: Number(stock.warehouseId),
+                quantity,
+                type: movementType,
+                reason: movementReason,
+                userId: userId || null,
+            },
         });
     }
 }
@@ -613,7 +639,27 @@ export async function createWholesaleOrder(data: any, items: any[], userId: stri
                     where: { id: stock.id },
                     data: { quantity: currentQty - remaining }
                 });
+
+                await tx.stockMovement.create({
+                    data: {
+                        productId,
+                        warehouseId: fallbackWarehouse.id,
+                        quantity: remaining,
+                        type: "OUT",
+                        reason: `بيع جملة - طلب رقم ${orderNumber}`,
+                        userId: userId ? String(userId) : null,
+                    },
+                });
             }
+
+            await tx.orderStatusLog.create({
+                data: {
+                    wholesaleOrderId: newOrder.id,
+                    oldStatus: null,
+                    newStatus: data.status || "PENDING",
+                    userId: userId ? String(userId) : null,
+                },
+            });
 
             return newOrder;
         });
@@ -685,6 +731,17 @@ export async function updateWholesaleOrder(data: any, id: any, items: any) {
                         await tx.productStock.update({
                             where: { id: stock.id },
                             data: { quantity: (Number(stock.quantity) || 0) + oldItem.quantity }
+                        });
+
+                        await tx.stockMovement.create({
+                            data: {
+                                productId: oldItem.productId,
+                                warehouseId: fallbackWarehouse.id,
+                                quantity: oldItem.quantity,
+                                type: "IN",
+                                reason: `تعديل طلب جملة - إرجاع مخزون (${oldOrder.orderNumber})`,
+                                userId: currentUser?.id || null,
+                            },
                         });
                     }
                 }
@@ -771,7 +828,29 @@ export async function updateWholesaleOrder(data: any, id: any, items: any) {
                         where: { id: stock.id },
                         data: { quantity: currentQty - remaining }
                     });
+
+                    await tx.stockMovement.create({
+                        data: {
+                            productId,
+                            warehouseId: fallbackWarehouse.id,
+                            quantity: remaining,
+                            type: "OUT",
+                            reason: `تعديل طلب جملة - خصم مخزون (${oldOrder.orderNumber})`,
+                            userId: currentUser?.id || null,
+                        },
+                    });
                 }
+            }
+
+            if (String(oldOrder.status || "") !== String(data.status || "")) {
+                await tx.orderStatusLog.create({
+                    data: {
+                        wholesaleOrderId: id,
+                        oldStatus: oldOrder.status,
+                        newStatus: data.status,
+                        userId: currentUser?.id || null,
+                    },
+                });
             }
 
             return { success: true, data: updatedOrder };
@@ -788,6 +867,8 @@ export async function updateWholesaleOrder(data: any, id: any, items: any) {
 
 export async function deleteWholesaleOrder(id: any) {
     try {
+        const currentUser = await getCurrentSessionUser();
+
         const oldOrder = await prisma.wholesaleOrder.findUnique({
             where: { id },
             include: { items: true, warehouse: true }
@@ -814,6 +895,17 @@ export async function deleteWholesaleOrder(id: any) {
                             where: { id: stock.id },
                             data: { quantity: (Number(stock.quantity) || 0) + item.quantity }
                         });
+
+                        await tx.stockMovement.create({
+                            data: {
+                                productId: item.productId,
+                                warehouseId,
+                                quantity: item.quantity,
+                                type: "IN",
+                                reason: `حذف طلب جملة - إرجاع مخزون (${oldOrder.orderNumber})`,
+                                userId: currentUser?.id || null,
+                            },
+                        });
                     }
                 }
             } else {
@@ -833,6 +925,17 @@ export async function deleteWholesaleOrder(id: any) {
                             await tx.productStock.update({
                                 where: { id: stock.id },
                                 data: { quantity: (Number(stock.quantity) || 0) + item.quantity }
+                            });
+
+                            await tx.stockMovement.create({
+                                data: {
+                                    productId: item.productId,
+                                    warehouseId: stock.warehouseId,
+                                    quantity: item.quantity,
+                                    type: "IN",
+                                    reason: `حذف طلب جملة - إرجاع مخزون (${oldOrder.orderNumber})`,
+                                    userId: currentUser?.id || null,
+                                },
                             });
                         }
                     }
@@ -860,6 +963,7 @@ export async function deleteWholesaleOrder(id: any) {
 
 export async function updateWholesaleOrderStatus(status: any, id: any) {
     try {
+        const currentUser = await getCurrentSessionUser();
         const nextStatus = String(status || "").trim();
         const orderId = Number(id);
 
@@ -874,7 +978,11 @@ export async function updateWholesaleOrderStatus(status: any, id: any) {
         const updatedStatus = await prisma.$transaction(async (tx) => {
             const existingOrder = await tx.wholesaleOrder.findUnique({
                 where: { id: orderId },
-                include: {
+                select: {
+                    id: true,
+                    orderNumber: true,
+                    status: true,
+                    warehouseId: true,
                     items: {
                         select: {
                             productId: true,
@@ -898,17 +1006,28 @@ export async function updateWholesaleOrderStatus(status: any, id: any) {
             const willBeReturned = isStockReturnStatus(nextStatus);
 
             if (!wasReturned && willBeReturned) {
-                await applyWholesaleOrderStockChange(tx, existingOrder, "restore");
+                await applyWholesaleOrderStockChange(tx, existingOrder, "restore", currentUser?.id, `تغيير حالة طلب الجملة ${existingOrder.orderNumber} إلى "${nextStatus}"`);
             }
 
             if (wasReturned && !willBeReturned) {
-                await applyWholesaleOrderStockChange(tx, existingOrder, "reserve");
+                await applyWholesaleOrderStockChange(tx, existingOrder, "reserve", currentUser?.id, `تغيير حالة طلب الجملة ${existingOrder.orderNumber} إلى "${nextStatus}"`);
             }
 
             const updated = await tx.wholesaleOrder.update({
                 where: { id: orderId },
                 data: { status: nextStatus },
             });
+
+            if (previousStatus !== nextStatus) {
+                await tx.orderStatusLog.create({
+                    data: {
+                        wholesaleOrderId: orderId,
+                        oldStatus: previousStatus,
+                        newStatus: nextStatus,
+                        userId: currentUser?.id || null,
+                    },
+                });
+            }
 
             return updated;
         });

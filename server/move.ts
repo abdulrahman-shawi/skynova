@@ -2,6 +2,7 @@
 "use server"
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getCurrentSessionUser } from "@/server/order";
 
 export async function getInventoryData() {
   const [stocks, products, warehouses] = await Promise.all([
@@ -19,6 +20,8 @@ export async function getInventoryData() {
 
 export async function createMovementAction(data: any) {
   try {
+    const currentUser = await getCurrentSessionUser();
+
     await prisma.$transaction(async (tx) => {
       const qty = Number(data.quantity);
 
@@ -63,6 +66,7 @@ export async function createMovementAction(data: any) {
           quantity: qty,
           type: data.type,
           reason: data.reason || "",
+          userId: currentUser?.id || null,
         }
       });
     });

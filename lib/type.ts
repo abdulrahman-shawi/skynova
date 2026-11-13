@@ -59,6 +59,11 @@ export interface Permission {
   editPages: boolean;
   deletePages: boolean;
 
+  viewInvoices: boolean;
+  addInvoices: boolean;
+  editInvoices: boolean;
+  deleteInvoices: boolean;
+
   accessSyria: boolean;
   accessTurkey: boolean;
 

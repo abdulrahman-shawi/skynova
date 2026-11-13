@@ -78,6 +78,13 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
                 addPermissions: Boolean(data.addPermissions),
                 editPermissions: Boolean(data.editPermissions),
                 deletePermissions: Boolean(data.deletePermissions),
+
+                // الفواتير
+                viewInvoices: Boolean(data.viewInvoices),
+                addInvoices: Boolean(data.addInvoices),
+                editInvoices: Boolean(data.editInvoices),
+                deleteInvoices: Boolean(data.deleteInvoices),
+
                 accessSyria: Boolean(data.accessSyria),
                 accessTurkey: Boolean(data.accessTurkey),
 

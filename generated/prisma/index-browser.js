@@ -191,6 +191,10 @@ exports.Prisma.PermissionScalarFieldEnum = {
   addPages: 'addPages',
   editPages: 'editPages',
   deletePages: 'deletePages',
+  viewInvoices: 'viewInvoices',
+  addInvoices: 'addInvoices',
+  editInvoices: 'editInvoices',
+  deleteInvoices: 'deleteInvoices',
   accessSyria: 'accessSyria',
   accessTurkey: 'accessTurkey'
 };
@@ -766,6 +770,36 @@ exports.Prisma.WhatsAppMessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.OrderStatusLogScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  wholesaleOrderId: 'wholesaleOrderId',
+  oldStatus: 'oldStatus',
+  newStatus: 'newStatus',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PurchaseInvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  supplierName: 'supplierName',
+  warehouseId: 'warehouseId',
+  totalAmount: 'totalAmount',
+  notes: 'notes',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PurchaseInvoiceItemScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  productId: 'productId',
+  quantity: 'quantity',
+  price: 'price'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -929,7 +963,10 @@ exports.Prisma.ModelName = {
   AffiliateWalletTransfer: 'AffiliateWalletTransfer',
   Coupon: 'Coupon',
   WhatsAppConversation: 'WhatsAppConversation',
-  WhatsAppMessage: 'WhatsAppMessage'
+  WhatsAppMessage: 'WhatsAppMessage',
+  OrderStatusLog: 'OrderStatusLog',
+  PurchaseInvoice: 'PurchaseInvoice',
+  PurchaseInvoiceItem: 'PurchaseInvoiceItem'
 };
 
 /**

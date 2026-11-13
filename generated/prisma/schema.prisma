@@ -151,6 +151,8 @@ model User {
   monthlyNotes      EmployeeMonthlyNote[]
   expenses          Expense[]
   stockMovements    StockMovement[]
+  orderStatusLogs   OrderStatusLog[]
+  purchaseInvoices  PurchaseInvoice[]
 
   // ─── NEW: E-commerce Affiliate Relations ───
   affiliateLinks             AffiliateLink[]
@@ -225,6 +227,11 @@ model Permission {
   editPages   Boolean @default(false)
   deletePages Boolean @default(false)
 
+  viewInvoices   Boolean @default(false)
+  addInvoices    Boolean @default(false)
+  editInvoices   Boolean @default(false)
+  deleteInvoices Boolean @default(false)
+
   accessSyria  Boolean @default(false)
   accessTurkey Boolean @default(false)
   users        User[]
@@ -285,12 +292,13 @@ model Product {
   adPageVisits                 AdPageVisit[]
 
   // ─── NEW: E-commerce Affiliate Relations ───
-  affiliateLinks      AffiliateLink[]
-  reviews             Review[]
-  landingPage         ProductLandingPage?
-  offerDiscounts      OfferDiscount[]
-  wholesalePriceTiers ProductWholesalePriceTier[]
-  wholesaleOrderItems WholesaleOrderItem[]
+  affiliateLinks       AffiliateLink[]
+  reviews              Review[]
+  landingPage          ProductLandingPage?
+  offerDiscounts       OfferDiscount[]
+  wholesalePriceTiers  ProductWholesalePriceTier[]
+  wholesaleOrderItems  WholesaleOrderItem[]
+  purchaseInvoiceItems PurchaseInvoiceItem[]
 }
 
 model AdPageVisit {
@@ -395,6 +403,7 @@ model Warehouse {
   warranties          Warranty[]
   wholesaleWarranties WholesaleWarranty[]
   allowedPermissions  Permission[]        @relation("PermissionWarehouseAccess")
+  purchaseInvoices    PurchaseInvoice[]
 }
 
 // ============================================
@@ -626,6 +635,7 @@ model WholesaleOrder {
   warehouse         Warehouse?           @relation(fields: [warehouseId], references: [id])
   shipping          shipping?            @relation(fields: [shippingId], references: [id])
   warranties        WholesaleWarranty[]
+  statusLogs        OrderStatusLog[]
 
   @@index([createdAt])
   @@index([wholesaleCustomerId, createdAt])
@@ -802,12 +812,13 @@ model Order {
   babelAwb String?
 
   // ─── Existing Relations ───
-  customer   Customer    @relation(fields: [customerId], references: [id])
-  user       User?       @relation(fields: [userId], references: [id])
+  customer   Customer         @relation(fields: [customerId], references: [id])
+  user       User?            @relation(fields: [userId], references: [id])
   items      OrderItem[]
-  warehouse  Warehouse?  @relation(fields: [warehouseId], references: [id])
-  shipping   shipping?   @relation(fields: [shippingId], references: [id])
+  warehouse  Warehouse?       @relation(fields: [warehouseId], references: [id])
+  shipping   shipping?        @relation(fields: [shippingId], references: [id])
   warranties Warranty[]
+  statusLogs OrderStatusLog[]
 
   // ─── NEW: E-commerce Affiliate Relations ───
   commissions Commission[]
@@ -1182,4 +1193,63 @@ model WhatsAppMessage {
 
   @@index([conversationId])
   @@map("whatsapp_messages")
+}
+
+// ============================================
+// OrderStatusLog (سجل تغيير حالات الطلبات)
+// ============================================
+
+model OrderStatusLog {
+  id               Int      @id @default(autoincrement())
+  orderId          Int?
+  wholesaleOrderId Int?
+  oldStatus        String?
+  newStatus        String
+  userId           String?
+  createdAt        DateTime @default(now())
+
+  order          Order?          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  wholesaleOrder WholesaleOrder? @relation(fields: [wholesaleOrderId], references: [id], onDelete: Cascade)
+  user           User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([orderId, createdAt])
+  @@index([wholesaleOrderId, createdAt])
+  @@map("order_status_logs")
+}
+
+// ============================================
+// PurchaseInvoice (فواتير شراء / توريد مخزون)
+// ============================================
+
+model PurchaseInvoice {
+  id            Int      @id @default(autoincrement())
+  invoiceNumber String   @unique
+  supplierName  String?
+  warehouseId   Int
+  totalAmount   Float    @default(0)
+  notes         String?
+  userId        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  warehouse Warehouse             @relation(fields: [warehouseId], references: [id])
+  user      User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items     PurchaseInvoiceItem[]
+
+  @@index([createdAt])
+  @@map("purchase_invoices")
+}
+
+model PurchaseInvoiceItem {
+  id        Int   @id @default(autoincrement())
+  invoiceId Int
+  productId Int
+  quantity  Int
+  price     Float @default(0)
+
+  invoice PurchaseInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id])
+
+  @@index([invoiceId])
+  @@map("purchase_invoice_items")
 }

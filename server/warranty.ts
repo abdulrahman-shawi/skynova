@@ -125,6 +125,7 @@ export async function createWarrantyAction(payload: WarrantyPayload) {
           quantity,
           type: "OUT",
           reason: `${typeLabel[payload.type]} - كفالة${payload.notes ? `: ${payload.notes}` : ""}`,
+          userId: currentUser?.id || null,
         },
       });
 
@@ -327,6 +328,7 @@ export async function updateWarrantyAction(id: string, payload: WarrantyPayload)
               quantity: existing.quantity,
               type: "RETURN",
               reason: `تعديل كفالة - إرجاع مخزون ${typeLabel[existing.type]}${existing.notes ? `: ${existing.notes}` : ""}`,
+              userId: currentUser?.id || null,
             },
           });
         }
@@ -364,6 +366,7 @@ export async function updateWarrantyAction(id: string, payload: WarrantyPayload)
             quantity: newQuantity,
             type: "OUT",
             reason: `${typeLabel[payload.type]} - كفالة${payload.notes ? `: ${payload.notes}` : ""}`,
+            userId: currentUser?.id || null,
           },
         });
 
@@ -557,6 +560,7 @@ export async function deleteWarrantyAction(id: string) {
             quantity: warranty.quantity,
             type: "RETURN",
             reason: `إلغاء كفالة - ${typeLabel[warranty.type]}${warranty.notes ? `: ${warranty.notes}` : ""}`,
+            userId: currentUser?.id || null,
           },
         });
       }

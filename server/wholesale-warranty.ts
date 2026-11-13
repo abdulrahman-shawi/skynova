@@ -129,6 +129,7 @@ export async function createWholesaleWarrantyAction(payload: WholesaleWarrantyPa
           quantity,
           type: "OUT",
           reason: `${typeLabel[payload.type]} - كفالة جملة${payload.notes ? `: ${payload.notes}` : ""}`,
+          userId: currentUser?.id || null,
         },
       });
 
@@ -331,6 +332,7 @@ export async function updateWholesaleWarrantyAction(id: string, payload: Wholesa
               quantity: existing.quantity,
               type: "RETURN",
               reason: `تعديل كفالة جملة - إرجاع مخزون ${typeLabel[existing.type]}${existing.notes ? `: ${existing.notes}` : ""}`,
+              userId: currentUser?.id || null,
             },
           });
         }
@@ -368,6 +370,7 @@ export async function updateWholesaleWarrantyAction(id: string, payload: Wholesa
             quantity: newQuantity,
             type: "OUT",
             reason: `${typeLabel[payload.type]} - كفالة جملة${payload.notes ? `: ${payload.notes}` : ""}`,
+            userId: currentUser?.id || null,
           },
         });
 
@@ -562,6 +565,7 @@ export async function deleteWholesaleWarrantyAction(id: string) {
             quantity: warranty.quantity,
             type: "RETURN",
             reason: `إلغاء كفالة جملة - ${typeLabel[warranty.type]}${warranty.notes ? `: ${warranty.notes}` : ""}`,
+            userId: currentUser?.id || null,
           },
         });
       }

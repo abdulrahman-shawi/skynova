@@ -175,6 +175,10 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
         { icon: Box, label: "المنتجات", href: "/dashboard/products" },
         (user && isAdmin(user)) &&
         { icon: Box, label: "حركات المخزون", href: "/dashboard/move-product" },
+        (user && hasAnyPermission(user, ["viewInvoices", "addInvoices", "editInvoices", "deleteInvoices"])) &&
+        { icon: Receipt, label: "فواتير الشراء", href: "/dashboard/invoices" },
+        (user && isAdmin(user)) &&
+        { icon: FileText, label: "سجل الحركات", href: "/dashboard/movements" },
         (user && hasPermission(user, "viewWarranty")) &&
         { icon: ShieldCheck, label: "الكفالة", href: "/dashboard/warranty" },
         (user && hasPermission(user, "viewWarranty")) &&

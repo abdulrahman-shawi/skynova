@@ -52,9 +52,13 @@ const sortOrdersByDisplayDateDesc = <T extends { manualCreatedAt?: Date | null; 
 async function applyOrderStockChange(
     tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
     order: { warehouseId?: number | null; warehouse?: { location?: string | null } | null; items: Array<{ productId: number; quantity: number }> },
-    direction: "restore" | "reserve"
+    direction: "restore" | "reserve",
+    userId?: string | null,
+    reason?: string
 ) {
     const warehouseId = order.warehouseId ? Number(order.warehouseId) : null;
+    const movementType = direction === "restore" ? "IN" : "OUT";
+    const movementReason = reason || (direction === "restore" ? "إرجاع مخزون للطلب" : "حجز مخزون للطلب");
 
     for (const item of order.items) {
         const quantity = Number(item.quantity || 0);
@@ -87,15 +91,26 @@ async function applyOrderStockChange(
                     where: { id: stock.id },
                     data: { quantity: (Number(stock.quantity) || 0) + quantity },
                 });
-                continue;
-            }
-
-            if (warehouseId && !Number.isNaN(warehouseId)) {
+            } else if (warehouseId && !Number.isNaN(warehouseId)) {
                 await tx.productStock.create({
                     data: {
                         productId: item.productId,
                         warehouseId,
                         quantity,
+                    },
+                });
+            }
+
+            if (stock || (warehouseId && !Number.isNaN(warehouseId))) {
+                const movementWarehouseId = stock ? Number(stock.warehouseId) : warehouseId as number;
+                await tx.stockMovement.create({
+                    data: {
+                        productId: item.productId,
+                        warehouseId: movementWarehouseId,
+                        quantity,
+                        type: movementType,
+                        reason: movementReason,
+                        userId: userId || null,
                     },
                 });
             }
@@ -115,6 +130,17 @@ async function applyOrderStockChange(
         await tx.productStock.update({
             where: { id: stock.id },
             data: { quantity: currentQuantity - quantity },
+        });
+
+        await tx.stockMovement.create({
+            data: {
+                productId: item.productId,
+                warehouseId: Number(stock.warehouseId),
+                quantity,
+                type: movementType,
+                reason: movementReason,
+                userId: userId || null,
+            },
         });
     }
 }
@@ -715,11 +741,31 @@ export async function createOrder(data: any, items: any[], user: any) {
                     where: { id: stock.id },
                     data: { quantity: currentQty - remaining }
                 });
+
+                await tx.stockMovement.create({
+                    data: {
+                        productId,
+                        warehouseId: fallbackWarehouse.id,
+                        quantity: remaining,
+                        type: "OUT",
+                        reason: `بيع - طلب رقم ${orderNumber}`,
+                        userId: user ? String(user) : null,
+                    },
+                });
             }
 
             await tx.customer.update({
                 where: { id: data.customerId },
                 data: { status: "تم البيع" }
+            });
+
+            await tx.orderStatusLog.create({
+                data: {
+                    orderId: newOrder.id,
+                    oldStatus: null,
+                    newStatus: data.status,
+                    userId: user ? String(user) : null,
+                },
             });
 
             await applyAffiliateAttribution(tx, newOrder.id, items, affiliateCode);
@@ -799,6 +845,17 @@ export async function updateOrder(data: any, id: any, items: any) {
                         await tx.productStock.update({
                             where: { id: stock.id },
                             data: { quantity: (Number(stock.quantity) || 0) + oldItem.quantity }
+                        });
+
+                        await tx.stockMovement.create({
+                            data: {
+                                productId: oldItem.productId,
+                                warehouseId: Number(oldOrder.warehouseId),
+                                quantity: oldItem.quantity,
+                                type: "IN",
+                                reason: `تعديل طلب - إرجاع مخزون (${oldOrder.orderNumber})`,
+                                userId: currentUser?.id || null,
+                            },
                         });
                     }
                 }
@@ -880,7 +937,29 @@ export async function updateOrder(data: any, id: any, items: any) {
                         where: { id: stock.id },
                         data: { quantity: currentQty - remaining }
                     });
+
+                    await tx.stockMovement.create({
+                        data: {
+                            productId,
+                            warehouseId: fallbackWarehouse.id,
+                            quantity: remaining,
+                            type: "OUT",
+                            reason: `تعديل طلب - خصم مخزون (${oldOrder.orderNumber})`,
+                            userId: currentUser?.id || null,
+                        },
+                    });
                 }
+            }
+
+            if (String(oldOrder.status || "") !== String(data.status || "")) {
+                await tx.orderStatusLog.create({
+                    data: {
+                        orderId: id,
+                        oldStatus: oldOrder.status,
+                        newStatus: data.status,
+                        userId: currentUser?.id || null,
+                    },
+                });
             }
 
             return { success: true, data: updatedOrder };
@@ -897,6 +976,8 @@ export async function updateOrder(data: any, id: any, items: any) {
 
 export async function deleteOrder(id: any) {
     try {
+        const currentUser = await getCurrentSessionUser();
+
         // 1. جلب البيانات خارج الـ Transaction لتقليل وقت القفل
         const oldOrder = await prisma.order.findUnique({
             where: { id },
@@ -924,6 +1005,17 @@ export async function deleteOrder(id: any) {
                             where: { id: stock.id },
                             data: { quantity: (Number(stock.quantity) || 0) + item.quantity }
                         });
+
+                        await tx.stockMovement.create({
+                            data: {
+                                productId: item.productId,
+                                warehouseId,
+                                quantity: item.quantity,
+                                type: "IN",
+                                reason: `حذف طلب - إرجاع مخزون (${oldOrder.orderNumber})`,
+                                userId: currentUser?.id || null,
+                            },
+                        });
                     }
                 }
             } else {
@@ -943,6 +1035,17 @@ export async function deleteOrder(id: any) {
                             await tx.productStock.update({
                                 where: { id: stock.id },
                                 data: { quantity: (Number(stock.quantity) || 0) + item.quantity }
+                            });
+
+                            await tx.stockMovement.create({
+                                data: {
+                                    productId: item.productId,
+                                    warehouseId: stock.warehouseId,
+                                    quantity: item.quantity,
+                                    type: "IN",
+                                    reason: `حذف طلب - إرجاع مخزون (${oldOrder.orderNumber})`,
+                                    userId: currentUser?.id || null,
+                                },
                             });
                         }
                     }
@@ -1297,6 +1400,7 @@ export async function updateOrderShippingFromTable(
 
 export async function updateStaus(status:any , id:any, cancelReason?: string | null){
     try {
+        const currentUser = await getCurrentSessionUser();
         const nextStatus = String(status || "").trim();
         const orderId = Number(id);
 
@@ -1311,7 +1415,11 @@ export async function updateStaus(status:any , id:any, cancelReason?: string | n
         const updatedStatus = await prisma.$transaction(async (tx) => {
             const existingOrder = await tx.order.findUnique({
                 where: { id: orderId },
-                include: {
+                select: {
+                    id: true,
+                    orderNumber: true,
+                    status: true,
+                    warehouseId: true,
                     items: {
                         select: {
                             productId: true,
@@ -1335,11 +1443,11 @@ export async function updateStaus(status:any , id:any, cancelReason?: string | n
             const willBeReturned = isStockReturnStatus(nextStatus);
 
             if (!wasReturned && willBeReturned) {
-                await applyOrderStockChange(tx, existingOrder, "restore");
+                await applyOrderStockChange(tx, existingOrder, "restore", currentUser?.id, `تغيير حالة الطلب ${existingOrder.orderNumber} إلى "${nextStatus}"`);
             }
 
             if (wasReturned && !willBeReturned) {
-                await applyOrderStockChange(tx, existingOrder, "reserve");
+                await applyOrderStockChange(tx, existingOrder, "reserve", currentUser?.id, `تغيير حالة الطلب ${existingOrder.orderNumber} إلى "${nextStatus}"`);
             }
 
             const nextOrder = await tx.order.update({
@@ -1357,6 +1465,17 @@ export async function updateStaus(status:any , id:any, cancelReason?: string | n
                     status: true,
                 },
             });
+
+            if (previousStatus !== nextStatus) {
+                await tx.orderStatusLog.create({
+                    data: {
+                        orderId,
+                        oldStatus: previousStatus,
+                        newStatus: nextStatus,
+                        userId: currentUser?.id || null,
+                    },
+                });
+            }
 
             await tx.commission.updateMany({
                 where: {

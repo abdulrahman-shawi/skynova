@@ -49,7 +49,9 @@ app/                    # Next.js App Router
     employee-salaries/
     expenses/
     inventories/
+    invoices/           # فواتير الشراء (توريد كميات للمخزون فوراً)
     move-product/
+    movements/          # سجل الحركات (حركات المخزون + تغيير حالات الطلبات، للأدمن)
     orders/
     permissions/
     products/
@@ -76,6 +78,8 @@ server/                 # Server Actions (`'use server'`)
   coupon.ts             # Coupon CRUD (name, code, discount, usage limit)
   employee-salaries.ts
   warranty.ts
+  wholesale-warranty.ts
+  invoices.ts          # فواتير الشراء + سجل الحركات (getMovementLogs للأدمن)
   move.ts
   general-settings.ts
 
@@ -162,7 +166,7 @@ npx prisma migrate deploy
 
 Connection is configured via `DATABASE_URL` in `.env`. A `prisma.config.ts` file is also present for Prisma's new configuration format.
 
-**Important models:** `User`, `Permission`, `Order`, `OrderItem`, `Product`, `ProductStock`, `Warehouse`, `Customer`, `Expense`, `Shipping`, `Warranty`, `WholesaleWarranty`, `Page`, `AffiliateLink`, `Commission`.
+**Important models:** `User`, `Permission`, `Order`, `OrderItem`, `Product`, `ProductStock`, `Warehouse`, `Customer`, `Expense`, `Shipping`, `Warranty`, `WholesaleWarranty`, `Page`, `AffiliateLink`, `Commission`, `StockMovement`, `OrderStatusLog`, `PurchaseInvoice`, `PurchaseInvoiceItem`.
 
 **Warehouse access control:** The `Permission` ↔ `Warehouse` many-to-many relation (`allowedWarehouses` / `allowedPermissions`, join table `_PermissionWarehouseAccess`) restricts which warehouses a role may access. An empty list means access to all warehouses. Managed from the permissions page (`app/dashboard/permissions/page.tsx`) via `/api/permissions`; enforced for orders (`server/order.ts`), wholesale orders (`server/wholesale-order.ts`), and the products page (`app/dashboard/products/page.tsx`) — admins bypass all checks. The client user payload (`/api/users/get`, `/api/users/impersonate/[id]`) includes `permission.allowedWarehouses`. Warehouse **lists shown to end users** (orders, wholesale orders, products pages) must come from `getAllowedWarehouses()` in `server/warehouse.ts`, which filters by the session user's `allowedWarehouses`; the unfiltered `getWarehouse()` is reserved for admin screens (permissions, inventories).
 
@@ -214,6 +218,16 @@ Orders affect stock in real time via `applyOrderStockChange` in `server/order.ts
 - Sold/delivered statuses **decrease** stock.
 - Cancelled/returned statuses **restore** stock.
 - Warehouses are located in either Turkey or Syria; stock lookups fall back by location name when `warehouseId` is absent.
+
+### Stock Movement & Order Status Logs
+Every stock change logs a `StockMovement` row with the acting employee (`userId`, nullable) and an Arabic `reason`:
+- Orders (retail `server/order.ts` / wholesale `server/wholesale-order.ts`): create/update/delete/status transitions log `OUT`/`IN`/`RETURN` movements via `applyOrderStockChange` (which accepts `userId` + `reason` args).
+- Warranties (retail + wholesale) and manual movements (`server/move.ts`) also attach the session user.
+- Status changes write to `OrderStatusLog` (one table for both `Order` and `WholesaleOrder` via nullable `orderId`/`wholesaleOrderId`; `oldStatus` is null on creation). Logged in `createOrder`/`updateOrder`/`updateStaus` and their wholesale twins.
+- The admin-only page `/dashboard/movements` (`getMovementLogs()` in `server/invoices.ts`) renders both logs.
+
+### Purchase Invoices (فواتير الشراء)
+`server/invoices.ts` + page `app/dashboard/invoices`: a purchase invoice (`PurchaseInvoice` + `PurchaseInvoiceItem`) immediately increments `ProductStock` per item inside a transaction and logs an `IN` `StockMovement` with the employee. Gated by the `viewInvoices`/`addInvoices` permission flags (added to `Permission`, the permissions UI row suffix `Invoices`, and the `/api/permissions` POST/PUT routes).
 
 ### Warranty
 Warranty records (`server/warranty.ts`) now require a **warehouse** and **quantity** for every type:
