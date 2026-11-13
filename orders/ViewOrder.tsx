@@ -158,6 +158,11 @@ export default function ViewOrder({
                   <tr key={idx} className="hover:bg-slate-50/50">
                     <td className="px-4 md:px-8 py-2">
                       <p className="font-black text-slate-800 dark:text-slate-100">{getProductName(item)}</p>
+                      {Number(item.discount) > 0 && (
+                        <p className="text-[11px] font-bold text-rose-500 mt-0.5">
+                          خصم: {Number(item.discount).toLocaleString()} {currencySymbol}
+                        </p>
+                      )}
                     </td>
                     <td className="px-4 md:px-8 py-2 text-center font-bold text-slate-600 italic">x{item.quantity}</td>
                     <td className="px-4 md:px-8 py-2 text-center font-bold text-slate-600">
