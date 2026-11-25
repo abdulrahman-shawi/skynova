@@ -29,7 +29,7 @@ export async function getPurchaseInvoiceData() {
           user: { select: { id: true, username: true } },
         },
       }),
-      prisma.product.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+      prisma.product.findMany({ where: { isArchived: false }, select: { id: true, name: true }, orderBy: { name: "asc" } }),
       prisma.warehouse.findMany({ select: { id: true, name: true, location: true }, orderBy: { name: "asc" } }),
     ]);
 

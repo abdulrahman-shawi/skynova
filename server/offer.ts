@@ -174,6 +174,7 @@ export async function getOfferDiscountFormMeta() {
         select: { id: true, title: true, subtitle: true },
       }),
       prisma.product.findMany({
+        where: { isArchived: false },
         orderBy: { name: 'asc' },
         select: {
           id: true,

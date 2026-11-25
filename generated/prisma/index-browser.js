@@ -220,6 +220,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   metaDescription: 'metaDescription',
   metaKeywords: 'metaKeywords',
   isActive: 'isActive',
+  isArchived: 'isArchived',
   showInAds: 'showInAds',
   affiliatePrice: 'affiliatePrice',
   affiliateCommissionRate: 'affiliateCommissionRate'

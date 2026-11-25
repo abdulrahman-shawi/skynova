@@ -114,6 +114,7 @@ export async function getPublicProductBySlug(slug: string) {
                 ...(Number.isInteger(numericProductId) && numericProductId > 0 ? [{ id: numericProductId }] : []),
             ],
             isActive: true,
+            isArchived: false,
         },
         include: {
             category: true,
@@ -155,6 +156,7 @@ export async function getPublicAdProductById(productIdInput: number | string) {
         where: {
             id: productId,
             isActive: true,
+            isArchived: false,
             showInAds: true,
             landingPage: {
                 is: {
@@ -201,6 +203,7 @@ export async function getAdPagesDashboardAnalytics() {
         where: {
             showInAds: true,
             isActive: true,
+            isArchived: false,
             landingPage: {
                 is: {
                     isActive: true,
@@ -484,7 +487,7 @@ export async function getPublicAffiliateProductByCode(code: string) {
         },
     });
 
-    if (!link || !link.product || !link.product.isActive) {
+    if (!link || !link.product || !link.product.isActive || link.product.isArchived) {
         return { success: false, error: 'المنتج المرتبط برابط الأفلييت غير موجود' };
     }
 
@@ -677,6 +680,18 @@ export async function toggleProductActive(productId: number, isActive: boolean) 
     }
 }
 
+export async function toggleProductArchive(productId: number, isArchived: boolean) {
+    try {
+        await prisma.product.update({
+            where: { id: productId },
+            data: { isArchived }
+        });
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error?.message || "فشل تحديث حالة الأرشفة" };
+    }
+}
+
 export async function toggleProductShowInAds(productId: number, showInAds: boolean) {
     try {
         await prisma.product.update({
@@ -762,6 +777,7 @@ export async function upsertProductLandingPage(productId: number, data: LandingP
 
 export async function getProductCatalog() {
     const products = await prisma.product.findMany({
+        where: { isArchived: false },
         orderBy: { createdAt: 'desc' },
         select: {
             id: true,

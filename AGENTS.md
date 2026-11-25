@@ -243,6 +243,9 @@ The wholesale warranty (`server/wholesale-warranty.ts`, page `app/dashboard/whol
 - Stock effects, `StockMovement` logging, and edit/delete restore logic are identical to the retail warranty (reasons are suffixed with "كفالة جملة").
 - It reuses the retail warranty permissions (`viewWarranty` / `addWarranty` / `editWarranty` / `deleteWarranty`); the sidebar entry "كفالة الجملة" is gated by `viewWarranty`.
 
+### Product Archiving (أرشفة المنتجات)
+The `Product.isArchived` flag (default `false`) archives products without deleting them. It is toggled from the products page (`/dashboard/products`, requires `editProducts`) via `toggleProductArchive()` in `server/product.ts`. Archived products are excluded from every product picker: purchase invoices (`getPurchaseInvoiceData`), retail/wholesale order catalogs (`getProductCatalog`, `getWholesaleProductCatalog`), warranties (retail + wholesale), stock moves (`getInventoryData`), offers, affiliate links, and the public store/ad/affiliate product pages. The products page hides archived products by default; enable the "عرض المنتجات المؤرشفة" checkbox to see them (with a "مؤرشف" badge) and restore them. Historical data (existing orders, analytics, reports) still includes archived products — only selection lists are filtered.
+
 ### Cron Jobs
 `lib/cron.ts` runs a monthly job (1st of month at 00:00 UTC) that deactivates active `UserTarget` records. It is imported in the root layout so it initializes once per server process.
 

@@ -55,7 +55,7 @@ export async function getWarrantyData() {
           order: { select: { id: true, orderNumber: true } },
         },
       }),
-      prisma.product.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+      prisma.product.findMany({ where: { isArchived: false }, select: { id: true, name: true }, orderBy: { name: "asc" } }),
       prisma.customer.findMany({ select: { id: true, name: true, phone: true }, orderBy: { name: "asc" } }),
       prisma.warehouse.findMany({ select: { id: true, name: true, location: true }, orderBy: { name: "asc" } }),
     ]);

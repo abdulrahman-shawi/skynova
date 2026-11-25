@@ -461,7 +461,7 @@ export async function getWholesaleProductCatalog() {
     const restrictByWarehouse = shouldRestrictOrdersByWarehouse(currentUser);
 
     const products = await prisma.product.findMany({
-        where: { isActive: true },
+        where: { isActive: true, isArchived: false },
         orderBy: { name: "asc" },
         select: {
             id: true,

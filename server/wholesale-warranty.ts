@@ -55,7 +55,7 @@ export async function getWholesaleWarrantyData() {
           wholesaleOrder: { select: { id: true, orderNumber: true } },
         },
       }),
-      prisma.product.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+      prisma.product.findMany({ where: { isArchived: false }, select: { id: true, name: true }, orderBy: { name: "asc" } }),
       prisma.wholesaleCustomer.findMany({
         where: { isActive: true },
         select: { id: true, name: true, phone: true },

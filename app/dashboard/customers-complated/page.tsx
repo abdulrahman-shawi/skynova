@@ -1602,7 +1602,7 @@ const CustomrLayout: React.FC = () => {
 
       <OrderCustomer customerId={customerId} customers={customers}
        editId={editId} getData={getData}
-        isOpenOrder={isOpenOrder} products={products} warehouses={warehouses}
+        isOpenOrder={isOpenOrder} products={products.filter((p: any) => !p.isArchived)} warehouses={warehouses}
       setEditId={setEditId} setCustomerId={setCustomerId} setisOpenOrder={setisOpenOrder} />
 
 

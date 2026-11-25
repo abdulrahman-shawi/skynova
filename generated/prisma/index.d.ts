@@ -10697,6 +10697,7 @@ export namespace Prisma {
     metaDescription: string | null
     metaKeywords: string | null
     isActive: boolean | null
+    isArchived: boolean | null
     showInAds: boolean | null
     affiliatePrice: number | null
     affiliateCommissionRate: number | null
@@ -10714,6 +10715,7 @@ export namespace Prisma {
     metaDescription: string | null
     metaKeywords: string | null
     isActive: boolean | null
+    isArchived: boolean | null
     showInAds: boolean | null
     affiliatePrice: number | null
     affiliateCommissionRate: number | null
@@ -10731,6 +10733,7 @@ export namespace Prisma {
     metaDescription: number
     metaKeywords: number
     isActive: number
+    isArchived: number
     showInAds: number
     affiliatePrice: number
     affiliateCommissionRate: number
@@ -10764,6 +10767,7 @@ export namespace Prisma {
     metaDescription?: true
     metaKeywords?: true
     isActive?: true
+    isArchived?: true
     showInAds?: true
     affiliatePrice?: true
     affiliateCommissionRate?: true
@@ -10781,6 +10785,7 @@ export namespace Prisma {
     metaDescription?: true
     metaKeywords?: true
     isActive?: true
+    isArchived?: true
     showInAds?: true
     affiliatePrice?: true
     affiliateCommissionRate?: true
@@ -10798,6 +10803,7 @@ export namespace Prisma {
     metaDescription?: true
     metaKeywords?: true
     isActive?: true
+    isArchived?: true
     showInAds?: true
     affiliatePrice?: true
     affiliateCommissionRate?: true
@@ -10902,6 +10908,7 @@ export namespace Prisma {
     metaDescription: string | null
     metaKeywords: string | null
     isActive: boolean
+    isArchived: boolean
     showInAds: boolean
     affiliatePrice: number
     affiliateCommissionRate: number | null
@@ -10938,6 +10945,7 @@ export namespace Prisma {
     metaDescription?: boolean
     metaKeywords?: boolean
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: boolean
     affiliateCommissionRate?: boolean
@@ -10972,6 +10980,7 @@ export namespace Prisma {
     metaDescription?: boolean
     metaKeywords?: boolean
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: boolean
     affiliateCommissionRate?: boolean
@@ -10990,6 +10999,7 @@ export namespace Prisma {
     metaDescription?: boolean
     metaKeywords?: boolean
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: boolean
     affiliateCommissionRate?: boolean
@@ -11008,12 +11018,13 @@ export namespace Prisma {
     metaDescription?: boolean
     metaKeywords?: boolean
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: boolean
     affiliateCommissionRate?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "googleLink" | "categoryId" | "createdAt" | "seoSlug" | "metaTitle" | "metaDescription" | "metaKeywords" | "isActive" | "showInAds" | "affiliatePrice" | "affiliateCommissionRate", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "googleLink" | "categoryId" | "createdAt" | "seoSlug" | "metaTitle" | "metaDescription" | "metaKeywords" | "isActive" | "isArchived" | "showInAds" | "affiliatePrice" | "affiliateCommissionRate", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
     category?: boolean | Product$categoryArgs<ExtArgs>
@@ -11072,6 +11083,7 @@ export namespace Prisma {
       metaDescription: string | null
       metaKeywords: string | null
       isActive: boolean
+      isArchived: boolean
       showInAds: boolean
       affiliatePrice: number
       affiliateCommissionRate: number | null
@@ -11525,6 +11537,7 @@ export namespace Prisma {
     readonly metaDescription: FieldRef<"Product", 'String'>
     readonly metaKeywords: FieldRef<"Product", 'String'>
     readonly isActive: FieldRef<"Product", 'Boolean'>
+    readonly isArchived: FieldRef<"Product", 'Boolean'>
     readonly showInAds: FieldRef<"Product", 'Boolean'>
     readonly affiliatePrice: FieldRef<"Product", 'Float'>
     readonly affiliateCommissionRate: FieldRef<"Product", 'Float'>
@@ -60856,6 +60869,7 @@ export namespace Prisma {
     metaDescription: 'metaDescription',
     metaKeywords: 'metaKeywords',
     isActive: 'isActive',
+    isArchived: 'isArchived',
     showInAds: 'showInAds',
     affiliatePrice: 'affiliatePrice',
     affiliateCommissionRate: 'affiliateCommissionRate'
@@ -62462,6 +62476,7 @@ export namespace Prisma {
     metaDescription?: StringNullableFilter<"Product"> | string | null
     metaKeywords?: StringNullableFilter<"Product"> | string | null
     isActive?: BoolFilter<"Product"> | boolean
+    isArchived?: BoolFilter<"Product"> | boolean
     showInAds?: BoolFilter<"Product"> | boolean
     affiliatePrice?: FloatFilter<"Product"> | number
     affiliateCommissionRate?: FloatNullableFilter<"Product"> | number | null
@@ -62495,6 +62510,7 @@ export namespace Prisma {
     metaDescription?: SortOrderInput | SortOrder
     metaKeywords?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    isArchived?: SortOrder
     showInAds?: SortOrder
     affiliatePrice?: SortOrder
     affiliateCommissionRate?: SortOrderInput | SortOrder
@@ -62531,6 +62547,7 @@ export namespace Prisma {
     metaDescription?: StringNullableFilter<"Product"> | string | null
     metaKeywords?: StringNullableFilter<"Product"> | string | null
     isActive?: BoolFilter<"Product"> | boolean
+    isArchived?: BoolFilter<"Product"> | boolean
     showInAds?: BoolFilter<"Product"> | boolean
     affiliatePrice?: FloatFilter<"Product"> | number
     affiliateCommissionRate?: FloatNullableFilter<"Product"> | number | null
@@ -62564,6 +62581,7 @@ export namespace Prisma {
     metaDescription?: SortOrderInput | SortOrder
     metaKeywords?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    isArchived?: SortOrder
     showInAds?: SortOrder
     affiliatePrice?: SortOrder
     affiliateCommissionRate?: SortOrderInput | SortOrder
@@ -62589,6 +62607,7 @@ export namespace Prisma {
     metaDescription?: StringNullableWithAggregatesFilter<"Product"> | string | null
     metaKeywords?: StringNullableWithAggregatesFilter<"Product"> | string | null
     isActive?: BoolWithAggregatesFilter<"Product"> | boolean
+    isArchived?: BoolWithAggregatesFilter<"Product"> | boolean
     showInAds?: BoolWithAggregatesFilter<"Product"> | boolean
     affiliatePrice?: FloatWithAggregatesFilter<"Product"> | number
     affiliateCommissionRate?: FloatNullableWithAggregatesFilter<"Product"> | number | null
@@ -67011,6 +67030,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -67044,6 +67064,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -67074,6 +67095,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -67107,6 +67129,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -67139,6 +67162,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -67154,6 +67178,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -67171,6 +67196,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -72073,6 +72099,7 @@ export namespace Prisma {
     metaDescription?: SortOrder
     metaKeywords?: SortOrder
     isActive?: SortOrder
+    isArchived?: SortOrder
     showInAds?: SortOrder
     affiliatePrice?: SortOrder
     affiliateCommissionRate?: SortOrder
@@ -72097,6 +72124,7 @@ export namespace Prisma {
     metaDescription?: SortOrder
     metaKeywords?: SortOrder
     isActive?: SortOrder
+    isArchived?: SortOrder
     showInAds?: SortOrder
     affiliatePrice?: SortOrder
     affiliateCommissionRate?: SortOrder
@@ -72114,6 +72142,7 @@ export namespace Prisma {
     metaDescription?: SortOrder
     metaKeywords?: SortOrder
     isActive?: SortOrder
+    isArchived?: SortOrder
     showInAds?: SortOrder
     affiliatePrice?: SortOrder
     affiliateCommissionRate?: SortOrder
@@ -81401,6 +81430,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -81432,6 +81462,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -81537,6 +81568,7 @@ export namespace Prisma {
     metaDescription?: StringNullableFilter<"Product"> | string | null
     metaKeywords?: StringNullableFilter<"Product"> | string | null
     isActive?: BoolFilter<"Product"> | boolean
+    isArchived?: BoolFilter<"Product"> | boolean
     showInAds?: BoolFilter<"Product"> | boolean
     affiliatePrice?: FloatFilter<"Product"> | number
     affiliateCommissionRate?: FloatNullableFilter<"Product"> | number | null
@@ -82527,6 +82559,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -82559,6 +82592,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -82604,6 +82638,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -82636,6 +82671,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -82665,6 +82701,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -82697,6 +82734,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -82742,6 +82780,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -82774,6 +82813,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -82803,6 +82843,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -82835,6 +82876,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -82965,6 +83007,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -82997,6 +83040,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -83787,6 +83831,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -83819,6 +83864,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -83898,6 +83944,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -83930,6 +83977,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -83999,6 +84047,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -84031,6 +84080,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -84195,6 +84245,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -84227,6 +84278,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -84806,6 +84858,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -84838,6 +84891,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -84916,6 +84970,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -84948,6 +85003,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -84977,6 +85033,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -85009,6 +85066,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -85054,6 +85112,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -85086,6 +85145,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -85840,6 +85900,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -85872,6 +85933,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -85944,6 +86006,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -85976,6 +86039,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -86685,6 +86749,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -86717,6 +86782,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -86876,6 +86942,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -86908,6 +86975,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -87279,6 +87347,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -87311,6 +87380,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -87541,6 +87611,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -87573,6 +87644,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -87805,6 +87877,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -87837,6 +87910,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -88065,6 +88139,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -88097,6 +88172,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -89710,6 +89786,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -89742,6 +89819,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -89928,6 +90006,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -89960,6 +90039,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -90461,6 +90541,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -90493,6 +90574,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -90684,6 +90766,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -90716,6 +90799,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -90878,6 +90962,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -90910,6 +90995,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -91026,6 +91112,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -91058,6 +91145,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -92587,6 +92675,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -92619,6 +92708,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -92698,6 +92788,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -92730,6 +92821,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -94161,6 +94253,7 @@ export namespace Prisma {
     metaDescription?: string | null
     metaKeywords?: string | null
     isActive?: boolean
+    isArchived?: boolean
     showInAds?: boolean
     affiliatePrice?: number
     affiliateCommissionRate?: number | null
@@ -94193,6 +94286,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -94224,6 +94318,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -94255,6 +94350,7 @@ export namespace Prisma {
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaKeywords?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isArchived?: BoolFieldUpdateOperationsInput | boolean
     showInAds?: BoolFieldUpdateOperationsInput | boolean
     affiliatePrice?: FloatFieldUpdateOperationsInput | number
     affiliateCommissionRate?: NullableFloatFieldUpdateOperationsInput | number | null

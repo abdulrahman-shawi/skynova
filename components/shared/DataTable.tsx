@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils"; // تأكد من وجود هذا المسار 
 // --- Types ---
 
 export interface TableAction<T> {
-  label: string;
+  label: string | ((item: T) => string);
   icon?: React.ReactNode;
   onClick: (item: T) => void;
   variant?: "default" | "danger";
@@ -198,7 +198,7 @@ function ActionMenu<T>({ actions, item  , actiondir}: { actions: TableAction<T>[
               )}
             >
               {action.icon}
-              {action.label}
+              {typeof action.label === "function" ? action.label(item) : action.label}
             </DropdownMenu.Item>
           ))}
         </DropdownMenu.Content>

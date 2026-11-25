@@ -106,7 +106,7 @@ export async function getAffiliateAdminDashboard() {
   });
 
   const products = await prisma.product.findMany({
-    where: { isActive: true },
+    where: { isActive: true, isArchived: false },
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,

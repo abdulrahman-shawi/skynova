@@ -913,7 +913,7 @@ const DashboardPage: React.FunctionComponent = () => {
                     onChange={(e) => updateNewProductRow(index, { productId: e.target.value })}
                   >
                     <option value="">اختر المنتج...</option>
-                    {products.map((product: any) => (
+                    {products.filter((product: any) => !product.isArchived).map((product: any) => (
                       <option key={product.id} value={product.id}>{product.name}</option>
                     ))}
                   </select>

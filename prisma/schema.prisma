@@ -278,6 +278,7 @@ model Product {
   metaDescription       String?
   metaKeywords          String?
   isActive              Boolean  @default(true)
+  isArchived            Boolean  @default(false)
   showInAds             Boolean  @default(false)
   affiliatePrice        Float    @default(0)
   affiliateCommissionRate Float? @default(10.00)

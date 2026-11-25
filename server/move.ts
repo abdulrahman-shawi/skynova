@@ -12,7 +12,7 @@ export async function getInventoryData() {
         warehouse: { select: { id: true, name: true, location: true } }
       }
     }),
-    prisma.product.findMany({ select: { id: true, name: true } }),
+    prisma.product.findMany({ where: { isArchived: false }, select: { id: true, name: true } }),
     prisma.warehouse.findMany({ select: { id: true, name: true, location: true } })
   ]);
   return { stocks, products, warehouses };

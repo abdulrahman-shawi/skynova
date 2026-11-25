@@ -12,11 +12,11 @@ import { useAuth } from '@/context/AuthContext';
 import { buildAdFullUrl } from '@/lib/affiliate';
 import { getallcategory } from '@/server/category';
 import { deleteProductFromWarehouse, saveProductWithFiles, updateProductWithFiles } from '@/server/image';
-import { getProduct, toggleProductActive, toggleProductShowInAds, upsertProductLandingPage, LandingPageInput } from '@/server/product';
+import { getProduct, toggleProductActive, toggleProductArchive, toggleProductShowInAds, upsertProductLandingPage, LandingPageInput } from '@/server/product';
 import { getAllowedWarehouses } from '@/server/warehouse';
 import { error } from 'console';
 import { image } from 'framer-motion/client';
-import { FileDown, Mail, Plus, Warehouse, FileText } from 'lucide-react';
+import { FileDown, Mail, Plus, Warehouse, FileText, Archive } from 'lucide-react';
 import * as React from 'react';
 import { Controller, useFieldArray } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -356,6 +356,7 @@ const ProductLayout = () => {
     const [selectedWarehouseFilter, setSelectedWarehouseFilter] = React.useState<string>('all');
     const [nameFilter, setNameFilter] = React.useState('');
     const [categoryFilter, setCategoryFilter] = React.useState<string>('all');
+    const [showArchived, setShowArchived] = React.useState(false);
     const { user } = useAuth()
     const PAGE_SIZE = 10;
 
@@ -604,7 +605,8 @@ const ProductLayout = () => {
 
             const matchesName = !normalizedNameFilter || String(product?.name || '').toLowerCase().includes(normalizedNameFilter);
             const matchesCategory = categoryFilter === 'all' || String(product?.categoryId || '') === categoryFilter;
-            if (!matchesName || !matchesCategory) {
+            const matchesArchived = showArchived || !product?.isArchived;
+            if (!matchesName || !matchesCategory || !matchesArchived) {
                 return [];
             }
 
@@ -629,7 +631,7 @@ const ProductLayout = () => {
                     __rowId: `${product.id}-${stock.warehouseId || stock.warehouse?.id}`,
                 }));
         });
-    }, [products, selectedWarehouseFilter, nameFilter, categoryFilter, hasLocationAccess, hasWarehouseAccess]);
+    }, [products, selectedWarehouseFilter, nameFilter, categoryFilter, showArchived, hasLocationAccess, hasWarehouseAccess]);
 
     const ExportToExcel = () => {
         // تجهيز البيانات بشكل مقروء
@@ -663,6 +665,34 @@ const ProductLayout = () => {
             icon: <Mail size={14} />,
             onClick: (data: any) => {
                 openEditForm(data);
+            }
+        },
+        (user && (user.accountType === "ADMIN" || user.permission?.editProducts === true)) &&
+        {
+            label: (row: any) => (row?.isArchived ? "إلغاء الأرشفة" : "أرشفة"),
+            icon: <Archive size={14} />,
+            onClick: async (data: any) => {
+                const isArchived = Boolean(data?.isArchived);
+                const confirm = window.confirm(
+                    isArchived
+                        ? `هل تريد إلغاء أرشفة "${data.name}"؟ سيعود للظهور في الفواتير وقوائم الاختيار.`
+                        : `هل تريد أرشفة "${data.name}"؟ سيختفي من الفواتير وجميع قوائم اختيار المنتجات.`
+                );
+                if (!confirm) return;
+                const loadingToast = toast.loading(isArchived ? 'جاري إلغاء الأرشفة...' : 'جاري الأرشفة...');
+                try {
+                    const res = await toggleProductArchive(Number(data.id), !isArchived);
+                    if (res.success) {
+                        toast.success(isArchived ? "تم إلغاء أرشفة المنتج" : "تمت أرشفة المنتج بنجاح");
+                        refreshProducts();
+                    } else {
+                        toast.error(res.error || "فشل تحديث حالة الأرشفة");
+                    }
+                } catch (error) {
+                    toast.error('فشل في تحديث حالة الأرشفة');
+                } finally {
+                    toast.dismiss(loadingToast);
+                }
             }
         },
         (user && (user.accountType === "ADMIN" || user.permission?.deleteProducts === true)) &&
@@ -777,6 +807,21 @@ const ProductLayout = () => {
                         ))}
                     </select>
                 </div>
+
+                <div className="mb-4 flex items-end pb-3">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={showArchived}
+                            onChange={(e) => {
+                                setShowArchived(e.target.checked);
+                                setPage(1);
+                            }}
+                            className="h-4 w-4 accent-blue-600"
+                        />
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">عرض المنتجات المؤرشفة</span>
+                    </label>
+                </div>
                 </div>
             </div>
 
@@ -811,6 +856,11 @@ const ProductLayout = () => {
                             <div className="p-4 flex flex-col flex-grow">
                                 <div className="flex justify-between items-start mb-2">
                                     <h2 className="font-bold text-lg line-clamp-1 text-slate-800 dark:text-slate-100">{product.name}</h2>
+                                    {product.isArchived && (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 shrink-0">
+                                            مؤرشف
+                                        </span>
+                                    )}
                                 </div>
 
                                 <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4 h-10">
@@ -1074,6 +1124,11 @@ const ProductLayout = () => {
                                         className="w-8 h-8 rounded object-cover border"
                                     />
                                     <span>{row.name}</span>
+                                    {row.isArchived && (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                                            مؤرشف
+                                        </span>
+                                    )}
                                 </div>
                             )
                         },
