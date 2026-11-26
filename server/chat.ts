@@ -57,7 +57,7 @@ function isChatEligibleUser(user: any) {
     return isAdmin(user) || hasPermission(user, "viewMessages");
 }
 
-function serialize<T>(value: T): T {
+function serialize(value: unknown): unknown {
     return JSON.parse(JSON.stringify(value));
 }
 
