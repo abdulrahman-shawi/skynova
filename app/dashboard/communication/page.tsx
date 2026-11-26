@@ -46,6 +46,7 @@ type Conversation = {
   memberCount: number;
   unreadCount: number;
   lastMessageAt: string;
+  peer?: { avatar?: string | null } | null;
   lastMessage?: {
     type: string;
     content: string;
