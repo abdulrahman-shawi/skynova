@@ -173,7 +173,7 @@ export default function CommunicationHubPage() {
       setLoadingMessages(false);
       return;
     }
-    setMessages(Array.isArray(res.data) ? res.data : []);
+    setMessages((Array.isArray(res.data) ? res.data : []) as ChatMessageItem[]);
     setLoadingMessages(false);
     await markConversationRead(conversationId);
     setConversations((prev) =>
@@ -231,7 +231,7 @@ export default function CommunicationHubPage() {
           if (s && s.unread > 0 && remoteTime > localTime) {
             const msgRes = await getChatMessages(active);
             if (msgRes.success && !cancelled) {
-              setMessages(Array.isArray(msgRes.data) ? msgRes.data : []);
+              setMessages((Array.isArray(msgRes.data) ? msgRes.data : []) as ChatMessageItem[]);
               await markConversationRead(active);
             }
           }
