@@ -197,7 +197,7 @@ export default function CommunicationHubPage() {
         if (cancelled || !payload?.success || !payload?.data) return;
 
         const snapshot = payload.data;
-        const byId = new Map((snapshot.conversations || []).map((c: any) => [c.id, c]));
+        const byId = new Map<string, any>((snapshot.conversations || []).map((c: any) => [c.id, c]));
 
         setConversations((prev) => {
           // محادثة جديدة أنشأها شخص آخر معي → إعادة تحميل كامل
