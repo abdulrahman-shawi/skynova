@@ -165,6 +165,7 @@ model User {
   chatConversationsCreated ChatConversation[] @relation("ChatConversationCreator")
   chatParticipations       ChatParticipant[]
   chatMessages             ChatMessage[]
+  pushSubscriptions        PushSubscription[]
 }
 
 // ============================================
@@ -816,6 +817,21 @@ model ChatMessage {
   sender       User?            @relation(fields: [senderId], references: [id], onDelete: SetNull)
 
   @@index([conversationId, createdAt])
+}
+
+// اشتراكات Web Push لاستقبال إشعارات خارج الصفحة (جهاز لكل سجل)
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 // ============================================

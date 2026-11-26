@@ -8,6 +8,7 @@ const withPWA = withPWAInit({
 	swMinify: true,
 	register: true,
 	skipWaiting: true,
+	customWorkerDir: "worker",
 	disable: process.env.NODE_ENV === "development" && process.env.ENABLE_PWA_DEV !== "true",
 });
 

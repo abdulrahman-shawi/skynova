@@ -543,6 +543,16 @@ exports.Prisma.ChatMessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
   orderNumber: 'orderNumber',
@@ -985,6 +995,7 @@ exports.Prisma.ModelName = {
   ChatConversation: 'ChatConversation',
   ChatParticipant: 'ChatParticipant',
   ChatMessage: 'ChatMessage',
+  PushSubscription: 'PushSubscription',
   Order: 'Order',
   Expense: 'Expense',
   shipping: 'shipping',

@@ -5,6 +5,7 @@
 
 import { put } from '@vercel/blob';
 import { decrypt } from '@/lib/auth';
+import { sendPushToUsers } from '@/lib/push';
 import { hasPermission, isAdmin } from '@/lib/utils';
 import { prisma } from "@/lib/prisma";
 import { cookies } from 'next/headers';
@@ -358,6 +359,44 @@ export async function sendChatMessage(
             }),
         ]);
 
+        // إشعار Push فوري لبقية المشاركين — يعمل حتى خارج الصفحة/التطبيق
+        try {
+            const conversation = await prisma.chatConversation.findUnique({
+                where: { id: conversationId },
+                include: {
+                    participants: {
+                        include: { user: { select: { id: true, username: true, accountType: true, permission: true } } },
+                    },
+                },
+            });
+            const otherParticipants = (conversation?.participants || [])
+                .map((p: any) => p.user)
+                .filter((u: any) => u && u.id !== currentUser.id && isChatEligibleUser(u));
+
+            if (otherParticipants.length > 0) {
+                const preview = type === "IMAGE"
+                    ? "صورة"
+                    : type === "FILE"
+                        ? `ملف: ${attachment?.fileName || ""}`
+                        : text;
+                const convTitle = conversation?.type === CHAT_GROUP
+                    ? (conversation?.name || "مجموعة")
+                    : currentUser.username;
+
+                void sendPushToUsers(
+                    otherParticipants.map((u: any) => u.id),
+                    {
+                        title: convTitle,
+                        body: `${currentUser.username}: ${preview}`.slice(0, 150),
+                        tag: `skynova-chat-${conversationId}`,
+                        url: `/dashboard/communication?chat=${conversationId}`,
+                    }
+                );
+            }
+        } catch {
+            // فشل الإشعار لا يعطّل إرسال الرسالة
+        }
+
         return { success: true, data: serialize(message) };
     } catch (error: any) {
         return { success: false, error: error?.message || "تعذر إرسال الرسالة" };
@@ -415,6 +454,50 @@ export async function uploadChatAttachment(formData: FormData) {
         };
     } catch (error: any) {
         return { success: false, error: error?.message || "تعذر رفع الملف" };
+    }
+}
+
+// حفظ اشتراك Push للجهاز الحالي (لاستقبال الإشعارات خارج الصفحة)
+export async function savePushSubscription(subscription: { endpoint: string; keys: { p256dh: string; auth: string } }) {
+    try {
+        const currentUser = await getCurrentSessionUser();
+        if (!currentUser || !canViewMessages(currentUser)) {
+            return { success: false, error: "غير مصرح" };
+        }
+
+        const endpoint = String(subscription?.endpoint || '').trim();
+        const p256dh = String(subscription?.keys?.p256dh || '').trim();
+        const auth = String(subscription?.keys?.auth || '').trim();
+
+        if (!endpoint || !p256dh || !auth) {
+            return { success: false, error: "بيانات الاشتراك غير مكتملة" };
+        }
+
+        await prisma.pushSubscription.upsert({
+            where: { endpoint },
+            update: { userId: currentUser.id, p256dh, auth },
+            create: { userId: currentUser.id, endpoint, p256dh, auth },
+        });
+
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error?.message || "تعذر حفظ الاشتراك" };
+    }
+}
+
+// إلغاء اشتراك Push للجهاز الحالي
+export async function deletePushSubscription(endpoint: string) {
+    try {
+        const currentUser = await getCurrentSessionUser();
+        if (!currentUser) return { success: false };
+
+        await prisma.pushSubscription.deleteMany({
+            where: { endpoint: String(endpoint || ''), userId: currentUser.id },
+        });
+
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error?.message || "تعذر حذف الاشتراك" };
     }
 }
 

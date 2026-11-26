@@ -11,10 +11,12 @@ import { useAuth } from "@/context/AuthContext";
 import { hasPermission } from "@/lib/utils";
 import {
   createGroupConversation,
+  deletePushSubscription,
   getChatBootstrap,
   getChatMessages,
   getOrCreateDirectConversation,
   markConversationRead,
+  savePushSubscription,
   sendChatMessage,
   uploadChatAttachment,
 } from "@/server/chat";
@@ -112,6 +114,49 @@ function Avatar({ name, url, size = "md" }: { name: string; url?: string | null;
   );
 }
 
+const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function subscribePushNotifications() {
+  if (!VAPID_PUBLIC_KEY) return;
+  if (typeof navigator === "undefined" || !("serviceWorker" in navigator) || !("PushManager" in window)) return;
+  const registration = await navigator.serviceWorker.ready;
+  let subscription = await registration.pushManager.getSubscription();
+  subscription =
+    subscription ||
+    (await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as any,
+    }));
+  const json = subscription.toJSON();
+  if (json.endpoint && json.keys?.p256dh && json.keys?.auth) {
+    await savePushSubscription({
+      endpoint: json.endpoint,
+      keys: { p256dh: json.keys.p256dh, auth: json.keys.auth },
+    });
+  }
+}
+
+async function unsubscribePushNotifications() {
+  if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager.getSubscription();
+  if (subscription) {
+    await deletePushSubscription(subscription.endpoint);
+    await subscription.unsubscribe();
+  }
+}
+
 export default function CommunicationHubPage() {
   const { user } = useAuth();
   const canView = Boolean(user && (user.accountType === "ADMIN" || hasPermission(user, "viewMessages")));
@@ -159,13 +204,49 @@ export default function CommunicationHubPage() {
     }
   });
 
-  // صوت تنبيه قصير عند وصول رسالة (WebAudio — بدون ملفات خارجية)
+  const audioCtxRef = React.useRef<AudioContext | null>(null);
+
+  const getAudioContext = React.useCallback(() => {
+    const AudioCtor = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtor) return null;
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new AudioCtor();
+    }
+    if (audioCtxRef.current.state === "suspended") {
+      void audioCtxRef.current.resume().catch(() => {});
+    }
+    return audioCtxRef.current;
+  }, []);
+
+  // فتح قفل الصوت عند أول تفاعل مع الصفحة (iOS/Safari يشترطان لمسة المستخدم)
+  React.useEffect(() => {
+    const unlock = () => {
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === "suspended") {
+        void ctx.resume().catch(() => {});
+      }
+    };
+    window.addEventListener("pointerdown", unlock);
+    window.addEventListener("keydown", unlock);
+    window.addEventListener("touchstart", unlock);
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+  }, [getAudioContext]);
+
+  // صوت تنبيه قصير عند وصول رسالة (WebAudio — بدون ملفات خارجية) + اهتزاز على الجوال
   const playMessageSound = React.useCallback(() => {
     try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const startAt = ctx.currentTime;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      try {
+        navigator.vibrate?.(120);
+      } catch {
+        // الاهتزاز غير مدعوم على iOS
+      }
+      const startAt = ctx.currentTime + 0.02;
       [880, 1174.66].forEach((freq, index) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -175,16 +256,15 @@ export default function CommunicationHubPage() {
         gain.connect(ctx.destination);
         const t0 = startAt + index * 0.12;
         gain.gain.setValueAtTime(0.0001, t0);
-        gain.gain.exponentialRampToValueAtTime(0.18, t0 + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.2, t0 + 0.03);
         gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35);
         osc.start(t0);
         osc.stop(t0 + 0.4);
       });
-      window.setTimeout(() => void ctx.close(), 1500);
     } catch {
       // تجاهل — بعض المتصفحات تحظر الصوت قبل تفاعل المستخدم
     }
-  }, []);
+  }, [getAudioContext]);
 
   const showMessageNotification = React.useCallback(
     (conversationId: string, lastMessage: any) => {
@@ -243,7 +323,21 @@ export default function CommunicationHubPage() {
   }, []);
 
   React.useEffect(() => {
-    if (canView) void loadBootstrap();
+    if (!canView) return;
+    let cancelled = false;
+    void loadBootstrap().then(() => {
+      if (cancelled) return;
+      // فتح محادثة محددة عبر الرابط (?chat=) — يُستخدم من إشعار Push
+      try {
+        const chatId = new URLSearchParams(window.location.search).get("chat");
+        if (chatId) void openConversationRef.current(chatId);
+      } catch {
+        // تجاهل
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [canView, loadBootstrap]);
 
   const openConversation = React.useCallback(async (conversationId: string, search: string = "") => {
@@ -346,9 +440,14 @@ export default function CommunicationHubPage() {
     };
 
     const interval = setInterval(poll, POLL_INTERVAL_MS);
+    const handleVisibilityChange = () => {
+      if (!document.hidden) void poll();
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       cancelled = true;
       clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [canView, loadBootstrap, playMessageSound, showMessageNotification]);
 
@@ -361,33 +460,47 @@ export default function CommunicationHubPage() {
       toast.error("الإشعارات محظورة من إعدادات المتصفح — فعّلها يدوياً من إعدادات الموقع");
       return;
     }
+
+    const persist = (value: boolean) => {
+      try {
+        localStorage.setItem("skynova_chat_alerts", value ? "on" : "off");
+      } catch {
+        // تجاهل
+      }
+    };
+
+    const enable = () => {
+      setAlertsEnabled(true);
+      persist(true);
+      void subscribePushNotifications().catch(() => {
+        toast.error("تعذر تفعيل إشعارات Push — على iPhone يجب تثبيت الموقع كتطبيق على الشاشة الرئيسية");
+      });
+      toast.success("تم تفعيل تنبيهات الرسائل (داخل الصفحة وخارجها)");
+    };
+
+    const disable = () => {
+      setAlertsEnabled(false);
+      persist(false);
+      void unsubscribePushNotifications().catch(() => {});
+      toast.success("تم إيقاف التنبيهات");
+    };
+
     if (Notification.permission === "default") {
       void Notification.requestPermission().then((result) => {
-        const enabled = result === "granted";
-        setAlertsEnabled(enabled);
-        try {
-          localStorage.setItem("skynova_chat_alerts", enabled ? "on" : "off");
-        } catch {
-          // تجاهل
-        }
-        if (enabled) {
-          toast.success("تم تفعيل تنبيهات الرسائل (صوت + إشعار)");
+        if (result === "granted") {
+          enable();
         } else {
           toast.error("تم رفض إذن الإشعارات");
         }
       });
       return;
     }
-    setAlertsEnabled((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem("skynova_chat_alerts", next ? "on" : "off");
-      } catch {
-        // تجاهل
-      }
-      toast.success(next ? "تم تشغيل التنبيهات" : "تم إيقاف التنبيهات");
-      return next;
-    });
+
+    if (alertsEnabled) {
+      disable();
+    } else {
+      enable();
+    }
   };
 
   const handleSend = async () => {
