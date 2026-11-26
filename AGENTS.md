@@ -166,7 +166,7 @@ npx prisma migrate deploy
 
 Connection is configured via `DATABASE_URL` in `.env`. A `prisma.config.ts` file is also present for Prisma's new configuration format.
 
-**Important models:** `User`, `Permission`, `Order`, `OrderItem`, `Product`, `ProductStock`, `Warehouse`, `Customer`, `Expense`, `Shipping`, `Warranty`, `WholesaleWarranty`, `Page`, `AffiliateLink`, `Commission`, `StockMovement`, `OrderStatusLog`, `PurchaseInvoice`, `PurchaseInvoiceItem`.
+**Important models:** `User`, `Permission`, `Order`, `OrderItem`, `Product`, `ProductStock`, `Warehouse`, `Customer`, `Expense`, `Shipping`, `Warranty`, `WholesaleWarranty`, `Page`, `AffiliateLink`, `Commission`, `StockMovement`, `OrderStatusLog`, `PurchaseInvoice`, `PurchaseInvoiceItem`, `ChatConversation`, `ChatParticipant`, `ChatMessage`.
 
 **Warehouse access control:** The `Permission` ↔ `Warehouse` many-to-many relation (`allowedWarehouses` / `allowedPermissions`, join table `_PermissionWarehouseAccess`) restricts which warehouses a role may access. An empty list means access to all warehouses. Managed from the permissions page (`app/dashboard/permissions/page.tsx`) via `/api/permissions`; enforced for orders (`server/order.ts`), wholesale orders (`server/wholesale-order.ts`), and the products page (`app/dashboard/products/page.tsx`) — admins bypass all checks. The client user payload (`/api/users/get`, `/api/users/impersonate/[id]`) includes `permission.allowedWarehouses`. Warehouse **lists shown to end users** (orders, wholesale orders, products pages) must come from `getAllowedWarehouses()` in `server/warehouse.ts`, which filters by the session user's `allowedWarehouses`; the unfiltered `getWarehouse()` is reserved for admin screens (permissions, inventories).
 
@@ -245,6 +245,13 @@ The wholesale warranty (`server/wholesale-warranty.ts`, page `app/dashboard/whol
 
 ### Product Archiving (أرشفة المنتجات)
 The `Product.isArchived` flag (default `false`) archives products without deleting them. It is toggled from the products page (`/dashboard/products`, requires `editProducts`) via `toggleProductArchive()` in `server/product.ts`. Archived products are excluded from every product picker: purchase invoices (`getPurchaseInvoiceData`), retail/wholesale order catalogs (`getProductCatalog`, `getWholesaleProductCatalog`), warranties (retail + wholesale), stock moves (`getInventoryData`), offers, affiliate links, and the public store/ad/affiliate product pages. The products page hides archived products by default; enable the "عرض المنتجات المؤرشفة" checkbox to see them (with a "مؤرشف" badge) and restore them. Historical data (existing orders, analytics, reports) still includes archived products — only selection lists are filtered.
+
+### Internal Communication Hub (مركز التواصل الداخلي)
+`server/chat.ts` + page `app/dashboard/communication/page.tsx` implement internal chat between system users (ADMIN / MANAGER / STAFF; AFFILIATE users are excluded):
+- Models: `ChatConversation` (`DIRECT` | `GROUP` with optional `department`), `ChatParticipant` (per-user `lastReadAt` drives unread counts; `ADMIN` | `MEMBER` role), `ChatMessage` (`TEXT` | `IMAGE` | `FILE`). Attachments upload to Vercel Blob under `chat/` (25MB cap) via `uploadChatAttachment`.
+- Access is gated by the `viewMessages` permission flag; sending messages / creating direct chats requires `addMessages`; **group creation is restricted to ADMIN + MANAGER** (`accountType === "MANAGER"`). Flags are wired into `Permission`, the permissions page (التواصل الداخلي section via `SinglePermissionBox`), and the `/api/permissions` POST/PUT routes. The sidebar entry "مركز التواصل" sits under "التواصل الداخلي" and is gated by `viewMessages`.
+- Direct 1-on-1 conversations are reused via `getOrCreateDirectConversation` (unique per user pair). Message senders are `SetNull` on user deletion so conversation history survives.
+- Instant notifications: `GET /api/chat/poll` (cookie-authed, `getChatUnreadSnapshot`) returns the total unread count plus per-conversation unread + last-message preview; the page polls it every 5s, updates badges/previews, and auto-refreshes the open conversation. The page also supports search within a conversation and conversation-list search.
 
 ### Cron Jobs
 `lib/cron.ts` runs a monthly job (1st of month at 00:00 UTC) that deactivates active `UserTarget` records. It is imported in the root layout so it initializes once per server process.

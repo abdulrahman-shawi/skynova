@@ -16,7 +16,8 @@ import {
   ImageIcon,
   BadgePercent,
   Ticket,
-  ChevronDown
+  ChevronDown,
+  MessagesSquare
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -141,6 +142,15 @@ export const Sidebar = ({ isCollapsed, setIsCollapsed }: { isCollapsed: boolean;
         { icon: Home, label: "لوحة التحكم", href: "/dashboard" },
         (user && hasAnyPermission(user, ["viewAnalytics"])) &&
         { icon: BarChart2, label: "التحليلات", href: "/dashboard/analytics" },
+      ].filter(Boolean) as MenuItem[]
+    },
+    {
+      icon: MessagesSquare,
+      collapsible: true,
+      group: "التواصل الداخلي",
+      items: [
+        (user && hasAnyPermission(user, ["viewMessages"])) &&
+        { icon: MessagesSquare, label: "مركز التواصل", href: "/dashboard/communication" },
       ].filter(Boolean) as MenuItem[]
     },
     {

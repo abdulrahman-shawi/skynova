@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
                 viewPermissions: false, addPermissions: false, editPermissions: false, deletePermissions: false,
                 viewPages: false, addPages: false, editPages: false, deletePages: false,
                 viewInvoices: false, addInvoices: false, editInvoices: false, deleteInvoices: false,
+                viewMessages: false, addMessages: false,
                 viewAnalytics: false,
                 accessSyria: false,
                 accessTurkey: false,

@@ -85,6 +85,10 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
                 editInvoices: Boolean(data.editInvoices),
                 deleteInvoices: Boolean(data.deleteInvoices),
 
+                // التواصل الداخلي
+                viewMessages: Boolean(data.viewMessages),
+                addMessages: Boolean(data.addMessages),
+
                 accessSyria: Boolean(data.accessSyria),
                 accessTurkey: Boolean(data.accessTurkey),
 

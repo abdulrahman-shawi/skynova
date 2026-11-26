@@ -64,6 +64,9 @@ export interface Permission {
   editInvoices: boolean;
   deleteInvoices: boolean;
 
+  viewMessages: boolean;
+  addMessages: boolean;
+
   accessSyria: boolean;
   accessTurkey: boolean;
 

@@ -195,6 +195,8 @@ exports.Prisma.PermissionScalarFieldEnum = {
   addInvoices: 'addInvoices',
   editInvoices: 'editInvoices',
   deleteInvoices: 'deleteInvoices',
+  viewMessages: 'viewMessages',
+  addMessages: 'addMessages',
   accessSyria: 'accessSyria',
   accessTurkey: 'accessTurkey'
 };
@@ -506,6 +508,39 @@ exports.Prisma.MessageScalarFieldEnum = {
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatConversationScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  name: 'name',
+  department: 'department',
+  createdById: 'createdById',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatParticipantScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  userId: 'userId',
+  role: 'role',
+  lastReadAt: 'lastReadAt',
+  joinedAt: 'joinedAt'
+};
+
+exports.Prisma.ChatMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  senderId: 'senderId',
+  type: 'type',
+  content: 'content',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
@@ -947,6 +982,9 @@ exports.Prisma.ModelName = {
   Warranty: 'Warranty',
   WholesaleWarranty: 'WholesaleWarranty',
   Message: 'Message',
+  ChatConversation: 'ChatConversation',
+  ChatParticipant: 'ChatParticipant',
+  ChatMessage: 'ChatMessage',
   Order: 'Order',
   Expense: 'Expense',
   shipping: 'shipping',

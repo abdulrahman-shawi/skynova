@@ -243,6 +243,17 @@ export default function PermissionsPage() {
                                         <PermissionRow title="الصفحات الثابتة" suffix="Pages" role={selectedRole} onToggle={togglePermission} />
                                         <PermissionRow title="فواتير الشراء" suffix="Invoices" role={selectedRole} onToggle={togglePermission} />
 
+                                        {/* التواصل الداخلي: عرض = الدخول للمركز، إضافة = إرسال وإنشاء محادثات */}
+                                        <div className="border-b dark:border-slate-800 last:border-0 pb-8 mt-10">
+                                            <h4 className="font-black mb-4 flex items-center gap-2 text-slate-800 dark:text-slate-200">
+                                                <div className="w-2 h-2 rounded-full bg-indigo-500" /> التواصل الداخلي
+                                            </h4>
+                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                                <SinglePermissionBox label="الدخول إلى مركز التواصل" fieldName="viewMessages" role={selectedRole} onToggle={togglePermission} />
+                                                <SinglePermissionBox label="إرسال الرسائل وإنشاء المحادثات" fieldName="addMessages" role={selectedRole} onToggle={togglePermission} />
+                                            </div>
+                                        </div>
+
                                         {/* ملاحظة: إحصائيات النظام تملك حقلاً واحداً فقط (viewAnalytics) */}
                                         {/* إذا كان PermissionRow مصمماً لعرض 4 مربعات اختيار، فقد تحتاج لمكون بسيط أو تخصيص لهذا الحقل */}
                                         <div className="flex items-center justify-between p-4 border-b">
