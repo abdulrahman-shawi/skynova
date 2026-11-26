@@ -21,6 +21,7 @@ import {
 import {
   Bell,
   BellOff,
+  ChevronRight,
   Download,
   FileText,
   Image as ImageIcon,
@@ -558,7 +559,7 @@ export default function CommunicationHubPage() {
 
       <div className="flex flex-1 gap-4 min-h-0">
         {/* قائمة المحادثات */}
-        <div className="w-full md:w-80 shrink-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
+        <div className={`w-full md:w-80 shrink-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex-col overflow-hidden ${activeId ? "hidden md:flex" : "flex"}`}>
           <div className="p-3 border-b border-slate-100 dark:border-slate-800">
             <div className="relative">
               <Search size={16} className="absolute top-3 right-3 text-slate-400" />
@@ -620,7 +621,7 @@ export default function CommunicationHubPage() {
         </div>
 
         {/* نافذة المحادثة */}
-        <div className="flex-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden min-w-0">
+        <div className={`flex-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 flex-col overflow-hidden min-w-0 ${activeId ? "flex" : "hidden md:flex"}`}>
           {!activeConversation ? (
             <div className="flex-1 flex flex-col items-center justify-center gap-3 text-slate-400">
               <MessagesSquare className="w-16 h-16 stroke-[1.2]" />
@@ -629,14 +630,22 @@ export default function CommunicationHubPage() {
           ) : (
             <>
               <div className="p-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <button
+                    type="button"
+                    onClick={() => setActiveId(null)}
+                    className="md:hidden p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 shrink-0"
+                    title="رجوع إلى المحادثات"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
                   <Avatar name={activeConversation.title} url={activeConversation.peer?.avatar} />
-                  <div>
-                    <h2 className="font-bold text-slate-800 dark:text-slate-100">{activeConversation.title}</h2>
-                    <p className="text-xs text-slate-400">{activeConversation.subtitle}</p>
+                  <div className="min-w-0">
+                    <h2 className="font-bold text-slate-800 dark:text-slate-100 truncate">{activeConversation.title}</h2>
+                    <p className="text-xs text-slate-400 truncate">{activeConversation.subtitle}</p>
                   </div>
                 </div>
-                <div className="relative w-full max-w-xs">
+                <div className="relative w-full max-w-[150px] md:max-w-xs shrink-0">
                   <Search size={14} className="absolute top-2.5 right-3 text-slate-400" />
                   <input
                     value={messageSearch}
