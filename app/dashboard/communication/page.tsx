@@ -19,6 +19,8 @@ import {
   uploadChatAttachment,
 } from "@/server/chat";
 import {
+  Bell,
+  BellOff,
   Download,
   FileText,
   Image as ImageIcon,
@@ -143,6 +145,85 @@ export default function CommunicationHubPage() {
   activeIdRef.current = activeId;
   const messagesRef = React.useRef<ChatMessageItem[]>([]);
   messagesRef.current = messages;
+  const conversationsRef = React.useRef<Conversation[]>([]);
+  conversationsRef.current = conversations;
+  const prevUnreadRef = React.useRef<Map<string, number> | null>(null);
+  const openConversationRef = React.useRef<(conversationId: string, search?: string) => void>(() => {});
+
+  const [alertsEnabled, setAlertsEnabled] = React.useState(() => {
+    try {
+      return localStorage.getItem("skynova_chat_alerts") !== "off";
+    } catch {
+      return true;
+    }
+  });
+
+  // صوت تنبيه قصير عند وصول رسالة (WebAudio — بدون ملفات خارجية)
+  const playMessageSound = React.useCallback(() => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const startAt = ctx.currentTime;
+      [880, 1174.66].forEach((freq, index) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const t0 = startAt + index * 0.12;
+        gain.gain.setValueAtTime(0.0001, t0);
+        gain.gain.exponentialRampToValueAtTime(0.18, t0 + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35);
+        osc.start(t0);
+        osc.stop(t0 + 0.4);
+      });
+      window.setTimeout(() => void ctx.close(), 1500);
+    } catch {
+      // تجاهل — بعض المتصفحات تحظر الصوت قبل تفاعل المستخدم
+    }
+  }, []);
+
+  const showMessageNotification = React.useCallback(
+    (conversationId: string, lastMessage: any) => {
+      if (!alertsEnabled) return;
+      if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+      try {
+        const conversation = conversationsRef.current.find((c) => c.id === conversationId);
+        const title = conversation?.title || lastMessage?.senderName || "رسالة جديدة";
+        const preview =
+          lastMessage?.type === "IMAGE"
+            ? "صورة"
+            : lastMessage?.type === "FILE"
+              ? `ملف: ${lastMessage.fileName || ""}`
+              : lastMessage?.content || "رسالة جديدة";
+        const notif = new Notification(title, {
+          body: `${lastMessage?.senderName ? `${lastMessage.senderName}: ` : ""}${preview}`.slice(0, 150),
+          icon: conversation?.peer?.avatar || "/skynova-dark.png",
+          tag: conversationId,
+        });
+        notif.onclick = () => {
+          window.focus();
+          void openConversationRef.current(conversationId);
+        };
+      } catch {
+        // تجاهل أخطاء الإشعارات
+      }
+    },
+    [alertsEnabled]
+  );
+
+  // طلب إذن الإشعارات تلقائياً عند فتح الصفحة
+  React.useEffect(() => {
+    try {
+      if (typeof Notification !== "undefined" && Notification.permission === "default") {
+        void Notification.requestPermission();
+      }
+    } catch {
+      // تجاهل
+    }
+  }, []);
 
   const loadBootstrap = React.useCallback(async () => {
     const res = await getChatBootstrap();
@@ -181,6 +262,7 @@ export default function CommunicationHubPage() {
       prev.map((c) => (c.id === conversationId ? { ...c, unreadCount: 0 } : c))
     );
   }, []);
+  openConversationRef.current = openConversation;
 
   React.useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -238,6 +320,24 @@ export default function CommunicationHubPage() {
           }
         }
 
+        // كشف الرسائل الواردة الجديدة → صوت + إشعار متصفح
+        const currentUnread = new Map<string, number>();
+        for (const c of snapshot.conversations || []) currentUnread.set(c.id, Number(c.unread || 0));
+        const prevUnread = prevUnreadRef.current;
+        if (prevUnread) {
+          const fresh = (snapshot.conversations || []).filter(
+            (c: any) =>
+              Number(c.unread || 0) > (prevUnread.get(c.id) ?? 0) &&
+              c.id !== activeIdRef.current &&
+              c.lastMessage
+          );
+          if (fresh.length > 0) {
+            playMessageSound();
+            fresh.slice(0, 3).forEach((c: any) => showMessageNotification(c.id, c.lastMessage));
+          }
+        }
+        prevUnreadRef.current = currentUnread;
+
         document.title = snapshot.unreadTotal > 0 ? `(${snapshot.unreadTotal}) SKYNOVA CRM` : "SKYNOVA CRM";
       } catch {
         // تجاهل أخطاء الشبكة المؤقتة
@@ -249,7 +349,45 @@ export default function CommunicationHubPage() {
       cancelled = true;
       clearInterval(interval);
     };
-  }, [canView, loadBootstrap]);
+  }, [canView, loadBootstrap, playMessageSound, showMessageNotification]);
+
+  const handleToggleAlerts = () => {
+    if (typeof Notification === "undefined") {
+      toast.error("المتصفح لا يدعم الإشعارات");
+      return;
+    }
+    if (Notification.permission === "denied") {
+      toast.error("الإشعارات محظورة من إعدادات المتصفح — فعّلها يدوياً من إعدادات الموقع");
+      return;
+    }
+    if (Notification.permission === "default") {
+      void Notification.requestPermission().then((result) => {
+        const enabled = result === "granted";
+        setAlertsEnabled(enabled);
+        try {
+          localStorage.setItem("skynova_chat_alerts", enabled ? "on" : "off");
+        } catch {
+          // تجاهل
+        }
+        if (enabled) {
+          toast.success("تم تفعيل تنبيهات الرسائل (صوت + إشعار)");
+        } else {
+          toast.error("تم رفض إذن الإشعارات");
+        }
+      });
+      return;
+    }
+    setAlertsEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("skynova_chat_alerts", next ? "on" : "off");
+      } catch {
+        // تجاهل
+      }
+      toast.success(next ? "تم تشغيل التنبيهات" : "تم إيقاف التنبيهات");
+      return next;
+    });
+  };
 
   const handleSend = async () => {
     if (!activeId || sending) return;
@@ -388,20 +526,34 @@ export default function CommunicationHubPage() {
           </h1>
           <p className="text-sm text-slate-500 mt-1">تواصل داخلي فوري بين الموظفين والمدراء — نصوص وصور وملفات</p>
         </div>
-        {canSend && (
-          <div className="flex gap-2">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setIsDirectOpen(true)}>
-              <Plus size={16} className="ml-1" />
-              محادثة جديدة
-            </Button>
-            {canCreateGroup && (
-              <Button variant="outline" onClick={() => setIsGroupOpen(true)}>
-                <Users size={16} className="ml-1" />
-                مجموعة جديدة
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleToggleAlerts}
+            title={alertsEnabled ? "تنبيهات الرسائل مفعّلة (صوت + إشعار) — اضغط للإيقاف" : "تنبيهات الرسائل متوقفة — اضغط للتشغيل"}
+            className={`p-2.5 rounded-xl border transition-colors ${
+              alertsEnabled
+                ? "bg-blue-50 border-blue-200 text-blue-600 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400"
+                : "border-slate-200 text-slate-400 hover:text-slate-600 dark:border-slate-700"
+            }`}
+          >
+            {alertsEnabled ? <Bell size={18} /> : <BellOff size={18} />}
+          </button>
+          {canSend && (
+            <React.Fragment>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setIsDirectOpen(true)}>
+                <Plus size={16} className="ml-1" />
+                محادثة جديدة
               </Button>
-            )}
-          </div>
-        )}
+              {canCreateGroup && (
+                <Button variant="outline" onClick={() => setIsGroupOpen(true)}>
+                  <Users size={16} className="ml-1" />
+                  مجموعة جديدة
+                </Button>
+              )}
+            </React.Fragment>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-1 gap-4 min-h-0">
