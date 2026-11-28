@@ -13,5 +13,9 @@ const withPWA = withPWAInit({
 });
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+	experimental: {
+		serverComponentsExternalPackages: ["web-push"],
+	},
+};
 export default withPWA(nextConfig);

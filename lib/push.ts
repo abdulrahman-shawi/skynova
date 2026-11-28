@@ -1,7 +1,9 @@
 // إرسال إشعارات Web Push لمستخدمي النظام (خارج الصفحة / التطبيق مغلق)
 // يتطلب متغيرات البيئة: VAPID_PUBLIC_KEY و VAPID_PRIVATE_KEY و (اختياري) VAPID_SUBJECT
-import webPush from "web-push";
+import * as webPushModule from "web-push";
 import { prisma } from "@/lib/prisma";
+
+const webPush: any = (webPushModule as any).default || webPushModule;
 
 let vapidConfigured = false;
 
